@@ -33,8 +33,8 @@ CREATE TABLE mqtt_acl (
   action ACTION,
   permission PERMISSION,
   topic CHARACTER VARYING(255) NOT NULL,
-  qos tinyint,
-  retain tinyint
+  qos smallint,
+  retain smallint
 );
 
 CREATE INDEX mqtt_acl_username_idx ON mqtt_acl(username);
