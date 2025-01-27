@@ -67,7 +67,7 @@ Follow the instructions below on how to configure the authentication:
 
 **Authentication configuration**: Configure settings related to authentication:
 
-- **Password Hash**: Select the password hashing algorithm applied to plain-text passwords before results are stored in the database. Available options are `plain`, `md5`, `sha`, `sha256`, `sha512`, `bcrypt`, and `pbkdf2`. Additional configuration depends on selected algorithm:
+- **Password Hash**: Select the password hashing algorithm applied to plain-text passwords before results are stored in the database. Available options are `plain`, `md5`, `sha`, `sha256`, `sha512`, `bcrypt`, and `pbkdf2`. Additional configurations depend on the selected algorithm:
   - For `md5`, `sha`, `sha256` or `sha512`:
     - **Salt Position**: Determines how salt (random data) is mixed with the password. Options are `suffix`, `prefix`, or `disable`.  You can keep the default value unless you migrate user credentials from external storage into the EMQX built-in database.
     - Resulting hash is represented as a string of hexadecimal characters, and compared case-insensitively with the stored credential.
