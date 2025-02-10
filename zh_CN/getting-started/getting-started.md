@@ -5,7 +5,7 @@
 本章节将带您体验从下载安装开始，到启动 EMQX 服务，到通过 WebSocket 工具或 MQTT 客户端测试连接并进行消息发布订阅的完整流程。
 
 ::: tip
-除了私有部署外，我们也提供了全托管的 EMQX Cloud 服务，您只需几步注册即可轻松体验 EMQX 提供的 MQTT 消息服务，欢迎前往 [EMQX Cloud 门户](https://cloud.emqx.com/)页面免费试用。
+除了私有部署外，我们也提供了全托管的 EMQX Cloud 服务，您只需几步注册即可轻松体验 EMQX 提供的 MQTT 消息服务，欢迎前往 [EMQX Cloud 注册](https://accounts-zh.emqx.com/signup?continue=https%3A%2F%2Fcloud.emqx.com%2Fconsole%2Fdeployments%2Fnew)页面免费试用。
 :::
 
 ## 安装 EMQX
@@ -178,7 +178,7 @@ EMQX 支持多种安装方式，比如[容器化部署](../deploy/install-docker
 
 ### 创建连接
 
-1. 访问 [MQTTX Web](http://mqtt-client.emqx.com/#/recent_connections) 页面。
+1. 访问 [MQTTX Web](https://mqttx.app/web-client#/recent_connections) 页面。
 
 2. 配置并建立 MQTT 连接。点击 **+** **新建连接** 进入配置页面，您只需配置：
 
