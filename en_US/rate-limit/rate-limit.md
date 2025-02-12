@@ -14,7 +14,7 @@ EMQX uses the following types of limiters to specify the rate limits:
 
 Limiters can operate at the listener level. You can set rate limits for each listener on the **Management** -> **Listeners** page in the Dashboard.
 
-They can also be set through the configuration file. For example, to set limiters for the default TCP listener, configure it in the emqx.conf file as follows:
+They can also be set through the configuration file. For example, to set limiters for the default TCP listener, configure it in the configuration file as follows:
 
 ```bash
 listeners.tcp.default {

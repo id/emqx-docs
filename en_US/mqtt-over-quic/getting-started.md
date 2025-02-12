@@ -35,10 +35,9 @@ For more information on running EMQX via Docker container, see [Deploy with Dock
 
 MQTT over QUIC is disabled by default, you need to enable this listener with the following steps manually:
 
-1. Open the configuration file `etc/emqx.conf`, add the following configuration:
+1. Open the configuration file `etc/base.hocon`, add the following configuration:
 
 ```bash
-# etc/emqx.conf
 listeners.quic.default {
   enabled = true
   bind = "0.0.0.0:14567"

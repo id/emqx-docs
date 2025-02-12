@@ -10,7 +10,8 @@ In EMQX, listener is configured to receive requests from MQTT clients. EMQX supp
 ::: tip
 
 You can also configure listeners via Dashboard by clicking **Management** -> **Listeners** on the left navigation menu of the Dashboard.
-However if the listeners are configured from `emqx.conf`, the changes made from the Dashboard will only take effect temporarily until EMQX restarts.
+If you want to configure listeners from config files, it is recommended to use `base.hocon` instead of `emqx.conf`.
+Because if the config is in `emqx.conf`, the changes made from the Dashboard will only take effect temporarily until EMQX restarts.
 
 :::
 
@@ -24,7 +25,7 @@ EMQX offers more configuration items to better serve customized needs. For detai
 
 TCP listener is a network service that listens for incoming TCP connections on a specific network port. It plays an essential role in establishing and managing connections between clients and EMQX over TCP/IP networks. 
 
-To configure the TCP listener in EMQX, you can add the `listeners.tcp` configuration items in the `emqx.conf` file within the `etc` folder of the EMQX installation directory.
+To configure the TCP listener in EMQX, you can add the `listeners.tcp` configuration items in the `base.hocon` file within the `etc` folder of the EMQX installation directory.
 
 For example, to enable the TCP listener on port `1883`, with a maximum 1,024,000 of concurrent connections allowed by the listener, you can work the code below:
 
@@ -46,7 +47,7 @@ where,
 
 SSL listener is a network service that listens for incoming SSL (Secure Sockets Layer) connections. In EMQX, it is used to secure network traffic between a client and EMQX by encrypting the data that is transmitted between them.
 
-To configure the SSL listener in EMQX, you can add the `listeners.ssl` configuration items in the `emqx.conf` file within the `etc` folder of the EMQX installation directory.
+To configure the SSL listener in EMQX, you can add the `listeners.ssl` configuration items in the `base.hocon` file within the `etc` folder of the EMQX installation directory.
 
 For example, to enable the SSL listener on port `8883`, with a maximum 1,024,000 of concurrent connections allowed by the listener:
 
@@ -81,7 +82,7 @@ where:
 
 WebSocket listener is a network service that receives and processes messages over WebSocket. WebSocket support in EMQX allows clients to use the WebSocket protocol to connect to EMQX and exchange data in real-time.
 
-To configure the WebSocket listener in EMQX, you can add the `listeners.ws` configuration items in the `emqx.conf` file within the `etc` folder of the EMQX installation directory.
+To configure the WebSocket listener in EMQX, you can add the `listeners.ws` configuration items in the `base.hocon` file within the `etc` folder of the EMQX installation directory.
 
 For example, to enable the WebSocket listener on port `8083`, with a maximum 1,024,000 of concurrent connections allowed by the listener:
 
@@ -105,7 +106,7 @@ where:
 
 A secure WebSocket listener is a WebSocket listener that uses the Secure Sockets Layer (SSL) or Transport Layer Security (TLS) protocol to encrypt the data exchanged between a WebSocket client and the broker. In EMQX, the secure WebSocket listener is an important security measure to protect sensitive data exchanged between WebSocket clients and EMQX> 
 
-To configure the secure WebSocket listener in EMQX, you can add the `listeners.wss` configuration items in the `emqx.conf` file within the `etc` folder of the EMQX installation directory.
+To configure the secure WebSocket listener in EMQX, you can add the `listeners.wss` configuration items in the `base.hocon` file within the `etc` folder of the EMQX installation directory.
 
 For example, to enable the Secure WebSocket listener on port `8084`, with a maximum 1,024,000 of concurrent connections allowed by the listener:
 

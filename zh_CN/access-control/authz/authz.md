@@ -218,7 +218,7 @@ EMQX 提供了 3 种使用权限的配置方式，分别为：Dashboard、配置
 
 #### 配置文件
 
-您也可通过配置文件 `emqx.conf` 中 `authorization` 相关字段进行授权的配置。
+您也可通过配置文件 `base.hocon` 中 `authorization` 相关字段进行授权的配置。
 
 配置结构如下：
 

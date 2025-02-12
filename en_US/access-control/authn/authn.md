@@ -220,7 +220,7 @@ You can also configure EMQX authenticators with our configuration file.
 For example, as shown in the `authentication` field below, we have created an authentication chain with multiple authenticators, these authenticators will run in the order as they are in the configuration file. 
 
 ```
-# emqx.conf
+# base.hocon
 
 # Specific global authentication chain for all MQTT listeners
 authentication = [
