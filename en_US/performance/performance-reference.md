@@ -4,7 +4,7 @@ This page provides an in-depth analysis of the performance of the EMQX in variou
 
 ## Test Environment
 
-All tests in this section are based on the open-source edition of **EMQX v5.1.6** deployed on a single node. EMQX and XMeter have created a peering connection to eliminate the interference of external network latency. The specifications of the server running EMQX are as follows.
+All tests in this section are based on the open-source edition of **EMQX v5.1.6** deployed on a single node. A peering connection has been created between the EMQX and the testing server to eliminate the interference of external network latency. The specifications of the server running EMQX are as follows.
 
 - **CPU**: 4vCPUs (Intel Xeon Platinum 8378A CPU @ 3.00GHz)
 - **Memory**: 8 GiB
@@ -13,7 +13,7 @@ All tests in this section are based on the open-source edition of **EMQX v5.1.6*
 - **Maximum Packets Per Second**: 800,000 PPS
 - **OS**: CentOS 7.9
 
-Except for the fan-in scenario where XMeter used 20 test clients to send and receive messages, the number of test clients in other scenarios was 10.
+Except for the fan-in scenario where 20 test clients are used to send and receive messages, the number of test clients in other scenarios was 10.
 
 ## Test Scenarios and Results
 
