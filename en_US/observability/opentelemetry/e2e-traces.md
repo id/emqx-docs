@@ -2,6 +2,12 @@
 
 ::: tip
 
+OpenTelemetry Integration is only available in the EMQX Enterprise edition after EMQX 5.8.3.
+
+:::
+
+::: tip
+
 The end-to-end tracing feature is supported only in EMQX version 5.8.3 and later.
 
 :::
