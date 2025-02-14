@@ -34,6 +34,8 @@ This section guides you on how to enable OpenTelemetry-based end-to-end tracing 
 
 ### Configure End-to-End Tracing via Dashboard
 
+<img src="./assets/e2e-dashboard-conf-page-en.png" alt="Otel-E2E-Trace-dashboard-page" style="zoom:67%;" />
+
 1. Click **Management** -> **Monitoring** from the Dashboard menu on the left. 
 2. Select the **Integration** tab on the Monitoring page.
 3. Configure the following settings:

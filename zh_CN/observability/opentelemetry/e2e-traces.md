@@ -34,6 +34,8 @@
 
 ### 通过 Dashboard 启用和配置端对端追踪
 
+<img src="./assets/e2e-dashboard-conf-page-zh.png" alt="Otel-E2E-Trace-dashboard-page" style="zoom:67%;" />
+
 1. 点击 Dashboard 左侧菜单中的**管理** -> **监控**。
 2. 选择页面中的**监控集成**选项卡。
 3. 设置以下配置项：
