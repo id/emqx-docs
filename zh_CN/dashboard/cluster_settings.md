@@ -132,7 +132,7 @@ EMQX 支持两种不同的日志输出方式：控制台输出日志和文件输
 
 ![emqx-grafana](./assets/emqx-grafana.jpg)
 
-关于 OpenTelemetry 和 Datadog 集成的配置详情，参考[集成 OpenTelemetry](../observability/open-telemetry/open-telemetry.md) 和 [集成 Datadog](../observability/datadog.md)。
+关于 OpenTelemetry 和 Datadog 集成的配置详情，参考[集成 OpenTelemetry](../observability/opentelemetry/opentelemetry.md) 和 [集成 Datadog](../observability/datadog.md)。
 
 ## 集群连接
 
