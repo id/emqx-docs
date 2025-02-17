@@ -83,6 +83,8 @@ See the table below for the supported event topic list.
 | [$events/client_check_authn_complete](#authentication-check-complete-event-events-client-check-authn-complete) | Authentication check complete    |
 | [$events/session_subscribed](#subscriber-event-events-session-subscribed) | Subscribe                       |
 | [$events/session_unsubscribed](#unsubcribe-event-events-session-unsubscribed) | Unsubscribe                     |
+| [$events/alarm_activated](#alarm-activated-event-events-alarm-activated) | Alarm activated |
+| [$events/alarm_deactivated](#alarm-deactivated-event-events-alarm-deactivated) | Alarm deactivated |
 
 ### Message Delivery Event ("$events/message_delivered")
 
@@ -631,6 +633,99 @@ Refer to the table below for fields that can be extracted.
 | `timestamp`   | Event trigger time (unit: ms)                  |
 | `node`        | EMQX node where the event is triggered         |
 | `client_attrs`        | [Client attributes](../client-attributes/client-attributes.md) |
+
+### Alarm Activated Event ("$events/alarm_activated")
+
+This event topic can be used to trigger a rule when an EMQX system alarm is activated.
+
+For example, to extract data from the `"$events/alarm_activated"` event topic, including the alarm name, details, descriptive message, and activation time, you can use the statement below:
+
+
+Example:
+
+```sql
+SELECT
+  name,
+  details,
+  message,
+  activated_at,
+  node
+FROM
+  "$events/alarm_activated"
+```
+
+Output:
+
+```json
+{
+  "name": "too_many_processes",
+  "details": {
+    "usage": "99%",
+    "high_watermark": "80%"
+  },
+  "message": "99% process usage",
+  "activated_at": 1645003578536000,
+  "node": "emqx@127.0.0.1"
+}
+```
+
+Refer to the table below for fields that can be extracted.
+
+| Field          | Explanation                                                  |
+| -------------- | :----------------------------------------------------------- |
+| `name`         | A short identifier for the alarm (e.g., `"too_many_processes"`) |
+| `details`      | A JSON object containing additional details about the alarm; schema is not fixed (e.g., `{"usage": "99%", "high_watermark": "80%"}`) |
+| `message`      | A descriptive message for the alarm (e.g., `"99% process usage"`) |
+| `activated_at` | Unix timestamp (µs) when the alarm was activated             |
+| `node`         | The EMQX node where the event was triggered                  |
+
+### Alarm Deactivated Event ("$events/alarm_deactivated")
+
+The rule is triggered when the EMQX system alarms are deactivated.
+
+For example, to extract data from the `"$events/alarm_deactivated"` event topic that includes the alarm name, details, description message, activation timestamp, and deactivation timestamp, you can use the following SQL statement:
+
+
+Example:
+
+```sql
+SELECT
+  name,
+  details,
+  message,
+  activated_at,
+  deactivated_at,
+  node
+FROM
+  "$events/alarm_deactivated"
+```
+
+Output:
+
+```json
+{
+  "name": "too_many_processes",
+  "details": {
+    "usage": "99%",
+    "high_watermark": "80%"
+  },
+  "message": "99% process usage",
+  "activated_at": 1645003578536000,
+  "deactivated_at": 1645004000000000,
+  "node": "emqx@127.0.0.1"
+}
+```
+
+Refer to the table below for fields that can be extracted.
+
+| Field            | Explanation                                                  |
+| ---------------- | :----------------------------------------------------------- |
+| `name`           | A short identifier for the alarm (e.g., `"too_many_processes"`) |
+| `details`        | A JSON object containing additional details about the alarm; schema is not fixed (e.g., `{"usage": "99%", "high_watermark": "80%"}`) |
+| `message`        | A descriptive message for the alarm (e.g., `"99% process usage"`) |
+| `activated_at`   | Unix timestamp (µs) when the alarm was activated             |
+| `deactivated_at` | Unix timestamp (µs) when the alarm was deactivated           |
+| `node`           | The EMQX node where the event was triggered                  |
 
 ## Data Bridges
 

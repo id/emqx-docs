@@ -85,19 +85,21 @@ FROM
 
 :::
 
-| 事件名称                                                                              | 事件主题名                          | 释义                     |
-| ------------------------------------------------------------------------------------- | ----------------------------------- | ------------------------ |
-| [消息投递事件](#消息投递事件-events-message-delivered)                                | $events/message_delivered           | 消息投递                 |
-| [消息确认事件](#消息确认事件-events-message-acked)                                    | $events/message_acked               | 消息确认                 |
-| [消息在转发的过程中被丢弃事件](#消息在转发的过程中被丢弃事件-events-message-dropped)  | $events/message_dropped             | 消息在转发的过程中被丢弃 |
+| 事件名称                                                     | 事件主题名                          | 释义                     |
+| ------------------------------------------------------------ | ----------------------------------- | ------------------------ |
+| [消息投递事件](#消息投递事件-events-message-delivered)       | $events/message_delivered           | 消息投递                 |
+| [消息确认事件](#消息确认事件-events-message-acked)           | $events/message_acked               | 消息确认                 |
+| [消息在转发的过程中被丢弃事件](#消息在转发的过程中被丢弃事件-events-message-dropped) | $events/message_dropped             | 消息在转发的过程中被丢弃 |
 | [消息在投递的过程中被丢弃事件](#消息在投递的过程中被丢弃事件-events-delivery-dropped) | $events/delivery_dropped            | 消息在投递的过程中被丢弃 |
-| [客户端连接成功事件](#客户端连接成功事件-events-client-connected)                         | $events/client_connected            | 连接完成                 |
-| [客户端连接断开事件](#客户端连接断开事件-events-client-disconnected)                      | $events/client_disconnected         | 连接断开                 |
-| [连接确认事件](#连接确认事件-events-client-connack)                                   | $events/client_connack              | 连接确认                 |
-| [鉴权完成事件](#鉴权完成事件-events-client-check-authz-complete)                      | $events/client_check_authz_complete | 鉴权完成                 |
-| [认证完成事件](#认证完成事件-events-client-check-authn-complete)                      | $events/client_check_authn_complete | 认证完成                 |
-| [客户端订阅成功事件](#客户端订阅成功事件-events-session-subscribed)                       | $events/session_subscribed          | 订阅                     |
-| [客户端取消订阅成功事件](#客户端取消订阅成功事件-events-session-unsubscribed)             | $events/session_unsubscribed        | 取消订阅                 |
+| [客户端连接成功事件](#客户端连接成功事件-events-client-connected) | $events/client_connected            | 连接完成                 |
+| [客户端连接断开事件](#客户端连接断开事件-events-client-disconnected) | $events/client_disconnected         | 连接断开                 |
+| [连接确认事件](#连接确认事件-events-client-connack)          | $events/client_connack              | 连接确认                 |
+| [鉴权完成事件](#鉴权完成事件-events-client-check-authz-complete) | $events/client_check_authz_complete | 鉴权完成                 |
+| [认证完成事件](#认证完成事件-events-client-check-authn-complete) | $events/client_check_authn_complete | 认证完成                 |
+| [客户端订阅成功事件](#客户端订阅成功事件-events-session-subscribed) | $events/session_subscribed          | 订阅                     |
+| [客户端取消订阅成功事件](#客户端取消订阅成功事件-events-session-unsubscribed) | $events/session_unsubscribed        | 取消订阅                 |
+| [告警激活事件](#告警激活事件-events-alarm-activated)         | $events/alarm_activated             | 系统告警激活             |
+| [告警解除事件](#告警解除事件-events-alarm-deactivated)       | $events/alarm_deactivated           | 系统告警解除             |
 
 ### 消息投递事件 ("$events/message_delivered")
 
@@ -620,6 +622,97 @@ FROM
   "clientid": "c_emqx"
 }
 ```
+
+### 告警激活事件 ("$events/alarm_activated")
+
+此事件主题可用于在 EMQX 系统告警被激活时触发规则。
+
+例如，要从 `"$events/alarm_activated"` 事件主题中提取告警名称、详细信息、描述信息以及激活时间，可以使用以下 SQL 语句：
+
+示例
+
+```sql
+SELECT
+  name,
+  details,
+  message,
+  activated_at,
+  node
+FROM
+  "$events/alarm_activated"
+```
+
+输出
+
+```json
+{
+  "name": "too_many_processes",
+  "details": {
+    "usage": "99%",
+    "high_watermark": "80%"
+  },
+  "message": "99% process usage",
+  "activated_at": 1645003578536000,
+  "node": "emqx@127.0.0.1"
+}
+```
+
+请参考下表了解可提取的字段：
+
+| 字段           | 说明                                                         |
+| -------------- | ------------------------------------------------------------ |
+| `name`         | 告警的短标识符（例如：`"too_many_processes"`）               |
+| `details`      | 包含告警详细信息的 JSON 对象，无固定格式（例如：`{"usage": "99%", "high_watermark": "80%"}`） |
+| `message`      | 告警的描述性信息（例如：`"99% process usage"`）              |
+| `activated_at` | Unix 时间戳（微秒），表示告警被激活的时间                    |
+| `node`         | 触发事件的 EMQX 节点                                         |
+
+### 告警解除事件 ("$events/alarm_deactivated")
+
+此事件主题可用于在 EMQX 系统告警被解除时触发规则。
+
+例如，要从 `"$events/alarm_deactivated"` 事件主题中提取告警名称、详细信息、描述信息、激活时间以及解除时间，可以使用以下 SQL 语句：
+
+示例
+
+```sql
+SELECT
+  name,
+  details,
+  message,
+  activated_at,
+  deactivated_at,
+  node
+FROM
+  "$events/alarm_deactivated"
+```
+
+输出
+
+```json
+{
+  "name": "too_many_processes",
+  "details": {
+    "usage": "99%",
+    "high_watermark": "80%"
+  },
+  "message": "99% process usage",
+  "activated_at": 1645003578536000,
+  "deactivated_at": 1645004000000000,
+  "node": "emqx@127.0.0.1"
+}
+```
+
+请参考下表了解可提取的字段：
+
+| 字段             | 说明                                                         |
+| ---------------- | ------------------------------------------------------------ |
+| `name`           | 告警的短标识符（例如：`"too_many_processes"`）               |
+| `details`        | 包含告警详细信息的 JSON 对象，无固定格式（例如：`{"usage": "99%", "high_watermark": "80%"}`） |
+| `message`        | 告警的描述性信息（例如：`"99% process usage"`）              |
+| `activated_at`   | Unix 时间戳（微秒），表示告警被激活的时间                    |
+| `deactivated_at` | Unix 时间戳（微秒），表示告警被解除的时间                    |
+| `node`           | 触发事件的 EMQX 节点                                         |
 
 ## Source
 
