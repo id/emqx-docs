@@ -1,12 +1,8 @@
 # Access Control List
 
-This page introduces ACL rules embedded in JWT and HTTP authentication responses.
+This page introduces Access Control Lists (ACL) rules embedded in JWT and HTTP authentication responses. Currently, JWT authentication and HTTP authentication support permission presets, using ACL as an optional extension of the authentication result. For example, this can be a private claim `acl` defined in JWT, or an `acl` JSON property returned as part of the HTTP authentication response. After a client connects, its publish and subscribe actions are restricted by these ACL rules.
 
-General ACL rules are stored in `acl.conf`. For details, see [acl.conf](../authz/file.md).
-
-For more comprehensive authorization methods, refer to [Authorization](../authz/authz.md).
-
-Currently, JWT authentication and HTTP authentication support permission presets, using Access Control Lists (ACL) as an optional extension of the authentication result. For example, this can be a private claim `acl` defined in JWT, or an `acl` JSON property returned as part of the HTTP authentication response. After a client connects, its publish and subscribe actions are restricted by these ACL rules.
+General ACL rules are stored in `acl.conf`. For details, see [acl.conf](../authz/file.md). For more comprehensive authorization methods, refer to [Authorization](../authz/authz.md).
 
 ::: tip
 
