@@ -30,11 +30,9 @@ Since end-to-end tracing can affect the system performance, only enable it when 
 
 :::
 
-This section guides you on how to enable OpenTelemetry-based end-to-end tracing in EMQX and demonstrates MQTT distributed tracing capabilities in a multi-node setup.
+This section guides you through enabling OpenTelemetry-based end-to-end tracing in EMQX and demonstrates MQTT distributed tracing capabilities in a multi-node setup.
 
 ### Configure End-to-End Tracing via Dashboard
-
-<img src="./assets/e2e-dashboard-conf-page-en.png" alt="Otel-E2E-Trace-dashboard-page" style="zoom:67%;" />
 
 1. Click **Management** -> **Monitoring** from the Dashboard menu on the left.
 2. Select the **Integration** tab on the Monitoring page.
@@ -46,18 +44,20 @@ This section guides you on how to enable OpenTelemetry-based end-to-end tracing 
    - **Trace Mode**: Select `End-to-End` to enable end-to-end tracing functionality.
    - **Cluster Identifier**: Add a property value to the span attributes to help identify which EMQX cluster the data comes from. The property key will be `cluster.id`. Typically, set a simple and easily identifiable name or use the cluster name to differentiate between EMQX clusters. The default is `emqxcl`.
    - **Traces Export Interval**: Set the time interval for exporting trace data, with a default of `5` seconds.
-   - **Max Queue Size**: Set the maximum size of the trace data queue, the default is `2048` entries.
+   - **Max Queue Size**: Set the maximum size of the trace data queue. The default is `2048` entries.
 
 4. Click **Trace Advanced Configuration** to configure advanced settings if necessary.
 
    - **Trace Configuration**: Used to set additional trace options, including whether to trace specific events (such as client connections, message transmissions, etc.).
-     - **Follow Traceparent**: Set whether to follow `traceparent`. When set to `true`, EMQX will try to get `traceparent` from the `User-Property` passed in by the client and associate the end-to-end trace with it. Otherwise, EMQX will generate a new Trace for the end-to-end trace. The default value is `true`.
+     - **Follow Traceparent**: Set whether to follow the `traceparent`. When set to `true`, EMQX will attempt to retrieve the `traceparent` identifier from the `User-Property` sent by the client and associate the end-to-end tracing with it. Otherwise, EMQX will generate a new trace for the end-to-end tracing. The default value is `true`.
    - **Client ID White List**: Set a whitelist to restrict which clients' connections or messages will be traced. This can help avoid unnecessary tracing and reduce additional system resource consumption.
    - **Topic White List**: Set a topic whitelist, allowing only matching topics to be traced. This works similarly to the client whitelist, helping to control the scope of the tracing.
 
    Click **Confirm** after you save the configuration and close the window.
 
 5. Click **Save Changes** to save the configuration.
+
+<img src="./assets/e2e-dashboard-conf-page-en.png" alt="Otel-E2E-Trace-dashboard-page" style="zoom:67%;" />
 
 ### Configure End-to-End Tracing via Configuration File
 

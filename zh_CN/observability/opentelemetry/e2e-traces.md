@@ -34,8 +34,6 @@
 
 ### 通过 Dashboard 启用和配置端对端追踪
 
-<img src="./assets/e2e-dashboard-conf-page-zh.png" alt="Otel-E2E-Trace-dashboard-page" style="zoom:67%;" />
-
 1. 点击 Dashboard 左侧菜单中的**管理** -> **监控**。
 2. 选择页面中的**监控集成**选项卡。
 3. 设置以下配置项：
@@ -51,12 +49,14 @@
 4. 点击**追踪高级配置**，根据需要进行高级设置。参考[通过配置文件配置端对端追踪](#通过配置文件配置端对端追踪)中的配置示例。
 
    - **追踪配置**：用于设置其他追踪选项，包括是否追踪特定事件（如客户端连接、消息传输等）。
-     - **跟随 Traceparent**：设置是否跟随 `traceparent`，设置为 `true` 时 EMQX 将尝试从客户端传入的 `User-Property` 中获取 `traceparent` 并将端到端追踪与之关联。否则 EMQX 将为端到端追踪生成新的 Trace。默认为 `true` 。
+     - **跟随 Traceparent**：设置是否跟随 `traceparent`，设置为 `true` 时 EMQX 将尝试从客户端传入的 `User-Property` 中获取 `traceparent` 标识并将端到端追踪与之关联。否则 EMQX 将为端到端追踪生成新的追踪。默认为 `true` 。
    - **客户端 ID 白名单**：设置一个客户端 ID 白名单，以限制哪些客户端的连接或消息会被追踪。可以避免不必要的追踪以降低额外的系统资源消耗。
    - **主题白名单**：设置一个主题白名单，只有匹配的主题才能被追踪，类似于客户端白名单的作用，帮助控制追踪的范围。
 
 5. 点击**确认**保存配置并关闭窗口。
 6. 点击**保存更改**按钮以保存配置。
+
+<img src="./assets/e2e-dashboard-conf-page-zh.png" alt="Otel-E2E-Trace-dashboard-page" style="zoom:67%;" />
 
 ### 通过配置文件启用和配置端对端追踪
 
