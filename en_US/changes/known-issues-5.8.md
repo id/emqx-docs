@@ -30,6 +30,36 @@
 
   <!-- https://emqx.atlassian.net/browse/EMQX-12290 -->
 
+- **Shard Replica Set Changes Become Stuck once Number of Sites are Lost (since 5.8.0, fixed in 5.8.5)**
+
+  _This issue may occur only when Durable Sessions are enabled and backed by DS Raft backend._
+
+  When nodes acting as replication sites for Durable Storage data permanently leave the cluster without handing off the data first, it may lead to a situation where any requested replica set transitions will never finish.
+
+  As a simplified example, this is how it could look in `emqx ctl ds info` output. Here, node `emqx@emqxc1-core0.local` has left the cluster while it was still responsible and was the only replication site for all shards, and then `emqx@emqxc2-core0.local` was asked to take over with `emqx ds join messages ABCDEF2222222222`.
+  ```
+  Site
+  ABCDEF1111111111 'emqx@emqxc1-core0.local' (!) UNIDENTIFIED
+  ABCDEF2222222222 'emqx@emqxc2-core0.local' up
+  <...>
+
+  Shard            Replicas
+  messages/0       (!) ABCDEF1111111111
+  messages/1       (!) ABCDEF1111111111
+  <...>
+  messages/9       (!) ABCDEF1111111111
+
+  Shard             Transitions
+  messages/0        +ABCDEF2222222222 -ABCDEF1111111111
+  messages/1        +ABCDEF2222222222 -ABCDEF1111111111
+  <...>
+  messages/9        +ABCDEF2222222222 -ABCDEF1111111111
+  ```
+
+  In this example, transition `+ABCDEF2222222222` would never finish.
+
+  <!-- https://emqx.atlassian.net/browse/EMQX-13886 -->
+
 ## e5.8.1
 
 - **Kafka Disk Buffer Directory Name (since 5.8.0, fixed in 5.8.2)**
