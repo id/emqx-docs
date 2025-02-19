@@ -223,7 +223,6 @@
       children:
         - performance/tune
         - performance/benchmark-emqtt-bench
-        - performance/benchmark-xmeter
         - performance/performance-reference
 
 - title_en: Security Guide
