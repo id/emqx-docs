@@ -7,7 +7,7 @@ The demonstration on this page takes the republish action as an example, describ
 ## Define a Data Source
 Log in to the EMQX Dashboard and click **Integration** -> **Rules** in the left navigation menu. 
 
-Click the **Create** button on the **Rule** page and you will be directed to the **Create Rule** page. Here, you can define the data source for your rule and determine the subsequent actions for the filtered messages. 
+Click the **Create** button on the **Rules** page and you will be directed to the **Create Rule** page. Here, you can define the data source for your rule and determine the subsequent actions for the filtered messages. 
 
 Enter a name for your rule and add a note to facilitate future management. In the **SQL Editor**, you can customize the statements to add a data source that suits your business needs. For this tutorial, keep the default setting, which selects and returns all messages under topics that follow the `"t/#"` pattern (e.g., `t/a`, `t/a/b`, `t/a/b/c`, etc.).
 
@@ -27,12 +27,12 @@ You can use simulated data to execute SQL statements. Before adding actions and 
 
 Follow the instructions below to test the SQL statement:
 
-1. Turn on the **Try It Out** toggle switch to enable the SQL statement testing.
+1. Turn on the **Try It Out** toggle switch on the **Create Rule** page to enable the SQL statement testing.
 2. Select the **Data Source** that matches the SQL and ensure it is consistent with the specified source in the rule (FROM clause).
 3. Enter test data. Once you select the data source, EMQX provides default values for all simulated data fields, such as **Client ID**, **Username**, **Topic**, **QoS**, **Payload**, etc. Modify them to appropriate values as needed.
 4. Click the **Run Test** button to submit the test. If everything is normal, a **Test Passed** prompt will be displayed.
 
-<img src="./assets/test-sql.png" alt="test-sql" style="zoom:50%;" />
+![test-sql](./assets/test-sql.png)
 
 The processing result of SQL will be presented in the **Output Result** section in JSON format. All the fields in SQL processing results can be referenced in the form of `${key}` by the subsequent actions (built-in actions or Sink). For a detailed explanation of the fields, see [SQL Data Sources and Fields](./rule-sql-events-and-fields.md).
 
@@ -145,7 +145,7 @@ For more usage guides on testing rules, you can refer to the blog [Enhancing Dat
 
 ## View Rules
 
-The **Rule** page provides a comprehensive list of all the rules you have created.
+The **Rules** page provides a comprehensive list of all the rules you have created.
 
 Each entry in the list displays basic information, including the rule ID, associated source, enable status, and the number of actions. Hovering over the source reveals the corresponding SQL statement details. To modify a rule's configuration, click **Settings** in the **Actions** column. You can also use the **More** button to duplicate or delete a rule.
 
@@ -153,7 +153,7 @@ Each entry in the list displays basic information, including the rule ID, associ
 
 You can also view rules in the [Flow Designer](../flow-designer/introduction.md) by navigating to **Integration** -> **Flow Designer**. Rules created on the **Rules** page and those created through the Flow Designer are fully interoperable.
 
-To view the rule statistics and action execution information for a rule, click the rule ID on **Rule** page or the rule name on the **Flows** page.
+To view the rule statistics and action execution information for a rule, click the rule ID on **Rules** page or the rule name on the **Flows** page.
 
 ![view_rules_flows](./assets/view_rules_flows.png)
 
