@@ -104,7 +104,7 @@ You can query and manage alarms through the API. Click **Alarms** on the left na
 
 ### Receive Alarm Events via Webhook Integration
 
-Starting from EMQX version 5.8.5, the rule engine supports two new alarm events: [$events/alarm_activated](../data-integration/rule-sql-events-and-fields#alarm-activated-event-events-alarm-activated) and [$events/alarm_deactivated](../data-integration/rule-sql-events-and-fields#alarm-deactivated-event-events-alarm-deactivated). These events allow you to receive notifications of alarm activities via external HTTP services through Webhook integration.
+Starting from EMQX version 5.8.5, the rule engine supports two new alarm events: [$events/alarm_activated](../data-integration/rule-sql-events-and-fields.md#alarm-activated-event-events-alarm-activated) and [$events/alarm_deactivated](../data-integration/rule-sql-events-and-fields.md#alarm-deactivated-event-events-alarm-deactivated). These events allow you to receive notifications of alarm activities via external HTTP services through Webhook integration.
 
 To configure Webhook integration:
 
