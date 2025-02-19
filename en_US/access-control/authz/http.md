@@ -86,7 +86,7 @@ For untrusted environments, HTTPS should be used.
 
    - **Request Method**: Select the HTTP request method, optional values: `GET`, `POST`.
    - **URL**: Enter the IP address of the HTTP application.
-   - **Headers** (optional): Configure the HTTP request headers. Keys and values support using [placeholders](./authn.md#authentication-placeholders).
+   - **Headers** (optional): Configure the HTTP request headers. Keys and values support using [placeholders](./authz.md#authorization-placeholders).
 
    **Connection Configuration**: Configure concurrent connections, connection timeout, maximum HTTP requests, and request timeout.
 
