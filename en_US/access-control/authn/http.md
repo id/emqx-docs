@@ -67,9 +67,7 @@ On [EMQX Dashboard](http://127.0.0.1:18083/#/authentication), click **Access Con
 
 <img src="./assets/authn-http.png" alt="HTTP" style="zoom:67%;" />
 
-
-
-**HTTP**:
+Follow the instructions below on how to configure the authentication:
 
 - **Method**: Select HTTP request method, optional values: `get`, `post`
 
@@ -79,20 +77,20 @@ On [EMQX Dashboard](http://127.0.0.1:18083/#/authentication), click **Access Con
    :::
 
 - **URL**: Enter the URL address of the HTTP service.
-- **Headers** (optional): HTTP request header. You can add several headers.
+- **Headers** (optional): HTTP request header. You can add several headers. Keys and values support using [placeholders](./authn.md#authentication-placeholders).
+- **Enable TLS**: Turn on the toggle switch if you want to enable TLS. For more information on enabling TLS, see [Network and TLS](../../network/overview.md).
 
-**Connection Configuration**:
+- **Body**: Request template; for `POST` requests, it is sent as a JSON in the request body; for `GET` requests, it is encoded as a Query String in the URL. Mapping keys and values support using [placeholders](./authn.md#authentication-placeholders).
 
-- **Pool size** (optional): Input an integer value to define the number of concurrent connections from an EMQX node to an HTTP server. Default: **8**. <!--有范围吗？-->
-- **Connect Timeout** (optional): Specify the waiting period before EMQX assumes the connection is timed out. Units supported include milliseconds, second, minute, and hour.
-- **HTTP Pipelining** (optional): Input a positive integer to specify the maximum number of HTTP requests that can be sent without waiting for a response; default value: **100**.
-- **Request Timeout** (optional): Specify the waiting period before EMQX assumes the request is timed out. Units supported include milliseconds, second, minute, and hour.
+- **Advanced Settings**:
 
-**TLS Configuration**: Turn on the toggle switch if you want to enable TLS. For more information on enabling TLS, see [Network and TLS](../../network/overview.md).
+  - **Pool size** (optional): Input an integer value to define the number of concurrent connections from an EMQX node to an HTTP server. Default: `8`. 
 
-**Authentication configuration**:
+  - **Connect Timeout** (optional): Specify the waiting period before EMQX assumes the connection is timed out. Units supported include milliseconds, second, minute, and hour.
 
-- **Body**: Request template; for `POST` requests, it is sent as a JSON in the request body; for `GET` requests, it is encoded as a Query String in the URL. Mapping keys and values support using [placeholder](./authn.md#authentication-placeholders).
+  - **HTTP Pipelining** (optional): Input a positive integer to specify the maximum number of HTTP requests that can be sent without waiting for a response; default value: `100`.
+
+  - **Request Timeout** (optional): Specify the waiting period before EMQX assumes the request is timed out. Units supported include milliseconds, second, minute, and hour.
 
 After you finish the settings, click **Create**.
 
