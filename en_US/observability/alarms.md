@@ -60,7 +60,7 @@ The levels are defined from development perspectives and are only for recommenda
 
 EMQX offers several methods for retrieving alarms and viewing detailed information about them. One way is through the EMQX Dashboard, where you can view both active and historical alarms in a user-friendly interface. This serves as a central location to easily access an overview of alarms that have been triggered. 
 
-Additionally, you can subscribe to system topics via MQTT to receive real-time notifications of alarms. Another method is through Webhook integration, where alarm events can be sent to an external HTTP service for further processing. Alarms can also be accessed through logs or the REST API.
+Additionally, you can subscribe to system topics via MQTT to receive real-time notifications of system alarms. Another method is through Webhook integration, where alarm events can be sent to an external HTTP service for further processing. Alarms can also be accessed through logs or the REST API.
 
 ### View Alarms on Dashboard
 
