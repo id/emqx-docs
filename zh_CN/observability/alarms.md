@@ -56,7 +56,9 @@ EMQX 提供内置的监控和告警功能，用于监视内部状态变化，如
 
 ## 获取告警信息
 
-EMQX 提供多种方式获取告警并查看详细信息。其中一种方式是通过 EMQX Dashboard 查看告警，您可以在此查看已触发的活动或历史告警列表，然而 Dashboard 仅作为一个便于查看告警概览信息的中心。另一种方式是通过 MQTT 订阅系统主题，实时接收带有详细告警信息的通知。告警也可以通过日志或 REST API 访问。
+EMQX 提供多种方式获取告警并查看详细信息。其中一种方式是通过 EMQX Dashboard 查看告警，您可以在此查看已触发的活动或历史告警列表，然而 Dashboard 仅作为一个便于查看告警概览信息的中心。
+
+此外，您还可以通过 MQTT 订阅系统主题，实时接收带有详细告警信息的通知。另一种方法是通过 Webhook 集成，将告警事件发送到外部 HTTP 服务进行进一步处理。告警也可以通过日志或 REST API 进行访问。
 
 ### 在 Dashboard 中查看告警
 
@@ -96,6 +98,21 @@ EMQX 提供多种方式获取告警并查看详细信息。其中一种方式是
 您可以通过 API 查询和管理告警。在 UI 的左侧导航菜单中点击 **Alarms** 来执行此 API 请求。有关如何使用 EMQX API，请参阅 [REST API 文档](../admin/api.md)。
 
 <img src="./assets/view-alarms-api.png" alt="view-alarms-api" style="zoom:45%;" />
+
+### 通过 Webhook 集成获取告警事件通知
+
+从 EMQX 版本 5.8.5 开始，规则引擎支持两个新的客户端事件：[告警激活事件](../data-integration/rule-sql-events-and-fields#alarm-activated-event-events-alarm-activated)和[告警解除事件](../data-integration/rule-sql-events-and-fields#alarm-deactivated-event-events-alarm-deactivated)。这些事件允许您通过 Webhook 集成，将报警活动的通知发送到外部 HTTP 服务。
+
+配置 Webhook 集成的步骤如下：
+
+1. 在 EMQX Dashboard 中，导航到 **监控** -> **告警**。
+2. 点击右上角的**配置告警 Webhook** 按钮，打开 Webhook 集成设置页面。
+3. 为 Webhook 集成输入一个名称，并填写备注（可选）。在**触发器**字段中，`警报触发` 和 `警报解除` 会自动被选中。
+4. 输入您希望接收通知的 Webhook URL。
+5. 若需要更多配置选项，请参考 [创建 Webhook](../data-integration/webhook.md)。
+6. 配置完成后，点击**保存**。
+
+![alarm_webhook_setup](./assets/alarm_webhook_setup.png)
 
 ## 告警配置
 
