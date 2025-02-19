@@ -55,7 +55,7 @@ You can use EMQX Dashboard to configure how to use MongoDB for password authenti
 
 In the EMQX Dashboard, click **Access Control** -> **Authentication** from the left navigation menu. On the **Authentication** page, click **Create** at the top right corner. Click to select **Password-Based** as **Mechanism**, and **MongoDB** as **Backend** to go to the **Configuration** tab, as shown below. 
 
-<img src="./assets/authn-mongodb-1.png" alt="Authenticate with MondoDB" style="zoom:67%;" />
+![authn-MongoDB_ee](./assets/authn-MongoDB_ee.png)
 
 Follow the instructions below on how to configure the authentication:
 
