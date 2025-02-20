@@ -13,7 +13,7 @@ This process allows EMQX to extend beyond just message transmission between IoT 
 - Currently, EMQX only supports the following external data systems to be served as Sources:
 
   - MQTT Services
-  - Kafka 
+  - Kafka
   - GCP PubSub
 
   Among them, Kafka and GCP PubSub Sources are only supported in the EMQX Enterprise edition.
@@ -180,6 +180,56 @@ INSERT INTO msg(topic, qos, payload) VALUES(${topic}, ${qos}, ${payload});
 
 In addition to automatically inferring field types, the prepared statement technology also prevents SQL injection to enhance security.
 
+### Fallback Actions
+
+Since EMQX 5.9.0, for a given Action, it's possible to define a set of Actions that will be triggered if processing of a message fails for whatever reason.  Such set of Actions is called Fallback Actions.  With Fallback Actions, it's possible to send data to secondary Sinks, reducing the probability of data loss, and may also serve to help observability of problems.
+
+A few key facts about Fallback Actions:
+
+- They are triggered whenever the primary Action fails or drops the message (due to buffer overflow or request TTL being reached).
+- They are always triggered in Async Query Mode, regardless of their configuration.
+- All configured Fallback Actions of a primary Action are triggered (i.e., we don't try one-by-one and stop at the first success).
+- Fallback Actions use the same buffering layer as all other actions, meaning that messages will be retried up to their request TTL or if there's buffer overflow.
+- Fallback Actions do **not** trigger further Fallback Actions: if a message being processed by a Fallback Action fails with an unrecoverable error or is dropped, no further Actions are triggered, even if there are other Fallback Actions configured.
+- Processing of messages by Fallback Actions do not affect metrics of their Primary Actions or of the original Rule that triggered the Primary Action.
+
+#### Defining a Fallback Action
+
+Let's say, for example, we want to configure some Fallback Actions for our HTTP Action called `my_http`.  Let's also assume there exists an MQTT Action called `fallback` already configured.
+
+In that case, we may simply define the following configuration:
+
+```hcl
+actions {
+  http {
+    my_http {
+      fallback_actions = [
+        {kind = reference, type = mqtt, name = fallback},
+        {
+          kind = republish,
+          args = {
+            topic = "fallback/republish/topic"
+            qos = 1
+            payload = "${payload}"
+          }
+        }
+      ]
+      # other configs omitted
+    }
+  }
+  mqtt {
+    fallback {
+      fallback_actions = [
+        {kind = reference, type = mqtt, name = another_fallback}
+      ]
+      # other configs omitted
+    }
+  }
+}
+```
+
+In the example above, if a message fails to be processed by `my_http`, then we will forward the same message to the `fallback` MQTT Action, and also republish the original message according to the parameters above.  If the message then fails to be processed by `fallback`, even though there is a Fallback Action `another_fallback` configured for `fallback`, the message will **not** be further forwarded to `another_fallback`.  If `fallback` were to receive a message itself as a Primary Action, then `another_fallback` could be triggered on processing failures.
+
 ## Sink Status and Statistics
 
 You can view the running status and statistics of a Sink on the Dashboard to know if the Sink is operating properly.
@@ -220,7 +270,7 @@ The `success` statistic counts the number of messages that were successfully rec
 
 The `failed` statistic counts the number of messages that failed to be received by the external data system.  `retried.failed` is a sub-count of `failed` which tracks the number of messages with delivery retried at least once.  Therefore, `retried.failed <= failed`.
 
-#### Dropped 
+#### Dropped
 
 The `dropped` statistic counts the number of messages that were dropped without any delivery attempt. It contains several more specific categories, each indicating a distinct reason for the drop. The calculation for `dropped` is:`dropped = dropped.expired + dropped.queue_full + dropped.resource_stopped + dropped.resource_not_found`.
 
