@@ -95,7 +95,7 @@ When disasters occur, knowing how to efficiently recover is crucial to maintaini
 
 One of the most common disaster scenarios is the complete loss of a node, which can occur due to unrecoverable hardware failure, disk corruption, or even human error.
 
-If a node is completely lost, the cluster's availability is compromised to some extent. It can be restored by _reallocating_ shard replicas to other, healthy sites in the cluster.
+If a node is completely lost, the cluster's availability is compromised to some extent. It can be restored by _reallocating_ shard replicas to other healthy sites in the cluster.
 
 1. Acknowledge node loss.
 
