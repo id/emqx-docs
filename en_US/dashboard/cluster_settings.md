@@ -132,7 +132,7 @@ Users can customize and modify the monitoring data in `Grafana` according to the
 
 ![image](./assets/emqx-grafana.jpg)
 
-For detailed configuration of OpenTelemetry and Datadog integration, refer to [Integrate with OpenTelemetry](../observability/open-telemetry/open-telemetry.md) and [Integrate with Datadog](../observability/datadog.md).
+For detailed configuration of OpenTelemetry and Datadog integration, refer to [Integrate with OpenTelemetry](../observability/opentelemetry/opentelemetry.md) and [Integrate with Datadog](../observability/datadog.md).
 
 ## Cluster Linking
 
