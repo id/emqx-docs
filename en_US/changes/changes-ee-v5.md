@@ -63,13 +63,13 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#14645](https://github.com/emqx/emqx/pull/14645) Added more log messages to help debug fetching Certificate Revocation Lists (CRLs) for the first time (before they are cached and refreshed automatically). Successes and failures are logged at `debug` and `warning` levels, respectively.
 
-- [#14656](https://github.com/emqx/emqx/pull/14656) Enhance Prometheus push to support more metrics and allow the cluster name to be used as a variable name for the Job label.
+- [#14656](https://github.com/emqx/emqx/pull/14656) Enhanced Prometheus push to support more metrics and allow the cluster name to be used as a variable name for the Job label.
 
 - [#14479](https://github.com/emqx/emqx/pull/14479) Added more detailed tracing information for Authentication and Authorization Backends in End-to-End Tracing for Opentelemetry Integration.
 
 - [#14644](https://github.com/emqx/emqx/pull/14644) Added support for client-supplied traceparent in End-to-End Tracing for Opentelemetry Integration.
 
-- [#14657](https://github.com/emqx/emqx/pull/14657) Makes end-to-end tracing whitelist entries effective for `broker.publish` span. That is, the message delivering span.
+- [#14657](https://github.com/emqx/emqx/pull/14657) Made end-to-end tracing whitelist entries effective for `broker.publish` span. That is, the message delivering span.
 
   Previously, to trace a subscriber receiving a message, users had to add the message publisher or topic to the whitelist. This approach also traced the message delivery to other subscribers, potentially generating unnecessary spans.
 
@@ -134,7 +134,7 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#14489](https://github.com/emqx/emqx/pull/14489) Fixed issue where accessing the `api/v5/gateways` endpoint resulted in a 500 error if the gateway was not enabled on the node in the cluster. Now, such requests return a more appropriate response, preventing crashes and improving the stability of the API in these scenarios.
 
-- [#14501](https://github.com/emqx/emqx/pull/14501) Fixed issue where the gateway client query HTTP API always returned a keepalive value of 0. The correct keepalive value is now returned by the HTTP API, and the gateway adheres to the configured idle timeout, properly reflecting the client's heartbeat settings.
+- [#14501](https://github.com/emqx/emqx/pull/14501) Fixed issue where the gateway client query HTTP API always returned a keepalive value of `0`. The correct keepalive value is now returned by the HTTP API, and the gateway adheres to the configured idle timeout, properly reflecting the client's heartbeat settings.
 
 - [#14503](https://github.com/emqx/emqx/pull/14503) Returns an empty list instead of a 404 error if no listener exists at the gateway. Previously, when accessing the listeners page of a gateway (such as LwM2M) through the API, a 404 error would be returned if no listeners were configured. This fix changes the behavior to return an empty list when no listeners exist.
 
@@ -187,9 +187,9 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#14536](https://github.com/emqx/emqx/pull/14536) Fixed rare race condition in cluster management operations. Before the fix, the race condition caused certain cluster management operations to hang, making cluster changes impossible until a node restarts. This issue was addressed by tightening the global lock guarding `mria:join/1` operations. The stricter locking prevents concurrent joins from interfering with each other.
 
-- [#14548](https://github.com/emqx/emqx/pull/14548) Fixes an issue where a node would crash during reboot if a new node joined the cluster while it was down, resulting in a `** FATAL ** Failed to merge schema: {aborted,function_clause}` error. This fix ensures that nodes can now restart smoothly without requiring a rejoin to the cluster.
+- [#14548](https://github.com/emqx/emqx/pull/14548) Fixed an issue where a node would crash during reboot if a new node joined the cluster while it was down, resulting in a `** FATAL ** Failed to merge schema: {aborted,function_clause}` error. This fix ensures that nodes can now restart smoothly without requiring a rejoin to the cluster.
 
-- [#14662](https://github.com/emqx/emqx/pull/14662) Fixes an issue where a running replicant node, after rejoining a cluster in which all core nodes had their internal databases wiped, would fail to participate in certain Remote Procedure Call (RPC) call operations.
+- [#14662](https://github.com/emqx/emqx/pull/14662) Fixed an issue where a running replicant node, after rejoining a cluster in which all core nodes had their internal databases wiped, would fail to participate in certain Remote Procedure Call (RPC) call operations.
 
 #### Administration
 

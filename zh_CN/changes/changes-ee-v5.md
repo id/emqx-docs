@@ -16,7 +16,7 @@
 
 
 - [#14456](https://github.com/emqx/emqx/pull/14456) 引入了一个简单的防火墙脚本 `bin/emqx_fw`，用于保护 EMQX 监听器免受 SYN 洪泛攻击。此功能仅适用于 Linux 系统。
-- [#14496](https://github.com/emqx/emqx/pull/14496) 为 `POST /data/export` API 中的 `root_keys` 参数添加了额外的验证。现在，非法的根密钥会导致错误，而不是被静默忽略。
+- [#14496](https://github.com/emqx/emqx/pull/14496) 为 `POST /data/export` API 中的 `root_keys` 参数添加了额外的验证。现在，非法的根密钥会导致错误，而不是被默默忽略。
 
 #### 访问控制
 
@@ -113,7 +113,7 @@
 
 - [#14405](https://github.com/emqx/emqx/pull/14405) 将 `mqtt.max_packet_size` 中的 `256MB` 转换为 `268435455` 字节。
 
-  以前，EMQX 允许为 `mqtt.max_packet_size` 配置设置 `256MB`，但实际上这是比协议规范允许的多出一个字节。为了向后兼容，`mqtt.max_packet_size=256MB` 仍然可以从配置中使用，但会被悄悄转换为 `268435455` 字节。
+  以前，EMQX 允许为 `mqtt.max_packet_size` 配置设置 `256MB`，但实际上这是比协议规范允许的最大值多出一个字节。为了向后兼容，`mqtt.max_packet_size=256MB` 仍然可以从配置中使用，但会被自动转换为 `268435455` 字节。
 
 
 - [#14508](https://github.com/emqx/emqx/pull/14508) 改进了当大量客户端重新连接时 EMQX 的性能。
@@ -128,7 +128,7 @@
 
 #### 认证
 
-- [#14585](https://github.com/emqx/emqx/pull/14585) 修复了一个问题，其中密码哈希比较区分大小写，这可能导致认证失败，特别是在与外部系统集成时，这些系统可能存储具有不同大小写约定的密码。现在，密码哈希将以不区分大小写的方式进行比较，从而提高了与外部来源进行用户认证时的兼容性和可靠性。
+- [#14585](https://github.com/emqx/emqx/pull/14585) 修复了一个问题，其中密码哈希比较区分大小写，这可能导致认证失败，特别是在与外部系统集成时，这些系统可能存储具有不同大小写约定的密码。现在，密码哈希将以不区分大小写的方式进行比较，从而提高了与外部源进行用户认证时的兼容性和可靠性。
 
 #### 网关
 
@@ -136,7 +136,7 @@
 
 
 - [#14489](https://github.com/emqx/emqx/pull/14489) 修复了访问 `api/v5/gateways` 端点时，如果网关在集群中的节点上未启用，导致出现 500 错误的问题。现在，此类请求将返回更合适的响应，防止崩溃并提高 API 在这些场景中的稳定性。
-- [#14501](https://github.com/emqx/emqx/pull/14501) 修复了网关客户端查询 HTTP API 总是返回 0 的 keepalive 值的问题。现在，HTTP API 将返回正确的 keepalive 值，且网关将遵守配置的空闲超时，正确反映客户端的心跳设置。
+- [#14501](https://github.com/emqx/emqx/pull/14501) 修复了网关客户端查询 HTTP API 总是返回 keepalive 为 `0` 值的问题。现在，HTTP API 将返回正确的 keepalive 值，且网关将遵守配置的空闲超时，正确反映客户端的心跳设置。
 - [#14503](https://github.com/emqx/emqx/pull/14503) 如果网关没有监听器，返回空列表而不是 404 错误。以前，通过 API 访问网关的监听器页面（如 LwM2M）时，如果没有配置监听器，则会返回 404 错误。此修复将行为更改为当没有监听器时返回空列表。
 - [#14511](https://github.com/emqx/emqx/pull/14511) 消除了 Stomp 网关在客户端认证失败时不必要的日志打印。
 - [#14653](https://github.com/emqx/emqx/pull/14653) 修复了 Stomp 网关的 keepalive 行为。以前，如果心跳包在检查定时器稍后收到，STOMP 连接的心跳机制将无法保持连接存活。此更新引入了对轻微延迟的容忍，确保连接保持存活。平均而言，连接关闭现在发生在心跳间隔的约 1.5 倍时，提供了更可靠的 keepalive 功能。
@@ -158,16 +158,16 @@
 - [#14555](https://github.com/emqx/emqx/pull/14555) 修复了一个关于 MQTT Source 的问题，之前在移除或更新 Source 时，未能正确地取消订阅共享主题。
 - [#14650](https://github.com/emqx/emqx/pull/14650) 将 `eredis_cluster` 库更新到版本 `0.8.8`，修复了一个问题，即在 Redis 集群模式下，Redis 主从故障转移后，EMQX 无法从 `no_connection` 错误中恢复。
 - [#14671](https://github.com/emqx/emqx/pull/14671) 修复了 MQTT 动作中的一个问题。在修复之前，由于一个罕见的竞态条件，当 MQTT 连接器的连接关闭时，消息可能无法发送或重试。此更新确保 TCP 连接关闭（`tcp_closed`）和客户端断开连接被处理为可恢复的错误。
-- [#14695](https://github.com/emqx/emqx/pull/14695) 改进了 HTTP API 错误信息，当尝试更新连接器并发生验证错误时，错误消息更具信息性。
+- [#14695](https://github.com/emqx/emqx/pull/14695) 改进了 HTTP API 错误信息，当尝试更新连接器并发生验证错误时，返回更详细的错误消息。
 - [#14697](https://github.com/emqx/emqx/pull/14697) 修复了一个问题，当 Source 和动作共享相同名称并使用相同的连接器时，如果存在双重 Source /动作的规则依赖关系，无法删除动作或 Source。
-- [#14427](https://github.com/emqx/emqx/pull/14427) 提供了关于 GCP PubSub 生产者连接器健康检查失败的更多信息性错误消息。
-- [#14451](https://github.com/emqx/emqx/pull/14451) 修复了 PostgreSQL 动作中的无效输入处理，该动作导致大规模的崩溃报告。现在，系统优雅地处理此类错误并记录简洁且信息丰富的错误消息，改善了故障排除的清晰度。
+- [#14427](https://github.com/emqx/emqx/pull/14427) 提供了关于 GCP PubSub 生产者连接器健康检查失败的更多详细错误消息。
+- [#14451](https://github.com/emqx/emqx/pull/14451) 修复了 PostgreSQL 动作中的无效输入处理，该动作导致大规模的崩溃报告。现在，系统优雅地处理此类错误并记录简洁且详细的错误消息，使故障排除更简单清晰。
 - [#14552](https://github.com/emqx/emqx/pull/14552) 修复了 Kafka 生产者在 Kafka 服务停止时由于缓冲区溢出而导致的 `unexpected_id` 崩溃问题。此错误在 EMQX 企业版 5.8.1 中引入。
 - [#14560](https://github.com/emqx/emqx/pull/14560) 修复了 Oracle 动作由于复杂 SQL 模板问题导致健康检查失败的问题。
-- [#14563](https://github.com/emqx/emqx/pull/14563) 修复了 Kafka 和 Pulsar 生产者中丢弃消息时的 "failed" 计数器问题。以前，当 Kafka 和 Pulsar 生产者操作因缓冲区溢出或请求超时而丢弃消息时，相应规则的 "failed" 计数器未正确递增。此修复确保规则指标准确更新，反映丢弃的消息，并解决了规则页面上的统计指示器不正确的问题。
+- [#14563](https://github.com/emqx/emqx/pull/14563) 修复了 Kafka 和 Pulsar 生产者中丢弃消息时的 "failed" 计数器问题。以前，当 Kafka 和 Pulsar 生产者动作因缓冲区溢出或请求超时而丢弃消息时，相应规则的 "failed" 计数器未正确递增。此修复确保规则指标准确更新，反映丢弃的消息，并解决了规则页面上的统计指示器不正确的问题。
 - [#14567](https://github.com/emqx/emqx/pull/14567) 修复了在禁用或移除 S3 连接器后，S3 HTTP 池未停止的问题。
 - [#14631](https://github.com/emqx/emqx/pull/14631) 增强了 Kafka、Azure Event Hub 和 Confluent 生产者动作的内存过载保护。系统现在在达到高内存水位时更加积极地丢弃缓冲数据，从而减少了内存不足状态的风险。
-- [#14705](https://github.com/emqx/emqx/pull/14705) 改进了 Kafka 连接器的连接性检查，确保正确处理身份验证。之前，如果 Kafka 需要身份验证但未配置凭据或健康检查主题，连接性测试会错误地通过，从而导致潜在的操作创建失败。此修复引入了一个虚拟的健康检查主题 `emqx-connector-connectivity-probe`，确保连接器仅在 Kafka 返回有效的元数据或 `unknown_topic_or_partition` 响应时才被认为是健康的。
+- [#14705](https://github.com/emqx/emqx/pull/14705) 改进了 Kafka 连接器的连接性检查，确保正确处理身份验证。之前，如果 Kafka 需要身份验证但未配置凭据或健康检查主题，连接性测试会错误地通过，从而导致潜在的动作创建失败。此修复引入了一个虚拟的健康检查主题 `emqx-connector-connectivity-probe`，确保连接器仅在 Kafka 返回有效的元数据或 `unknown_topic_or_partition` 响应时才被认为是健康的。
 
 #### 集群
 
@@ -186,7 +186,7 @@
 - [#14544](https://github.com/emqx/emqx/pull/14544) 修复了一个问题，即禁用 TCP 或 TLS 监听器时，导致 Prometheus 度量收集过程崩溃。
 
 - [#14466](https://github.com/emqx/emqx/pull/14466) 修复了一个问题，即当追踪事件采样比例设置为 `100%` 时，事件开关无法生效。
-- [#14666](https://github.com/emqx/emqx/pull/14666) 暴露了配置项 `opentelemetry.traces.max_queue_size`，可通过 REST API 和仪表板进行配置。之前，这个配置项只能通过配置文件或操作系统环境变量进行配置。
+- [#14666](https://github.com/emqx/emqx/pull/14666) 暴露了配置项 `opentelemetry.traces.max_queue_size`，可通过 REST API 和 Dashboard 进行配置。之前，这个配置项只能通过配置文件或操作系统环境变量进行配置。
 
 ## 5.8.4
 

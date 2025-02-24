@@ -51,7 +51,7 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#14437](https://github.com/emqx/emqx/pull/14437) Added two new gauges to Prometheus output: `emqx_vm_mnesia_tm_mailbox_size` and `emqx_vm_broker_pool_max_mailbox_size`. These gauges track the mailbox sizes of internal EMQX processes that can indicate system overload. Additionally, alarms will be raised when mailbox sizes surpass certain high watermarks.
 - [#14645](https://github.com/emqx/emqx/pull/14645) Added more log messages to help debug fetching Certificate Revocation Lists (CRLs) for the first time (before they are cached and refreshed automatically). Successes and failures are logged at `debug` and `warning` levels, respectively.
-- [#14656](https://github.com/emqx/emqx/pull/14656) Enhance Prometheus push to support more metrics and allow the cluster name to be used as a variable name for the Job label.
+- [#14656](https://github.com/emqx/emqx/pull/14656) Enhanced Prometheus push to support more metrics and allow the cluster name to be used as a variable name for the Job label.
 - [#14589](https://github.com/emqx/emqx/pull/14589) Log throttling supports two more log messages: `validation_failed` and `transformation_failed`.
 - [#14689](https://github.com/emqx/emqx/pull/14689) Throttle all log message types for the message transformation and message validation feature.
 
@@ -134,17 +134,13 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#14536](https://github.com/emqx/emqx/pull/14536) Fixed rare race condition in cluster management operations. Before the fix, the race condition caused certain cluster management operations to hang, making cluster changes impossible until a node restarts. This issue was addressed by tightening the global lock guarding `mria:join/1` operations. The stricter locking prevents concurrent joins from interfering with each other.
 
-- [#14548](https://github.com/emqx/emqx/pull/14548) Fixes an issue where a node would crash during reboot if a new node joined the cluster while it was down, resulting in a `** FATAL ** Failed to merge schema: {aborted,function_clause}` error. This fix ensures that nodes can now restart smoothly without requiring a rejoin to the cluster.
+- [#14548](https://github.com/emqx/emqx/pull/14548) Fixed an issue where a node would crash during reboot if a new node joined the cluster while it was down, resulting in a `** FATAL ** Failed to merge schema: {aborted,function_clause}` error. This fix ensures that nodes can now restart smoothly without requiring a rejoin to the cluster.
 
-- [#14662](https://github.com/emqx/emqx/pull/14662) Fixes an issue where a running replicant node, after rejoining a cluster in which all core nodes had their internal databases wiped, would fail to participate in certain Remote Procedure Call (RPC) call operations.
+- [#14662](https://github.com/emqx/emqx/pull/14662) Fixed an issue where a running replicant node, after rejoining a cluster in which all core nodes had their internal databases wiped, would fail to participate in certain Remote Procedure Call (RPC) call operations.
 
 #### Administration
 
 - [#14543](https://github.com/emqx/emqx/pull/14543) Fixed an internal compatibility issue that caused certain ExHooks to crash when clients were connected through WS, WSS, or Gateway listeners.
-
-#### Observability
-
-- [#14544](https://github.com/emqx/emqx/pull/14544) Fixed an issue where disabling a TCP or TLS listener caused the Prometheus metrics gathering process to crash.
 
 ## 5.8.4
 
