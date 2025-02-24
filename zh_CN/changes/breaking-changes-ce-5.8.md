@@ -2,7 +2,7 @@
 
 ## v5.8.5
 
-- [#14703](https://github.com/emqx/emqx/pull/14703) 将 `force_shutdown.max_heap_size` 的最大允许值更改为 128GB。
+- [#14703](https://github.com/emqx/emqx/pull/14703) 引入了 `force_shutdown.max_heap_size` 最大允许值的变更，现将其设置为 `128GB`。如果之前将 `max_heap_size` 设置为超过 128GB 的值，升级后可能会导致问题，例如在更新或重新加载配置时出现问题。
 
 ## v5.8.4
 
