@@ -98,8 +98,8 @@ FROM
 | [认证完成事件](#认证完成事件-events-client-check-authn-complete) | $events/client_check_authn_complete | 认证完成                 |
 | [客户端订阅成功事件](#客户端订阅成功事件-events-session-subscribed) | $events/session_subscribed          | 订阅                     |
 | [客户端取消订阅成功事件](#客户端取消订阅成功事件-events-session-unsubscribed) | $events/session_unsubscribed        | 取消订阅                 |
-| [告警激活事件](#告警激活事件-events-alarm-activated)         | $events/alarm_activated             | 系统告警激活             |
-| [告警解除事件](#告警解除事件-events-alarm-deactivated)       | $events/alarm_deactivated           | 系统告警解除             |
+| [系统告警激活事件](#告警激活事件-events-sys-alarm-activated) | $events/sys/alarm_activated         | 系统告警激活             |
+| [系统告警解除事件](#告警解除事件-events-sys-alarm-deactivated) | $events/sys/alarm_deactivated       | 系统告警解除             |
 
 ### 消息投递事件 ("$events/message_delivered")
 
@@ -623,11 +623,11 @@ FROM
 }
 ```
 
-### 告警激活事件 ("$events/alarm_activated")
+### 系统告警激活事件 ("$events/sys/alarm_activated")
 
 此事件主题可用于在 EMQX 系统告警被激活时触发规则。
 
-例如，要从 `"$events/alarm_activated"` 事件主题中提取告警名称、详细信息、描述信息以及激活时间，可以使用以下 SQL 语句：
+例如，要从 `"$events/sys/alarm_activated"` 事件主题中提取告警名称、详细信息、描述信息以及激活时间，可以使用以下 SQL 语句：
 
 示例
 
@@ -639,7 +639,7 @@ SELECT
   activated_at,
   node
 FROM
-  "$events/alarm_activated"
+  "$events/sys/alarm_activated"
 ```
 
 输出
@@ -667,11 +667,11 @@ FROM
 | `activated_at` | Unix 时间戳（微秒），表示告警被激活的时间                    |
 | `node`         | 触发事件的 EMQX 节点                                         |
 
-### 告警解除事件 ("$events/alarm_deactivated")
+### 系统告警解除事件 ("$events/sys/alarm_deactivated")
 
 此事件主题可用于在 EMQX 系统告警被解除时触发规则。
 
-例如，要从 `"$events/alarm_deactivated"` 事件主题中提取告警名称、详细信息、描述信息、激活时间以及解除时间，可以使用以下 SQL 语句：
+例如，要从 `"$events/sys/alarm_deactivated"` 事件主题中提取告警名称、详细信息、描述信息、激活时间以及解除时间，可以使用以下 SQL 语句：
 
 示例
 
@@ -684,7 +684,7 @@ SELECT
   deactivated_at,
   node
 FROM
-  "$events/alarm_deactivated"
+  "$events/sys/alarm_deactivated"
 ```
 
 输出
