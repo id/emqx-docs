@@ -165,18 +165,25 @@ If you update the rule action or redefine the data source, the statistics listed
 
 ![Rule Statistics](assets/rule_statistics.png)
 
-### View Actions (Sink) and Sources
-
-The **Actions (Sink)** and **Sources** tabs on the **Rule** page display all created actions (sinks) and sources. You can view essential details, such as names, connection statuses, associated rules, and enable statuses. Clicking the number of associated rules will take you to a list of rules containing that specific action (sink) or source, making it easier to manage your data integration settings.
-
-You can reconnect or modify the settings of an action (sink) or source through the **Action** column. By clicking **More**, you can delete the action (sink) or source, or create a new rule using it.
-
-To view the statistics and rate indicators for an action, click the name of the action.
-
-![action_statistics](./assets/action_statistics.png)
-
 ### Search Rules
 
 When there are many rules in the list, you can use the filter to narrow down your search and display the rules you want to view. You can filter rules by rule ID, incoming message topic or wildcard, enable status, rule notes, and the actions or sources associated with the rule.
 
 ![search_rules](./assets/search_rules.png)
+
+### View Actions (Sink) and Sources
+
+The **Actions (Sink)** and **Sources** tabs on the **Rule** page display all created actions (sinks) and sources. These tabs provide essential details, such as names, connection statuses, associated rules, enable statuses, created time, and last modified time. You can sort the entries by clicking the arrows beside column names.
+
+Clicking the toggle switch in the **Enable** column allows you to enable or disable a sink or source. Clicking **View Rules** in the **Associated Rules** column opens a list of rules containing that specific sink or source, making it easier to manage your data integration settings.
+
+You can reconnect or modify the settings of a sink or source through the **Action** column. By clicking **More**, you can delete the sink or source or create a new rule using it.
+
+When there are many sink or source entries in the list, you can use the filter to narrow down your search and display the entries you want to view. You can filter sinks or sources by name, status, or enable status.
+
+![view_sink_source](./assets/view_sink_source.png)
+
+To view the statistics and rate indicators for a sink or source, click the name of the sink or source.
+
+![action_statistics](./assets/action_statistics.png)
+
