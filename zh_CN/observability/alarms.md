@@ -101,7 +101,7 @@ EMQX 提供多种方式获取告警并查看详细信息。其中一种方式是
 
 ### 通过 Webhook 集成获取告警事件通知
 
-从 EMQX 版本 5.8.5 开始，规则引擎支持两个新的客户端事件：[告警激活事件](../data-integration/rule-sql-events-and-fields.md#alarm-activated-event-events-alarm-activated)和[告警解除事件](../data-integration/rule-sql-events-and-fields.md#alarm-deactivated-event-events-alarm-deactivated)。这些事件允许您通过 Webhook 集成，将报警活动的通知发送到外部 HTTP 服务。
+从 EMQX 版本 5.8.5 开始，规则引擎支持两个新的客户端事件：[系统告警激活事件](../data-integration/rule-sql-events-and-fields.md#alarm-activated-event-events-sys-alarm-activated)和[系统告警解除事件](../data-integration/rule-sql-events-and-fields.md#alarm-deactivated-event-events-sys-alarm-deactivated)。这些事件允许您通过 Webhook 集成，将告警活动的通知发送到外部 HTTP 服务。
 
 配置 Webhook 集成的步骤如下：
 
