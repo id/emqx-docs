@@ -107,6 +107,9 @@ CREATE TABLE t_emqx_client_events (
    - **Oracle Database SID**: 输入 `XE`。
    - **用户名**: 输入 `system`。
    - **密码**: 输入 `oracle`。
+   - **角色**：选择用于连接到 Oracle 数据库的角色。
+     - **normal**：不使用任何特殊角色。
+     - **sysdba**：系统数据库管理员角色，具有高级权限。
 4. 高级配置（可选），根据情况配置连接池等参数，详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
 5. 在点击**创建**之前，您可以点击**测试连接**来测试连接器是否能连接到 Oracle 服务器。
 6. 点击**创建**按钮完成连接器创建。
