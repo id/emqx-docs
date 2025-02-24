@@ -93,16 +93,16 @@ To mitigate these pitfalls, read the latest version of EMQX documentation carefu
 
 2. Deploy a new EMQX Cluster using the binaries. For detailed installation steps, refer to [Installation](../deploy/install.md). This ensures a clean installation of the latest version.
 
-3. Migrate EMQX cluster. 
+3. Migrate EMQX cluster.
 
    - Back up the configurations and data of your EMQX 4.4 cluster using the API or Dashboard.
    - Convert the configuration files format from version 4.4 to the new format compatible with EMQX `@EE_VERSION@`.
-   - Restore the migrated configuration files to the EMQX `@EE_VERSION@` cluster using the command:  `emqx ctl data import <File>`. 
+   - Restore the migrated configuration files to the EMQX `@EE_VERSION@` cluster using the command:  `emqx ctl data import <File>`.
 
    ::: tip
 
-   A migration tool is currently in development to migrate your configuration from the existing EMQX 4.4 cluster to the new EMQX `@EE_VERSION@` cluster. This tool aims to automate the migration procedure, ensuring a smooth transition.
-   
+   A migration tool is available [here](https://github.com/emqx/emqx-data-converter/releases) to help migrate your configuration from the existing EMQX 4.4 cluster to the new EMQX `@EE_VERSION@` cluster. This tool aims to automate the migration procedure, ensuring a smooth transition.  Be sure to inspect the generated configurations to check it matches expectations.
+
    :::
 
 :::
@@ -115,16 +115,16 @@ To mitigate these pitfalls, read the latest version of EMQX documentation carefu
 
 2. Deploy a new EMQX Cluster using the binaries. For detailed installation steps, refer to [Installation](../deploy/install.md). This ensures a clean installation of the latest version.
 
-3. Migrate EMQX cluster. 
+3. Migrate EMQX cluster.
 
    - Back up the configurations and data of your EMQX 4.4 cluster using the API or Dashboard.
    - Convert the configuration files format from version 4.4 to the new format compatible with EMQX `@CE_VERSION@`.
-   - Restore the migrated configuration files to the EMQX `@CE_VERSION@` cluster using the command:  `emqx ctl data import <File>`. 
+   - Restore the migrated configuration files to the EMQX `@CE_VERSION@` cluster using the command:  `emqx ctl data import <File>`.
 
    ::: tip
 
-   A migration tool is currently in development to migrate your configuration from the existing EMQX 4.4 cluster to the new EMQX `@CE_VERSION@` cluster. This tool aims to automate the migration procedure, ensuring a smooth transition.
-   
+   A migration tool is available [here](https://github.com/emqx/emqx-data-converter/releases) to help migrate your configuration from the existing EMQX 4.4 cluster to the new EMQX `@CE_VERSION@` cluster. This tool aims to automate the migration procedure, ensuring a smooth transition.  Be sure to inspect the generated configurations to check it matches expectations.
+
    :::
 
 :::
