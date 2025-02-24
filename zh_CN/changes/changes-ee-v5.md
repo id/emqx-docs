@@ -12,7 +12,7 @@
 
 - [#14454](https://github.com/emqx/emqx/pull/14454) 引入了 `max_publish_rate` 选项，用于控制每个节点发布保留消息的最大速率。超过此限制发布的消息将仍然被传送，但不会存储为保留消息。
 
-  这个选项对于限制配置的保留消息存储的负载非常有用。
+  这个选项有助于限制已配置的保留消息存储的负载。
 
 
 - [#14456](https://github.com/emqx/emqx/pull/14456) 引入了一个简单的防火墙脚本 `bin/emqx_fw`，用于保护 EMQX 监听器免受 SYN 洪泛攻击。此功能仅适用于 Linux 系统。
@@ -21,13 +21,13 @@
 #### 访问控制
 
 - [#14494](https://github.com/emqx/emqx/pull/14494) 增强了 MongoDB 授权，支持复杂查询。
-  - 在选择器过滤配置中新增对顶级 `$orderby` 操作符的支持，使得在授权检查时可以对查询结果进行排序。
+  - 在查询器 filter 配置中支持在第一层级中使用 `$orderby` 操作符指定排序字段和排序顺序，使得在授权检查时可以对查询结果进行排序。
   - 引入了 `skip` 和 `limit` 选项，增强了 MongoDB 授权中的分页功能以及对查询结果的控制。
 
 
-- [#14570](https://github.com/emqx/emqx/pull/14570) 添加了对 HTTP 认证和授权配置中使用占位符的支持。
+- [#14570](https://github.com/emqx/emqx/pull/14570) 在 HTTP 认证和授权配置中支持使用占位符。
 
-- [#14665](https://github.com/emqx/emqx/pull/14665) 添加了对客户端属性作为 ACL 规则前置条件的支持。现在您可以根据客户端属性创建 ACL 规则，从而实现对访问的更精细控制。
+- [#14665](https://github.com/emqx/emqx/pull/14665) 支持客户端属性作为 ACL 规则前置条件。现在您可以根据客户端属性创建 ACL 规则，从而实现对访问的更精细控制。
 
   例如，以下规则允许 `"type"` 属性设置为 `"internal"` 的客户端发布或订阅所有主题：
 
@@ -43,19 +43,19 @@
 
 #### 规则引擎
 
-- [#14627](https://github.com/emqx/emqx/pull/14627) 增加了两个新的规则引擎事件：`$events/alarm_activated` 和 `$events/alarm_deactivated`。这些事件会在系统警报激活和解除时触发。
+- [#14627](https://github.com/emqx/emqx/pull/14627) 增加了两个新的规则引擎事件：`$events/alarm_activated` 和 `$events/alarm_deactivated`。这些事件会在系统告警激活和解除时被触发。
 
 #### 数据集成
 
 - [#14404](https://github.com/emqx/emqx/pull/14404) 支持对 MQTT 连接器指定静态客户端 ID。
 
-- [#14450](https://github.com/emqx/emqx/pull/14450) 支持 MQTT Source 设置 `no-local` 标志的支持。现在可以在 MQTT Source 设置中配置 `no-local` 标志，以防止客户端发布的消息被同一客户端接收。
+- [#14450](https://github.com/emqx/emqx/pull/14450) 支持 MQTT Source 设置 `no-local` 标志。现在可以在 MQTT Source 设置中配置 `no-local` 标志，以防止客户端发布的消息被同一客户端接收。
 
-- [#14507](https://github.com/emqx/emqx/pull/14507) 增加了两个新的轻量级 HTTP API：`GET /actions_summary` 和 `GET /sources_summary`。这两个新 API 提供了比现有的 `GET /actions` 和 `GET /sources` API 更简洁的动作和 Source 概览，但不返回实体的完整配置，使它们更快速且资源占用更少。
+- [#14507](https://github.com/emqx/emqx/pull/14507) 增加了两个新的轻量级 HTTP API：`GET /actions_summary` 和 `GET /sources_summary`。这两个新 API 提供了比现有的 `GET /actions` 和 `GET /sources` API 更简洁的动作和 Source 概览，而不是返回这些动作和 Source 的完整配置，能使查询速度更快，且消耗的资源更少。
 
-- [#14524](https://github.com/emqx/emqx/pull/14524) 增加了在 Couchbase 连接器健康检查失败时提供更详细的错误信息。
+- [#14524](https://github.com/emqx/emqx/pull/14524) 在 Couchbase 连接器健康检查失败时提供了更详细的错误信息。
 
-- [#14572](https://github.com/emqx/emqx/pull/14572) 更新了 Kafka、Azure Event Hub 和 Confluent Producers 的默认设置，将 `parameters.buffer.memory_overload_protection` 的默认值更新为 `true`。
+- [#14572](https://github.com/emqx/emqx/pull/14572) 更新了 Kafka、Azure Event Hub 和 Confluent 生产者集成的默认设置，将 `parameters.buffer.memory_overload_protection` 的默认值更新为 `true`。
 
   此更改有助于防止内存超载，并减轻在连接的 Kafka 服务长时间宕机（例如几小时）的情况下发生内存不足（OOM）错误的风险。
 
@@ -68,7 +68,7 @@
 
 - [#14645](https://github.com/emqx/emqx/pull/14645) 增加了更多的日志信息，以帮助调试首次获取证书撤销列表（CRL）（在它们被缓存和自动刷新之前）。成功和失败的日志分别以 `debug` 和 `warning` 级别记录。
 
-- [#14656](https://github.com/emqx/emqx/pull/14656) 增强了 Prometheus 推送，支持更多的指标，并允许将集群名称作为作业标签的变量名使用。
+- [#14656](https://github.com/emqx/emqx/pull/14656) 增强了 Prometheus 推送，支持更多的指标，并允许将集群名称作为 Job 标签的变量名使用。
 
 - [#14479](https://github.com/emqx/emqx/pull/14479) 为身份验证和授权后端在端到端追踪中增加了更多详细的追踪信息，以便更好地与 OpenTelemetry 集成。
 
@@ -78,7 +78,7 @@
 
   之前，为了踪订阅者接收消息，用户必须将消息发布者或主题添加到白名单中。这种方法也会追踪消息交付给其他订阅者，可能会生成不必要的 span。
 
-  通过此更新，白名单条目现在也适用于消息传递过程。只需将订阅者的客户端 ID 添加到白名单，就能追踪 `broker.publish` span（即消息交付给特定订阅者）。
+  通过此更新，白名单条目现在也适用于消息传递过程。只需将订阅者的客户端 ID 添加到白名单，就能追踪 `broker.publish` span（即消息发布给特定订阅者）。
 
 - [#14589](https://github.com/emqx/emqx/pull/14589) 日志节流支持更多日志消息类型：`validation_failed` 和 `transformation_failed`。
 
@@ -105,7 +105,7 @@
 
   - 减少了在对端不可达或无响应时的阻塞时间。
   - 保证了关闭过程的正确通知，改善了整体连接关闭行为。
-  - 减少了会话接管和干净启动场景中的延迟（例如，丢弃）。
+  - 减少了会话接管和清理启动场景中的延迟（例如，丢弃）。
 
 ### 修复
 
@@ -1058,7 +1058,7 @@
 
 - [#13441](https://github.com/emqx/emqx/pull/13441) 加强了 CoAP 网关连接模式。UDP 连接现在将始终通过 `clientid` 绑定到相应的网关连接。
 
-### Bug Fixes
+### 修复
 
 - [#13222](https://github.com/emqx/emqx/pull/13222) 解决了与`CONNECT`数据包中遗嘱消息相关的标志检查和错误处理问题。 详细的规范，请参考：
   - MQTT-v3.1.1-[MQTT-3.1.2-13], MQTT-v5.0-[MQTT-3.1.2-11]
