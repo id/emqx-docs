@@ -39,7 +39,7 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 #### Rule Engine
 
-- [#14627](https://github.com/emqx/emqx/pull/14627) Added two new rule engine events: `$events/alarm_activated` and `$events/alarm_deactivated`. These are triggered when system alarms are activated and deactivated.
+- [#14627](https://github.com/emqx/emqx/pull/14627) Added two new rule engine events: `$events/sys/alarm_activated` and `$events/sys/alarm_deactivated`. These are triggered when system alarms are activated and deactivated.
 
 #### Data Integration
 

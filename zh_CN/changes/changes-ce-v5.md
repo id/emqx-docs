@@ -43,7 +43,7 @@
 
 #### 规则引擎
 
-- [#14627](https://github.com/emqx/emqx/pull/14627) 增加了两个新的规则引擎事件：`$events/alarm_activated` 和 `$events/alarm_deactivated`。这些事件会在系统告警激活和解除时被触发。
+- [#14627](https://github.com/emqx/emqx/pull/14627) 增加了两个新的规则引擎事件：`$events/sys/alarm_activated` 和 `$events/sys/alarm_deactivated`。这些事件会在系统告警激活和解除时被触发。
 
 #### 数据集成
 
