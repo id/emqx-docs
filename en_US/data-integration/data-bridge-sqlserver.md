@@ -239,6 +239,12 @@ The following steps assume that you run both EMQX and Microsoft SQL Server on th
 6. Before clicking **Create**, you can click **Test Connectivity** to test if the connector can connect to the Microsoft SQL Server.
 7. Click the **Create** button at the bottom to complete the creation of the connector. In the pop-up dialog, you can click **Back to Connector List** or click **Create Rule** to continue creating rules with Sinks to specify the data to be forwarded to the Microsoft SQL Server and record client events. For detailed steps, see [Create a Rule with Microsoft SQL Server Sink for Message Storage](#create-a-rule-with-microsoft-sql-server-sink-for-message-storage) and [Create a Rule with Microsoft SQL Server Sink for Events Recording](#create-a-rule-with-microsoft-sql-server-sink-for-events-recording).
 
+::: tip
+
+If you are using a Named Instance, you must explicitly specify the port on which the Named Instance is running on.  The driver connects to whichever instance runs on the provided port, and we try to infer the Instance Name we're connecting to during health checks.  Defining the Instance Name in the Server string does not prevent connection to the wrong instance, though, so please double check the port when configuring.
+
+:::
+
 ## Create a Rule with Microsoft SQL Server Sink for Message Storage
 
 This section demonstrates how to create a rule in the Dashboard for processing messages from the source MQTT topic `t/#`, and saving the processed data to the Microsoft SQL Server table `dbo.t_mqtt_msg` via the configured Sink.
