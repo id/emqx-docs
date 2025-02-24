@@ -135,7 +135,7 @@ from t
 
    :::
 
-3. 在页面右侧点击**+ 添加动作**。从**动作**下拉列表中选择 `消息重发布`。将`intresting_counters/counter1_run_updates `作为重新发布主题输入，并在 **Payload** 字段中输入 `${item}`。点击**添加**。
+3. 在页面右侧点击**添加动作**。从**动作**下拉列表中选择 `消息重发布`。将`intresting_counters/counter1_run_updates `作为重新发布主题输入，并在 **Payload** 字段中输入 `${item}`。点击**添加**。
 
 4. 在**创建规则**页面上，点击**创建**。您可以在规则列表中看到已创建的规则。
 
@@ -143,7 +143,7 @@ from t
 
 您可以使用 MQTTX 客户端工具模拟一个 MQTT 客户端，将 Sparkplug B 消息发布到主题 `my/sparkplug/topic`。然后，您可以验证该消息是否以 JSON 格式转换并转发到主题 `intresting_counters/counter1_run_updates`：
 
-1. 打开 MQTTX 客户端桌面版并连接到 EMQX。有关使用 MQTTX 的详细信息，请参阅 [MQTTX](../messaging/publish-and-subscribe.md/#mqttx-client)。
+1. 打开 MQTTX 客户端桌面版并连接到 EMQX。有关使用 MQTTX 的详细信息，请参阅 [MQTTX](../messaging/publish-and-subscribe.md)。
 
 2. 创建新的订阅并订阅主题 `intresting_counters/counter1_run_updates`。
 
