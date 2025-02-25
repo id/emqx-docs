@@ -2,7 +2,7 @@
 
 ## 5.8.5
 
-*发布日期：2025-02-24*
+*发布日期：2025-02-25*
 
 升级前请查看已知问题列表和不兼容变更列表。
 
@@ -80,9 +80,7 @@
 
   通过此更新，白名单条目现在也适用于消息传递过程。只需将订阅者的客户端 ID 添加到白名单，就能追踪 `broker.publish` span（即消息发布给特定订阅者）。
 
-- [#14589](https://github.com/emqx/emqx/pull/14589) 日志节流支持更多日志消息类型：`validation_failed` 和 `transformation_failed`。
-
-- [#14689](https://github.com/emqx/emqx/pull/14689) 对消息转换和消息验证功能的所有日志消息类型进行节流。
+- [#14589](https://github.com/emqx/emqx/pull/14589) 和 [#14689](https://github.com/emqx/emqx/pull/14689) 对消息转换和消息验证功能的所有日志消息类型进行节流。
 
 #### MQTT over QUIC
 

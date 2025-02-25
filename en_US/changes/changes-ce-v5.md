@@ -2,7 +2,7 @@
 
 ## 5.8.5
 
-*Release Date: 2025-02-24*
+*Release Date: 2025-02-25*
 
 Make sure to check the breaking changes and known issues before upgrading to EMQX 5.8.5.
 
@@ -52,7 +52,6 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 - [#14437](https://github.com/emqx/emqx/pull/14437) Added two new gauges to Prometheus output: `emqx_vm_mnesia_tm_mailbox_size` and `emqx_vm_broker_pool_max_mailbox_size`. These gauges track the mailbox sizes of internal EMQX processes that can indicate system overload. Additionally, alarms will be raised when mailbox sizes surpass certain high watermarks.
 - [#14645](https://github.com/emqx/emqx/pull/14645) Added more log messages to help debug fetching Certificate Revocation Lists (CRLs) for the first time (before they are cached and refreshed automatically). Successes and failures are logged at `debug` and `warning` levels, respectively.
 - [#14656](https://github.com/emqx/emqx/pull/14656) Enhanced Prometheus push to support more metrics and allow the cluster name to be used as a variable name for the Job label.
-- [#14589](https://github.com/emqx/emqx/pull/14589) and [#14689](https://github.com/emqx/emqx/pull/14689) Throttle all log message types for the message transformation and message validation.
 
 
 #### MQTT over QUIC

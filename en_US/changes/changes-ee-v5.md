@@ -2,7 +2,7 @@
 
 ## 5.8.5
 
-*Release Date: 2025-02-24*
+*Release Date: 2025-02-25*
 
 Make sure to check the breaking changes and known issues before upgrading to EMQX 5.8.5.
 
@@ -75,9 +75,8 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
   With this update, whitelist entries now also apply to the message delivery process. Simply adding a subscriber's Client ID to the whitelist will allow tracing of the `broker.publish` span (the message delivery to the specific subscriber).
 
-- [#14589](https://github.com/emqx/emqx/pull/14589) Log throttling supports two more log messages: `validation_failed` and `transformation_failed`.
+- [#14589](https://github.com/emqx/emqx/pull/14589) and [#14689](https://github.com/emqx/emqx/pull/14689) Throttle all log message types for the message transformation and message validation.
 
-- [#14689](https://github.com/emqx/emqx/pull/14689) Throttle all log message types for the message transformation and message validation feature.
 
 #### MQTT over QUIC
 
