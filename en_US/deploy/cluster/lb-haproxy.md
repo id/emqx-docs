@@ -171,7 +171,7 @@ backend mqtt_backend
   stick on req.payload(0,0), mqtt_field_value(connect, client_identifier)
 
   # Adding send-proxy will pass the real IP to EMQX, and the corresponding backend listener needs to enable proxy_protocol
-  # server emqx1 emqx1-cluster.emqx.io:1883 check send-proxy-v2
+  # server emqx1 emqx1-cluster.emqx.io:1883 check send-proxy-v2-ssl-cn
   server emqx1 emqx1-cluster.emqx.io:1883
   server emqx2 emqx2-cluster.emqx.io:1883
   server emqx3 emqx3-cluster.emqx.io:1883
@@ -207,9 +207,9 @@ backend mqtt_backend
   balance roundrobin
  
   # Adding send-proxy will pass the real IP to EMQX, and the corresponding backend listener needs to enable proxy_protocol
-  server emqx1 emqx1-cluster.emqx.io:1883 check-send-proxy send-proxy-v2
-  server emqx2 emqx2-cluster.emqx.io:1883 check-send-proxy send-proxy-v2
-  server emqx3 emqx3-cluster.emqx.io:1883 check-send-proxy send-proxy-v2
+  server emqx1 emqx1-cluster.emqx.io:1883 check-send-proxy send-proxy-v2-ssl-cn
+  server emqx2 emqx2-cluster.emqx.io:1883 check-send-proxy send-proxy-v2-ssl-cn
+  server emqx3 emqx3-cluster.emqx.io:1883 check-send-proxy send-proxy-v2-ssl-cn
 
 frontend mqtt_tls_frontend
   bind *:8883 ssl crt /etc/haproxy/certs/server.pem 
