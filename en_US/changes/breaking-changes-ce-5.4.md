@@ -14,3 +14,4 @@
   * ExHook Proto changed. The `share` field in message `SubOpts` was deprecated.
     ExHook Server will now receive shared subscription in its full representation, e.g. `$share/group1/topic1/#`, and the `share` property is deleted from message `SubOpts`.
   * `session.subscribed` and `session.unsubscribed` rule-engine events will have shared subscriptions in their full representation for `topic`, e.g. `$share/group1/topic1/#` instead of just `topic1/#`.
+- [#12114](https://github.com/emqx/emqx/pull/12114) ExHook Proto changed. The `qos` field in message `TopicFilter` was deprecated. ExHook Server will now receive full subscription options: `qos`, `rh`, `rap`, `nl` in message `SubOpts`.

@@ -795,16 +795,27 @@ Please read [Known Issues of 5.8](./known-issues-5.8.md) before upgrade.
 #### Operations
 
 - [#13202](https://github.com/emqx/emqx/pull/13202) Introduced the `emqx ctl conf cluster_sync fix` command to address cluster configuration inconsistencies. This command synchronizes the configuration of all nodes with the configuration of the node that has the highest `tnx_id`, ensuring consistency across the cluster.
+
 - [#13250](https://github.com/emqx/emqx/pull/13250) Added a new value for `cluster.discovery_strategy`: `singleton`.  By choosing this option, there will be effectively no clustering, and the node will reject connection attempts to and from other nodes.
+
 - [#13370](https://github.com/emqx/emqx/pull/13370) Added a new version of `wildcard_optimized` storage layout for durable storage, offering the following improvements:
   - The new layout does not have an inherent latency.
   
   - MQTT messages are serialized into a more space-efficient format.
+  
 - [#13524](https://github.com/emqx/emqx/pull/13524) Added the `emqx ctl exclusive` CLI interface to manage exclusive topics more effectively. It allows administrators to better manage and troubleshoot exclusive topic subscriptions, ensuring that subscription states are accurately reflected and preventing unexpected failures.
+
 - [#13597](https://github.com/emqx/emqx/pull/13597) Added thin wrapper functions for plugins to store and manage the certificate files used by the plugins themselves. This fix prevents plugin certificates from being inadvertently deleted by the certificate garbage collection (GC) function.
+
 - [#13626](https://github.com/emqx/emqx/pull/13626) Added a new command `emqx ctl listeners enable <Identifier> <Bool>` to enable/disable a listener.
+
 - [#13493](https://github.com/emqx/emqx/pull/13493) Upgraded the RPC library `gen_rpc` to version 3.4.0. This update changes the default RPC server socket option from `true` to `active-100`, which introduces back-pressure to peer nodes when the RPC server experiences heavy load. 
+
 - [#13665](https://github.com/emqx/emqx/pull/13665) Added a new metric `emqx_actions_count` to the prometheus endpoint. It contains the number of all actions added by all rules, including Republish actions and Console Output actions.
+
+- [#13434](https://github.com/emqx/emqx/pull/13434) Simplified `rpc` configs. New config `rpc.server_port` is added to replace `rpc.tcp_server_port` and `rpc.ssl_server_port`. 
+
+  `rpc.tcp_client_num` is renamed to `rpc.client_num` since this config is for both TCP and SSL. The old config names are kept as aliases for backward compatibility.
 ### Bug Fixes
 
 #### Core MQTT Functionality
@@ -1136,6 +1147,8 @@ For more information about the Durable Sessions feature, see [MQTT Durable Sessi
 
 - [#12827](https://github.com/emqx/emqx/pull/12827) It is now possible to trace rules with a new Rule ID trace filter as well as with the Client ID filter. For testing purposes, it is now also possible to use a new HTTP API endpoint (rules/:id/test) to artificially apply a rule and optionally stop its actions after they have been rendered.
 - [#12863](https://github.com/emqx/emqx/pull/12863) You can now format trace log entries as JSON objects by setting the formatter parameter to "json" when creating the trace pattern.
+- [#12880](https://github.com/emqx/emqx/pull/12880) Fixed an issue in the InfluxDB action configuration where serialization failed when a tag set value contained a literal integer or float. Tag set values are now correctly treated as strings. For more details on tag sets, refer to the [Line Protocol - Tag Set](https://docs.influxdata.com/influxdb/v2/reference/syntax/line-protocol/#tag-set).
+- [#12844](https://github.com/emqx/emqx/pull/12844) Fixed an issue where CPU usage and idle statistics values were not retained with the correct precision. These values are now consistently stored with two decimal places. This change affects both Prometheus statistical metrics and OpenTelemetry governance metrics.
 
 #### Extensibility
 
@@ -1194,6 +1207,24 @@ For more information about the Durable Sessions feature, see [MQTT Durable Sessi
 
 - [#12957](https://github.com/emqx/emqx/pull/12957) Started building packages for macOS 14 (Apple Silicon) and Ubuntu 24.04 Noble Numbat (LTS).
 
+- [#12883](https://github.com/emqx/emqx/pull/12883) Added REST API endpoints and CLI commands for durable storage management.
+
+  New REST endpoints:
+
+  - `/ds/sites`
+  - `/ds/sites/:site`
+  - `/ds/storages`
+  - `/ds/storages/:ds`
+  - `/ds/storages/:ds/replicas`
+  - `/ds/storages/:ds/replicas/:site`
+
+  New CLI commands:
+
+  - `ds set_replicas`
+  - `ds join`
+  - `ds leave`
+
+
 
 ### Bug Fixes
 
@@ -1202,6 +1233,8 @@ For more information about the Durable Sessions feature, see [MQTT Durable Sessi
 - [#12887](https://github.com/emqx/emqx/pull/12887) Fixed MQTT enhanced auth with sasl scram.
 
 - [#12962](https://github.com/emqx/emqx/pull/12962) TLS clients can now verify server hostname against wildcard certificate. For example, if a certificate is issued for host `*.example.com`, TLS clients is able to verify server hostnames like `srv1.example.com`.
+
+- [#12855](https://github.com/emqx/emqx/pull/12855) Fixed an issue where system topic messages for client subscription/unsubscription notifications were not serialized correctly when clients subscribed or unsubscribed to a shared topic. Also resolved a format error for the `$queue` shared topics in the `/topics` endpoint.
 
 #### MQTT
 
@@ -1713,6 +1746,12 @@ This check ensures that during the rolling upgrades, the replicant nodes can onl
 
 - [#11902](https://github.com/emqx/emqx/pull/11902) Enhanced EMQX's capability to facilitate MQTT message bridging through the one-way Nari SysKeeper 2000 network isolation gateway.
 
+- [#12388](https://github.com/emqx/emqx/pull/12388) QUIC listener now shows per listener connection count instead of global one.
+
+- [#12325](https://github.com/emqx/emqx/pull/12325) QUIC listener supports reload the listener binding without disrupting existing connections.
+
+- [#12274](https://github.com/emqx/emqx/pull/12274) Enabled dynamic TLS configuration updates for QUIC MQTT listeners without disrupting existing connections. Implemented a fail-safe mechanism that reverts to the previous TLS configuration in case of update failures.
+
 - [#12348](https://github.com/emqx/emqx/pull/12348) Supported data integration with Elasticsearch.
 
 ### Bug Fixes
@@ -1735,6 +1774,10 @@ This check ensures that during the rolling upgrades, the replicant nodes can onl
 ## 5.4.1
 
 *Release Date: 2024-01-09*
+
+### Enhancements
+
+- [#12261](https://github.com/emqx/emqx/pull/12261) The bridges for IoTDB have been split so it is available via the connectors and actions APIs. They are still backwards compatible with the old bridge API.
 
 ### Bug Fixes
 
@@ -1761,6 +1804,8 @@ This check ensures that during the rolling upgrades, the replicant nodes can onl
 *Release Date: 2023-12-23*
 
 ### Enhancements
+
+- [#12114](https://github.com/emqx/emqx/pull/12114) Added the `peerport` field to ClientInfo. Added the `peerport` field to the messages `ClientInfo` and `ConnInfo` in ExHook.
 
 - [#11884](https://github.com/emqx/emqx/pull/11884) Modified the Prometheus API and configuration to implement the following improvements:
 
@@ -1856,6 +1901,7 @@ This check ensures that during the rolling upgrades, the replicant nodes can onl
   - Bypassing network for the local calls.
 
   - Avoid senstive data leaking in debug logs [#12202](https://github.com/emqx/emqx/pull/12202)
+  
 - [#12111](https://github.com/emqx/emqx/pull/12111) Fixed an issue when API tokens were sometimes unavailable immediately after login due to race condition.
 
 - [#12121](https://github.com/emqx/emqx/pull/12121) Fixed an issue where nodes in the cluster would occasionally return a stale view when updating configurations on different nodes concurrently.
@@ -1867,8 +1913,13 @@ This check ensures that during the rolling upgrades, the replicant nodes can onl
 
 - [#12176](https://github.com/emqx/emqx/pull/12176) Always acknowledge `DISCONNECT` packet to MQTT-SN client regardless of whether the connection has been successfully established before.
 
-- [#12180](https://github.com/emqx/emqx/pull/12180) Fix an issue where DTLS enabled MQTT-SN gateways could not be started, caused by incompatibility of default listener configuration with the DTLS implementation.
-- [#12219](https://github.com/emqx/emqx/pull/12219) Fix file transfer S3 config secret deobfuscation issue while performing config updates from dashboard.
+- [#12180](https://github.com/emqx/emqx/pull/12180) Fixed an issue where DTLS enabled MQTT-SN gateways could not be started, caused by incompatibility of default listener configuration with the DTLS implementation.
+
+- [#12219](https://github.com/emqx/emqx/pull/12219) Fixed file transfer S3 config secret deobfuscation issue while performing config updates from dashboard.
+
+- [#12141](https://github.com/emqx/emqx/pull/12141) Fixed API endpoint `/v5/topics` to return `InternalError` with HTTP status 500 by invalid topic filter.
+
+- [#12059](https://github.com/emqx/emqx/pull/12059) Use `multi-time-warp` as default time warp mode. See also: [time_correction_#multi-time-warp-mode](https://www.erlang.org/doc/apps/erts/time_correction#multi-time-warp-mode)
 
 ## 5.3.2
 
