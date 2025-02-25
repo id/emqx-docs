@@ -101,7 +101,7 @@ To mitigate these pitfalls, read the latest version of EMQX documentation carefu
 
    ::: tip
 
-   A migration tool is available [here](https://github.com/emqx/emqx-data-converter/releases) to help migrate your configuration from the existing EMQX 4.4 cluster to the new EMQX `@EE_VERSION@` cluster. This tool aims to automate the migration procedure, ensuring a smooth transition.  Be sure to inspect the generated configurations to check it matches expectations.
+   A migration tool is available [here](https://github.com/emqx/emqx-data-converter/releases) to help migrate your configuration from the existing EMQX 4.4 cluster to the new EMQX `@EE_VERSION@` cluster. This tool aims to automate the migration procedure, ensuring a smooth transition.  Be sure to inspect the generated configurations to check if they match expectations.
 
    :::
 
@@ -123,7 +123,7 @@ To mitigate these pitfalls, read the latest version of EMQX documentation carefu
 
    ::: tip
 
-   A migration tool is available [here](https://github.com/emqx/emqx-data-converter/releases) to help migrate your configuration from the existing EMQX 4.4 cluster to the new EMQX `@CE_VERSION@` cluster. This tool aims to automate the migration procedure, ensuring a smooth transition.  Be sure to inspect the generated configurations to check it matches expectations.
+   A migration tool is available [here](https://github.com/emqx/emqx-data-converter/releases) to help migrate your configuration from the existing EMQX 4.4 cluster to the new EMQX `@CE_VERSION@` cluster. This tool aims to automate the migration procedure, ensuring a smooth transition.  Be sure to inspect the generated configurations to check if they match expectations.
 
    :::
 
