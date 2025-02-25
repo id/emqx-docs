@@ -31,9 +31,3 @@ MQTT v5.0 协议为 CONNECT 报文新增了一个 `Receive Maximum` 的属性，
 | mqtt.max_inflight      | integer | (0, 65536)      | 32            | Inflight Window length limit, 0 means no limit                                    |
 | mqtt.max_mqueue_len    | integer | [0, ∞)          | 1000          | Message Queue length limit, 0 means no limit                                      |
 | mqtt.mqueue_store_qos0 | enum    | `true`, `false` | true          | Whether EMQX store QoS 0 messages to the Message Queue when the client is offline |
-
-
-
-
-
-

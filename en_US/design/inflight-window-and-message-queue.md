@@ -8,7 +8,7 @@ When the number of in-flight messages exceeds the limit, that is, the length lim
 
 If the number of in-flight QoS 1, 2 messages reaches the maximum limit of the Inflight Window (see `max_inflight`), the newly arrived messages will not be forwarded immediately, but will be temporarily stored in the Message Queue. 
 
-Only when previous messages are confirmed and removed from the Inflight Window, the messages in the Message Queue will be sent in a FIFO order and added to the Inflight Window. QoS 0 messages are not affected by this, they are always forwarded immediately.
+Messages in the Message Queue are sent in FIFO order and added to the Inflight Window only after previous messages have been confirmed and removed. QoS 0 messages, however, are not affected by this process and are always forwarded immediately.
 
 If the Message Queue also reaches the length limit, subsequent messages will still be cached to the Message Queue, but the oldest message in the Message Queue will be discarded. Therefore, it is very important to set a suitable Message Queue length limit (see `max_mqueue_len`) 
 
@@ -34,4 +34,4 @@ However, EMQX does not necessarily grant the `Receive Maximum` value requested i
 | -----------------------| ------- | --------------- | ------------------------------------------------------------------------------------------------- |
 | mqtt.max_inflight      | integer | (0, 65536)      | 32            | Inflight Window length limit, 0 means no limit                                    |
 | mqtt.max_mqueue_len    | integer | [0, ∞)          | 1000          | Message Queue length limit, 0 means no limit                                      |
-| mqtt.mqueue_store_qos0 | enum    | `true`, `false` | true          | Whether EMQX store QoS 0 messages to the Message Queue when the client is offline |
+| mqtt.mqueue_store_qos0 | enum    | `true`, `false` | true          | Whether EMQX stores QoS 0 messages to the Message Queue when the client is offline |
