@@ -1258,7 +1258,7 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 
 - [#12325](https://github.com/emqx/emqx/pull/12325) QUIC listener supports reload the listener binding without disrupting existing connections.
 
-- [#12274](https://github.com/emqx/emqx/pull/12274) Enable dynamic TLS configuration updates for QUIC MQTT listeners without disrupting existing connections. Implement a fail-safe mechanism that reverts to the previous TLS configuration in case of update failures
+- [#12274](https://github.com/emqx/emqx/pull/12274) Enable dynamic TLS configuration updates for QUIC MQTT listeners without disrupting existing connections. Implement a fail-safe mechanism that reverts to the previous TLS configuration in case of update failures.
 
 ### Bug Fixes
 
