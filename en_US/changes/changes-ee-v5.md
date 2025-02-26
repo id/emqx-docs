@@ -694,6 +694,8 @@ Please read [Known Issues of 5.8](./known-issues-5.8.md) before upgrade.
 
 #### Authentication and Authorization
 
+- [#13350](https://github.com/emqx/emqx/pull/13350) Added support for getting the Server Name of the client connected and storing it in the client information as `peersni`.
+  
 - [#12418](https://github.com/emqx/emqx/pull/12418) Enhanced JWT authentication to support claims verification using a list of objects:
   
   ```
@@ -1239,6 +1241,7 @@ For more information about the Durable Sessions feature, see [MQTT Durable Sessi
 #### MQTT
 
 - [#12996](https://github.com/emqx/emqx/pull/12996) Fixed process leak in `emqx_retainer` application. Previously, client disconnection while receiving retained messages could cause a process leak.
+- [#12976](https://github.com/emqx/emqx/pull/12976) Fixed the `client.disconnected` event being triggered when taking over a session that the socket has been disconnected before.
 
 #### Data Processing and Integration
 
@@ -1313,6 +1316,10 @@ For more information about the Durable Sessions feature, see [MQTT Durable Sessi
 - [#12888](https://github.com/emqx/emqx/pull/12888) Fixed License related configuration loss after importing backup data.
 
 #### Gateways
+
+- [#12902](https://github.com/emqx/emqx/pull/12902) Pass the Content-type of MQTT message to the Stomp message.
+
+- [#12892](https://github.com/emqx/emqx/pull/12892) Fixed an error in OCPP gateway's handling of downstream BootNotification. Also fixed the `gateways/ocpp/listeners` endpoint to return the correct number of current connections.
 
 - [#12909](https://github.com/emqx/emqx/pull/12909) Fixed UDP listener process handling on errors or closure, The fix ensures the UDP listener is cleanly stopped and restarted as needed if these error conditions occur.
 
@@ -1533,6 +1540,8 @@ For more information about the Durable Sessions feature, see [MQTT Durable Sessi
   - `epoch`: Represents timestamps in microseconds precision Unix epoch format.
 
   - `rfc3339`: Uses RFC3339 compliant format for date-time strings. For example, `2024-03-26T11:52:19.777087+00:00`.
+
+- [#12417](https://github.com/emqx/emqx/pull/12417) Added support for specifying the expiration time of MQTT messages via configuration file. See the description of the `message_expiry_interval` configuration in the `mqtt.conf.example` file for more details.
 
 
 ### Bug Fixes

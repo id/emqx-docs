@@ -227,9 +227,13 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
   Additionally, a `node` parameter was added to the `/api/v5/monitor_current` API, allowing targeted queries to a single node instead of the entire cluster. For instance, using `?aggregate=false&node=emqx@node1.domain.name` will return data exclusively for the specified node.
 
-#### EMQX Clustering
+- [#13862](https://github.com/emqx/emqx/pull/13862) Added the detailed results to the user import interface, for example:
 
-- [#13903](https://github.com/emqx/emqx/pull/13903) Added logs to inform the user when a replicant node cannot find a core node with the same release version as its own.
+  ```
+  {"total": 2, "success": 2, "override": 0, "skipped": 0, "failed": 0}
+  ```
+
+  In previous versions, after the import is completed, only a 204 HTTP Code would be returned.
 
 #### Security
 
@@ -815,6 +819,7 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 
 - [#12996](https://github.com/emqx/emqx/pull/12996) Fixed process leak in `emqx_retainer` application. Previously, client disconnection while receiving retained messages could cause a process leak.
 - [#12855](https://github.com/emqx/emqx/pull/12855) Fixed an issue where system topic messages for client subscription/unsubscription notifications were not serialized correctly when clients subscribed or unsubscribed to a shared topic. Also resolved a format error for the `$queue` shared topics in the `/topics` endpoint.
+- [#12976](https://github.com/emqx/emqx/pull/12976) Fixed the `client.disconnected` event being triggered when taking over a session that the socket has been disconnected before.
 
 
 #### Data Processing and Integration
@@ -1068,6 +1073,7 @@ Note: This is a breaking change. This option is enabled by default, so the defau
   - `rfc3339`: Uses RFC3339 compliant format for date-time strings. For example, `2024-03-26T11:52:19.777087+00:00`.
 
 - [#12392](https://github.com/emqx/emqx/pull/12392) New WebSocket listener option: `validate_utf8` for performance tuning.
+- [#12417](https://github.com/emqx/emqx/pull/12417) Added support for specifying the expiration time of MQTT messages via configuration file. See the description of the `message_expiry_interval` configuration in the `mqtt.conf.example` file for more details.
 
 
 ### Bug Fixes
