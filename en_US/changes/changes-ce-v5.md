@@ -165,6 +165,10 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
   - `is_empty` : Return `true` if the map or array is empty.
   - `map_size` : Return the size of a map.
 
+- [#14409](https://github.com/emqx/emqx/pull/14409) Added two new rule functions for improved compatibility with SQL Server versions that do not support UTF-8:
+  - `str_utf16_le/1`: Converts a UTF-8 string to UTF-16 little-endian format.
+  - `qlserver_bin2hexstr/1`: Converts any string or binary to SQL Server hex binary format, prefixed with `0x`.
+
 #### Configuration Files
 
 - [#14269](https://github.com/emqx/emqx/pull/14269) Added `etc/base.hocon` config file. In this release, we introduced a new configuration file, `etc/base.hocon`, to enhance configuration management and clarity. 
@@ -220,6 +224,10 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 - [#14362](https://github.com/emqx/emqx/pull/14362) Refactored the resource manager state machine to prevent race conditions that could lead to inconsistent states.
 
 - [#14429](https://github.com/emqx/emqx/pull/14429) Fixed the handling of rule action metrics when the underlying connector is disabled. Previously, the failed counter would increment twice for each message—once under the `unknown` category and once under `out_of_service`. With this fix, only the `out_of_service` counter is incremented, providing more accurate metrics.
+
+- [#14423](https://github.com/emqx/emqx/pull/14423) Fixed the issue that the built-in SQL function `str_utf8(Data: Term) -> string` cannot correctly handle array type json objects.
+
+- [#14419](https://github.com/emqx/emqx/pull/14419) Fixed the issue in ClickHouse data integration where the insert sql template could not be parsed correctly. There can be no spaces around the `VALUES` keyword.
 
 #### Command Line Interface
 
@@ -360,9 +368,13 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
   Additionally, a `node` parameter was added to the `/api/v5/monitor_current` API, allowing targeted queries to a single node instead of the entire cluster. For instance, using `?aggregate=false&node=emqx@node1.domain.name` will return data exclusively for the specified node.
 
-#### EMQX Clustering
+- [#13862](https://github.com/emqx/emqx/pull/13862) Added the detailed results to the user import interface, for example:
 
-- [#13903](https://github.com/emqx/emqx/pull/13903) Added logs to inform the user when a replicant node cannot find a core node with the same release version as its own.
+  ```
+  {"total": 2, "success": 2, "override": 0, "skipped": 0, "failed": 0}
+  ```
+
+  In previous versions, after the import is completed, only a 204 HTTP Code would be returned.
 
 #### Security
 
@@ -503,6 +515,10 @@ Previously, if a node is force shutdown down while RPC channels are being establ
   - HTTP authentication
   - HTTP authorization
   - Webhook (HTTP connector)
+
+#### Deployment
+
+- [#13711](https://github.com/emqx/emqx/pull/13711) Added an option to specify custom `podLabels` when deploying via Helm chart.
 
 #### Authentication and Authorization
 
@@ -694,8 +710,11 @@ Previously, if a node is force shutdown down while RPC channels are being establ
 #### Operations
 
 - [#13078](https://github.com/emqx/emqx/pull/13078) Improved validation and error handling in the EMQX Management API to ensure that requests with a JSON body include the `Content-Type: application/json` header. If the header is missing for APIs that expect JSON input, the server now correctly responds with a `415 Unsupported Media Type` status code instead of `400 Bad Request`.
-
 - [#13225](https://github.com/emqx/emqx/pull/13225) Enhanced security in authentication and authorization APIs by redacting sensitive data such as passwords. Previously, the APIs could return the original password values in responses. With this update, sensitive information is replaced with `******` to prevent accidental exposure and protect user credentials.
+- [#13434](https://github.com/emqx/emqx/pull/13434) Simplified `rpc` configs.
+  - New config `rpc.server_port` is added to replace `rpc.tcp_server_port` and `rpc.ssl_server_port`.
+  - `rpc.tcp_client_num` is renamed to `rpc.client_num` since this config is for both TCP and SSL. The old config names are kept as aliases for backward compatibility.
+
 
 #### Gateways
 
@@ -789,6 +808,8 @@ Previously, if a node is force shutdown down while RPC channels are being establ
 
 - [#13541](https://github.com/emqx/emqx/pull/13541) Fixed an issue where disabling CRL checks for a listener required a listener restart to take effect.
 - [#13552](https://github.com/emqx/emqx/pull/13552) Added a startup timeout limit for EMQX plugins with a default timeout of 10 seconds. Before this update, problematic plugins could cause runtime errors during startup, leading to potential issues where the main startup process might hang when EMQX is stopped and restarted.
+- [#13432](https://github.com/emqx/emqx/pull/13432) Fixed the issue where JWT authentication was silently bypassed when an invalid public key (or invalid public key file path) was used.
+- [#13412](https://github.com/emqx/emqx/pull/13412) Fixed an issue in the Prometheus API where the certificate expiration time format incorrectly returned `0` due to the use of `generalTime`.
 
 ## 5.7.1
 
@@ -861,7 +882,7 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 
 #### Data Processing and Integration
 
-[#12671](https://github.com/emqx/emqx/pull/12671) An `unescape` function has been added to the rule engine SQL language to handle the expansion of escape sequences in strings. This addition has been done because string literals in the SQL language don't support any escape codes (e.g., `\n` and `\t`). This enhancement allows for more flexible string manipulation within SQL expressions.
+- [#12671](https://github.com/emqx/emqx/pull/12671) An `unescape` function has been added to the rule engine SQL language to handle the expansion of escape sequences in strings. This addition has been done because string literals in the SQL language don't support any escape codes (e.g., `\n` and `\t`). This enhancement allows for more flexible string manipulation within SQL expressions.
 
 
 #### Extensibility
@@ -909,6 +930,24 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 
 - [#12957](https://github.com/emqx/emqx/pull/12957) Started building packages for macOS 14 (Apple Silicon) and Ubuntu 24.04 Noble Numbat (LTS).
 
+- [#12883](https://github.com/emqx/emqx/pull/12883) Added REST API endpoints and CLI commands for durable storage management.
+
+  New REST endpoints:
+
+  - `/ds/sites`
+  - `/ds/sites/:site`
+  - `/ds/storages`
+  - `/ds/storages/:ds`
+  - `/ds/storages/:ds/replicas`
+  - `/ds/storages/:ds/replicas/:site`
+
+  New CLI commands:
+
+  - `ds set_replicas`
+  - `ds join`
+  - `ds leave`
+
+
 ### Bug Fixes
 
 #### Security
@@ -920,6 +959,8 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 #### MQTT
 
 - [#12996](https://github.com/emqx/emqx/pull/12996) Fixed process leak in `emqx_retainer` application. Previously, client disconnection while receiving retained messages could cause a process leak.
+- [#12855](https://github.com/emqx/emqx/pull/12855) Fixed an issue where system topic messages for client subscription/unsubscription notifications were not serialized correctly when clients subscribed or unsubscribed to a shared topic. Also resolved a format error for the `$queue` shared topics in the `/topics` endpoint.
+- [#12976](https://github.com/emqx/emqx/pull/12976) Fixed the `client.disconnected` event being triggered when taking over a session that the socket has been disconnected before.
 
 
 #### Data Processing and Integration
@@ -941,11 +982,14 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 
 - [#12948](https://github.com/emqx/emqx/pull/12948) Fixed an issue where sensitive HTTP header values like `Authorization` would be substituted by `******` after updating a connector.
 
-- [#13118](https://github.com/emqx/emqx/pull/13118) Fix a performance issue in the rule engine template rendering.
+- [#13118](https://github.com/emqx/emqx/pull/13118) Fixed a performance issue in the rule engine template rendering.
+
+- [#12880](https://github.com/emqx/emqx/pull/12880) Fixed an issue in the InfluxDB action configuration where serialization failed when a tag set value contained a literal integer or float. Tag set values are now correctly treated as strings. For more details on tag sets, refer to the [Line Protocol - Tag Set](https://docs.influxdata.com/influxdb/v2/reference/syntax/line-protocol/#tag-set).
 
 #### Observability
 
 - [#12765](https://github.com/emqx/emqx/pull/12765) Make sure stats `subscribers.count` `subscribers.max` contains shared-subscribers. It only contains non-shared subscribers previously.
+- [#12844](https://github.com/emqx/emqx/pull/12844) Fixed an issue where CPU usage and idle statistics values were not retained with the correct precision. These values are now consistently stored with two decimal places. This change affects both Prometheus statistical metrics and OpenTelemetry governance metrics.
 
 
 #### Operations and Management
@@ -1169,6 +1213,9 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 
   - `rfc3339`: Uses RFC3339 compliant format for date-time strings. For example, `2024-03-26T11:52:19.777087+00:00`.
 
+- [#12392](https://github.com/emqx/emqx/pull/12392) New WebSocket listener option: `validate_utf8` for performance tuning.
+- [#12417](https://github.com/emqx/emqx/pull/12417) Added support for specifying the expiration time of MQTT messages via configuration file. See the description of the `message_expiry_interval` configuration in the `mqtt.conf.example` file for more details.
+
 
 ### Bug Fixes
 
@@ -1348,6 +1395,12 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 
 - [#12354](https://github.com/emqx/emqx/pull/12354) The concurrent creation and updates of data integrations are now supported, significantly increasing operation speeds, such as when importing backup files.
 
+- [#12388](https://github.com/emqx/emqx/pull/12388) QUIC listener now shows per listener connection count instead of global one.
+
+- [#12325](https://github.com/emqx/emqx/pull/12325) QUIC listener supports reload the listener binding without disrupting existing connections.
+
+- [#12274](https://github.com/emqx/emqx/pull/12274) Enable dynamic TLS configuration updates for QUIC MQTT listeners without disrupting existing connections. Implement a fail-safe mechanism that reverts to the previous TLS configuration in case of update failures.
+
 ### Bug Fixes
 
 - [#12232](https://github.com/emqx/emqx/pull/12232) Fixed an issue when cluster commit log table was not deleted after a node was forced to leave a cluster.
@@ -1388,6 +1441,8 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 *Release Date: 2023-12-23*
 
 ### Enhancements
+
+- [#12114](https://github.com/emqx/emqx/pull/12114) Added the `peerport` field to ClientInfo. Added the `peerport` field to the messages `ClientInfo` and `ConnInfo` in ExHook.
 
 - [#11884](https://github.com/emqx/emqx/pull/11884) Modified the Prometheus API and configuration to implement the following improvements:
 
@@ -1494,8 +1549,10 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 
 - [#12176](https://github.com/emqx/emqx/pull/12176) Always acknowledge `DISCONNECT` packet to MQTT-SN client regardless of whether the connection has been successfully established before.
 
-- [#12180](https://github.com/emqx/emqx/pull/12180) Fix an issue where DTLS enabled MQTT-SN gateways could not be started, caused by incompatibility of default listener configuration with the DTLS implementation.
-- [#12219](https://github.com/emqx/emqx/pull/12219) Fix file transfer S3 config secret deobfuscation issue while performing config updates from dashboard.
+- [#12180](https://github.com/emqx/emqx/pull/12180) Fixed an issue where DTLS enabled MQTT-SN gateways could not be started, caused by incompatibility of default listener configuration with the DTLS implementation.
+- [#12141](https://github.com/emqx/emqx/pull/12141) Fixed API endpoint `/v5/topics` to return `InternalError` with HTTP status 500 by invalid topic filter.
+- [#12059](https://github.com/emqx/emqx/pull/12059) Use `multi-time-warp` as default time warp mode. See also: [time_correction_#multi-time-warp-mode](https://www.erlang.org/doc/apps/erts/time_correction#multi-time-warp-mode).
+- [#12219](https://github.com/emqx/emqx/pull/12219) Fixed file transfer S3 config secret deobfuscation issue while performing config updates from the Dashboard.
 
 ## 5.3.2
 
@@ -2213,6 +2270,12 @@ _Release Date: 2023-05-29_
   This optimization retries request failures without blocking the buffering layer, which can improve throughput in situations of high messaging rate.
 
 - [#10698](https://github.com/emqx/emqx/pull/10698) Optimize memory usage when accessing the configuration during runtime.
+
+- [#10607](https://github.com/emqx/emqx/pull/10698) Simplified log configuration. 
+
+  - Replaced `log.console_handler` with `log.console`, keeping only `enable, level, formatter, and time_offset`.
+  - Replaced `log.file_handlers` with `log.file`, keeping only `enable, level, formatter, time_offset, rotation_count, rotation_size, to`.
+
 
 ### Bug Fixes
 
