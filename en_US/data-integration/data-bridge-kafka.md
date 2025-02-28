@@ -303,7 +303,7 @@ This section demonstrates how to create a rule in EMQX to further process the me
 
 4. Enter the following statement in the **SQL Editor** if you want to forward the messages transformed from the Kafka source`$bridges/kafka_consumer:<sourceName>` to EMQX.
 
-   Note: If you want to specify your own SQL syntax, make sure that the `SELECT` part includes all fields required by the republishing action set in later steps.
+   Note: If you want to specify your own SQL syntax, make sure that the `SELECT` part includes all fields required by the republishing action set in later steps. The `SELECT` statement for the Kafka Source can use fields such as `ts_type`, `topic`, `ts`, `event`, `headers`, `key`, `metadata`, `value`, `timestamp`, `offset`, `node`, etc.
 
    ```sql
    SELECT
@@ -338,8 +338,9 @@ This section demonstrates how to create a rule in EMQX to further process the me
 1. Select the **Action Outputs** tab and click the + **Add Action** button to define an action that will be triggered by the rule. 
 2. Select **Republish** from the **Type of Action** drop-down list.
 3. In **Topic** and **Payload** fields, you can enter the topic and payload for the messages you want to republish. For example, enter `t/1` and `${.}` for this demonstration.
+   - You can also use `${}` in the **Topic** field to dynamically specify the MQTT topic, such as `t/${key}` (Note: The parameter provided inside `${}` must be included in the SQL `Select` statement).
 4. Click **Add** to include the action to the rule.
-8. Back on the **Create Rule** page, click **Save**.
+5. Back on the **Create Rule** page, click **Save**.
 
 ![Kafka_consumer_rule](./assets/Kafka_consumer_rule.png)
 
