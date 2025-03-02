@@ -30,8 +30,8 @@ However, EMQX does not necessarily grant the `Receive Maximum` value requested i
 
 ## Configuration Items
 
-| Configuration Items    | Type    | Optional Value  | Default Value | Description                                                                       |
-| -----------------------| ------- | --------------- | ------------------------------------------------------------------------------------------------- |
-| mqtt.max_inflight      | integer | (0, 65536)      | 32            | Inflight Window length limit, 0 means no limit                                    |
-| mqtt.max_mqueue_len    | integer | [0, ∞)          | 1000          | Message Queue length limit, 0 means no limit                                      |
+| Configuration Items    | Type    | Optional Value  | Default Value | Description                                                  |
+| ---------------------- | ------- | --------------- | ------------- | ------------------------------------------------------------ |
+| mqtt.max_inflight      | integer | (0, 65536)      | 32            | Inflight Window length limit, 0 means no limit               |
+| mqtt.max_mqueue_len    | integer | [0, ∞)          | 1000          | Message Queue length limit, 0 means no limit                 |
 | mqtt.mqueue_store_qos0 | enum    | `true`, `false` | true          | Whether EMQX stores QoS 0 messages to the Message Queue when the client is offline |

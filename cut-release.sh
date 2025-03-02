@@ -18,12 +18,12 @@ esac
 
 branch="$(git branch | grep -E "^\*" | tr -d "* ")"
 
-case $branch in
-    'release-5.0')
-        VSN='5.0'
+case "$branch" in
+    release-5.*)
+        VSN="${branch#release-}"
         ;;
     *)
-        echo "can not cut release on branch $branch"
+        echo "Cannot cut release on branch ${branch}"
         exit 1
 esac
 
