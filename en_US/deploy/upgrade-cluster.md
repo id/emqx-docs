@@ -88,6 +88,7 @@ To mitigate these pitfalls, read the latest version of EMQX documentation carefu
 ::: tab EMQX Enterprise
 
 1. Download EMQX `@EE_VERSION@` packages.
+
    - **Use a Package Manager:** Check if your operating system's package manager offers the EMQX `@EE_VERSION@` binaries. If available, use the package manager to download and install the binaries.
    - **Download Binaries Manually:** If the package manager does not provide the EMQX `@EE_VERSION@` binaries or the network of the server is restricted, you can manually download them from the [official EMQX website.](https://www.emqx.com/en/downloads-and-install/enterprise)
 
@@ -96,20 +97,23 @@ To mitigate these pitfalls, read the latest version of EMQX documentation carefu
 3. Migrate EMQX cluster.
 
    - Back up the configurations and data of your EMQX 4.4 cluster using the API or Dashboard.
+
    - Convert the configuration files format from version 4.4 to the new format compatible with EMQX `@EE_VERSION@`.
+
    - Restore the migrated configuration files to the EMQX `@EE_VERSION@` cluster using the command:  `emqx ctl data import <File>`.
 
-   ::: tip
+     ::: tip
 
-   A migration tool is available [here](https://github.com/emqx/emqx-data-converter/releases) to help migrate your configuration from the existing EMQX 4.4 cluster to the new EMQX `@EE_VERSION@` cluster. This tool aims to automate the migration procedure, ensuring a smooth transition.  Be sure to inspect the generated configurations to check if they match expectations.
+     A migration tool is available [here](https://github.com/emqx/emqx-data-converter/releases) to help migrate your configuration from the existing EMQX 4.4 cluster to the new EMQX `@EE_VERSION@` cluster. This tool aims to automate the migration procedure, ensuring a smooth transition.  Be sure to inspect the generated configurations to check if they match expectations.
 
-   :::
+     :::
 
 :::
 
 ::: tab EMQX Open Source
 
 1. Download EMQX `@CE_VERSION@` packages.
+
    - **Use a Package Manager:** Check if your operating system's package manager offers the EMQX `@CE_VERSION@` binaries. If available, use the package manager to download and install the binaries.
    - **Download Binaries Manually:** If the package manager does not provide the EMQX `@CE_VERSION@` binaries or network of the server is restricted, you can manually download them from the [official EMQX website.](https://www.emqx.com/en/downloads-and-install/broker)
 
@@ -118,20 +122,22 @@ To mitigate these pitfalls, read the latest version of EMQX documentation carefu
 3. Migrate EMQX cluster.
 
    - Back up the configurations and data of your EMQX 4.4 cluster using the API or Dashboard.
+
    - Convert the configuration files format from version 4.4 to the new format compatible with EMQX `@CE_VERSION@`.
+
    - Restore the migrated configuration files to the EMQX `@CE_VERSION@` cluster using the command:  `emqx ctl data import <File>`.
 
-   ::: tip
+     ::: tip
 
-   A migration tool is available [here](https://github.com/emqx/emqx-data-converter/releases) to help migrate your configuration from the existing EMQX 4.4 cluster to the new EMQX `@CE_VERSION@` cluster. This tool aims to automate the migration procedure, ensuring a smooth transition.  Be sure to inspect the generated configurations to check if they match expectations.
+     A migration tool is available [here](https://github.com/emqx/emqx-data-converter/releases) to help migrate your configuration from the existing EMQX 4.4 cluster to the new EMQX `@CE_VERSION@` cluster. This tool aims to automate the migration procedure, ensuring a smooth transition.  Be sure to inspect the generated configurations to check if they match expectations.
 
-   :::
+     :::
 
 :::
 
 ::::
 
-5. Verify the new EMQX Cluster thoroughly to ensure that it functions as expected. Test its connectivity, messaging capabilities, and any other relevant functionalities to confirm that the upgrade was successful.
+4. Verify the new EMQX Cluster thoroughly to ensure that it functions as expected. Test its connectivity, messaging capabilities, and any other relevant functionalities to confirm that the upgrade was successful.
 
    ::: warning Notice
 
@@ -139,4 +145,4 @@ To mitigate these pitfalls, read the latest version of EMQX documentation carefu
 
    :::
 
-6. Switch your production environment to use the upgraded cluster. Update your DNS records, load balancers, or any other relevant configurations to direct traffic to the new cluster. Monitor the system closely after the switch to ensure smooth operation.
+5. Switch your production environment to use the upgraded cluster. Update your DNS records, load balancers, or any other relevant configurations to direct traffic to the new cluster. Monitor the system closely after the switch to ensure smooth operation.
