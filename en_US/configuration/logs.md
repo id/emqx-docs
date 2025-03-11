@@ -50,7 +50,7 @@ log {
 | `rotation_count`      | Max Log Files Number | This sets the max number of log files that can be saved.     | `10`          | `1` - `2,048`                                                |
 | `rotation_size`       | Rotation Size        | This sets the maximum size of a single log file before it is rotated. The old log file will be renamed and moved to an archive directory once it reached the specified value unless it is set to `infinity`, indicating the log file will not be rotated. | `50MB`        | `1` - `infinity`                                             |
 | `time_offset`         | Time Offset          | The time offset relative to UTC in the log.                  | `system`      | --                                                           |
-| `timestamp_formatter` | Timestamp Format     | The format of the timestamp in the log.                      | `auto`        | `auto`: Automatically determines the timestamp format based on the log formatter being used. Utilizes `rfc3339` format for text formatters, and `epoch` format for JSON formatters.<br />`epoch`: Microseconds precision Unix epoch format.<br />`rfc3339`: RFC3339 compliant format for date-time strings. |
+| `timestamp_format` | Timestamp Format     | The format of the timestamp in the log.                      | `auto`        | `auto`: Automatically determines the timestamp format based on the log formatter being used. Utilizes `rfc3339` format for text formatters, and `epoch` format for JSON formatters.<br />`epoch`: Microseconds precision Unix epoch format.<br />`rfc3339`: RFC3339 compliant format for date-time strings. |
 
 ## Output logs with Console
 
@@ -75,7 +75,7 @@ Where,
 | `formatter`           | Log Formatter    | This sets the log format.                                    | `text`        | `text` for free text.<br /> `json` for structured logging.   |
 | `level`               | Log Level        | This sets the log level of the current log handler, that is, the minimum log level you want to record. | `warning`     | `debug`, `info`, `notice`, `warning`, `error`, `critical`, `alert`, `emergency` |
 | `time_offset`         | Time Offset      | The time offset relative to UTC in the log.                  | `system`      | --                                                           |
-| `timestamp_formatter` | Timestamp Format | The format of the timestamp in the log.                      | `auto`        | `auto`: Automatically determines the timestamp format based on the log formatter being used. Utilizes `rfc3339` format for text formatters, and `epoch` format for JSON formatters.<br />`epoch`: Microseconds precision Unix epoch format.<br />`rfc3339`: RFC3339 compliant format for date-time strings. |
+| `timestamp_format` | Timestamp Format | The format of the timestamp in the log.                      | `auto`        | `auto`: Automatically determines the timestamp format based on the log formatter being used. Utilizes `rfc3339` format for text formatters, and `epoch` format for JSON formatters.<br />`epoch`: Microseconds precision Unix epoch format.<br />`rfc3339`: RFC3339 compliant format for date-time strings. |
 
 ::: tip
 
