@@ -9,6 +9,23 @@ The basic process of plugin development and operation is as follows:
 - Install the plugin package via Dashboard or CLI.
 - Start/stop/uninstall your plugin via Dashboard or CLI.
 
+:::tip Note on installing the plugin package via Dashboard
+
+Due to security concerns, if one wants to install the package via the Dashboard, first it's required to allow its installation by running the following command on the CLI:
+
+```
+emqx ctl plugins allow $NAME-$VSN
+```
+
+In the command above, `$NAME` is the name of your plugin (for example, `my_emqx_plugin`) and `$VSN` is its version (for example, `1.2.3`).
+
+To disallow installation an already allowed plugin, either uninstall it (if already installed), or run the following command:
+
+```
+emqx ctl plugins disallow $NAME-$VSN
+```
+:::
+
 :::tip Prerequisite
 
 Knowledge of EMQX [hooks](./hooks.md)
