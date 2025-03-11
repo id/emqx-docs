@@ -150,7 +150,7 @@ The table below introduces the files and subfolders of some directories.
 EMQX stores the configuration information in the `data/configs` and the `etc` directory. The `etc` directory stores read-only configuration files, while configuration updates from the Dashboard or REST API are saved in the `data/configs` directory to support hot configuration reloads at runtime.
 
 - `etc/base.hocon`: Base configuration which can be overriden from runtime config changes.
-- `etc/emqx.conf`: Static configurations which cannot be overridden.
+- `etc/emqx.conf`: Static configuration which cannot be overridden.
 - `data/configs/cluster.hocon`: Runtime configuration overrides.
 
 EMQX reads the configuration items from these files and converts them to the Erlang native configuration file format, to apply the configurations at runtime.

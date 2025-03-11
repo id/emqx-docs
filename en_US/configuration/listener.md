@@ -11,7 +11,7 @@ In EMQX, listener is configured to receive requests from MQTT clients. EMQX supp
 
 You can also configure listeners via Dashboard by clicking **Management** -> **Listeners** on the left navigation menu of the Dashboard.
 If you want to configure listeners from config files, it is recommended to use `base.hocon` instead of `emqx.conf`.
-Because if the config is in `emqx.conf`, the changes made from the Dashboard will only take effect temporarily until EMQX restarts.
+This is because if the configuration is set in emqx.conf, any changes made through the Dashboard will only be temporary and will be lost upon EMQX restart.
 
 :::
 

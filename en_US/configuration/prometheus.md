@@ -26,7 +26,7 @@ You can also use Dashboard to configure the push mode integration with the Prome
 
 Once you configured the integration via the Dashboard, your settings will override the same configuration items in config files.
 If you want to configure Prometheus from config files, it is recommended to use `base.hocon` instead of `emqx.conf`.
-Because if the config is in `emqx.conf`, the changes made from the Dashboard will only take effect temporarily until EMQX restarts.
+This is because if the configuration is set in emqx.conf, any changes made through the Dashboard will only be temporary and will be lost when EMQX restarts.
 
 :::
 
