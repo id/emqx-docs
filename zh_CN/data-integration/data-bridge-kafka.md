@@ -194,7 +194,7 @@ EMQX v5.7.2 引入了一项新功能，可以在 SQL 处理阶段将从设置的
 
    ```sql
    SELECT
-     getenv(`KAFKA_TOPIC`) as kafka_topic,
+     getenv('KAFKA_TOPIC') as kafka_topic,
      payload
    FROM
      "t/#"
