@@ -205,7 +205,7 @@ EMQX Dashboard is an intuitive way to configure EMQX authorizer, where you can c
 
 ### Configure with Configuration File
 
-You can also configure authorization in the `authorization` fields in the configuration file `emqx.conf`. The general config structure is the following:
+You can also configure authorization in the `authorization` fields in the configuration file. The general config structure is the following:
 
 ```bash
 authorization {

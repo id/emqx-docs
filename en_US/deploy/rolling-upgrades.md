@@ -29,12 +29,7 @@ the process is the same as upgrading to a newer version of the Open Source Editi
 
 There is no difference in installation and upgrade between the Open Source and Enterprise Editions of EMQX. The only notice is that you need to manually [configure your License](./license.md) in `emqx.conf` for the Enterprise edition nodes after each upgrade. You cannot apply the License key to the whole cluster before all nodes are upgraded.
 
-For example, add the following line to `emqx.conf`:
+For example, add the following line to `base.hocon`:
 ```
 license.key = "your license"
 ```
-
-:::tip Note
-If a License configuration is added to `emqx.conf`, any runtime changes made from the Dashboard, HTTP API, or CLI will be lost after the node is restarted. This is because `emqx.conf` and environment variables have the highest priority when loading configurations during startup.
-
-:::

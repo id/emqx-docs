@@ -290,7 +290,7 @@ The following configuration items can be overridden at the zone level:
 
 In EMQX version 5, the default configuration file does not include any zones, which differs from version 4, where there are two default zones: `internal` and `external`.
 
-To create a zone, you need to define it in `emqx.conf`, for example:
+To create a zone, you need to define it in the config file, for example:
 
 ```bash
 zones {

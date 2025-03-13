@@ -5,7 +5,8 @@ This page introduces how to configure logging behavior for EMQX via the configur
 ::: tip
 
 This page also introduces the Dashboard UI fields corresponding to the configuration items.
-If you configured these items with the Dashboard, the new settings can only temporarily override the same configuration items in `emqx.conf` until the next restart.
+If you want to configure logs from config files, it is recommended to use `base.hocon` instead of `emqx.conf`.
+This is because if the configuration is set in emqx.conf, any changes made through the Dashboard will only be temporary and will be lost when EMQX restarts.
 
 :::
 
@@ -24,7 +25,7 @@ EMQX's log output directory is determined by the environment variable `EMQX_LOG_
 
 For EMQX docker container, the installation directory is `/opt/emqx`, hence the log directory is `/opt/emqx/log`.
 
-To output logs as a file, you may either configure the log handler in the Dashboard or modify the `emqx.conf` file directly as below:
+To output logs as a file, you may either configure the log handler in the Dashboard or modify the `base.hocon` file directly as below:
 
 ```bash
 log {

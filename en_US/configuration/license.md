@@ -26,7 +26,7 @@ Where,
 
 If the license is configured via `'file://<license_file_path>'` notation, EMQX will be automatically reloading it every 2 minutes.
 
-Additionally, you can configure the settings for the license connection quota usage in the configuration file `emqx.conf`.
+Additionally, you can configure the settings for the license connection quota usage in the configuration file as follows:
 
 ```bash
 license {
@@ -46,7 +46,7 @@ After execution, you can run `emqx ctl license info` to confirm that the new lic
 
 ::: tip
 
-You can also configure the license file through the EMQX Dashboard. For how to configure the license via Dashboard, see [Work with License](../deploy/license.md). Once you have configured these items with the Dashboard, your settings will override the same configuration items in `emqx.conf`.
+You can also configure the license file through the EMQX Dashboard. For how to configure the license via Dashboard, see [Work with License](../deploy/license.md). Once you have configured these items with the Dashboard, your settings will override the same configuration items in the config file.
 
 :::
 

@@ -106,7 +106,7 @@ Alarm configuration includes configuring alarm settings and alarm thresholds. Al
 
 ### Configure Alarm Settings
 
-The settings for alarms can only be configured by modifying the configuration items in `emqx.conf` file. The following table lists the configuration items available for alarm setting configuration.
+The settings for alarms can only be configured by modifying the configuration items in the configuration file. The following table lists the configuration items available for alarm setting configuration.
 
 | Configuration Item    | Description                                                  | Default Value        | Optional Values |
 | --------------------- | ------------------------------------------------------------ | -------------------- | --------------- |
@@ -160,7 +160,7 @@ After you complete the configurations, click **Save Changes**.
 
 ### Configure Alarm Thresholds via Configuration Items
 
-You can also configure alarm thresholds by modifying the configuration items for alarm thresholds. The following configuration items are currently available to be modified in `emqx.conf` file:
+You can also configure alarm thresholds by modifying the configuration items for alarm thresholds. The following configuration items are currently available to be modified in the configuration file:
 
 | Configuration Item                | Description                                                  | Default Value |
 | --------------------------------- | ------------------------------------------------------------ | ------------- |
@@ -182,7 +182,7 @@ You can also configure alarm thresholds by modifying the configuration items for
 | sysmon.top.sample_interlval       | Check interval for top processes.                            | `2s`          |
 | sysmon.top.max_procs              | Stop collecting data when the number of processes in the VM exceeds this value. | `1000000`     |
 
-The EMQX Enterprise will raise an alarm when the license expires in less than 30 days, or if the number of connections exceeds the high watermark. You can adjust the high/low watermark for the number of connections by modifying the following configuration items in `emqx.conf` file. For more information on how to configure settings for the license, see [License](../configuration/license.md).
+The EMQX Enterprise will raise an alarm when the license expires in less than 30 days, or if the number of connections exceeds the high watermark. You can adjust the high/low watermark for the number of connections by modifying the following configuration items in the configuration file. For more information on how to configure settings for the license, see [License](../configuration/license.md).
 
 | Configuration item                      | Description                                                  | Default value |
 | --------------------------------------- | ------------------------------------------------------------ | ------------- |

@@ -161,7 +161,7 @@ The Push mode currently only includes EMQX's basic metrics and counters from the
 
 :::
 
-You can also enable and configure the Pushgateway by adding the following configurations to `etc/emqx.conf`. For more information on configuration items, see [Configuration - Prometheus](../configuration/prometheus.md).
+You can also enable and configure the Pushgateway by adding the following configuration to the configuration file. For more information on configuration items, see [Configuration - Prometheus](../configuration/prometheus.md).
 
 ```bash
 prometheus {

@@ -10,7 +10,9 @@ This section will introduce the configuration settings that determine how the MQ
 
 :::tip
 
-You can also find the corresponding configuration items in the EMQX Dashboard (**Management** -> **MQTT Settings** -> **General**). Once you have configured these items with the Dashboard, your settings will override the same configuration items in `emqx.conf`.
+You can also find the corresponding configuration items in the EMQX Dashboard (**Management** -> **MQTT Settings** -> **General**). Once you have configured these items with the Dashboard, your settings will override the same configuration items in config files.
+If you want to configure MQTT from config files, it is recommended to use `base.hocon` instead of `emqx.conf`.
+This is because if the configuration is set in emqx.conf, any changes made through the Dashboard will only be temporary and will be lost when EMQX restarts.
 
 :::
 
@@ -46,7 +48,9 @@ This section introduces how to configure shared, wildcard, and exclusive subscri
 
 :::tip
 
-You can also find the corresponding configuration items in the EMQX Dashboard (**Management** -> **MQTT Settings** -> **General**). Once you have configured these items with the Dashboard, your settings will override the same configuration items in `emqx.conf`.
+You can also find the corresponding configuration items in the EMQX Dashboard (**Management** -> **MQTT Settings** -> **General**). Once you have configured these items with the Dashboard, your settings will override the same configuration items in config files.
+If you want to configure MQTT from config files, it is recommended to use `base.hocon` instead of `emqx.conf`.
+This is because if the configuration is set in emqx.conf, any changes made through the Dashboard will only be temporary and will be lost when EMQX restarts.
 
 :::
 
@@ -163,7 +167,9 @@ Where,
 
 :::tip
 
-To Configure MQTT settings via Dashboard,  click **Management** -> **MQTT Settings** on the left navigation menu of the Dashboard. Once you have configured these items with the Dashboard, your settings will override the same configuration items in `emqx.conf`.
+To Configure MQTT settings via Dashboard,  click **Management** -> **MQTT Settings** on the left navigation menu of the Dashboard. Once you have configured these items with the Dashboard, your settings will override the same configuration items in config files.
+If you want to configure MQTT from config files, it is recommended to use `base.hocon` instead of `emqx.conf`.
+This is because if the configuration is set in emqx.conf, any changes made through the Dashboard will only be temporary and will be lost when EMQX restarts.
 
 :::
 

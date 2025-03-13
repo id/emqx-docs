@@ -24,7 +24,7 @@ Exclusive subscription can be configurated via the configuration file only. Conf
 
 :::
 
-The exclusive subscription is disabled by default. You can enable this feature in `etc/emqx.conf`.
+The exclusive subscription is disabled by default. You can enable this feature in configuration file:
 
 ```bash
 mqtt.exclusive_subscription {
