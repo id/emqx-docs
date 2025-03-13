@@ -196,7 +196,7 @@ To prevent leakage of other system environment variables, the names of environme
 
    ```sql
    SELECT
-     getenv(`KAFKA_TOPIC`) as kafka_topic,
+     getenv('KAFKA_TOPIC') as kafka_topic,
      payload
    FROM
      "t/#"
