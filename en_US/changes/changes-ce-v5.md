@@ -1052,8 +1052,6 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 
 - [#13118](https://github.com/emqx/emqx/pull/13118) Fixed a performance issue in the rule engine template rendering.
 
-- [#12880](https://github.com/emqx/emqx/pull/12880) Fixed an issue in the InfluxDB action configuration where serialization failed when a tag set value contained a literal integer or float. Tag set values are now correctly treated as strings. For more details on tag sets, refer to the [Line Protocol - Tag Set](https://docs.influxdata.com/influxdb/v2/reference/syntax/line-protocol/#tag-set).
-
 #### Observability
 
 - [#12765](https://github.com/emqx/emqx/pull/12765) Make sure stats `subscribers.count` `subscribers.max` contains shared-subscribers. It only contains non-shared subscribers previously.
