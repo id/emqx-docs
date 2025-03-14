@@ -52,7 +52,7 @@
 
 - [#13441](https://github.com/emqx/emqx/pull/13441) 加强了 CoAP 网关连接模式。UDP 连接现在将始终通过 `clientid` 绑定到相应的网关连接。
 
-### Bug Fixes
+### 修复
 
 - [#13222](https://github.com/emqx/emqx/pull/13222) 解决了与`CONNECT`数据包中遗嘱消息相关的标志检查和错误处理问题。 详细的规范，请参考：
   - MQTT-v3.1.1-[MQTT-3.1.2-13], MQTT-v5.0-[MQTT-3.1.2-11]
@@ -241,6 +241,7 @@ Dashboard 上也增加了持久消息的数量。
 
 - [#12827](https://github.com/emqx/emqx/pull/12827) 现在可以使用新的规则 ID 追踪过滤器以及客户端 ID 过滤器来追踪规则。为测试目的，还可以使用新的 HTTP API （rules/:id/test）来模拟测试规则，并支持在渲染动作参数后停止其写入操作。
 - [#12863](https://github.com/emqx/emqx/pull/12863) 现在可以通过在创建追踪模式时将格式化参数设置为 "json"，将追踪日志条目格式化为 JSON 对象。
+- [#12844](https://github.com/emqx/emqx/pull/12844) 修复了 CPU 使用率和空闲统计值未正确保留精度的问题。现在，这些值始终以两位小数存储。此更改影响了 Prometheus 统计指标和 OpenTelemetry 管理指标。
 
 #### 扩展
 
@@ -298,6 +299,24 @@ Dashboard 上也增加了持久消息的数量。
 
 - [#12957](https://github.com/emqx/emqx/pull/12957) 开始为 macOS 14（Apple Silicon）和 Ubuntu 24.04 Noble Numbat（LTS）构建包。
 
+- [#12883](https://github.com/emqx/emqx/pull/12883) 新增了用于持久化存储管理的 REST API 端点和 CLI 命令。
+
+  新增 REST 端点：
+
+  - `/ds/sites`
+  - `/ds/sites/:site`
+  - `/ds/storages`
+  - `/ds/storages/:ds`
+  - `/ds/storages/:ds/replicas`
+  - `/ds/storages/:ds/replicas/:site`
+
+  新增 CLI 命令：
+
+  - `ds set_replicas`
+  - `ds join`
+  - `ds leave`
+
+
 ### 修复
 
 #### 安全
@@ -308,6 +327,8 @@ Dashboard 上也增加了持久消息的数量。
 #### MQTT
 
 - [#12996](https://github.com/emqx/emqx/pull/12996) 修复了 `emqx_retainer` 应用程序中的进程泄漏问题。以前，当接收到保留消息时客户端断开连接，可能会导致进程泄漏。
+- [#12855](https://github.com/emqx/emqx/pull/12855) 修复了客户端订阅/取消订阅共享主题时，客户端订阅/取消订阅通知的系统主题消息未正确序列化的问题。同时，修复了 `/topics` 端点中 `$queue` 共享主题的格式错误。
+- [#12976](https://github.com/emqx/emqx/pull/12976) 修复了一个问题，在接管一个 socket 已经断开连接的会话时，错误地触发 `client.disconnected` 事件。
 
 #### 数据处理和集成
 
@@ -343,6 +364,7 @@ Dashboard 上也增加了持久消息的数量。
 
 - [#13018](https://github.com/emqx/emqx/pull/13018) 在连接断开时减少了 Postgres/Timescale/Matrix 连接器的日志垃圾。
 - [#13118](https://github.com/emqx/emqx/pull/13118) 修复了规则引擎模板渲染中的性能问题。
+- [#12880](https://github.com/emqx/emqx/pull/12880) 修复了 InfluxDB 动作配置中的一个问题，即当标签集值包含整数或浮点数时，序列化会失败。现在，标签集值会被正确地视为字符串。有关标签集的更多详细信息，请参阅 [行协议 - 标签集](https://docs.influxdata.com/influxdb/v2/reference/syntax/line-protocol/#tag-set)。
 
 #### 可观测性
 
@@ -384,6 +406,8 @@ Dashboard 上也增加了持久消息的数量。
 
 #### 网关
 
+- [#12902](https://github.com/emqx/emqx/pull/12902) 将 MQTT 消息的 Content-type 传递到 Stomp 消息中。
+- [#12892](https://github.com/emqx/emqx/pull/12892) 修复了 OCPP 网关处理下行 BootNotification 时的错误。同时修复了 `gateways/ocpp/listeners` 端点，确保返回当前连接的正确数量。
 - [#12909](https://github.com/emqx/emqx/pull/12909) 修复了 UDP 监听器进程在出现错误或关闭时的处理。修复确保 UDP 监听器在需要时能够干净地停止和重新启动。
 - [#13001](https://github.com/emqx/emqx/pull/13001) 修复了 syskeeper 转发器在连接丢失时永远不会重新连接的问题。
 - [#13010](https://github.com/emqx/emqx/pull/13010) 修复了 JT/T 808 网关在请求注册服务进行身份验证失败时无法正确回复 REGISTER_ACK 消息的问题。
