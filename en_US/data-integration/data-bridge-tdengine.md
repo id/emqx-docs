@@ -110,6 +110,9 @@ The following steps assume that you run both EMQX and TDengine on the local mach
    - **Database Name**: Enter `mqtt`.
    - **Username**: Enter `root`.
    - **Password**: Enter `taosdata`.
+   - **Token**: If you are connecting to TDengine Cloud, you must provide a valid authentication token.
+     - When specified, this token will take precedence over the **Username** and **Password** authentication method.
+     - If left empty, the connector will attempt to authenticate using the **Username** and **Password** credentials.
 5. Advanced settings (optional):  For details, see [Features of Sink](./data-bridges.md#features-of-sink).
 6. Before clicking **Create**, you can click **Test Connectivity** to test if the connector can connect to the TDengine server.
 7. Click the **Create** button at the bottom to complete the creation of the connector. In the pop-up dialog, you can click **Back to Connector List** or click **Create Rule** to continue creating rules with Sinks to specify the data to be forwarded to TDengine and to record client events. For detailed steps, see [Create a Rule with TDengine Sink for Message Storage](#create-a-rule-with-tdengine-sink-for-message-storage) and [Create a Rule with TDengine Sink for Events Recording](#create-a-rule-with-tdengine-sink-for-events-recording).
