@@ -186,6 +186,9 @@
 
   - `rfc3339`: Uses RFC3339 compliant format for date-time strings. For example, `2024-03-26T11:52:19.777087+00:00`.
 
+- [#12392](https://github.com/emqx/emqx/pull/12392) New WebSocket listener option: `validate_utf8` for performance tuning.
+- [#12417](https://github.com/emqx/emqx/pull/12417) Added support for specifying the expiration time of MQTT messages via configuration file. See the description of the `message_expiry_interval` configuration in the `mqtt.conf.example` file for more details.
+
 
 ### Bug Fixes
 
