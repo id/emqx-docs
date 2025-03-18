@@ -1,5 +1,9 @@
 # EMQX 5.8 中的不兼容变更
 
+## e5.8.5
+
+- [#14703](https://github.com/emqx/emqx/pull/14703) 引入了 `force_shutdown.max_heap_size` 最大允许值的变更，现将其设置为 `128GB`。如果之前将 `max_heap_size` 设置为超过 128GB 的值，升级后可能会导致问题，例如在更新或重新加载配置时出现问题。
+
 ## e5.8.4
 
 - [#14360](https://github.com/emqx/emqx/pull/14360) 在请求 Prometheus 指标的 JSON 格式时，`client` 顶层键将始终是一个 JSON 对象数组，而不再是单个 JSON 对象。此更改可能会影响您的监控工具处理数据的方式。

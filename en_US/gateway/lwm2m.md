@@ -816,7 +816,7 @@ Variables:
 
 ## User Interfaces
 
-- Detailed configuration options: [Configuration - LwM2M Gateway](../configuration/configuration-manual.html)
+- Detailed configuration options: [Gateway configuration - lwm2m (Opensource)](https://docs.emqx.com/en/emqx/v@CE_VERSION@/hocon/) and [Gateway configuration - lwm2m (Enterprise)](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/).
 - Detailed HTTP APIs Description: [HTTP API - Gateway](../admin/api.md)
 
 ## Client libraries

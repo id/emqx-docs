@@ -1,4 +1,9 @@
 # Integrate OpenTelemetry for Log Management
+::: tip
+
+OpenTelemetry Integration is only available in the EMQX Enterprise edition after EMQX 5.8.3.
+
+:::
 
 Like file log, OpenTelemetry logs are used to record critical events, status information, and error messages, aiding developers and operations teams in understanding an application's behavior and troubleshooting. However, OpenTelemetry logs differ in that they employ a standardized logging format, making logs easier to parse, analyze, and process. Additionally, OpenTelemetry logs support the addition of rich contextual information to records, such as Trace IDs, tags, attributes, and more.
 

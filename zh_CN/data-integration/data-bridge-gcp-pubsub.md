@@ -55,8 +55,15 @@ MQTT 消息数据写入到 GCP PusSub 后，您可以进行灵活的应用开发
 
 服务账户凭证是用于身份验证和授权的 JSON 文件，EMQX 需要通过它访问 Pub/Sub 资源。
 
-1. 进入 GCP 控制台，在搜索框中输入 **IAM** 并进入 **IAM & Admin** 页面。
-2. 在 IAM & Admin 页面中点击 **Service Accounts** -> **Email** 中对应的邮箱，选择 **KEYS** 标签页，点击 **ADD KEY** 添加以生成用于身份认证 JSON 格式的 key，请妥善保管该文件。
+1. 在您的 GCP 账户中创建一个[服务账户](https://developers.google.com/identity/protocols/oauth2/service-account#creatinganaccount)。确保该服务账户具有检查/读取和发布消息到目标主题的权限（例如，赋予 Pub/Sub Editor 角色）。
+
+2. 点击您创建的服务账户的电子邮件地址。然后，点击**密钥**选项卡。在 **添加密钥** 下拉列表中，选择**创建新密钥**，为该账户生成一个服务账户密钥，并以 JSON 格式下载。
+
+   ::: tip
+
+   请妥善存储服务账户密钥，以便后续使用。
+
+   :::
 
 ![GCP 服务账户凭证](./assets/gcp_pubsub/gcp-service-account.png)
 

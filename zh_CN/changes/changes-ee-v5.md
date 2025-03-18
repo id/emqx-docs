@@ -1,5 +1,191 @@
 # EMQX 企业版 v5 版本
 
+## 5.8.5
+
+*发布日期：2025-02-25*
+
+升级前请查看已知问题列表和不兼容变更列表。
+
+### 增强
+
+#### MQTT 核心功能
+
+- [#14454](https://github.com/emqx/emqx/pull/14454) 引入了 `max_publish_rate` 选项，用于控制每个节点发布保留消息的最大速率。超过此限制发布的消息将仍然被传送，但不会存储为保留消息。
+
+  这个选项有助于限制已配置的保留消息存储的负载。
+
+
+- [#14456](https://github.com/emqx/emqx/pull/14456) 引入了一个简单的防火墙脚本 `bin/emqx_fw`，用于保护 EMQX 监听器免受 SYN 洪泛攻击。此功能仅适用于 Linux 系统。
+- [#14496](https://github.com/emqx/emqx/pull/14496) 为 `POST /data/export` API 中的 `root_keys` 参数添加了额外的验证。现在，非法的根密钥会导致错误，而不是被默默忽略。
+
+#### 访问控制
+
+- [#14494](https://github.com/emqx/emqx/pull/14494) 增强了 MongoDB 授权，支持复杂查询。
+  - 在查询器 filter 配置中支持在第一层级中使用 `$orderby` 操作符指定排序字段和排序顺序，使得在授权检查时可以对查询结果进行排序。
+  - 引入了 `skip` 和 `limit` 选项，增强了 MongoDB 授权中的分页功能以及对查询结果的控制。
+
+
+- [#14570](https://github.com/emqx/emqx/pull/14570) 在 HTTP 认证和授权配置中支持使用占位符。
+
+- [#14665](https://github.com/emqx/emqx/pull/14665) 支持客户端属性作为 ACL 规则前置条件。现在您可以根据客户端属性创建 ACL 规则，从而实现对访问的更精细控制。
+
+  例如，以下规则允许 `"type"` 属性设置为 `"internal"` 的客户端发布或订阅所有主题：
+
+  ```
+  {allow, {client_attr, "type", "internal"}, all, ["#"]}.
+  ```
+
+  以下规则则拒绝 `"type"` 属性以 `"external-"` 开头的客户端发布任何消息：
+
+  ```
+  {deny, {client_attr, "type", {re, "external-.*"}}, publish, ["#"]}.
+  ```
+
+#### 规则引擎
+
+- [#14627](https://github.com/emqx/emqx/pull/14627) 增加了两个新的规则引擎事件：`$events/sys/alarm_activated` 和 `$events/sys/alarm_deactivated`。这些事件会在系统告警激活和解除时被触发。
+
+#### 数据集成
+
+- [#14404](https://github.com/emqx/emqx/pull/14404) 支持对 MQTT 连接器指定静态客户端 ID。
+
+- [#14450](https://github.com/emqx/emqx/pull/14450) 支持 MQTT Source 设置 `no-local` 标志。现在可以在 MQTT Source 设置中配置 `no-local` 标志，以防止客户端发布的消息被同一客户端接收。
+
+- [#14507](https://github.com/emqx/emqx/pull/14507) 增加了两个新的轻量级 HTTP API：`GET /actions_summary` 和 `GET /sources_summary`。这两个新 API 提供了比现有的 `GET /actions` 和 `GET /sources` API 更简洁的动作和 Source 概览，而不是返回这些动作和 Source 的完整配置，能使查询速度更快，且消耗的资源更少。
+
+- [#14524](https://github.com/emqx/emqx/pull/14524) 在 Couchbase 连接器健康检查失败时提供了更详细的错误信息。
+
+- [#14572](https://github.com/emqx/emqx/pull/14572) 更新了 Kafka、Azure Event Hub 和 Confluent 生产者集成的默认设置，将 `parameters.buffer.memory_overload_protection` 的默认值更新为 `true`。
+
+  此更改有助于防止内存超载，并减轻在连接的 Kafka 服务长时间宕机（例如几小时）的情况下发生内存不足（OOM）错误的风险。
+
+- [#14626](https://github.com/emqx/emqx/pull/14626) 更改了 Kafka 和 Pulsar 动作的每分区默认缓冲区大小，调整为 256 MB。
+
+#### 可观测性
+
+- [#14437](https://github.com/emqx/emqx/pull/14437) 在 Prometheus 输出中增加了两个新的指标：`emqx_vm_mnesia_tm_mailbox_size` 和 `emqx_vm_broker_pool_max_mailbox_size`。这些指标跟踪内部 EMQX 进程的邮箱大小，能够指示系统是否超载。此外，当邮箱大小超过某些高水位时，会触发警报。
+
+
+- [#14645](https://github.com/emqx/emqx/pull/14645) 增加了更多的日志信息，以帮助调试首次获取证书撤销列表（CRL）（在它们被缓存和自动刷新之前）。成功和失败的日志分别以 `debug` 和 `warning` 级别记录。
+
+- [#14656](https://github.com/emqx/emqx/pull/14656) 增强了 Prometheus 推送，支持更多的指标，并允许将集群名称作为 Job 标签的变量名使用。
+
+- [#14479](https://github.com/emqx/emqx/pull/14479) 为身份验证和授权后端在端到端追踪中增加了更多详细的追踪信息，以便更好地与 OpenTelemetry 集成。
+
+- [#14644](https://github.com/emqx/emqx/pull/14644) 在端到端追踪中为 OpenTelemetry 集成增加了对客户端提供的 traceparent 的支持。
+
+- [#14657](https://github.com/emqx/emqx/pull/14657) 使端到端追踪的白名单条目对 `broker.publish` span 生效。即，消息传递的 span。
+
+  之前，为了踪订阅者接收消息，用户必须将消息发布者或主题添加到白名单中。这种方法也会追踪消息交付给其他订阅者，可能会生成不必要的 span。
+
+  通过此更新，白名单条目现在也适用于消息传递过程。只需将订阅者的客户端 ID 添加到白名单，就能追踪 `broker.publish` span（即消息发布给特定订阅者）。
+
+- [#14589](https://github.com/emqx/emqx/pull/14589) 和 [#14689](https://github.com/emqx/emqx/pull/14689) 对消息转换和消息验证功能的所有日志消息类型进行节流。
+
+#### MQTT over QUIC
+
+- [#14583](https://github.com/emqx/emqx/pull/14583) QUIC 监听器现在支持将 TLS 密钥秘密转储到 `SSLKEYLOGFILE` 环境变量中，允许像 Wireshark 这样的工具解密实时或捕获的 QUIC 流量。这使得在 QUIC 流量中解码 MQTT 数据包成为可能。
+
+  示例配置： `EMQX_LISTENERS__QUIC__DEFAULT__SSLKEYLOGFILE=/tmp/EMQX_SSLKEYLOGFILE`
+
+  注意：这是一个隐藏的配置，仅供故障排除使用。
+
+
+- [#14597](https://github.com/emqx/emqx/pull/14597) 在连接终止过程中异步中止流读取。
+
+  在会话被“接管”、“丢弃”或“踢出”的情况下，之前的连接终止过程涉及平滑的流关闭。如果旧客户端没有响应，这可能会导致最长达 3 秒的阻塞延迟。
+
+  这个问题是因为平滑关闭依赖于两个端点之间的协作信号，确保 MQTT.DISCONNECT 数据包在关闭传输之前送达对端。如果对端没有响应，这种方法就会导致不必要的延迟。
+
+  通过此改进，在终止过程中流现在被半关闭。读取（接收）操作会被中止，而写入（发送）操作保持打开。此调整确保 MQTT.DISCONNECT 数据包仍然会送达对端，正确地通知关闭过程，而不会造成不必要的延迟。
+
+  **优势**：
+
+  - 减少了在对端不可达或无响应时的阻塞时间。
+  - 保证了关闭过程的正确通知，改善了整体连接关闭行为。
+  - 减少了会话接管和清理启动场景中的延迟（例如，丢弃）。
+
+### 修复
+
+#### MQTT 核心功能
+
+- [#14405](https://github.com/emqx/emqx/pull/14405) 将 `mqtt.max_packet_size` 中的 `256MB` 转换为 `268435455` 字节。
+
+  以前，EMQX 允许为 `mqtt.max_packet_size` 配置设置 `256MB`，但实际上这是比协议规范允许的最大值多出一个字节。为了向后兼容，`mqtt.max_packet_size=256MB` 仍然可以从配置中使用，但会被自动转换为 `268435455` 字节。
+
+
+- [#14508](https://github.com/emqx/emqx/pull/14508) 改进了当大量客户端重新连接时 EMQX 的性能。
+- [#14608](https://github.com/emqx/emqx/pull/14608) 强制 MQTT 会话消息队列采用先进先出（FIFO）语义。现在，当 MQTT 会话消息队列达到其容量时，它将严格遵循 FIFO 语义。当队列满时，最旧的消息将首先被丢弃。
+- [#14609](https://github.com/emqx/emqx/pull/14609) 修正了过载保护的高内存阈值，改为使用 `sysmon.os.sysmem_high_watermark`。现在，高内存阈值将在启动过程中或每次 `sysmon.os.sysmem_high_watermark` 发生变化时正确更新。这确保了内存过载保护阈值是动态的，并反映了系统内存设置的变化。
+- [#14654](https://github.com/emqx/emqx/pull/14654) 即使达到了最大会话限制，只要之前的会话仍然有效（即未过期或被清理），客户端也可以成功重新连接。
+- [#14588](https://github.com/emqx/emqx/pull/14588) 改进了在容器化环境中运行 EMQX 时内存使用报告的准确性。在像 Amazon Elastic Kubernetes Service（AWS EKS）这样的容器化环境中，内存使用读取的准确性可能会受到主机内核版本、cgroup 版本以及容器管理服务如何挂载 cgroupfs 等因素的影响。此更新改进了在 AWS EKS 中运行 EMQX 时内存使用报告的准确性，特别是解决了由容器环境引起的差异。
+
+#### License
+
+- [#14568](https://github.com/emqx/emqx/pull/14568) 增强了 License 限制，包括断开会话。以前，EMQX License 限制只计算已连接会话的数量。现在，限制适用于所有已连接和断开连接的会话，且启用了“会话保留”功能。当达到 License 限制时，将拒绝新的离线保留会话，从而确保更好的资源管理和 License 合规性。
+
+#### 认证
+
+- [#14585](https://github.com/emqx/emqx/pull/14585) 修复了一个问题，其中密码哈希比较区分大小写，这可能导致认证失败，特别是在与外部系统集成时，这些系统可能存储具有不同大小写约定的密码。现在，密码哈希将以不区分大小写的方式进行比较，从而提高了与外部源进行用户认证时的兼容性和可靠性。
+
+#### 网关
+
+- [#14484](https://github.com/emqx/emqx/pull/14484) 修复了 Exproto 网关不支持在服务器端点使用主机名的问题。
+
+
+- [#14489](https://github.com/emqx/emqx/pull/14489) 修复了访问 `api/v5/gateways` 端点时，如果网关在集群中的节点上未启用，导致出现 500 错误的问题。现在，此类请求将返回更合适的响应，防止崩溃并提高 API 在这些场景中的稳定性。
+- [#14501](https://github.com/emqx/emqx/pull/14501) 修复了网关客户端查询 HTTP API 总是返回 keepalive 为 `0` 值的问题。现在，HTTP API 将返回正确的 keepalive 值，且网关将遵守配置的空闲超时，正确反映客户端的心跳设置。
+- [#14503](https://github.com/emqx/emqx/pull/14503) 如果网关没有监听器，返回空列表而不是 404 错误。以前，通过 API 访问网关的监听器页面（如 LwM2M）时，如果没有配置监听器，则会返回 404 错误。此修复将行为更改为当没有监听器时返回空列表。
+- [#14511](https://github.com/emqx/emqx/pull/14511) 消除了 Stomp 网关在客户端认证失败时不必要的日志打印。
+- [#14653](https://github.com/emqx/emqx/pull/14653) 修复了 Stomp 网关的 keepalive 行为。以前，如果心跳包在检查定时器稍后收到，STOMP 连接的心跳机制将无法保持连接存活。此更新引入了对轻微延迟的容忍，确保连接保持存活。平均而言，连接关闭现在发生在心跳间隔的约 1.5 倍时，提供了更可靠的 keepalive 功能。
+
+
+#### 规则引擎
+
+- [#14622](https://github.com/emqx/emqx/pull/14622) 修复了当超过 32 个消息转换或 schema 验证匹配一个主题时，消息转换和 schema 验证可能会以任意顺序执行的问题。
+
+#### 数据集成
+
+- [#14518](https://github.com/emqx/emqx/pull/14518) 此更新确保当从配置加载连接器时，无论是通过 CLI 还是 HTTP API，连接器现在都会异步启动。之前，如果连接器在启动过程中挂起，可能会导致整个配置导入过程超时。
+
+  此外，当（重新）启动节点时，连接器现在也会异步启动，从而缩短启动时间。此版本还修复了一个潜在问题，即在连接器之前可以将 Source 添加到配置中，确保在配置导入过程中正确的初始化顺序。
+
+
+- [#14545](https://github.com/emqx/emqx/pull/14545) 修复了一个问题，即当 RabbitMQ 变得无响应时，RabbitMQ 动作无法移除的问题。
+- [#14550](https://github.com/emqx/emqx/pull/14550) 修复了一个问题，即在 MQTT 连接器的连接池中的 MQTT 客户端如果只有少数客户端断开连接时，无法自动重新连接。此修复确保当客户端断开连接时能够自动重新连接，从而提高连接的可靠性。
+- [#14555](https://github.com/emqx/emqx/pull/14555) 修复了一个关于 MQTT Source 的问题，之前在移除或更新 Source 时，未能正确地取消订阅共享主题。
+- [#14650](https://github.com/emqx/emqx/pull/14650) 将 `eredis_cluster` 库更新到版本 `0.8.8`，修复了一个问题，即在 Redis 集群模式下，Redis 主从故障转移后，EMQX 无法从 `no_connection` 错误中恢复。
+- [#14671](https://github.com/emqx/emqx/pull/14671) 修复了 MQTT 动作中的一个问题。在修复之前，由于一个罕见的竞态条件，当 MQTT 连接器的连接关闭时，消息可能无法发送或重试。此更新确保 TCP 连接关闭（`tcp_closed`）和客户端断开连接被处理为可恢复的错误。
+- [#14695](https://github.com/emqx/emqx/pull/14695) 改进了 HTTP API 错误信息，当尝试更新连接器并发生验证错误时，返回更详细的错误消息。
+- [#14697](https://github.com/emqx/emqx/pull/14697) 修复了一个问题，当 Source 和动作共享相同名称并使用相同的连接器时，如果存在双重 Source /动作的规则依赖关系，无法删除动作或 Source。
+- [#14427](https://github.com/emqx/emqx/pull/14427) 提供了关于 GCP PubSub 生产者连接器健康检查失败的更多详细错误消息。
+- [#14451](https://github.com/emqx/emqx/pull/14451) 修复了 PostgreSQL 动作中的无效输入处理，该动作导致大规模的崩溃报告。现在，系统优雅地处理此类错误并记录简洁且详细的错误消息，使故障排除更简单清晰。
+- [#14552](https://github.com/emqx/emqx/pull/14552) 修复了 Kafka 生产者在 Kafka 服务停止时由于缓冲区溢出而导致的 `unexpected_id` 崩溃问题。此错误在 EMQX 企业版 5.8.1 中引入。
+- [#14560](https://github.com/emqx/emqx/pull/14560) 修复了 Oracle 动作由于复杂 SQL 模板问题导致健康检查失败的问题。
+- [#14563](https://github.com/emqx/emqx/pull/14563) 修复了 Kafka 和 Pulsar 生产者中丢弃消息时的 "failed" 计数器问题。以前，当 Kafka 和 Pulsar 生产者动作因缓冲区溢出或请求超时而丢弃消息时，相应规则的 "failed" 计数器未正确递增。此修复确保规则指标准确更新，反映丢弃的消息，并解决了规则页面上的统计指示器不正确的问题。
+- [#14567](https://github.com/emqx/emqx/pull/14567) 修复了在禁用或移除 S3 连接器后，S3 HTTP 池未停止的问题。
+- [#14631](https://github.com/emqx/emqx/pull/14631) 增强了 Kafka、Azure Event Hub 和 Confluent 生产者动作的内存过载保护。系统现在在达到高内存水位时更加积极地丢弃缓冲数据，从而减少了内存不足状态的风险。
+- [#14705](https://github.com/emqx/emqx/pull/14705) 改进了 Kafka 连接器的连接性检查，确保正确处理身份验证。之前，如果 Kafka 需要身份验证但未配置凭据或健康检查主题，连接性测试会错误地通过，从而导致潜在的动作创建失败。此修复引入了一个虚拟的健康检查主题 `emqx-connector-connectivity-probe`，确保连接器仅在 Kafka 返回有效的元数据或 `unknown_topic_or_partition` 响应时才被认为是健康的。
+
+#### 集群
+
+- [#14536](https://github.com/emqx/emqx/pull/14536) 修复了集群管理操作中的罕见竞态条件。修复前，竞态条件导致某些集群管理操作挂起，直到节点重启之前，集群变更无法进行。此问题通过加强全局锁定来保护 `mria:join/1` 操作得到解决。更严格的锁定防止了并发加入操作的相互干扰。
+
+
+- [#14548](https://github.com/emqx/emqx/pull/14548) 修复了一个问题，即如果在节点关闭时有新节点加入集群，重启节点时会发生崩溃，导致出现 `** FATAL ** Failed to merge schema: {aborted,function_clause}` 错误。此修复确保节点现在可以平稳重启，而不需要重新加入集群。
+- [#14662](https://github.com/emqx/emqx/pull/14662) 修复了一个问题，即当一个正在运行的副本节点在重新加入一个所有核心节点的内部数据库已被清空的集群时，无法参与某些远程过程调用（RPC）操作。
+
+#### 管理
+
+- [#14543](https://github.com/emqx/emqx/pull/14543) 修复了一个内部兼容性问题，导致通过 WS、WSS 或网关监听器连接的客户端触发某些 ExHooks 时崩溃。
+
+#### 可观测性
+
+- [#14544](https://github.com/emqx/emqx/pull/14544) 修复了一个问题，即禁用 TCP 或 TLS 监听器时，导致 Prometheus 度量收集过程崩溃。
+
+- [#14466](https://github.com/emqx/emqx/pull/14466) 修复了一个问题，即当追踪事件采样比例设置为 `100%` 时，事件开关无法生效。
+- [#14666](https://github.com/emqx/emqx/pull/14666) 暴露了配置项 `opentelemetry.traces.max_queue_size`，可通过 REST API 和 Dashboard 进行配置。之前，这个配置项只能通过配置文件或操作系统环境变量进行配置。
+
 ## 5.8.4
 
 *发布日期：2024-12-26*
@@ -671,6 +857,8 @@
 
 #### 认证与授权
 
+- [#13350](https://github.com/emqx/emqx/pull/13350) 支持获取客户端连接的服务器名称，并将其存储在客户端信息中，作为 `peersni` 字段。
+
 - [#12418](https://github.com/emqx/emqx/pull/12418) 增强了 JWT 认证功能，支持使用对象列表来进行声明验证：
 
   ```
@@ -768,15 +956,26 @@
 #### 运维
 
 - [#13202](https://github.com/emqx/emqx/pull/13202) 引入了 `emqx ctl conf cluster_sync fix` 命令，用于解决集群配置不一致的问题。该命令将所有节点的配置与具有最高 `tnx_id` 的节点的配置进行同步，确保集群配置的一致性。
+
 - [#13250](https://github.com/emqx/emqx/pull/13250) 为 `cluster.discovery_strategy` 添加了一个新的值：`singleton`。选择此选项后，将不会形成集群，并且节点将拒绝与其他节点之间的连接尝试。
+
 - [#13370](https://github.com/emqx/emqx/pull/13370) 为持久存储添加了新版 `wildcard_optimized` 存储布局，提供了以下改进：
   - 新布局没有固有的延迟。
   - MQTT 消息被序列化为更节省空间的格式。
+  
 - [#13524](https://github.com/emqx/emqx/pull/13524) 添加了 `emqx ctl exclusive` CLI 界面以更有效地管理排它订阅主题。该功能使管理员能够更好地管理和排查排它主题订阅问题，确保订阅状态准确反映并防止意外故障。
+
 - [#13597](https://github.com/emqx/emqx/pull/13597) 添加了轻量级的封装函数，供插件自行存储和管理证书文件。此修复措施防止插件证书被证书垃圾回收（GC）功能意外删除。
+
 - [#13626](https://github.com/emqx/emqx/pull/13626) 添加了一个新命令 `emqx ctl listeners enable <Identifier> <Bool>` 用于启用/禁用监听器。
+
 - [#13493](https://github.com/emqx/emqx/pull/13493) 将 RPC 库 `gen_rpc` 升级到 3.4.0 版本。此更新将默认的 RPC 服务器套接字选项从 `true` 更改为 `active-100`，在 RPC 服务器负载较重时对对等节点引入了反压机制。
+
 - [#13665](https://github.com/emqx/emqx/pull/13665) 在 Prometheus 端点中新增了一个指标 `emqx_actions_count`。该指标包含所有规则添加的动作数量，包括重发布（Republish）动作和控制台输出（Console Output）动作。
+
+- [#13434](https://github.com/emqx/emqx/pull/13434) 简化了 `rpc` 配置。新增配置 `rpc.server_port` 替代了 `rpc.tcp_server_port` 和 `rpc.ssl_server_port`。
+
+  `rpc.tcp_client_num` 重命名为 `rpc.client_num`，因为该配置适用于 TCP 和 SSL。旧的配置名称保留为别名，以确保向后兼容。
 
 ### 修复
 
@@ -870,7 +1069,7 @@
 
 - [#13441](https://github.com/emqx/emqx/pull/13441) 加强了 CoAP 网关连接模式。UDP 连接现在将始终通过 `clientid` 绑定到相应的网关连接。
 
-### Bug Fixes
+### 修复
 
 - [#13222](https://github.com/emqx/emqx/pull/13222) 解决了与`CONNECT`数据包中遗嘱消息相关的标志检查和错误处理问题。 详细的规范，请参考：
   - MQTT-v3.1.1-[MQTT-3.1.2-13], MQTT-v5.0-[MQTT-3.1.2-11]
@@ -1059,6 +1258,7 @@ Dashboard 上也增加了持久消息的数量。
 
 - [#12827](https://github.com/emqx/emqx/pull/12827) 现在可以使用新的规则 ID 追踪过滤器以及客户端 ID 过滤器来追踪规则。为测试目的，还可以使用新的 HTTP API （rules/:id/test）来模拟测试规则，并支持在渲染动作参数后停止其写入操作。
 - [#12863](https://github.com/emqx/emqx/pull/12863) 现在可以通过在创建追踪模式时将格式化参数设置为 "json"，将追踪日志条目格式化为 JSON 对象。
+- [#12844](https://github.com/emqx/emqx/pull/12844) 修复了 CPU 使用率和空闲统计值未正确保留精度的问题。现在，这些值始终以两位小数存储。此更改影响了 Prometheus 统计指标和 OpenTelemetry 管理指标。
 
 #### 扩展
 
@@ -1116,6 +1316,23 @@ Dashboard 上也增加了持久消息的数量。
 
 - [#12957](https://github.com/emqx/emqx/pull/12957) 开始为 macOS 14（Apple Silicon）和 Ubuntu 24.04 Noble Numbat（LTS）构建包。
 
+- [#12883](https://github.com/emqx/emqx/pull/12883) 新增了用于持久化存储管理的 REST API 端点和 CLI 命令。
+
+  新的 REST 端点：
+
+  - `/ds/sites`
+  - `/ds/sites/:site`
+  - `/ds/storages`
+  - `/ds/storages/:ds`
+  - `/ds/storages/:ds/replicas`
+  - `/ds/storages/:ds/replicas/:site`
+
+  新的 CLI 命令：
+
+  - `ds set_replicas`
+  - `ds join`
+  - `ds leave`
+
 ### 修复
 
 #### 安全
@@ -1126,6 +1343,8 @@ Dashboard 上也增加了持久消息的数量。
 #### MQTT
 
 - [#12996](https://github.com/emqx/emqx/pull/12996) 修复了 `emqx_retainer` 应用程序中的进程泄漏问题。以前，当接收到保留消息时客户端断开连接，可能会导致进程泄漏。
+- [#12855](https://github.com/emqx/emqx/pull/12855) 修复了客户端订阅/取消订阅共享主题时，客户端订阅/取消订阅通知的系统主题消息未正确序列化的问题。同时，修复了 `/topics` 端点中 `$queue` 共享主题的格式错误。
+- [#12976](https://github.com/emqx/emqx/pull/12976) 修复了一个问题，在接管一个 socket 已经断开连接的会话时，错误地触发 `client.disconnected` 事件。
 
 #### 数据处理和集成
 
@@ -1161,6 +1380,7 @@ Dashboard 上也增加了持久消息的数量。
 
 - [#13018](https://github.com/emqx/emqx/pull/13018) 在连接断开时减少了 Postgres/Timescale/Matrix 连接器的日志垃圾。
 - [#13118](https://github.com/emqx/emqx/pull/13118) 修复了规则引擎模板渲染中的性能问题。
+- [#12880](https://github.com/emqx/emqx/pull/12880) Fixed an issue in the InfluxDB action configuration where serialization failed when a tag set value contained a literal integer or float. Tag set values are now correctly treated as strings. For more details on tag sets, refer to the [Line Protocol - Tag Set](https://docs.influxdata.com/influxdb/v2/reference/syntax/line-protocol/#tag-set).
 
 #### 可观测性
 
@@ -1202,6 +1422,8 @@ Dashboard 上也增加了持久消息的数量。
 
 #### 网关
 
+- [#12902](https://github.com/emqx/emqx/pull/12902) 将 MQTT 消息的 Content-type 传递到 Stomp 消息中。
+- [#12892](https://github.com/emqx/emqx/pull/12892) 修复了 OCPP 网关处理下行 BootNotification 时的错误。同时修复了 `gateways/ocpp/listeners` 端点，确保返回当前连接的正确数量。
 - [#12909](https://github.com/emqx/emqx/pull/12909) 修复了 UDP 监听器进程在出现错误或关闭时的处理。修复确保 UDP 监听器在需要时能够干净地停止和重新启动。
 - [#13001](https://github.com/emqx/emqx/pull/13001) 修复了 syskeeper 转发器在连接丢失时永远不会重新连接的问题。
 - [#13010](https://github.com/emqx/emqx/pull/13010) 修复了 JT/T 808 网关在请求注册服务进行身份验证失败时无法正确回复 REGISTER_ACK 消息的问题。
@@ -1414,6 +1636,8 @@ Dashboard 上也增加了持久消息的数量。
   - `epoch`: 时间戳以微秒精度的 Unix 纪元时间格式表示。
   - `rfc3339`: 时间戳使用符合 RFC3339 标准的日期时间字符串格式，格式示例为 `2024-03-26T11:52:19.777087+00:00`。
 
+- [#12417](https://github.com/emqx/emqx/pull/12417) [#12417](https://github.com/emqx/emqx/pull/12417) 支持通过配置文件指定 MQTT 消息过期时间。有关更多详情，请参阅 `mqtt.conf.example` 文件中 `message_expiry_interval` 配置的描述。
+
 ### 修复
 
 - [#11868](https://github.com/emqx/emqx/pull/11868) 修复了会话接管后未发布遗嘱消息的问题。
@@ -1622,6 +1846,10 @@ Dashboard 上也增加了持久消息的数量。
 
 - [#11902](https://github.com/emqx/emqx/pull/11902) EMQX 消息桥接时支持 Nari Syskeeper 2000 单向隔离网闸穿透。
 - [#12348](https://github.com/emqx/emqx/pull/12348) EMQX 支持与 Elasticsearch 的数据集成。
+- [#12388](https://github.com/emqx/emqx/pull/12388) QUIC 监听器现在显示每个监听器的连接数量，而不是全局连接数量。
+- [#12325](https://github.com/emqx/emqx/pull/12325) QUIC 监听器支持在不干扰现有连接的情况下重新加载监听器绑定。
+
+- [#12274](https://github.com/emqx/emqx/pull/12274) 启用 QUIC MQTT 监听器的动态 TLS 配置更新，且不会中断现有连接。实现了一个故障保护机制，在更新失败时回退到之前的 TLS 配置。
 
 ### 修复
 
@@ -1643,6 +1871,10 @@ Dashboard 上也增加了持久消息的数量。
 
 *发布日期: 2024-01-09*
 
+### 增强
+
+- [#12261](https://github.com/emqx/emqx/pull/12261) IoTDB 的桥接功能已被拆分，可以通过连接器和动作 API 使用。它们仍然与旧的桥接 API 向后兼容。
+
 ### 修复
 
 - [#12234](https://github.com/emqx/emqx/pull/12234) 解决了 EMQX 5.4.0 之前版本在 `emqx.conf` 中定义的 Open Telemetry 配置的兼容性问题，确保最新 EMQX 发布版本能够平滑兼容旧版配置。
@@ -1661,6 +1893,8 @@ Dashboard 上也增加了持久消息的数量。
 *发布日期: 2023-12-23*
 
 ### 增强
+
+- [#12114](https://github.com/emqx/emqx/pull/12114) ClientInfo 中新增了 peerport 字段。ExHook 中的 ClientInfo 和 ConnInfo 消息新增了 peerport 字段。
 
 - [#11884](https://github.com/emqx/emqx/pull/11884) 对 Prometheus API 及其配置进行了以下改进：
 
@@ -1748,6 +1982,8 @@ Dashboard 上也增加了持久消息的数量。
 - [#12176](https://github.com/emqx/emqx/pull/12176) 无论之前是否成功建立连接，始终向 MQTT-SN 客户端发送 "DISCONNECT" 数据包的确认。
 - [#12180](https://github.com/emqx/emqx/pull/12180) 修复了 MQTT-SN 网关因 DTLS 相关配置兼容性问题导致监听器无法启动的问题。
 - [#12219](https://github.com/emqx/emqx/pull/12219) 修复了从 Dashboard 更新文件传输 S3 配置时密钥反混淆的问题。
+- [#12141](https://github.com/emqx/emqx/pull/12141) 修复了 API 端点 `/v5/topics` 在主题过滤器无效时返回 `InternalError` 和 HTTP 状态 500 的问题。
+- [#12059](https://github.com/emqx/emqx/pull/12059) 将 `multi-time-warp` 设置为默认 time warp 模式。详情请参见：[time_correction_#multi-time-warp-mode](https://www.erlang.org/doc/apps/erts/time_correction#multi-time-warp-mode)。
 
 ## 5.3.2
 
