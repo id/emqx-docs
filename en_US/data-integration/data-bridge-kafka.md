@@ -97,7 +97,7 @@ Before adding a Kafka Sink action, you need to create a Kafka producer connector
 4. Configure the parameters required to connect to Kafka:
    - Enter `127.0.0.1:9092` for the **Bootstrap Hosts**. Note: The demonstration assumes that you run both EMQX and Kafka on the local machine. If you have Kafka and EMQX running remotely, please adjust the settings accordingly.
    - Leave other options as default or configure them according to your business needs.
-   - If you want to establish an encrypted connection, click the **Enable TLS** toggle switch. For more information about TLS connection, see [TLS for External Resource Access](../network/overview.md/#tls-for-external-resource-access).
+   - If you want to establish an encrypted connection, click the **Enable TLS** toggle switch. For more information about TLS connection, see [TLS for External Resource Access](../network/overview.md#tls-for-external-resource-access).
 5. Before clicking **Create**, you can click **Test Connection** to test that the connection to the Kafka server is successful.
 5. Click the **Create** button to complete the creation of the connector.
 
@@ -174,7 +174,7 @@ Starting from EMQX v5.7.2, you can dynamically configure the Kafka topics in the
 
 #### Use Environment Variables
 
-EMQX v5.7.2 introduces a new functionality of dynamically assigning the values retrieved from [environment variables](../configuration/configuration.md/#environment-variables) to a field within messages during the SQL processing phase. This functionality uses the [getenv](../data-integration/rule-sql-builtin-functions.md#system-function) function from the built-in SQL functions of the rule engine to retrieve environment variables from EMQX. The values of the variables are then set into SQL processing results. As an application of this feature, when configuring Kafka topics in Kafka Sink rule actions, you can reference fields from rule output results to set the Kafka topic. The following is a demonstration of this application:
+EMQX v5.7.2 introduces a new functionality of dynamically assigning the values retrieved from [environment variables](../configuration/configuration.md#environment-variables) to a field within messages during the SQL processing phase. This functionality uses the [getenv](../data-integration/rule-sql-builtin-functions.md#system-function) function from the built-in SQL functions of the rule engine to retrieve environment variables from EMQX. The values of the variables are then set into SQL processing results. As an application of this feature, when configuring Kafka topics in Kafka Sink rule actions, you can reference fields from rule output results to set the Kafka topic. The following is a demonstration of this application:
 
 ::: tip Note
 
@@ -196,7 +196,7 @@ To prevent leakage of other system environment variables, the names of environme
 
    ```sql
    SELECT
-     getenv(`KAFKA_TOPIC`) as kafka_topic,
+     getenv('KAFKA_TOPIC') as kafka_topic,
      payload
    FROM
      "t/#"
@@ -303,7 +303,7 @@ This section demonstrates how to create a rule in EMQX to further process the me
 
 4. Enter the following statement in the **SQL Editor** if you want to forward the messages transformed from the Kafka source`$bridges/kafka_consumer:<sourceName>` to EMQX.
 
-   Note: If you want to specify your own SQL syntax, make sure that the `SELECT` part includes all fields required by the republishing action set in later steps.
+   Note: If you want to specify your own SQL syntax, make sure that the `SELECT` part includes all fields required by the republishing action set in later steps. The `SELECT` statement for the Kafka Source can use fields such as `ts_type`, `topic`, `ts`, `event`, `headers`, `key`, `metadata`, `value`, `timestamp`, `offset`, `node`, etc.
 
    ```sql
    SELECT
@@ -338,8 +338,9 @@ This section demonstrates how to create a rule in EMQX to further process the me
 1. Select the **Action Outputs** tab and click the + **Add Action** button to define an action that will be triggered by the rule. 
 2. Select **Republish** from the **Type of Action** drop-down list.
 3. In **Topic** and **Payload** fields, you can enter the topic and payload for the messages you want to republish. For example, enter `t/1` and `${.}` for this demonstration.
+   - You can also use `${}` in the **Topic** field to dynamically specify the MQTT topic, such as `t/${key}` (Note: The parameter provided inside `${}` must be included in the SQL `Select` statement).
 4. Click **Add** to include the action to the rule.
-8. Back on the **Create Rule** page, click **Save**.
+5. Back on the **Create Rule** page, click **Save**.
 
 ![Kafka_consumer_rule](./assets/Kafka_consumer_rule.png)
 
@@ -400,7 +401,7 @@ This section describes some advanced configuration options that can optimize the
 | Buffer Mode (Sink)                        | Defines whether messages are stored in a buffer before being sent. Memory buffering can increase transmission speeds.<br />`memory`: Messages are buffered in memory. They will be lost in the event of an EMQX node restart.<br />`disk`: Messages are buffered on disk, ensuring they can survive an EMQX node restart.<br />`hybrid`: Messages are initially buffered in memory. When they reach a certain limit (refer to the `segment_bytes` configuration for more details), they are gradually offloaded to disk. Similar to the memory mode, messages will be lost if the EMQX node restarts. | `memory`           |
 | Per-partition Buffer Limit (Sink)         | Maximum allowed buffer size, in bytes, for each Kafka partition. When this limit is reached, older messages will be discarded to make room for new ones by reclaiming buffer space. <br />This option helps to balance memory usage and performance. | `2` GB             |
 | Segment File Bytes (Sink)                 | This setting is applicable when the buffer mode is configured as `disk` or `hybrid`. It controls the size of segmented files used to store messages, influencing the optimization level of disk storage. | `100` MB           |
-| Memory Overload Protection (Sink)         | This setting applies when the buffer mode is configured as `memory`. EMQX will automatically discard older buffered messages when it encounters high memory pressure. It helps prevent system instability due to excessive memory usage, ensuring system reliability. <br />**Note**: The threshold for high memory usage is defined in the configuration parameter `sysmon.os.sysmem_high_watermark`. This configuration is effective only on Linux systems. | `Disabled`         |
+| Memory Overload Protection (Sink)         | This setting applies when the buffer mode is configured as `memory`. EMQX will automatically discard older buffered messages when it encounters high memory pressure. It helps prevent system instability due to excessive memory usage, ensuring system reliability. <br />This configuration is effective only on Linux systems. | `Enabled`          |
 | Socket Send / Receive Buffer Size         | Manages the size of socket buffers to optimize network transmission performance. | `1024` KB          |
 | TCP Keepalive                             | This configuration enables TCP keepalive mechanism for Kafka bridge connections to maintain ongoing connection validity, preventing connection disruptions caused by extended periods of inactivity. The value should be provided as a comma-separated list of three numbers in the format `Idle, Interval, Probes`:<br />Idle: This represents the number of seconds a connection must remain idle before the server initiates keep-alive probes. The default value on Linux is 7200 seconds.<br />Interval: The interval specifies the number of seconds between each TCP keep-alive probe. On Linux, the default is 75 seconds.<br />Probes: This parameter defines the maximum number of TCP keep-alive probes to send before considering the connection as closed if there's no response from the other end. The default on Linux is 9 probes.<br />For example, if you set the value to '240,30,5,' it means that TCP keepalive probes will be sent after 240 seconds of idle time, with subsequent probes sent every 30 seconds. If there are no responses for 5 consecutive probe attempts, the connection will be marked as closed. | `none`             |
 | Max Linger Time                           | Maximum duration for a per-partition producer to wait for messages in order to collect a batch to buffer. The default value `0` means no wait. For non-memory buffer mode, `5ms` will significantly reduce IOPS, though with the cost of increased latency. | `0` milliseconds   |

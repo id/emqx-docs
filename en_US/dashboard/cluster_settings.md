@@ -40,9 +40,9 @@ The **Force Shutdown** tab allows you to configure the automatic shutdown behavi
 
 You can configure settings for the following fields in the **Force Shutdown** tab page:
 
-- **Enable Force Shutdown**: This toggle switch enables or disables the force shutdown feature. When enabled, the system will automatically trigger a shutdown if the specified resource thresholds are surpassed. It is enabled by default.
+- **Enable Force Shutdown**: This toggle switch enables or disables the force shutdown feature. When enabled, the system automatically triggers the shutdown of client processes if the specified resource thresholds are surpassed. It is enabled by default.
 - **Max Heap Size**: Specifies the maximum allowed heap size for the system. If the heap size surpasses this limit, the system will initiate a forced shutdown to maintain stability. The default value is `32 MB`.
-- **Max Message Queue Length**: Defines the maximum allowed length for the message queue. If the queue exceeds this length, a forced shutdown will be triggered to prevent system overload. The default value is `1000`.
+- **Max Mailbox Size**: Defines the maximum allowed length for the mailbox message queue. If the queue exceeds this length, a forced shutdown will be triggered to prevent system overload. The default value is `1000`.
 
 ## Listeners
 
@@ -132,7 +132,7 @@ Users can customize and modify the monitoring data in `Grafana` according to the
 
 ![image](./assets/emqx-grafana.jpg)
 
-For detailed configuration of OpenTelemetry and Datadog integration, refer to [Integrate with OpenTelemetry](../observability/open-telemetry/open-telemetry.md) and [Integrate with Datadog](../observability/datadog.md).
+For detailed configuration of OpenTelemetry and Datadog integration, refer to [Integrate with OpenTelemetry](../observability/opentelemetry/opentelemetry.md) and [Integrate with Datadog](../observability/datadog.md).
 
 ## Cluster Linking
 

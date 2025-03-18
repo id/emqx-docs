@@ -1,8 +1,8 @@
 # Access Control List
 
-EMQX allows presetting client permissions during the authentication phase to control the publish-subscribe permission checks after the client logs in. Currently, both JWT authentication and HTTP authentication support permission presets, using Access Control Lists (ACL) as an optional extension of the authentication result. For example, this can be a private claim `acl` defined in JWT, or an `acl` JSON property returned as part of the HTTP authentication response. After a client connects, its publish and subscribe actions are restricted by these ACL rules.
+This page introduces Access Control Lists (ACL) rules embedded in JWT and HTTP authentication responses. Currently, JWT authentication and HTTP authentication support permission presets, using ACL as an optional extension of the authentication result. For example, this can be a private claim `acl` defined in JWT, or an `acl` JSON property returned as part of the HTTP authentication response. After a client connects, its publish and subscribe actions are restricted by these ACL rules.
 
-This page introduces the ACL rules for presetting client permissions. Authorizing a client using the ACL rules included in the authentication response is concise, efficient, and generally sufficient for most use cases. For more comprehensive but generic authorization methods, refer to [Authorization](../authz/authz.md).
+General ACL rules are stored in `acl.conf`. For details, see [acl.conf](../authz/file.md). For more comprehensive authorization methods, refer to [Authorization](../authz/authz.md).
 
 ::: tip
 

@@ -150,7 +150,7 @@ Configure the following fields according to your business needs, and then click 
 
 - **Interval**: Specify the time interval for reporting the monitoring metrics data to Pushgateway. The default value it `15` seconds.
 - **Pushgateway Server**: Type the URL of Prometheus server. It is `http://127.0.0.1:9091` by default.
-- **Job Name**: Specify variables that include the EMQX node name and hostname. The default value is `${name}/instance/${name}~${host}`. For example, when the EMQX node name is `emqx@127.0.0.1`, the `name` variable takes the value `emqx` and the `host` variable takes the value `127.0.0.1`.
+- **Job Name**: Specify variables that include the EMQX cluster name, node name, and hostname. The default value is `${name}/instance/${name}~${host}`. For example, when the EMQX node name is `emqx@127.0.0.1`, the `name` variable takes the value `emqx` and the `host` variable takes the value `127.0.0.1`.
 - **Headers**: Type the key and value of the HTTP headers for the monitoring metrics that are pushed to Pushgateway. You can add a list of headers by clicking the **Add** button. The type is string, for example, { Authorization = "some-authz-tokens"}.
 
 At the same time, you can click the **Help** button and refer to the steps on the **Use Pushgateway** tab for configuration.

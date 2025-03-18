@@ -26,6 +26,34 @@
 
   <!-- https://emqx.atlassian.net/browse/EMQX-12290 -->
 
+- **分片副本集变化在丢失节点数量达到一定程度后卡住（始于 5.8.0，已在 5.8.5 中修复）**
+
+  该问题仅在启用了持久会话并且后端使用 DS Raft 存储时发生。
+
+  当作为持久存储数据复制站点的节点在没有先交接数据的情况下永久离开集群时，可能会导致任何请求的副本集转换永远无法完成。
+
+  以下是一个简化的示例，展示了在 `emqx ctl ds info` 输出中的表现。在此示例中，节点 `emqx@emqxc1-core0.local` 在仍然负责并且是所有分片的唯一复制站点的情况下离开了集群，然后请求 `emqx@emqxc2-core0.local` 接管并执行 `emqx ds join messages ABCDEF2222222222`。
+
+  ```shell
+  Site
+  ABCDEF1111111111 'emqx@emqxc1-core0.local' (!) UNIDENTIFIED
+  ABCDEF2222222222 'emqx@emqxc2-core0.local' up
+  <...>
+  
+  Shard            Replicas
+  messages/0       (!) ABCDEF1111111111
+  messages/1       (!) ABCDEF1111111111
+  <...>
+  messages/9       (!) ABCDEF1111111111
+  
+  Shard             Transitions
+  messages/0        +ABCDEF2222222222 -ABCDEF1111111111
+  messages/1        +ABCDEF2222222222 -ABCDEF1111111111
+  <...>
+  messages/9        +ABCDEF2222222222 -ABCDEF1111111111
+  ```
+
+  在这个例子中，转换 `+ABCDEF2222222222` 永远不会完成。
 
 ## e5.8.1
 

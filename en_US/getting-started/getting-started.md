@@ -9,7 +9,7 @@ EMQX is the world’s most scalable and reliable MQTT messaging platform that ca
 This chapter gives you a tour of how to download and install EMQX and how to test the connecting and messaging services with our built-in WebSocket tool.
 
 ::: tip
-Besides the deployment methods introduced in this quickstart guide, you are also welcome to try our [EMQX Cloud](https://www.emqx.com/en/cloud), a fully managed MQTT service for IoT. You only need to [register for an account](https://www.emqx.com/en/signup?continue=https://www.emqx.com/en/cloud) before you can start your MQTT services and connect your IoT devices to any cloud with zero need for infrastructure maintenance.
+Besides the deployment methods introduced in this quickstart guide, you are also welcome to try our EMQX Cloud, a fully managed MQTT service for IoT. You only need to [register for an account](https://accounts.emqx.com/signup?continue=https%3A%2F%2Fcloud-intl.emqx.com%2Fconsole%2Fdeployments%2Fnew) before you can start your MQTT services and connect your IoT devices to any cloud with zero need for infrastructure maintenance.
 :::
 
 ## Install EMQX
@@ -185,7 +185,7 @@ The broker address and the port information should be prepared before testing th
 
 ### Create a Connection
 
-1. Click [MQTTX Web](http://mqtt-client.emqx.com/#/recent_connections) to visit the browser-based MQTTX.
+1. Click [MQTTX Web](https://mqttx.app/web-client#/recent_connections) to visit the browser-based MQTTX.
 
 2. Configure and establish the MQTT connection. Click the **+ New Connection** button to enter the configure page:
 

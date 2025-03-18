@@ -22,21 +22,15 @@ Users need to provide a query statement template and ensure the following fields
 Example table structure for storing credentials:
 
 ```sql
-CREATE TYPE ACTION AS ENUM('publish','subscribe','all');
-CREATE TYPE PERMISSION AS ENUM('allow','deny');
-
-CREATE TABLE mqtt_acl (
-  id SERIAL PRIMARY KEY,
-  ipaddress CHARACTER VARYING(60) NOT NULL DEFAULT '',
-  username CHARACTER VARYING(255) NOT NULL DEFAULT '',
-  clientid CHARACTER VARYING(255) NOT NULL DEFAULT '',
-  action ACTION,
-  permission PERMISSION,
-  topic CHARACTER VARYING(255) NOT NULL,
-  qos tinyint,
-  retain tinyint
+CREATE TABLE mqtt_acl(
+  id serial PRIMARY KEY,
+  username text NOT NULL,
+  permission text NOT NULL,
+  action text NOT NULL,
+  topic text NOT NULL,
+  qos smallint,
+  retain smallint
 );
-
 CREATE INDEX mqtt_acl_username_idx ON mqtt_acl(username);
 ```
 

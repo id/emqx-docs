@@ -1,4 +1,9 @@
 # Integrate OpenTelemetry Tracing
+::: tip
+
+OpenTelemetry Integration is only available in the EMQX Enterprise edition after EMQX 5.8.3.
+
+:::
 
 [OpenTelemetry tracing](https://opentelemetry.io/docs/concepts/signals/traces/) is a specification for tracing the flow of requests in a distributed system, allowing you to trace how requests flow through a distributed system and providing the ability to visualize and analyze the performance and behavior of requests. In the MQTT scenario, this concept can be used to trace requests across different participants in MQTT message transmission (Publisher - MQTT server - Subscriber).
 
