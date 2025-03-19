@@ -1,11 +1,5 @@
 # 将 MQTT 数据写入到 Couchbase
 
-::: tip
-
-Couchbase 数据集成是 EMQX 企业版功能。
-
-:::
-
 [Couchbase](https://couchbase.com/) 是一个多用途的分布式数据库，它结合了关系型数据库的优势（如 SQL 和 ACID 事务）与 JSON 的多功能性。Couchbase 的基础架构性能极高且可扩展，广泛应用于各行业的用户画像、动态产品目录、生成式 AI 应用、向量搜索、高速缓存等场景。
 
 ## 工作原理

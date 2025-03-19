@@ -18,8 +18,6 @@ In the gateways page, you can enable a gateway and configure its basic settings,
 - [LwM2M](../gateway/lwm2m.md)
 - [ExProto](../gateway/exproto.md)
 
-The following gateways are only supported in the EMQX Enterprise Edition:
-
 - [OCPP](../gateway/ocpp.md)
 - [GB/T 32960](../gateway/gbt32960.md)
 - [JT/T 808](../gateway/jt808.md)

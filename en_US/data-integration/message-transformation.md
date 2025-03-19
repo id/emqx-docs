@@ -1,13 +1,5 @@
 # Message Transformation
 
-::: tip Note
-
-Message Transformation is an EMQX Enterprise feature.
-
-:::
-
-## Overview
-
 Message Transformation allows you to modify and format messages based on user-defined rules before they are processed further or delivered to subscribers. This feature is highly customizable, supporting multiple encodings and advanced transformations.
 
 ## Workflow

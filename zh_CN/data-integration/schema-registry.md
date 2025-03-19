@@ -1,11 +1,5 @@
 # Schema Registry
 
-::: tip 注意
-
-Schema Registry 是 EMQX 企业版功能。
-
-:::
-
 物联网设备终端种类繁杂，各厂商使用的编码格式各异，所以在接入物联网平台的时候就产生了统一数据格式的需求，以便平台之上的应用进行设备管理。
 
 Schema Registry 管理编解码使用的 Schema、处理编码或解码请求并返回结果。Schema Registry 配合规则引擎，可适配各种场景的设备接入和规则设计。

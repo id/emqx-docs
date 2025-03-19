@@ -1,11 +1,5 @@
 # MQTT Durable Sessions
 
-::: tip
-
-The MQTT Durable Sessions is an EMQX Enterprise feature.
-
-:::
-
 EMQX includes a Durable Sessions feature, which allows MQTT sessions and messages to be persistently stored on disk, providing high-availability replicas to ensure data redundancy and consistency. With session durability, effective failover and recovery mechanisms can be implemented, ensuring service continuity and availability, thereby improving system reliability.
 
 This page introduces the concepts, principles, and usage of session persistence in EMQX.

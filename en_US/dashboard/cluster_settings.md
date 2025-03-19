@@ -136,10 +136,4 @@ For detailed configuration of OpenTelemetry and Datadog integration, refer to [I
 
 ## Cluster Linking
 
-::: tip Note
-
-The Cluster Linking feature is only available in the EMQX Enterprise edition.
-
-:::
-
 The Cluster Linking feature allows multiple independent EMQX clusters to be connected, enabling clients in geographically dispersed clusters to communicate with each other. Users can create and configure cluster links on this page. For detailed guidance on creation and configuration, refer to [EMQX Cluster Linking](../cluster-linking/introduction.md).

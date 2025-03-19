@@ -1,11 +1,5 @@
 # Flow Designer
 
-::: tip Note
-
-Flow Designer is an EMQX Enterprise feature.
-
-:::
-
 The Flow Designer is a powerful visual tool that extends the capabilities of the earlier visual tool, Flows, by adding the ability to create and edit data processing workflows (Flows). This enhancement simplifies and streamlines the configuration of data processing and integration. Starting from EMQX v5.8.0, you can also test the data processing workflows you create.
 
 Rules created on the Rule page and rules created in Flows are interoperable. This means you can create a rule in Flows and view its SQL and related configurations on the Rule page, or create the rule in the SQL Editor on the Rule page and then view the rule’s data flow processing configurations in Flows.

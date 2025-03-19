@@ -1,11 +1,5 @@
 # 将 MQTT 数据写入到 Datalayers
 
-::: tip
-
-Datalayers 数据集成是 EMQX 企业版功能。
-
-:::
-
 Datalayers 是一款面向工业物联网、车联网、能源等行业的多模、超融合数据库。其强大的数据吞吐能力以及稳定的性能表现使其非常适合物联网领域。EMQX 目前已支持通过 Sink 将消息和数据存储到 Datalayers 中，以便进行数据分析和可视化。
 
 本页详细介绍了 EMQX 与 Datalayers 的数据集成并提供了实用的规则和 Sink 创建指导。

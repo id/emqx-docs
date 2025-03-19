@@ -10,7 +10,7 @@
 
 - 自 EMQX v5.4.0 版本开始，原数据桥接按照数据流方向拆分并重命名为 Sink 与 Source。
 
-- 目前，EMQX 支持 MQTT 服务、Kafka 和 GCP PubSub 这三种外部数据系统作为 Source，其中，Kafka 和 GCP PubSub Source 仅在企业版中支持。
+- 目前，EMQX 支持 MQTT 服务、Kafka 和 GCP PubSub 这三种外部数据系统作为 Source。
 
 :::
 
@@ -70,12 +70,12 @@ D1 -->|发布消息| E[客户端]
 
 ## 支持的集成
 
-目前，EMQX 开源版支持以下两种数据集成：
+目前，EMQX 支持支持与以下这些数据系统的数据集成：
+
+**默认支持**
 
 - [MQTT Services](./data-bridge-mqtt.md)
 - [Webhook](./webhook.md)/[HTTP Server](./data-bridge-webhook.md)
-
-EMQX 企业版除了 MQTT Services 和 Webhook/HTTP Server, 还支持与以下这些数据系统的集成：
 
 **云服务**
 

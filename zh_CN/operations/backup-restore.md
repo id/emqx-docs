@@ -67,17 +67,11 @@ EMQX 支持导入和导出的数据包括：
 
 ## 通过 Dashboard 操作
 
-::: tip
-
-本节内容仅适用于 EMQX 企业版。
-
-:::
-
 本节介绍如何在 Dashboard 上进行数据导入和导出操作。
 
 :::tip
 
-- 通过 Dashboard 备份恢复在 EMQX 企业版 v5.4.0 及之后版本中可用。
+- 通过 Dashboard 备份恢复在 EMQX v5.4.0 及之后版本中可用。
 - 通过 CLI 导出的备份文件也可以在 Dashboard 备份恢复页面中进行管理。
 
 :::

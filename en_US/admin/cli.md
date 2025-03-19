@@ -1008,16 +1008,10 @@ CLI is only for inspection, Rule and action managements are managed from dashboa
 
 ## license
 
-::: tip
-
-This section applies to the EMQX Enterprise edition only.
-
-:::
-
 | Command                | Description                  |
 | ---------------------- | ---------------------------- |
 | license info           | Display License information. |
-| license update License | Updat License information.   |
+| license update License | Update License information.  |
 
 ### license info
 

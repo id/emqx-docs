@@ -1,11 +1,5 @@
 # 将 MQTT 数据写入到 Tablestore
 
-::: tip
-
-Tablestore 数据集成是 EMQX 企业版功能。
-
-:::
-
 [Tablestore](https://cn.aliyun.com/product/ots?from_alibabacloud=) 是一款可扩展的无服务器数据库，专为物联网场景优化。它提供了一种名为 IoTstore 的一站式解决方案，用于管理时序数据、结构化数据和半结构化数据。非常适用于物联网、车联网、风险控制、消息传递和推荐系统等场景。Tablestore 提供具有成本效益的高性能数据存储，支持毫秒级查询、检索，并具备灵活的数据分析能力。EMQX 与 Tablestore 云版、Tablestore OSS 和 Tablestore 企业版无缝集成，帮助实现物联网应用场景下的高效数据管理。
 
 ## 工作原理

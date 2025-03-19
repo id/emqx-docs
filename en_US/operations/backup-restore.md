@@ -11,7 +11,7 @@ EMQX provides CLI commands for data import and export to implement backup and re
 - In EMQX 4.x, a single JSON file was used to save all necessary data of EMQX configuration and the built-in database.
 - In EMQX 5.x, the exported data is compressed into a tar file format, allowing for more efficient and structured handling of potentially large amounts of user data.
 
-In addition to CLI commands, the EMQX Enterprise edition also offers a data backup and recovery page on the Dashboard, where you can perform data import and export operations.
+In addition to CLI commands, the EMQX Enterprise also offers a data backup and recovery page on the Dashboard, where you can perform data import and export operations.
 
 The data that EMQX supports for import and export includes:
 
@@ -47,7 +47,7 @@ Data can be exported from any running cluster node.
 To import data, the EMQX node must be running, and some conditions need to be met for the import operation to be successful:
 
 - If the [core node + replica node](../deploy/cluster/mria-introduction.md) mode is enabled, data import can only be performed on the core node. This will not affect the actual import behavior, as data will be replicated to all cluster nodes, including core and replica nodes. Operating on the core node ensures correct data import.
-- Data exported from an EMQX Enterprise Edition cluster cannot be imported into an EMQX open-source version cluster.
+- Data exported from an EMQX Enterprise cluster cannot be imported into an EMQX open-source version cluster.
 - The data file cannot be renamed.
 
 If any of the above conditions are not met, the import process will be aborted, and a corresponding error message will be displayed.

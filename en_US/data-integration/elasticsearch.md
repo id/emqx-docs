@@ -1,11 +1,5 @@
 # Ingest MQTT Data into Elasticsearch
 
-::: tip
-
-The Elasticsearch data integration is an EMQX Enterprise edition feature.
-
-:::
-
 [Elasticsearch](https://www.elastic.co/elasticsearch/) is a distributed search and data analysis engine that offers full-text search, structured search, and analysis capabilities for diverse data types. By integrating with Elasticsearch, EMQX enables seamless incorporation of MQTT data into Elasticsearch for storage. This integration leverages the powerful scalability and analysis capabilities of Elasticsearch, providing efficient and scalable data storage and analysis solutions for IoT applications.
 
 This page details the data integration between EMQX and Elasticsearch and provides practical guidance on rule and Sink creation.

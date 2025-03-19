@@ -1,11 +1,5 @@
 # Ingest MQTT Data into ClickHouse 
 
-::: tip
-
-The ClickHouse data integration is an EMQX Enterprise edition feature.
-
-:::
-
 [ClickHouse](https://clickhouse.com/) is a high-performance, column-oriented SQL database management system (DBMS) for online analytical processing (OLAP), that excels in processing and analyzing large volumes of data with minimal latency. It features excellent query performance, a flexible data model, and scalable distributed architecture, making it suitable for various data analytics scenarios. EMQX supports integration with ClickHouse, which enables you to ingest the MQTT messages and events data into ClickHouse for further analysis and processing.
 
 ## How It Works

@@ -16,7 +16,6 @@ This process allows EMQX to extend beyond just message transmission between IoT 
   - Kafka 
   - GCP PubSub
 
-  Among them, Kafka and GCP PubSub Sources are only supported in the EMQX Enterprise edition.
 
 :::
 
@@ -75,7 +74,12 @@ D1 -->|Publish message| E[Client]
 
 ## Supported Integrations
 
-The EMQX Open Source edition only supports two types of data integrations: [MQTT Services](./data-bridge-mqtt.md) and [HTTP Server](./data-bridge-webhook.md). The EMQX Enterprise edition also supports data integrations with the following types of data systems:
+EMQX supports data integrations with the following types of data systems:
+
+**Default**
+
+- [MQTT](./data-bridge-mqtt.md)
+- [Webhook](./webhook.md)/[HTTPServer](./data-bridge-webhook.md)
 
 **Cloud**
 

@@ -80,7 +80,7 @@ In EMQX 5.0, we have greatly improved the cluster scalability by introducing [Mr
 
 <img src="./assets/mria-cluster.png" alt="Mnesia Cluster" style="zoom: 40%;" />
 
-In an EMQX Enterprise 5.0 cluster, the `core` nodes still form the same full-mesh network as in older versions. The `replicant` nodes, however, only connect to one or more core nodes, but not to each other.
+In an EMQX 5.0 cluster, the `core` nodes still form the same full-mesh network as in older versions. The `replicant` nodes, however, only connect to one or more core nodes, but not to each other.
 
 ### Core and Replicant Nodes
 
@@ -117,7 +117,7 @@ When a node newly joins the cluster, it will start off with an empty state. With
 
 If the clients reconnect in a relatively short period of time, the cluster can reach balance quickly. If the clients are not reconnecting, the cluster may remain unbalanced for a long time.
 
-To address this issue, EMQX Enterprise (since version 4.4) introduced a new feature called "[Cluster Load Rebalancing](../deploy/cluster/rebalancing.md)". This feature allows the cluster to automatically rebalance the load by migrating the sessions from the overloaded nodes to the underloaded nodes.
+To address this issue, EMQX (since version 4.4) introduced a new feature called "[Cluster Load Rebalancing](../deploy/cluster/rebalancing.md)". This feature allows the cluster to automatically rebalance the load by migrating the sessions from the overloaded nodes to the underloaded nodes.
 
 An extreme version of "rebalance" is "evacuation", in which all the sessions are migrated off the given node. This is useful when you want to remove a node from the cluster.
 

@@ -1,17 +1,5 @@
 # OpenTelemetry-Based End-to-End MQTT Tracing
 
-::: tip
-
-OpenTelemetry Integration is only available in the EMQX Enterprise edition after EMQX 5.8.3.
-
-:::
-
-::: tip
-
-The end-to-end tracing feature is supported only in EMQX version 5.8.3 and later.
-
-:::
-
 In modern distributed systems, tracking the flow of requests and analyzing performance is essential for ensuring reliability and observability. End-to-end tracing is a concept designed to capture the full path of a request from start to finish, enabling users to gain deep insights into system behavior and performance.
 
 Starting from version 5.8.3, EMQX integrates an OpenTelemetry-based end-to-end tracing feature tailored for the MQTT protocol. This functionality allows users to clearly trace the publishing, routing, and delivery of messages, particularly in multi-node cluster environments. It not only aids in optimizing system performance but also helps in rapid fault localization and enhancing system reliability.

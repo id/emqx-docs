@@ -1,11 +1,5 @@
 # Schema Registry
 
-::: tip Note
-
-Schema Registry is an EMQX Enterprise feature.
-
-:::
-
 Because of the variety of IoT device terminals and the different coding formats used by various manufacturers, the need for a unified data format arises when accessing the IoT platform for device management by the applications on the platform.
 
 The Schema Registry manages the Schema used for coding and decoding, processes the encoding or decoding requests, and returns the results. The Schema Registry in collaboration with the rule engine can be adapted for device access and rule design in

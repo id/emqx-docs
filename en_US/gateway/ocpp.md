@@ -1,11 +1,5 @@
 # OCPP Gateway
 
-::: tip
-
-The OCPP Gateway is an EMQX Enterprise edition feature. 
-
-:::
-
 [OCPP](https://www.openchargealliance.org/) (Open Charge Point Protocol) is an open communication protocol that connects charging stations with central management systems, aiming to provide a unified communication standard for electric vehicle charging infrastructure. The OCPP gateway acts as a protocol translator, bridging the gap between OCPP and MQTT protocols, thus enabling clients that use these protocols to communicate with each other.
 
 EMQX has added a protocol gateway for [OCPP 1.6-J](https://www.openchargealliance.org/protocols/ocpp-16/), capable of connecting to charging station equipment of various brands that comply with the OCPP specifications. It integrates with management systems (Central System) through rule engines, data integration, REST APIs, and other methods, helping users quickly build electric vehicle charging infrastructures.

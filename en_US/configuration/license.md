@@ -1,11 +1,5 @@
 # License Configuration
 
-::: tip
-
-The license configuration applies to the EMQX Enterprise edition only.
-
-:::
-
 You can update your license by using `emqx ctl license update` command. The command will update the license file and reload the license. 
 
 ```bash

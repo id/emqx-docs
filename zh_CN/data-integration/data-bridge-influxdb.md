@@ -1,11 +1,5 @@
 # 将 MQTT 数据写入到 InfluxDB
 
-::: tip
-
-InfluxDB 数据集成是 EMQX 企业版功能。
-
-:::
-
 InfluxDB 是一个用于存储和分析时间序列数据的数据库，其强大的数据吞吐能力以及稳定的性能表现使其非常适合物联网领域。EMQX 目前支持通过 Sink 的方式连接不同版本的 InfluxDB Cloud、InfluxDB OSS 以及 InfluxDB Enterprise。
 
 本页详细介绍了 EMQX 与 InfluxDB 的数据集成并提供了实用的规则和 Sink 创建指导。

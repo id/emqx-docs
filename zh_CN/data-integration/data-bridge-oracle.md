@@ -1,11 +1,5 @@
 # 将 MQTT 数据写入到 Oracle Database
 
-::: tip
-
-Oracle Database 数据集成是 EMQX 企业版功能。
-
-:::
-
 [Oracle Database](https://www.oracle.com/database/) 是领先的关系型商业数据库解决方案之一，被广泛应用于各种规模和类型的企业和组织中。EMQX 支持与 Oracle Database 集成，因此您可以将 MQTT 消息和客户端事件保存到 Oracle Database 中， 构建复杂的数据管道和分析流程实现数据管理和分析，或进行设备连接管理并与其他 ERP, CRM 企业系统的集成。
 
 本页详细介绍了 EMQX 与 Oracle Database 的数据集成并提供了实用的规则和 Sink 创建指导。

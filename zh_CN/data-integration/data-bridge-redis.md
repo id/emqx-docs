@@ -1,11 +1,5 @@
 # 将 MQTT 数据写入到 Redis
 
-::: tip
-
-Redis 数据集成是 EMQX 企业版功能。
-
-:::
-
 [Redis](https://redis.io/) 数据集成可以通过执行自定义 Redis 数据操作命令的方式，将 MQTT 消息和客户端事件存储到 Redis 中，借助 Redis 高性能与灵活数据结构，实现诸如消息暂存，发布订阅和消息丢弃行为的计数与统计等业务。
 
 本页详细介绍了 EMQX 与 Redis 的数据集成并提供了实用的规则和 Sink 创建指导。

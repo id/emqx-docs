@@ -10,11 +10,11 @@
 
 ## EMQX 支持将 MQTT 消息保存到数据库吗？
 
-支持。你可以通过 **EMQX 企业版**的 [数据集成](../data-integration/data-bridges.md) 功能实现消息的持久化，EMQX 支持多种关系型、非关系型以及时序数据库，你可以按需选择。
+支持。你可以通过 EMQX 的 [数据集成](../data-integration/data-bridges.md) 功能实现消息的持久化，EMQX 支持多种关系型、非关系型以及时序数据库，你可以按需选择。
 
 ## EMQX 支持将 MQTT 消息转发到 Kafka 等消息队列吗？
 
-支持。你可以通过 **EMQX 企业版**的 [数据集成](../data-integration/data-bridges.md) 功能将消息转发给 Kafka、RabbitMQ 等消息队列。
+支持。你可以通过 EMQX 的 [数据集成](../data-integration/data-bridges.md) 功能将消息转发给 Kafka、RabbitMQ 等消息队列。
 
 ## EMQX 支持将 MQTT 消息转发到其他 MQTT 服务吗？
 

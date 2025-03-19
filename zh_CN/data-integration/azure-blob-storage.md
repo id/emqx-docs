@@ -1,11 +1,5 @@
 # 将 MQTT 数据导入 Azure Blob Storage
 
-::: tip
-
-Azure Blob Storage 数据集成是 EMQX 企业版功能。
-
-:::
-
 [Azure Blob Storage](https://azure.microsoft.com/en-us/products/storage/blobs/) 是微软基于云的对象存储解决方案，专为处理大量非结构化数据而设计。非结构化数据指的是不遵循特定数据模型或格式的数据类型，例如文本文件或二进制数据。EMQX 可以高效地将 MQTT 消息存储在 Blob Storage 容器中，为物联网 (IoT) 数据存储提供了一个多功能的解决方案。
 
 本页面详细介绍了 EMQX 与 Azure Blob Storage 之间的数据集成，并提供了规则和 Sink 的创建指南。

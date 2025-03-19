@@ -1,11 +1,5 @@
 # Ingest MQTT Data into OpenTSDB
 
-::: tip
-
-The OpenTSDB data integration is an EMQX Enterprise edition feature.
-
-:::
-
 [OpenTSDB](http://opentsdb.net/) is a scalable, distributed time series database. EMQX supports integration with OpenTSDB. You can save MQTT messages to OpenTSDB for subsequent analysis and retrieval.
 
 This page provides a comprehensive introduction to the data integration between EMQX and OpenTSDB with practical instructions on creating and validating the data integration.
