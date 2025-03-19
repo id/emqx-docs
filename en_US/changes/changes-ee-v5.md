@@ -280,6 +280,7 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 
 - [#12827](https://github.com/emqx/emqx/pull/12827) It is now possible to trace rules with a new Rule ID trace filter as well as with the Client ID filter. For testing purposes, it is now also possible to use a new HTTP API endpoint (rules/:id/test) to artificially apply a rule and optionally stop its actions after they have been rendered.
 - [#12863](https://github.com/emqx/emqx/pull/12863) You can now format trace log entries as JSON objects by setting the formatter parameter to "json" when creating the trace pattern.
+- [#12844](https://github.com/emqx/emqx/pull/12844) Fixed an issue where CPU usage and idle statistics values were not retained with the correct precision. These values are now consistently stored with two decimal places. This change affects both Prometheus statistical metrics and OpenTelemetry governance metrics.
 
 #### Extensibility
 
@@ -338,18 +339,37 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 
 - [#12957](https://github.com/emqx/emqx/pull/12957) Started building packages for macOS 14 (Apple Silicon) and Ubuntu 24.04 Noble Numbat (LTS).
 
+- [#12883](https://github.com/emqx/emqx/pull/12883) Added REST API endpoints and CLI commands for durable storage management.
+
+  New REST endpoints:
+
+  - `/ds/sites`
+  - `/ds/sites/:site`
+  - `/ds/storages`
+  - `/ds/storages/:ds`
+  - `/ds/storages/:ds/replicas`
+  - `/ds/storages/:ds/replicas/:site`
+
+  New CLI commands:
+
+  - `ds set_replicas`
+  - `ds join`
+  - `ds leave`
+
+
 
 ### Bug Fixes
 
 #### Security
 
 - [#12887](https://github.com/emqx/emqx/pull/12887) Fixed MQTT enhanced auth with sasl scram.
-
 - [#12962](https://github.com/emqx/emqx/pull/12962) TLS clients can now verify server hostname against wildcard certificate. For example, if a certificate is issued for host `*.example.com`, TLS clients is able to verify server hostnames like `srv1.example.com`.
 
 #### MQTT
 
 - [#12996](https://github.com/emqx/emqx/pull/12996) Fixed process leak in `emqx_retainer` application. Previously, client disconnection while receiving retained messages could cause a process leak.
+- [#12855](https://github.com/emqx/emqx/pull/12855) Fixed an issue where system topic messages for client subscription/unsubscription notifications were not serialized correctly when clients subscribed or unsubscribed to a shared topic. Also resolved a format error for the `$queue` shared topics in the `/topics` endpoint.
+- [#12976](https://github.com/emqx/emqx/pull/12976) Fixed the `client.disconnected` event being triggered when taking over a session that the socket has been disconnected before.
 
 #### Data Processing and Integration
 
@@ -384,6 +404,8 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 - [#13018](https://github.com/emqx/emqx/pull/13018) Reduced log spamming when connection goes down in a Postgres/Timescale/Matrix connector.
 
 - [#13118](https://github.com/emqx/emqx/pull/13118) Fix a performance issue in the rule engine template rendering.
+
+- [#12880](https://github.com/emqx/emqx/pull/12880) Fixed an issue in the InfluxDB action configuration where serialization failed when a tag set value contained a literal integer or float. Tag set values are now correctly treated as strings. For more details on tag sets, refer to the [Line Protocol - Tag Set](https://docs.influxdata.com/influxdb/v2/reference/syntax/line-protocol/#tag-set).
 
 #### Observability
 
@@ -424,6 +446,10 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 - [#12888](https://github.com/emqx/emqx/pull/12888) Fixed License related configuration loss after importing backup data.
 
 #### Gateways
+
+- [#12902](https://github.com/emqx/emqx/pull/12902) Pass the Content-type of MQTT message to the Stomp message.
+
+- [#12892](https://github.com/emqx/emqx/pull/12892) Fixed an error in OCPP gateway's handling of downstream BootNotification. Also fixed the `gateways/ocpp/listeners` endpoint to return the correct number of current connections.
 
 - [#12909](https://github.com/emqx/emqx/pull/12909) Fixed UDP listener process handling on errors or closure, The fix ensures the UDP listener is cleanly stopped and restarted as needed if these error conditions occur.
 
