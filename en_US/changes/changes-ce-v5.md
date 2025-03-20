@@ -6,15 +6,17 @@
 
 Make sure to check the breaking changes and known issues before upgrading to EMQX 5.8.6.
 
-### Enhancements
-
-
-
 ### Bug Fixes
 
 #### Core MQTT Functionalities
 
 - [#14815](https://github.com/emqx/emqx/pull/14815) Fixed packet ID release for QoS 2 messages. Previously, if a client failed to send a PUBREL for the maximum configured number of pending QoS 2 messages and then disconnected, the packet IDs remained occupied even after exceeding the configured Max Awaiting PUBREL Timeout.
+
+#### Installation and Deployment
+
+- [#14797](https://github.com/emqx/emqx/pull/14797) Fixed macOS release package startup issue due to OpenSSL dynamic linking (backport #14624).
+
+  Previously, the EMQX ZIP package on macOS could fail to start because the `quicer` application dynamically linked to the system-installed OpenSSL, which was not signed during the EMQX build process. Now we have disabled dynamic linking for OpenSSL, aligning with the OTP shipped on macOS. This ensures EMQX starts reliably on macOS 13 and later.
 
 #### Authentication
 
@@ -29,10 +31,20 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 #### Rule Engine
 
-- [#14824](https://github.com/emqx/emqx/pull/14824) Fixed 500 error in SQL Rule Tester when handling `details` key in alarm events. Previously, when testing `alarm_activated` or `alarm_deactivated` events in the SQL Rule Tester, certain values in the `details` key could cause a 500 error due to improper handling of nested map keys.
+- [#14824](https://github.com/emqx/emqx/pull/14824) Fixed HTTP 500 error in SQL Rule Tester when handling `details` key in alarm events. Previously, when testing `alarm_activated` or `alarm_deactivated` events in the SQL Rule Tester, certain values in the `details` key could cause an HTTP 500 error due to improper handling of nested map keys.
 
-- 
 
+#### Observability
+
+- [#14800](https://github.com/emqx/emqx/pull/14800) Throttled `warning` level log `dropped_qos0_msg`.
+
+- [#14793](https://github.com/emqx/emqx/pull/14793) Added trace log for `protocol_error` in MQTT connections.
+
+  Previously, when a client sent invalid or unexpected MQTT packets causing a `protocol_error`, EMQX logs provided limited details, making it difficult to diagnose the issue.
+
+  For example, if a client sent a second `CONNECT` packet while already connected, EMQX would log `socket_force_closed` with `protocol_error`, but without indicating the exact cause.
+
+  With this update, EMQX now logs `unexpected_connect_packet` with `conn_state=connected` before `socket_force_closed`, providing clearer context for debugging protocol violations.
 
 #### Plugin
 
@@ -43,30 +55,6 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
   ```
 
   Before installing a plugin via the HTTP API or Dashboard, this command must be executed to explicitly allow the package, improving security and preventing unauthorized installations.
-
-
-#### Observability
-
-- [#14800](https://github.com/emqx/emqx/pull/14800) Throttled warning level log `dropped_qos0_msg`.
-
-- [#14793](https://github.com/emqx/emqx/pull/14793) Added trace log for `protocol_error` in MQTT connections.
-
-  Previously, when a client sent invalid or unexpected MQTT packets causing a `protocol_error`, EMQX logs provided limited details, making it difficult to diagnose the issue.
-
-  For example, if a client sent a second `CONNECT` packet while already connected, EMQX would log `socket_force_closed` with `protocol_error`, but without indicating the exact cause.
-
-  With this update, EMQX now logs `unexpected_connect_packet` with `conn_state=connected` before `socket_force_closed`, providing clearer context for debugging protocol violations.
-
-
-#### Installation and Deployment
-
-- [#14797](https://github.com/emqx/emqx/pull/14797) Fixed macOS release package startup issue due to OpenSSL dynamic linking (backport #14624).
-
-  Previously, the EMQX ZIP package on macOS could fail to start because the `quicer` application dynamically linked to the system-installed OpenSSL, which was not signed during the EMQX build process. Now we have disabled dynamic linking for OpenSSL, aligning with the OTP shipped on macOS. This ensures EMQX starts reliably on macOS 13 and later.
-
-- 
-
-- 
 
 ## 5.8.5
 

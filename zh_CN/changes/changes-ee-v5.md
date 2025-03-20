@@ -1,5 +1,74 @@
 # EMQX 企业版 v5 版本
 
+## 5.8.6
+
+*发布日期：2025-03-31*
+
+升级前请查看已知问题列表和不兼容变更列表。
+
+### 增强
+
+- [#14855](https://github.com/emqx/emqx/pull/14855) 在 JT/T 808 网关中新增了配置项 `ignore_unsupported_frames`。该选项可防止设备因发送网关无法解析的消息而被断开连接。
+
+### 修复
+
+#### 核心 MQTT 功能
+
+- [#14815](https://github.com/emqx/emqx/pull/14815) 修复了 QoS 2 消息的报文 ID 释放问题。此前，如果客户端在达到配置的最大挂起 QoS 2 消息数量后仍未发送 PUBREL 并断开连接，即使超过了配置的最大等待 PUBREL 超时时间，报文 ID 仍未被释放，导致资源占用问题。
+
+#### 安装部署
+
+- [#14797](https://github.com/emqx/emqx/pull/14797) 修复 macOS 发行包因 OpenSSL 动态链接导致的启动问题（回溯 #14624）。
+
+  此前，macOS 上的 EMQX ZIP 包可能因 `quicer` 应用动态链接到系统安装的 OpenSSL 而无法启动，而该 OpenSSL 在 EMQX 构建过程中未被签名。现在，我们已禁用 OpenSSL 的动态链接方式，使其与 macOS 上随附的 OTP 保持一致，从而确保 EMQX 在 macOS 13 及更高版本上能够稳定启动。
+
+#### 认证
+
+- [#14847](https://github.com/emqx/emqx/pull/14847) 修复了在使用通配符主机名的 HTTPS 端点时，JWKS 认证失败的问题。此前，JWKS 认证无法从使用通配符主机名的 HTTPS 端点获取密钥，导致认证失败。
+- [#14786](https://github.com/emqx/emqx/pull/14786) 修复了使用外部 JWKS 端点时 JWT 认证配置更新的问题。之前，在更新 JWT 认证配置时，如果旧配置和新配置均启用了 JWKS（密钥服务器），部分配置项可能未正确生效。
+
+#### REST API
+
+- [#14834](https://github.com/emqx/emqx/pull/14834) 修复下载数据备份文件时 `Content-Type` 头字段错误的问题。之前，下载备份文件的响应头错误地使用了 `application/json`，而不是 `application/octet-stream`。
+- [#14863](https://github.com/emqx/emqx/pull/14863) 修复 `cluster/:node/invite_async` REST API 的问题。之前，该 API 可能会尝试使用已下线的节点作为协调者。
+
+#### 规则引擎
+
+- [#14824](https://github.com/emqx/emqx/pull/14824) 修复 SQL 规则测试在处理告警事件 `details` 键时出现的 HTTP 500 错误。此前，在 SQL 规则测试中测试 `alarm_activated` 或 `alarm_deactivated` 事件时，`details` 键中的某些值由于嵌套 Map 键处理不当，可能会触发 HTTP 500 错误。
+
+#### 数据集成
+
+- [#14796](https://github.com/emqx/emqx/pull/14796) 修复 Pulsar 生产者的 Inflight 状态泄漏问题。在此修复之前，Pulsar 客户端的 Inflight 状态可能发生泄漏，导致连接器的 Inflight 计数器无法归零。此外，本次修复还针对 x86 平台优化了 Pulsar 和 Kafka 生产者的性能。
+
+  同时，Pulsar Action 能够正确执行 `buffer.memory_overload_protection` 参数。此前，该参数未能生效，导致内存使用无法得到有效控制。
+
+#### 可观测性
+
+- [#14800](https://github.com/emqx/emqx/pull/14800) 对 `warning` 级别日志 `dropped_qos0_msg` 进行限流处理。
+
+- [#14793](https://github.com/emqx/emqx/pull/14793) 为 MQTT 连接中的 `protocol_error` 添加了追踪日志。
+   之前，当客户端发送无效或意外的 MQTT 报文导致 `protocol_error` 时，EMQX 记录的日志信息较少，难以诊断具体问题。
+
+  例如，如果客户端在已连接的状态下再次发送 `CONNECT` 报文，EMQX 仅会记录 `socket_force_closed` 并附带 `protocol_error`，但不会指明具体原因。
+
+  现在，EMQX 会在 `socket_force_closed` 之前记录 `unexpected_connect_packet`，并附带 `conn_state=connected`，从而提供更清晰的上下文，方便排查协议违规问题。
+
+- [#14813](https://github.com/emqx/emqx/pull/14813) 修复了发送至 WebSocket 客户端的消息未在端到端追踪中跟踪记录的问题。
+
+#### 插件
+
+- [#14802](https://github.com/emqx/emqx/pull/14802) 新增用于插件管理的 CLI 命令：
+
+  ```
+   emqx ctl plugins allow NAME-VSN
+  ```
+
+  在通过 HTTP API 或 Dashboard 安装插件之前，必须先执行此命令显式允许该插件包，以提升安全性并防止未经授权的安装。
+
+#### 网关
+
+- [#14756](https://github.com/emqx/emqx/pull/14756) 优化 JT/T 808 网关，使其在启用匿名认证时，注册响应携带默认认证码 `anonymous`。此改动可避免部分客户端因无法解析空认证码而出现问题。
+
 ## 5.8.5
 
 *发布日期：2025-02-25*

@@ -8,13 +8,19 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 ### Enhancements
 
-
+- [#14855](https://github.com/emqx/emqx/pull/14855) Added a new configuration option `ignore_unsupported_frames` to the JT/T 808 gateway. This option prevents devices from being disconnected when sending messages that the gateway cannot parse.
 
 ### Bug Fixes
 
 #### Core MQTT Functionalities
 
 - [#14815](https://github.com/emqx/emqx/pull/14815) Fixed packet ID release for QoS 2 messages. Previously, if a client failed to send a PUBREL for the maximum configured number of pending QoS 2 messages and then disconnected, the packet IDs remained occupied even after exceeding the configured Max Awaiting PUBREL Timeout.
+
+#### Installation and Deployment
+
+- [#14797](https://github.com/emqx/emqx/pull/14797) Fixed macOS release package startup issue due to OpenSSL dynamic linking (backport #14624).
+
+  Previously, the EMQX ZIP package on macOS could fail to start because the `quicer` application dynamically linked to the system-installed OpenSSL, which was not signed during the EMQX build process. Now we have disabled dynamic linking for OpenSSL, aligning with the OTP shipped on macOS. This ensures EMQX starts reliably on macOS 13 and later.
 
 #### Authentication
 
@@ -25,29 +31,23 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 #### REST API
 
 - [#14834](https://github.com/emqx/emqx/pull/14834) Fixed incorrect `Content-Type` header when downloading data backup files. Previously, the response header for downloaded backup files incorrectly used `application/json` instead of `application/octet-stream`.
+- [#14863](https://github.com/emqx/emqx/pull/14863) Fixed a problem with `cluster/:node/invite_async` REST API. Previously, this API could attempt to use a down node as the coordinator.
 
 
 #### Rule Engine
 
-- [#14824](https://github.com/emqx/emqx/pull/14824) Fixed 500 error in SQL Rule Tester when handling `details` key in alarm events. Previously, when testing `alarm_activated` or `alarm_deactivated` events in the SQL Rule Tester, certain values in the `details` key could cause a 500 error due to improper handling of nested map keys.
+- [#14824](https://github.com/emqx/emqx/pull/14824) Fixed an HTTP 500 error in SQL Rule Tester when handling the `details` key in alarm events. Previously, when testing `alarm_activated` or `alarm_deactivated` events in the SQL Rule Tester, certain values in the `details` key could cause an HTTP 500 error due to improper handling of nested map keys.
 
-- 
+#### Data Integration
 
+- [#14796](https://github.com/emqx/emqx/pull/14796) Fixed Pulsar producer inflight state leak. Prior to this fix, the Pulsar client's inflight state could leak, preventing the connector’s inflight counter from returning to zero. This fix also included a performance improvement for Pulsar and Kafka producers on x86.
 
-#### Plugin
-
-- [#14802](https://github.com/emqx/emqx/pull/14802) Introduced a new CLI command for plugins:
-
-  ```bash
-   emqx ctl plugins allow NAME-VSN
-  ```
-  
-  Before installing a plugin via the HTTP API or Dashboard, this command must be executed to explicitly allow the package, improving security and preventing unauthorized installations.
+  Also, implemented proper support for the `buffer.memory_overload_protection` parameter in Pulsar Action. Previously, this configuration had no effect, leading to uncontrolled memory usage.
 
 
 #### Observability
 
-- [#14800](https://github.com/emqx/emqx/pull/14800) Throttled warning level log `dropped_qos0_msg`.
+- [#14800](https://github.com/emqx/emqx/pull/14800) Throttled `warning` level log `dropped_qos0_msg`.
 
 - [#14793](https://github.com/emqx/emqx/pull/14793) Added trace log for `protocol_error` in MQTT connections.
 
@@ -57,16 +57,21 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
   
   With this update, EMQX now logs `unexpected_connect_packet` with `conn_state=connected` before `socket_force_closed`, providing clearer context for debugging protocol violations.
 
+- [#14813](https://github.com/emqx/emqx/pull/14813) Fixed the issue that the outgoing messages sent to the WebSocket clients were not traced in end-to-end tracing.
 
-#### Installation and Deployment
+#### Plugin
 
-- [#14797](https://github.com/emqx/emqx/pull/14797) Fixed macOS release package startup issue due to OpenSSL dynamic linking (backport #14624).
+- [#14802](https://github.com/emqx/emqx/pull/14802) Introduced a new CLI command for plugins:
 
-  Previously, the EMQX ZIP package on macOS could fail to start because the `quicer` application dynamically linked to the system-installed OpenSSL, which was not signed during the EMQX build process. Now we have disabled dynamic linking for OpenSSL, aligning with the OTP shipped on macOS. This ensures EMQX starts reliably on macOS 13 and later.
+  ```bash
+   emqx ctl plugins allow NAME-VSN
+  ```
 
-- 
+  Before installing a plugin via the HTTP API or Dashboard, this command must be executed to explicitly allow the package, improving security and preventing unauthorized installations.
 
-- 
+#### Gateway
+
+- [#14756](https://github.com/emqx/emqx/pull/14756) Improved the JT/T 808 gateway so that when anonymous authentication is enabled, the registration response will carry the default authentication code `anonymous`. This is used to avoid the issue where some clients are unable to parse an empty authentication code.
 
 ## 5.8.5
 
