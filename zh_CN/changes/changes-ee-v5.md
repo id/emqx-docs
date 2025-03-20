@@ -8,6 +8,10 @@
 
 ### 增强
 
+- [#14869](https://github.com/emqx/emqx/pull/14869) 为 `$events/client_disconnected` 事件 payload 新增 `connected_at` 时间戳字段。此增强功能可用于追踪已断开连接的客户端原始的会话连接时间，防止旧的断开事件覆盖更新的连接状态。
+
+  此前，在网络不稳定的情况下，客户端可能频繁重连，导致延迟的断开事件错误地影响会话状态跟踪。此次更新将 `connected_at` 字段纳入事件 payload ，使其行为与系统主题保持一致，确保会话状态的准确性。
+
 - [#14855](https://github.com/emqx/emqx/pull/14855) 在 JT/T 808 网关中新增了配置项 `ignore_unsupported_frames`。该选项可防止设备因发送网关无法解析的消息而被断开连接。
 
 ### 修复
@@ -54,6 +58,9 @@
   现在，EMQX 会在 `socket_force_closed` 之前记录 `unexpected_connect_packet`，并附带 `conn_state=connected`，从而提供更清晰的上下文，方便排查协议违规问题。
 
 - [#14813](https://github.com/emqx/emqx/pull/14813) 修复了发送至 WebSocket 客户端的消息未在端到端追踪中跟踪记录的问题。
+
+- [#14880](https://github.com/emqx/emqx/pull/14880) 改进 SQL Server 连接器健康检查失败的日志记录。此次更新使日志能够提供更精确的故障原因，例如 `timeout errors` 或 `unexpected_SELECT_1_result`，并附带详细的诊断信息，以便更高效地排查问题。
+
 
 #### 插件
 

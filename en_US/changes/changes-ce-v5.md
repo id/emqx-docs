@@ -6,6 +6,12 @@
 
 Make sure to check the breaking changes and known issues before upgrading to EMQX 5.8.6.
 
+### Enhancement
+
+- [#14869](https://github.com/emqx/emqx/pull/14869) Added the `connected_at` timestamp field to the `$events/client_disconnected` event payload. This enhancement enables tracking the original connection session time for disconnected clients, preventing outdated disconnect events from overriding newer connection states.
+
+  Previously, when clients frequently reconnected due to unstable networks, delayed disconnect events could lead to incorrect session tracking. With this update, the `connected_at` field is now included in the event payload, aligning its behavior with system topics and ensuring accurate session state management.
+
 ### Bug Fixes
 
 #### Core MQTT Functionalities

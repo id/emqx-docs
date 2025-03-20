@@ -8,6 +8,10 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 ### Enhancements
 
+- [#14869](https://github.com/emqx/emqx/pull/14869) Added the `connected_at` timestamp field to the `$events/client_disconnected` event payload. This enhancement enables tracking the original connection session time for disconnected clients, preventing outdated disconnect events from overriding newer connection states.
+
+  Previously, when clients frequently reconnected due to unstable networks, delayed disconnect events could lead to incorrect session tracking. With this update, the `connected_at` field is now included in the event payload, aligning its behavior with system topics and ensuring accurate session state management.
+
 - [#14855](https://github.com/emqx/emqx/pull/14855) Added a new configuration option `ignore_unsupported_frames` to the JT/T 808 gateway. This option prevents devices from being disconnected when sending messages that the gateway cannot parse.
 
 ### Bug Fixes
@@ -58,6 +62,8 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
   With this update, EMQX now logs `unexpected_connect_packet` with `conn_state=connected` before `socket_force_closed`, providing clearer context for debugging protocol violations.
 
 - [#14813](https://github.com/emqx/emqx/pull/14813) Fixed the issue that the outgoing messages sent to the WebSocket clients were not traced in end-to-end tracing.
+
+- [#14880](https://github.com/emqx/emqx/pull/14880) Improved logging for SQL Server connector health-check failures. With this update, the logs now provide more precise failure reasons, such as `timeout errors` or `unexpected_SELECT_1_result`, along with detailed diagnostic information to aid in troubleshooting.
 
 #### Plugin
 
