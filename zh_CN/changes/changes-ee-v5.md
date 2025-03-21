@@ -14,6 +14,8 @@
 
 - [#14855](https://github.com/emqx/emqx/pull/14855) 在 JT/T 808 网关中新增了配置项 `ignore_unsupported_frames`。该选项可防止设备因发送网关无法解析的消息而被断开连接。
 
+- [#14858](https://github.com/emqx/emqx/pull/14858) EMQX 新增与 TDengine Cloud 的数据集成。TDengine Cloud 认证机制要求提供额外的 Token 参数，现已在 TDengine 连接器中完成适配与支持。
+
 ### 修复
 
 #### 核心 MQTT 功能

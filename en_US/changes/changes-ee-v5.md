@@ -14,6 +14,8 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#14855](https://github.com/emqx/emqx/pull/14855) Added a new configuration option `ignore_unsupported_frames` to the JT/T 808 gateway. This option prevents devices from being disconnected when sending messages that the gateway cannot parse.
 
+- [#14858](https://github.com/emqx/emqx/pull/14858) EMQX supports data integration with TDengine Cloud. The TDengine Cloud requires an additional token parameter for authentication, which is now supported in the TDengine connector.
+
 ### Bug Fixes
 
 #### Core MQTT Functionalities
