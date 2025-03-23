@@ -163,6 +163,8 @@ Note that there can be large performance differences between different hashing a
 
 EMQX supports using placeholders in the query statements and HTTP requests. During the authentication step, these placeholders will be replaced with actual client information to construct a query or HTTP request that matches the current client.
 
+A valid placeholder follows the format `${PATH.TO.VALUE}`, where PATH.TO.VALUE is a dot-notated path to a value in an object. Valid characters include letters, digits, dots (`.`), and underscores (`_`). Placeholders containing unsupported characters will be treated as plain text. 
+
 For example, in EMQX MySQL authenticator, The default query SQL uses the placeholder `${username}`: 
 
 ```
