@@ -1,5 +1,15 @@
 # Known Issues in EMQX 5.8
 
+## e5.8.6
+
+- **TLS listener cannot be reconfigured to use tlsv1.3 only (since 5.4.0, will fix in 5.9.0)**
+
+  May fail with error like `incompatible,[client_renegotiation,{versions,['tlsv1.3']}]`
+
+  > **Workaround:**
+  > Disable the listener, then re-enable after config change.
+
+
 ## e5.8.5
 
 - **Node Crash if Linux monotonic clock steps backward (since 5.0)**
