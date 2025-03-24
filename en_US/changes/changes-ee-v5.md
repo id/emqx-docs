@@ -2,7 +2,7 @@
 
 ## 5.8.6
 
-*Release Date: 2025-03-21*
+*Release Date: 2025-03-25*
 
 Make sure to check the breaking changes and known issues before upgrading to EMQX 5.8.6.
 
@@ -49,6 +49,9 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 - [#14796](https://github.com/emqx/emqx/pull/14796) Fixed Pulsar producer inflight state leak. Prior to this fix, the Pulsar client's inflight state could leak, preventing the connector’s inflight counter from returning to zero. This fix also included a performance improvement for Pulsar and Kafka producers on x86.
 
   Also, implemented proper support for the `buffer.memory_overload_protection` parameter in Pulsar Action. Previously, this configuration had no effect, leading to uncontrolled memory usage.
+
+- [#14902](https://github.com/emqx/emqx/pull/14902) Improved error handling in the SQL Server action for connection failures by treating `IMC0x` SQLSTATE errors as recoverable. This prevents message loss when the external MSSQL service is temporarily unavailable and ensures messages are properly cached for retry.
+  Also enhances connection health checks to correctly detect broken connections and initiate connector reconnection attempts, improving the reliability of the SQL Server connector in unstable network environments.
 
 
 #### Observability

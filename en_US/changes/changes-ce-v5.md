@@ -2,7 +2,7 @@
 
 ## 5.8.6
 
-*Release Date: 2025-03-21*
+*Release Date: 2025-03-25*
 
 Make sure to check the breaking changes and known issues before upgrading to EMQX 5.8.6.
 

@@ -2,7 +2,7 @@
 
 ## 5.8.6
 
-*发布日期：2025-03-31*
+*发布日期：2025-03-25*
 
 升级前请查看已知问题列表和不兼容变更列表。
 
@@ -47,6 +47,10 @@
 - [#14796](https://github.com/emqx/emqx/pull/14796) 修复 Pulsar 生产者的 Inflight 状态泄漏问题。在此修复之前，Pulsar 客户端的 Inflight 状态可能发生泄漏，导致连接器的 Inflight 计数器无法归零。此外，本次修复还针对 x86 平台优化了 Pulsar 和 Kafka 生产者的性能。
 
   同时，Pulsar Action 能够正确执行 `buffer.memory_overload_protection` 参数。此前，该参数未能生效，导致内存使用无法得到有效控制。
+
+- [#14902](https://github.com/emqx/emqx/pull/14902) 改进了 SQL Server 动作在连接失败场景下的错误处理，将 `IMC0x` 类型的 SQLSTATE 错误视为可恢复错误。此改动可避免在外部 MSSQL 服务暂时不可用时丢失消息，确保消息能够被正确缓存以便后续重试。
+
+  同时，还增强了连接的健康检查机制，能够更准确地识别断开的连接，并启动连接器的重连尝试，从而提升 SQL Server 连接器在网络不稳定环境下的可靠性。
 
 #### 可观测性
 
