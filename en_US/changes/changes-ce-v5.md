@@ -953,7 +953,6 @@ Note: This is a breaking change. This option is enabled by default, so the defau
 #### Security
 
 - [#12887](https://github.com/emqx/emqx/pull/12887) Fixed MQTT enhanced auth with sasl scram.
-
 - [#12962](https://github.com/emqx/emqx/pull/12962) TLS clients can now verify server hostname against wildcard certificate. For example, if a certificate is issued for host `*.example.com`, TLS clients is able to verify server hostnames like `srv1.example.com`.
 
 #### MQTT
