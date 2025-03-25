@@ -8,17 +8,17 @@ Flow Designer is an EMQX Enterprise feature.
 
 The Flow Designer is a powerful visual tool that extends the capabilities of the earlier visual tool, Flows, by adding the ability to create and edit data processing workflows (Flows). This enhancement simplifies and streamlines the configuration of data processing and integration. Starting from EMQX v5.8.0, you can also test the data processing workflows you create.
 
-Rules created on the Rule page and rules created in Flows are interoperable. This means you can create a rule in Flows and view its SQL and related configurations on the Rule page, or create the rule in the SQL Editor on the Rule page and then view the rule’s data flow processing configurations in Flows.
+Rules created in the Data Integration and Flow Designer are interoperable. This means you can create a rule in Flow Designer and view its SQL and related configurations in the Data Integration, or create the rule in the SQL Editor in the Data Integration and then view the rule’s data flow processing configurations in the Flow Designer.
 
 ![flow-designer](./assets/flow-designer.png)
 
 ## Main Features
 
-To access the Flows page in the EMQX Dashboard, click **Integrations** -> **Flow Designer** on the left menu.  If you have already created rules or data integrations, you will see a directed acyclic graph composed of multiple nodes. Each node represents a data processing step, such as reading data from a topic, event, or Source, transforming data through rules, and forwarding data using actions or Sinks.
+To access the Flows page in the EMQX Dashboard, click **Integrations** -> **Flow Designer** on the left menu.  If you have already created rules or data integrations, you will see a directed acyclic graph composed of multiple nodes. Each node represents a data processing step, such as reading data from a topic, event, or [Source](../data-integration/data-bridges.md#source), transforming data through rules, and forwarding data using actions or [Sinks](../data-integration/data-bridges.md#source).
 
 The Flows page displays all data processing workflows created using the Rules, Webhook, and Flow Designer. Through Flows, you can visualize how data flows—from devices or clients through rule processing to external data systems, or vice versa, from external data systems through rule processing back to devices. Refreshing the page updates it with the latest changes in rules and data integrations.
 
-Clicking the **Create** button allows you to enter the Flow creation page for visual configuration. You can drag and drop to select the nodes needed for each step and connect them to implement the workflow.
+Clicking the **Create Flow** button allows you to enter the Flow creation page for visual configuration. You can drag and drop to select the nodes needed for each step and connect them to implement the workflow.
 
 ![drag_node](./assets/drag_node.png)
 
@@ -28,7 +28,7 @@ The data input supports messages, events, or messages flowing from external data
 
 - **Messages:** Specified through topics and topic wildcards for client-published messages.
 - **Event:** Supports all client events within EMQX; refer to [Client Events](../data-integration/rule-sql-events-and-fields.md#mqtt-events).
-- External Data Systems:
+- **External Data Systems**:
   - [MQTT Service](../data-integration/data-bridge-mqtt.md)
   - [Kafka Consumer](../data-integration/data-bridge-kafka.md)
   - [GCP PubSub Consumer](../data-integration/data-bridge-gcp-pubsub.md)
@@ -55,7 +55,7 @@ Outputs the data sources and processing results to specific nodes and external d
 
 When a Flow is created, the system will randomly generate an ID for it. Click the edit icon next to the ID to modify the Flow's name and description.
 
-To delete a node in the Flow, hover over the node and click the delete icon in the upper right corner of the node. Click on a node to enter the editing mode, you can modify its configuration details and save the changes, then, click **Save** to save the entire Flow. Click the **Start Testing** button to input simulated data or test the Flow with a real client to verify if it executes correctly.
+To delete a node in the Flow, hover over the node and click the delete icon in the upper right corner of the node. Click on a node to enter the editing mode, you can modify its configuration details and save the changes, then, click **Save** to save the entire Flow. Click the **Start Test** button to input simulated data or test the Flow with a real client to verify if it executes correctly.
 
 ## Advantages
 
@@ -120,7 +120,7 @@ Sample data to be republished:
 
    ![filter_rule](./assets/filter_rule.png)
 
-5. Select a **Republication** node from **Sink** and configure the topic for forwarding messages, setting it to `alert`. Format the processed and transformed data into an alert message with the following payload:
+5. Select a **Republish** node from **Sink** and configure the topic for forwarding messages, setting it to `alert`. Format the processed and transformed data into an alert message with the following payload:
 
    ```bash
    ${device_id} device reported a high temperature of ${temperature}°C at ${date}.
@@ -140,26 +140,39 @@ Sample data to be republished:
 
 ### Test the Flow
 
-1. After creating the Flow, click **Start Test** next to the **Save** button to open a bottom pop-up.
+1. In the Flow Designer, click any node of the Flow to open an editting panel. Click the **Edit Flow** button at the end of the panel.
+
+2. Click **Start Test** next to the **Save** button to open a bottom pop-up. 
+
+   You can click **Input Simulated Data** to enter simulated data in the pop-up panel or use a real client to publish messages to see the results. This demonstration will use [MQTTX](https://mqttx.app) to publish real data. 
 
    ![start_test](./assets/start_test.png)
 
-2. Click **Input Simulated Data**. You can enter simulated data in the pop-up page or use a real client to publish messages to see the results. This demonstration will use [MQTTX](https://mqttx.app) to publish real data.
+3. Open the [MQTTX Web](https://mqttx.app/web-client#/recent_connections). Click the **New Connection** to create a client connection as a publisher. Configure the following fields:
 
-3. First, send a message with a temperature below 40°C. You will see that the message does not meet the condition and the rule SQL does not execute.
+   - **Name**: Enter `device1`.
+   - **Host**: Enter the connection address your EMQX server.
+   - **Port**: Enter `8084`.
+   - **Username** and **Password**: Enter the authentication information configured in the **Access Control** -> **Authentication** page.
+
+   Leave other settings as default and click **Connect**.
+
+4. Create a new subscription. Set the topic as `alert`.
+
+5. Publish a message with a temperature below 40°C. You will see that the message does not meet the condition and the rule SQL does not execute.
 
    ![message_publish_1](./assets/message_publish_1.png)
 
-4. Next, publish a message with a temperature above 40°C. You will see the `alert` topic receiving the alert message.
+6. Publish a message with a temperature above 40°C. You will see the `alert` topic receiving the alert message.
 
    ![message_publish_2](./assets/message_publish_2.png)
 
-5. Return to the testing page to view the successful test results. 
+7. Return to the testing page to view the successful test results. 
 
    ![test_success](./assets/test_success.png)
-   
+
    If the test results are unsuccessful, error messages will be displayed accordingly.
 
    ![test_fail](./assets/test_fail.png)
-   
+
    
