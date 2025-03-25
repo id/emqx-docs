@@ -1,5 +1,15 @@
 # Known Issues in EMQX 5.8
 
+## e5.8.6
+
+- **TLS listener started with default configuration cannot be hot-updated to use tlsv1.3 only (since 5.4.0, will be fixed in 5.9.0)**
+
+  May fail with error like `incompatible,[client_renegotiation,{versions,['tlsv1.3']}]`
+
+  > **Workaround:**
+  > Disable the listener, then re-enable it after config change.
+
+
 ## e5.8.5
 
 - **Node Crash if Linux monotonic clock steps backward (since 5.0)**
@@ -42,13 +52,13 @@
   ABCDEF1111111111 'emqx@emqxc1-core0.local' (!) UNIDENTIFIED
   ABCDEF2222222222 'emqx@emqxc2-core0.local' up
   <...>
-
+  
   Shard            Replicas
   messages/0       (!) ABCDEF1111111111
   messages/1       (!) ABCDEF1111111111
   <...>
   messages/9       (!) ABCDEF1111111111
-
+  
   Shard             Transitions
   messages/0        +ABCDEF2222222222 -ABCDEF1111111111
   messages/1        +ABCDEF2222222222 -ABCDEF1111111111
