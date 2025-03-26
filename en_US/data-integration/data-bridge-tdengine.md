@@ -131,7 +131,7 @@ This section demonstrates how to create a Connector to connect the Sink to the T
 
 4. In the **Configuration** step, configure the following information based on what you connect to:
 
-   ::: tabs
+   :::: tabs
 
    ::: tab Connect to TDengine
 
@@ -162,10 +162,10 @@ This section demonstrates how to create a Connector to connect the Sink to the T
       - **Username**: Left empty
       - **Password**: Left empty
       - **Token**: Enter the value of `TDENGINE_CLOUD_TOKEN` provided by the TDengine Cloud. In this demonstration, it is `a2ba69cc6****f0c18cd`.
-
-   :::
-
-   ::::
+   
+      :::
+   
+      ::::
 
 5. Advanced settings (optional):  For details, see [Features of Sink](./data-bridges.md#features-of-sink).
 
