@@ -131,7 +131,7 @@ This section demonstrates how to create a Connector to connect the Sink to the T
 
 4. In the **Configuration** step, configure the following information based on what you connect to:
 
-   ::: tabs
+   :::: tabs
 
    ::: tab Connect to TDengine
 
