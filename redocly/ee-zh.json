@@ -1,6 +1,6 @@
 {
   "info": {
-    "version": "5.8.5",
+    "version": "5.8.6",
     "title": "EMQX Enterprise API"
   },
   "components": {
@@ -1952,7 +1952,6 @@
         "required": [
           "database",
           "name",
-          "password",
           "server",
           "type"
         ],
@@ -2030,7 +2029,6 @@
       "tdengine_connector.post": {
         "required": [
           "name",
-          "password",
           "server",
           "type"
         ],
@@ -2089,6 +2087,10 @@
             "type": "boolean",
             "deprecated": true,
             "description": "已弃用。自动重连数据库。"
+          },
+          "token": {
+            "type": "string",
+            "description": "The token used when connecting to TDengine Cloud. <br/><br/>If this value is provided, it will override the authentication method of Username and Password.<br/><br/>Default is empty."
           },
           "resource_opts": {
             "default": {},
@@ -6642,6 +6644,11 @@
             "default": "jt808/${clientid}/${phone}/dn",
             "type": "string",
             "description": "JT/T 808 协议下行消息的主题。"
+          },
+          "ignore_unsupported_frames": {
+            "default": true,
+            "type": "boolean",
+            "description": "Whether to ignore unsupported frames. <br/><br/>- <code>true</code>, unsupported frames will be logged and ignored. <br/><br/>- <code>false</code>, the gateway will disconnect the client when receiving an unsupported frame.<br/><br/>The default value is true."
           }
         },
         "type": "object"
@@ -15240,6 +15247,12 @@
             "description": "同步发布时等待从 Pulsar 接收回执的最大等待时间。",
             "example": "32s"
           },
+          "max_inflight": {
+            "default": 10,
+            "type": "integer",
+            "description": "The maximum number of message batches that the producer can send to each partition before it must wait for a receipt.<br/>Setting a higher number can enhance throughput.",
+            "minimum": 1
+          },
           "pulsar_topic": {
             "type": "string",
             "description": "Pulsar 主题名称"
@@ -16818,7 +16831,6 @@
       "tdengine_connector.get": {
         "required": [
           "name",
-          "password",
           "server",
           "type"
         ],
@@ -16899,6 +16911,10 @@
             "type": "boolean",
             "deprecated": true,
             "description": "已弃用。自动重连数据库。"
+          },
+          "token": {
+            "type": "string",
+            "description": "The token used when connecting to TDengine Cloud. <br/><br/>If this value is provided, it will override the authentication method of Username and Password.<br/><br/>Default is empty."
           },
           "resource_opts": {
             "default": {},
@@ -22331,6 +22347,12 @@
             "description": "同步发布时等待从 Pulsar 接收回执的最大等待时间。",
             "example": "32s"
           },
+          "max_inflight": {
+            "default": 10,
+            "type": "integer",
+            "description": "The maximum number of message batches that the producer can send to each partition before it must wait for a receipt.<br/>Setting a higher number can enhance throughput.",
+            "minimum": 1
+          },
           "pulsar_topic": {
             "type": "string",
             "description": "Pulsar 主题名称"
@@ -23736,6 +23758,12 @@
             "type": "string",
             "description": "同步发布时等待从 Pulsar 接收回执的最大等待时间。",
             "example": "32s"
+          },
+          "max_inflight": {
+            "default": 10,
+            "type": "integer",
+            "description": "The maximum number of message batches that the producer can send to each partition before it must wait for a receipt.<br/>Setting a higher number can enhance throughput.",
+            "minimum": 1
           },
           "pulsar_topic": {
             "type": "string",
@@ -41983,7 +42011,6 @@
       },
       "tdengine_connector.put": {
         "required": [
-          "password",
           "server"
         ],
         "properties": {
@@ -42030,6 +42057,10 @@
             "type": "boolean",
             "deprecated": true,
             "description": "已弃用。自动重连数据库。"
+          },
+          "token": {
+            "type": "string",
+            "description": "The token used when connecting to TDengine Cloud. <br/><br/>If this value is provided, it will override the authentication method of Username and Password.<br/><br/>Default is empty."
           },
           "resource_opts": {
             "default": {},
@@ -45415,7 +45446,6 @@
       "bridge_tdengine.put": {
         "required": [
           "database",
-          "password",
           "server"
         ],
         "properties": {
@@ -48515,7 +48545,7 @@
           "site": {
             "type": "string",
             "description": "Site ID",
-            "example": "8DACC21694A1D00C"
+            "example": "2CFE33AFE7D3A640"
           },
           "status": {
             "type": "string",
@@ -51811,7 +51841,6 @@
         "required": [
           "database",
           "name",
-          "password",
           "server",
           "type"
         ],
@@ -54623,6 +54652,12 @@
             "description": "同步发布时等待从 Pulsar 接收回执的最大等待时间。",
             "example": "32s"
           },
+          "max_inflight": {
+            "default": 10,
+            "type": "integer",
+            "description": "The maximum number of message batches that the producer can send to each partition before it must wait for a receipt.<br/>Setting a higher number can enhance throughput.",
+            "minimum": 1
+          },
           "pulsar_topic": {
             "type": "string",
             "description": "Pulsar 主题名称"
@@ -56876,10 +56911,10 @@
                           "level": "info"
                         },
                         "failure_action": "drop",
-                        "payload_encoder": {
+                        "payload_decoder": {
                           "type": "json"
                         },
-                        "payload_decoder": {
+                        "payload_encoder": {
                           "type": "json"
                         }
                       },
@@ -56903,10 +56938,10 @@
                           "level": "info"
                         },
                         "failure_action": "drop",
-                        "payload_encoder": {
+                        "payload_decoder": {
                           "type": "json"
                         },
-                        "payload_decoder": {
+                        "payload_encoder": {
                           "type": "json"
                         }
                       }
@@ -56970,10 +57005,10 @@
                         "level": "info"
                       },
                       "failure_action": "drop",
-                      "payload_encoder": {
+                      "payload_decoder": {
                         "type": "json"
                       },
-                      "payload_decoder": {
+                      "payload_encoder": {
                         "type": "json"
                       }
                     },
@@ -57056,10 +57091,10 @@
                       "level": "info"
                     },
                     "failure_action": "drop",
-                    "payload_encoder": {
+                    "payload_decoder": {
                       "type": "json"
                     },
-                    "payload_decoder": {
+                    "payload_encoder": {
                       "type": "json"
                     }
                   },
@@ -57115,10 +57150,10 @@
                         "level": "info"
                       },
                       "failure_action": "drop",
-                      "payload_encoder": {
+                      "payload_decoder": {
                         "type": "json"
                       },
-                      "payload_decoder": {
+                      "payload_encoder": {
                         "type": "json"
                       }
                     },
@@ -57179,10 +57214,10 @@
                       "level": "info"
                     },
                     "failure_action": "drop",
-                    "payload_encoder": {
+                    "payload_decoder": {
                       "type": "json"
                     },
-                    "payload_decoder": {
+                    "payload_encoder": {
                       "type": "json"
                     }
                   },
@@ -57274,10 +57309,10 @@
                         "level": "info"
                       },
                       "failure_action": "drop",
-                      "payload_encoder": {
+                      "payload_decoder": {
                         "type": "json"
                       },
-                      "payload_decoder": {
+                      "payload_encoder": {
                         "type": "json"
                       }
                     }
@@ -58096,13 +58131,12 @@
                 "example": {
                   "collectors": {
                     "mnesia": "disabled",
-                    "vm_dist": "disabled",
-                    "vm_memory": "disabled",
                     "vm_msacc": "disabled",
+                    "vm_memory": "disabled",
+                    "vm_system_info": "disabled",
                     "vm_statistics": "disabled",
-                    "vm_system_info": "disabled"
+                    "vm_dist": "disabled"
                   },
-                  "enable_basic_auth": false,
                   "push_gateway": {
                     "interval": "15s",
                     "headers": {
@@ -58111,7 +58145,8 @@
                     "url": "http://127.0.0.1:9091",
                     "method": "put",
                     "job_name": "${name}/instance/${name}~${host}"
-                  }
+                  },
+                  "enable_basic_auth": false
                 },
                 "schema": {
                   "$ref": "#/components/schemas/prometheus.recommend_setting"
@@ -58143,13 +58178,12 @@
                 "example": {
                   "collectors": {
                     "mnesia": "disabled",
-                    "vm_dist": "disabled",
-                    "vm_memory": "disabled",
                     "vm_msacc": "disabled",
+                    "vm_memory": "disabled",
+                    "vm_system_info": "disabled",
                     "vm_statistics": "disabled",
-                    "vm_system_info": "disabled"
+                    "vm_dist": "disabled"
                   },
-                  "enable_basic_auth": false,
                   "push_gateway": {
                     "interval": "15s",
                     "headers": {
@@ -58158,7 +58192,8 @@
                     "url": "http://127.0.0.1:9091",
                     "method": "put",
                     "job_name": "${name}/instance/${name}~${host}"
-                  }
+                  },
+                  "enable_basic_auth": false
                 },
                 "schema": {
                   "$ref": "#/components/schemas/prometheus.recommend_setting"
@@ -58175,13 +58210,12 @@
                   "value": {
                     "collectors": {
                       "mnesia": "disabled",
-                      "vm_dist": "disabled",
-                      "vm_memory": "disabled",
                       "vm_msacc": "disabled",
+                      "vm_memory": "disabled",
+                      "vm_system_info": "disabled",
                       "vm_statistics": "disabled",
-                      "vm_system_info": "disabled"
+                      "vm_dist": "disabled"
                     },
-                    "enable_basic_auth": false,
                     "push_gateway": {
                       "interval": "15s",
                       "headers": {
@@ -58190,7 +58224,8 @@
                       "url": "http://127.0.0.1:9091",
                       "method": "put",
                       "job_name": "${name}/instance/${name}~${host}"
-                    }
+                    },
+                    "enable_basic_auth": false
                   },
                   "summary": "recommend_setting"
                 },
@@ -58202,13 +58237,13 @@
                       "Authorization": "Basic YWRtaW46Y2JraG55eWd5QDE="
                     },
                     "job_name": "${name}/instance/${name}~${host}",
-                    "mnesia_collector": "disabled",
-                    "push_gateway_server": "http://127.0.0.1:9091",
-                    "vm_dist_collector": "disabled",
-                    "vm_memory_collector": "disabled",
                     "vm_msacc_collector": "disabled",
+                    "vm_memory_collector": "disabled",
+                    "vm_system_info_collector": "disabled",
                     "vm_statistics_collector": "disabled",
-                    "vm_system_info_collector": "disabled"
+                    "mnesia_collector": "disabled",
+                    "vm_dist_collector": "disabled",
+                    "push_gateway_server": "http://127.0.0.1:9091"
                   },
                   "summary": "legacy_deprecated_setting"
                 }
@@ -58411,13 +58446,13 @@
             "application/json": {
               "examples": {
                 "evacuation": {
-                  "conn_evict_rate": 100,
+                  "wait_takeover": "10s",
                   "sess_evict_rate": 100,
+                  "conn_evict_rate": 100,
+                  "wait_health_check": "10s",
                   "migrate_to": [
                     "othernode@127.0.0.1"
                   ],
-                  "wait_takeover": "10s",
-                  "wait_health_check": "10s",
                   "redirect_to": "othernode:1883"
                 }
               },
@@ -59670,7 +59705,9 @@
                         }
                       }
                     ],
-                    "acceptors": 16,
+                    "access_rules": [
+                      "allow all"
+                    ],
                     "dtls_options": {
                       "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
                       "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
@@ -59682,10 +59719,8 @@
                       ],
                       "fail_if_no_peer_cert": false
                     },
-                    "max_conn_rate": 1000,
-                    "access_rules": [
-                      "allow all"
-                    ]
+                    "acceptors": 16,
+                    "max_conn_rate": 1000
                   },
                   {
                     "name": "ssl-def",
@@ -59724,11 +59759,11 @@
                         }
                       }
                     ],
-                    "acceptors": 16,
-                    "max_conn_rate": 1000,
                     "access_rules": [
                       "allow all"
-                    ]
+                    ],
+                    "acceptors": 16,
+                    "max_conn_rate": 1000
                   },
                   {
                     "name": "tcp-def",
@@ -59889,7 +59924,6 @@
                         }
                       }
                     ],
-                    "acceptors": 16,
                     "dtls_options": {
                       "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
                       "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
@@ -59903,6 +59937,7 @@
                       "fail_if_no_peer_cert": false,
                       "user_lookup_fun": "emqx_tls_psk:lookup"
                     },
+                    "acceptors": 16,
                     "max_conn_rate": 1000
                   },
                   {
@@ -60073,7 +60108,9 @@
                         "active_n": 100
                       },
                       "max_connections": 1024000,
-                      "acceptors": 16,
+                      "access_rules": [
+                        "allow all"
+                      ],
                       "dtls_options": {
                         "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
                         "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
@@ -60085,10 +60122,8 @@
                         ],
                         "fail_if_no_peer_cert": false
                       },
-                      "max_conn_rate": 1000,
-                      "access_rules": [
-                        "allow all"
-                      ]
+                      "acceptors": 16,
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple DTLS listener example"
                   },
@@ -60115,11 +60150,11 @@
                         ],
                         "fail_if_no_peer_cert": false
                       },
-                      "acceptors": 16,
-                      "max_conn_rate": 1000,
                       "access_rules": [
                         "allow all"
-                      ]
+                      ],
+                      "acceptors": 16,
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple SSL listener example"
                   },
@@ -60232,7 +60267,6 @@
                       "type": "dtls",
                       "bind": "22214",
                       "max_connections": 1024000,
-                      "acceptors": 16,
                       "dtls_options": {
                         "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
                         "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
@@ -60246,6 +60280,7 @@
                         "fail_if_no_peer_cert": false,
                         "user_lookup_fun": "emqx_tls_psk:lookup"
                       },
+                      "acceptors": 16,
                       "max_conn_rate": 1000
                     },
                     "summary": "A DTLS listener with PSK example"
@@ -60370,7 +60405,9 @@
                       "active_n": 100
                     },
                     "max_connections": 1024000,
-                    "acceptors": 16,
+                    "access_rules": [
+                      "allow all"
+                    ],
                     "dtls_options": {
                       "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
                       "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
@@ -60382,10 +60419,8 @@
                       ],
                       "fail_if_no_peer_cert": false
                     },
-                    "max_conn_rate": 1000,
-                    "access_rules": [
-                      "allow all"
-                    ]
+                    "acceptors": 16,
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple DTLS listener example"
                 },
@@ -60412,11 +60447,11 @@
                       ],
                       "fail_if_no_peer_cert": false
                     },
-                    "acceptors": 16,
-                    "max_conn_rate": 1000,
                     "access_rules": [
                       "allow all"
-                    ]
+                    ],
+                    "acceptors": 16,
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple SSL listener example"
                 },
@@ -60529,7 +60564,6 @@
                     "type": "dtls",
                     "bind": "22214",
                     "max_connections": 1024000,
-                    "acceptors": 16,
                     "dtls_options": {
                       "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
                       "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
@@ -60543,6 +60577,7 @@
                       "fail_if_no_peer_cert": false,
                       "user_lookup_fun": "emqx_tls_psk:lookup"
                     },
+                    "acceptors": 16,
                     "max_conn_rate": 1000
                   },
                   "summary": "A DTLS listener with PSK example"
@@ -61172,8 +61207,8 @@
                     "type": "syskeeper_proxy",
                     "listen": "127.0.0.1:9092",
                     "enable": true,
-                    "acceptors": 16,
-                    "handshake_timeout": "16s"
+                    "handshake_timeout": "16s",
+                    "acceptors": 16
                   },
                   "summary": "Syskeeper Proxy Connector"
                 },
@@ -61526,8 +61561,8 @@
                     "access_key_id": "******",
                     "access_key_secret": "******",
                     "endpoint": "https://myinstance.cn-hangzhou.ots.aliyuncs.com",
-                    "storage_model_type": "timeseries",
-                    "instance_name": "myinstance"
+                    "instance_name": "myinstance",
+                    "storage_model_type": "timeseries"
                   },
                   "summary": "Tablestore Timeseries Connector"
                 },
@@ -61545,19 +61580,19 @@
                       "start_after_created": true,
                       "health_check_interval": "30s"
                     },
-                    "pipelining": 100,
                     "service_account_json": {
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
-                    }
+                    },
+                    "pipelining": 100
                   },
                   "summary": "GCP PubSub Consumer Connector"
                 },
@@ -61725,19 +61760,19 @@
                     "resource_opts": {
                       "request_ttl": "60s"
                     },
-                    "pipelining": 100,
                     "service_account_json": {
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
-                    }
+                    },
+                    "pipelining": 100
                   },
                   "summary": "GCP PubSub Producer Connector"
                 },
@@ -64654,8 +64689,8 @@
                   "types": {
                     "value": [
                       "rabbitmq",
-                      "kafka_consumer",
                       "gcp_pubsub_consumer",
+                      "kafka_consumer",
                       "mqtt"
                     ],
                     "summary": "Source types"
@@ -64667,8 +64702,8 @@
                     "type": "string",
                     "enum": [
                       "rabbitmq",
-                      "kafka_consumer",
                       "gcp_pubsub_consumer",
+                      "kafka_consumer",
                       "mqtt"
                     ]
                   }
@@ -64840,82 +64875,82 @@
                 "examples": {
                   "lwm2m_client": {
                     "value": {
-                      "lifetime": 86400,
-                      "awaiting_rel_cnt": 0,
+                      "subscriptions_cnt": 0,
+                      "proto_ver": "1.0",
                       "created_at": "2021-12-07T10:44:02.721+08:00",
-                      "username": "guest",
-                      "recv_pkt": 1,
-                      "mqueue_dropped": 0,
-                      "proto_name": "LwM2M",
-                      "recv_msg": 0,
+                      "subscriptions_max": "infinity",
+                      "clientid": "MzAyMzEzNTUwNzk1NDA1MzYyMzIwNzUxNjQwMTY1NzQ0NjE",
+                      "send_pkt": 1,
                       "is_bridge": false,
                       "mailbox_len": 0,
-                      "connected_at": "2021-12-07T10:44:02.721+08:00",
-                      "clientid": "MzAyMzEzNTUwNzk1NDA1MzYyMzIwNzUxNjQwMTY1NzQ0NjE",
-                      "expiry_interval": 0,
-                      "subscriptions_max": "infinity",
+                      "clean_start": true,
+                      "ip_address": "127.0.0.1",
+                      "disconnected_at": null,
+                      "recv_msg": 0,
+                      "inflight_cnt": 0,
+                      "mqueue_max": "infinity",
+                      "proto_name": "LwM2M",
                       "recv_cnt": 1,
-                      "send_pkt": 1,
+                      "send_msg": 0,
                       "send_oct": 61,
                       "heap_size": 4185,
+                      "endpoint_name": "urn:imei:154928475237123",
                       "reductions": 72022,
-                      "ip_address": "127.0.0.1",
-                      "mqueue_len": 0,
+                      "awaiting_rel_cnt": 0,
+                      "awaiting_rel_max": "infinity",
+                      "inflight_max": "infinity",
                       "node": "emqx@127.0.0.1",
                       "send_cnt": 1,
-                      "mqueue_max": "infinity",
-                      "proto_ver": "1.0",
-                      "inflight_cnt": 0,
+                      "recv_pkt": 1,
                       "port": 50675,
-                      "endpoint_name": "urn:imei:154928475237123",
-                      "awaiting_rel_max": "infinity",
+                      "username": "guest",
+                      "expiry_interval": 0,
                       "recv_oct": 56,
-                      "clean_start": true,
-                      "subscriptions_cnt": 0,
-                      "inflight_max": "infinity",
+                      "lifetime": 86400,
+                      "mqueue_dropped": 0,
                       "connected": true,
-                      "disconnected_at": null,
-                      "send_msg": 0,
+                      "connected_at": "2021-12-07T10:44:02.721+08:00",
+                      "mqueue_len": 0,
                       "keepalive": 0
                     },
                     "summary": "LwM2M client info"
                   },
                   "general_client": {
                     "value": {
-                      "awaiting_rel_cnt": 0,
+                      "subscriptions_cnt": 0,
+                      "proto_ver": "1.0",
                       "created_at": "2021-12-07T10:44:02.721+08:00",
-                      "username": "guest",
-                      "recv_pkt": 1,
-                      "mqueue_dropped": 0,
-                      "proto_name": "STOMP",
-                      "recv_msg": 0,
+                      "subscriptions_max": "infinity",
+                      "clientid": "MzAyMzEzNTUwNzk1NDA1MzYyMzIwNzUxNjQwMTY1NzQ0NjE",
+                      "send_pkt": 1,
                       "is_bridge": false,
                       "mailbox_len": 0,
-                      "connected_at": "2021-12-07T10:44:02.721+08:00",
-                      "clientid": "MzAyMzEzNTUwNzk1NDA1MzYyMzIwNzUxNjQwMTY1NzQ0NjE",
-                      "expiry_interval": 0,
-                      "subscriptions_max": "infinity",
+                      "clean_start": true,
+                      "ip_address": "127.0.0.1",
+                      "disconnected_at": null,
+                      "recv_msg": 0,
+                      "inflight_cnt": 0,
+                      "mqueue_max": "infinity",
+                      "proto_name": "STOMP",
                       "recv_cnt": 1,
-                      "send_pkt": 1,
+                      "send_msg": 0,
                       "send_oct": 61,
                       "heap_size": 4185,
                       "reductions": 72022,
-                      "ip_address": "127.0.0.1",
-                      "mqueue_len": 0,
+                      "awaiting_rel_cnt": 0,
+                      "awaiting_rel_max": "infinity",
+                      "inflight_max": "infinity",
                       "node": "emqx@127.0.0.1",
                       "send_cnt": 1,
-                      "mqueue_max": "infinity",
-                      "proto_ver": "1.0",
-                      "inflight_cnt": 0,
+                      "recv_pkt": 1,
                       "port": 50675,
-                      "awaiting_rel_max": "infinity",
+                      "username": "guest",
+                      "expiry_interval": 0,
                       "recv_oct": 56,
-                      "clean_start": true,
-                      "subscriptions_cnt": 0,
-                      "inflight_max": "infinity",
+                      "mqueue_dropped": 0,
                       "connected": true,
-                      "disconnected_at": null,
-                      "send_msg": 0,
+                      "connected_at": "2021-12-07T10:44:02.721+08:00",
+                      "mqueue_len": 0,
                       "keepalive": 0
                     },
                     "summary": "General client info"
@@ -66126,8 +66161,8 @@
                           "status": "connected"
                         }
                       ],
-                      "acceptors": 16,
                       "handshake_timeout": "16s",
+                      "acceptors": 16,
                       "actions": [
                         "my_action"
                       ]
@@ -66658,8 +66693,8 @@
                         "my_action"
                       ],
                       "endpoint": "https://myinstance.cn-hangzhou.ots.aliyuncs.com",
-                      "storage_model_type": "timeseries",
-                      "instance_name": "myinstance"
+                      "instance_name": "myinstance",
+                      "storage_model_type": "timeseries"
                     },
                     "summary": "Tablestore Timeseries Connector"
                   },
@@ -66687,19 +66722,19 @@
                         "start_after_created": true,
                         "health_check_interval": "30s"
                       },
-                      "pipelining": 100,
                       "service_account_json": {
                         "type": "service_account",
                         "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                         "client_id": "123812831923812319190",
+                        "project_id": "myproject",
                         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "client_email": "test@myproject.iam.gserviceaccount.com",
                         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                         "private_key_id": "kid",
-                        "project_id": "myproject",
                         "token_uri": "https://oauth2.googleapis.com/token"
-                      }
+                      },
+                      "pipelining": 100
                     },
                     "summary": "GCP PubSub Consumer Connector"
                   },
@@ -66959,19 +66994,19 @@
                       "resource_opts": {
                         "request_ttl": "60s"
                       },
-                      "pipelining": 100,
                       "service_account_json": {
                         "type": "service_account",
                         "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                         "client_id": "123812831923812319190",
+                        "project_id": "myproject",
                         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "client_email": "test@myproject.iam.gserviceaccount.com",
                         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                         "private_key_id": "kid",
-                        "project_id": "myproject",
                         "token_uri": "https://oauth2.googleapis.com/token"
-                      }
+                      },
+                      "pipelining": 100
                     },
                     "summary": "GCP PubSub Producer Connector"
                   },
@@ -67511,8 +67546,8 @@
                           "status": "connected"
                         }
                       ],
-                      "acceptors": 16,
                       "handshake_timeout": "16s",
+                      "acceptors": 16,
                       "actions": [
                         "my_action"
                       ]
@@ -68043,8 +68078,8 @@
                         "my_action"
                       ],
                       "endpoint": "https://myinstance.cn-hangzhou.ots.aliyuncs.com",
-                      "storage_model_type": "timeseries",
-                      "instance_name": "myinstance"
+                      "instance_name": "myinstance",
+                      "storage_model_type": "timeseries"
                     },
                     "summary": "Tablestore Timeseries Connector"
                   },
@@ -68072,19 +68107,19 @@
                         "start_after_created": true,
                         "health_check_interval": "30s"
                       },
-                      "pipelining": 100,
                       "service_account_json": {
                         "type": "service_account",
                         "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                         "client_id": "123812831923812319190",
+                        "project_id": "myproject",
                         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "client_email": "test@myproject.iam.gserviceaccount.com",
                         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                         "private_key_id": "kid",
-                        "project_id": "myproject",
                         "token_uri": "https://oauth2.googleapis.com/token"
-                      }
+                      },
+                      "pipelining": 100
                     },
                     "summary": "GCP PubSub Consumer Connector"
                   },
@@ -68344,19 +68379,19 @@
                       "resource_opts": {
                         "request_ttl": "60s"
                       },
-                      "pipelining": 100,
                       "service_account_json": {
                         "type": "service_account",
                         "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                         "client_id": "123812831923812319190",
+                        "project_id": "myproject",
                         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "client_email": "test@myproject.iam.gserviceaccount.com",
                         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                         "private_key_id": "kid",
-                        "project_id": "myproject",
                         "token_uri": "https://oauth2.googleapis.com/token"
-                      }
+                      },
+                      "pipelining": 100
                     },
                     "summary": "GCP PubSub Producer Connector"
                   },
@@ -68764,8 +68799,8 @@
                   "value": {
                     "listen": "127.0.0.1:9092",
                     "enable": true,
-                    "acceptors": 16,
-                    "handshake_timeout": "16s"
+                    "handshake_timeout": "16s",
+                    "acceptors": 16
                   },
                   "summary": "Syskeeper Proxy Connector"
                 },
@@ -69087,8 +69122,8 @@
                     "access_key_id": "******",
                     "access_key_secret": "******",
                     "endpoint": "https://myinstance.cn-hangzhou.ots.aliyuncs.com",
-                    "storage_model_type": "timeseries",
-                    "instance_name": "myinstance"
+                    "instance_name": "myinstance",
+                    "storage_model_type": "timeseries"
                   },
                   "summary": "Tablestore Timeseries Connector"
                 },
@@ -69104,19 +69139,19 @@
                       "start_after_created": true,
                       "health_check_interval": "30s"
                     },
-                    "pipelining": 100,
                     "service_account_json": {
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
-                    }
+                    },
+                    "pipelining": 100
                   },
                   "summary": "GCP PubSub Consumer Connector"
                 },
@@ -69268,19 +69303,19 @@
                     "resource_opts": {
                       "request_ttl": "60s"
                     },
-                    "pipelining": 100,
                     "service_account_json": {
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
-                    }
+                    },
+                    "pipelining": 100
                   },
                   "summary": "GCP PubSub Producer Connector"
                 },
@@ -69882,7 +69917,9 @@
                         "active_n": 100
                       },
                       "max_connections": 1024000,
-                      "acceptors": 16,
+                      "access_rules": [
+                        "allow all"
+                      ],
                       "dtls_options": {
                         "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
                         "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
@@ -69894,10 +69931,8 @@
                         ],
                         "fail_if_no_peer_cert": false
                       },
-                      "max_conn_rate": 1000,
-                      "access_rules": [
-                        "allow all"
-                      ]
+                      "acceptors": 16,
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple DTLS listener example"
                   },
@@ -69924,11 +69959,11 @@
                         ],
                         "fail_if_no_peer_cert": false
                       },
-                      "acceptors": 16,
-                      "max_conn_rate": 1000,
                       "access_rules": [
                         "allow all"
-                      ]
+                      ],
+                      "acceptors": 16,
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple SSL listener example"
                   },
@@ -70041,7 +70076,6 @@
                       "type": "dtls",
                       "bind": "22214",
                       "max_connections": 1024000,
-                      "acceptors": 16,
                       "dtls_options": {
                         "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
                         "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
@@ -70055,6 +70089,7 @@
                         "fail_if_no_peer_cert": false,
                         "user_lookup_fun": "emqx_tls_psk:lookup"
                       },
+                      "acceptors": 16,
                       "max_conn_rate": 1000
                     },
                     "summary": "A DTLS listener with PSK example"
@@ -70228,7 +70263,9 @@
                         "active_n": 100
                       },
                       "max_connections": 1024000,
-                      "acceptors": 16,
+                      "access_rules": [
+                        "allow all"
+                      ],
                       "dtls_options": {
                         "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
                         "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
@@ -70240,10 +70277,8 @@
                         ],
                         "fail_if_no_peer_cert": false
                       },
-                      "max_conn_rate": 1000,
-                      "access_rules": [
-                        "allow all"
-                      ]
+                      "acceptors": 16,
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple DTLS listener example"
                   },
@@ -70270,11 +70305,11 @@
                         ],
                         "fail_if_no_peer_cert": false
                       },
-                      "acceptors": 16,
-                      "max_conn_rate": 1000,
                       "access_rules": [
                         "allow all"
-                      ]
+                      ],
+                      "acceptors": 16,
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple SSL listener example"
                   },
@@ -70387,7 +70422,6 @@
                       "type": "dtls",
                       "bind": "22214",
                       "max_connections": 1024000,
-                      "acceptors": 16,
                       "dtls_options": {
                         "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
                         "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
@@ -70401,6 +70435,7 @@
                         "fail_if_no_peer_cert": false,
                         "user_lookup_fun": "emqx_tls_psk:lookup"
                       },
+                      "acceptors": 16,
                       "max_conn_rate": 1000
                     },
                     "summary": "A DTLS listener with PSK example"
@@ -70525,7 +70560,9 @@
                       "active_n": 100
                     },
                     "max_connections": 1024000,
-                    "acceptors": 16,
+                    "access_rules": [
+                      "allow all"
+                    ],
                     "dtls_options": {
                       "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
                       "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
@@ -70537,10 +70574,8 @@
                       ],
                       "fail_if_no_peer_cert": false
                     },
-                    "max_conn_rate": 1000,
-                    "access_rules": [
-                      "allow all"
-                    ]
+                    "acceptors": 16,
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple DTLS listener example"
                 },
@@ -70567,11 +70602,11 @@
                       ],
                       "fail_if_no_peer_cert": false
                     },
-                    "acceptors": 16,
-                    "max_conn_rate": 1000,
                     "access_rules": [
                       "allow all"
-                    ]
+                    ],
+                    "acceptors": 16,
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple SSL listener example"
                 },
@@ -70684,7 +70719,6 @@
                     "type": "dtls",
                     "bind": "22214",
                     "max_connections": 1024000,
-                    "acceptors": 16,
                     "dtls_options": {
                       "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
                       "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
@@ -70698,6 +70732,7 @@
                       "fail_if_no_peer_cert": false,
                       "user_lookup_fun": "emqx_tls_psk:lookup"
                     },
+                    "acceptors": 16,
                     "max_conn_rate": 1000
                   },
                   "summary": "A DTLS listener with PSK example"
@@ -72135,8 +72170,8 @@
                     "base_url": "http://iotdb.local:18080/",
                     "pool_type": "random",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "health_check_interval": "15s"
                     },
@@ -72218,7 +72253,6 @@
                       "sndbuf": "1024KB",
                       "tcp_keepalive": "none"
                     },
-                    "local_topic": "mqtt/local/topic",
                     "kafka": {
                       "message": {
                         "timestamp": "${.timestamp}",
@@ -72254,6 +72288,7 @@
                       "partition_count_refresh_interval": "60s",
                       "max_linger_time": "5ms"
                     },
+                    "local_topic": "mqtt/local/topic",
                     "min_metadata_refresh_interval": "3s",
                     "bootstrap_hosts": "localhost:9092",
                     "metadata_request_timeout": "4s"
@@ -72336,8 +72371,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -72383,8 +72418,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, FROM_UNIXTIME(${timestamp}/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -72401,8 +72436,8 @@
                     "max_retries": 3,
                     "aws_secret_access_key": "******",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 104857600,
                       "inflight_window": 100,
                       "health_check_interval": 15000
@@ -72431,8 +72466,8 @@
                     "request_timeout": "15s",
                     "pool_type": "random",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 104857600,
                       "inflight_window": 100,
                       "health_check_interval": 15000
@@ -72459,8 +72494,8 @@
                     "auto_reconnect": "2s",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -72484,8 +72519,8 @@
                     "aws_secret_access_key": "******",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 8,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -72508,8 +72543,8 @@
                     "sql": "insert into t_mqtt_msg(ts, msgid, mqtt_topic, qos, payload, arrived) values (${ts}, '${id}', '${topic}', ${qos}, '${payload}', ${timestamp})",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 8,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -72565,8 +72600,8 @@
                     "server": "http://127.0.0.1:4242",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -72624,8 +72659,8 @@
                     "sql": "insert into t_mqtt_msgs(msgid, topic, qos, payload) values (${id}, ${topic}, ${qos}, ${payload})",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -72684,12 +72719,12 @@
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
                     },
                     "pubsub_topic": "mytopic"
@@ -72743,6 +72778,17 @@
                       "max_buffer_bytes": 104857600,
                       "health_check_interval": "15s"
                     },
+                    "egress": {
+                      "local": {
+                        "topic": "emqx/#"
+                      },
+                      "remote": {
+                        "retain": false,
+                        "payload": "${payload}",
+                        "topic": "from_emqx/${topic}",
+                        "qos": "${qos}"
+                      }
+                    },
                     "ingress": {
                       "local": {
                         "retain": "${retain}",
@@ -72753,17 +72799,6 @@
                       "remote": {
                         "topic": "aws/#",
                         "qos": 1
-                      }
-                    },
-                    "egress": {
-                      "local": {
-                        "topic": "emqx/#"
-                      },
-                      "remote": {
-                        "retain": false,
-                        "payload": "${payload}",
-                        "topic": "from_emqx/${topic}",
-                        "qos": "${qos}"
                       }
                     }
                   },
@@ -72781,8 +72816,8 @@
                     "servers": "127.0.0.1:9042",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 8,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -72819,12 +72854,12 @@
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
                     }
                   },
@@ -72843,8 +72878,8 @@
                     "sql": "INSERT INTO messages(data, arrived) VALUES ('${payload}', ${timestamp})",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -72868,8 +72903,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload) values ( ${id}, ${topic}, ${qos}, ${payload} )",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -72891,8 +72926,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -72924,8 +72959,6 @@
                       "offset_reset_policy": "latest"
                     },
                     "min_metadata_refresh_interval": "3s",
-                    "bootstrap_hosts": "localhost:9092",
-                    "metadata_request_timeout": "4s",
                     "topic_mapping": [
                       {
                         "qos": 1,
@@ -72940,6 +72973,8 @@
                         "payload_template": "v = ${.value}"
                       }
                     ],
+                    "bootstrap_hosts": "localhost:9092",
+                    "metadata_request_timeout": "4s",
                     "value_encoding_mode": "none",
                     "key_encoding_mode": "none"
                   },
@@ -72955,8 +72990,8 @@
                     "topic": "TopicTest",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 1,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -72978,8 +73013,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -75508,12 +75543,12 @@
                     "active_n": 100
                   },
                   "max_connections": 204800,
-                  "acceptors": 16,
-                  "proxy_protocol": false,
-                  "proxy_protocol_timeout": "3s",
                   "access_rules": [
                     "allow all"
                   ],
+                  "acceptors": 16,
+                  "proxy_protocol": false,
+                  "proxy_protocol_timeout": "3s",
                   "zone": "default",
                   "mountpoint": "/",
                   "current_connections": 10240
@@ -75583,12 +75618,12 @@
                   "active_n": 100
                 },
                 "max_connections": 204800,
-                "acceptors": 16,
-                "proxy_protocol": false,
-                "proxy_protocol_timeout": "3s",
                 "access_rules": [
                   "allow all"
                 ],
+                "acceptors": 16,
+                "proxy_protocol": false,
+                "proxy_protocol_timeout": "3s",
                 "zone": "default",
                 "mountpoint": "/",
                 "current_connections": 10240
@@ -78000,8 +78035,8 @@
                       }
                     ],
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 16,
+                      "query_mode": "async",
                       "health_check_interval": "15s"
                     }
                   },
@@ -78099,8 +78134,8 @@
                     ],
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "batch_time": "0ms",
                       "inflight_window": 100,
                       "request_ttl": "45s",
@@ -78122,8 +78157,8 @@
                       }
                     ],
                     "resource_opts": {
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "inflight_window": 100,
                       "request_ttl": "45s",
                       "health_check_interval": "30s"
@@ -78550,8 +78585,8 @@
                     ],
                     "resource_opts": {
                       "batch_size": 10000,
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "batch_time": "60s",
                       "inflight_window": 100,
                       "request_ttl": "45s",
@@ -78623,8 +78658,8 @@
                       "table_name": "table_name",
                       "measurement": "${measurement}",
                       "data_source": "${data_source}",
-                      "storage_model_type": "timeseries",
-                      "meta_update_model": "MUM_IGNORE"
+                      "meta_update_model": "MUM_IGNORE",
+                      "storage_model_type": "timeseries"
                     },
                     "connector": "tablestore_connector",
                     "node_status": [
@@ -78752,8 +78787,8 @@
                     ],
                     "resource_opts": {
                       "batch_size": 100,
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "batch_time": "10ms",
                       "inflight_window": 100,
                       "request_ttl": "45s",
@@ -78893,14 +78928,14 @@
                     "enable": true,
                     "parameters": {
                       "payload_template": "${payload}",
+                      "pubsub_topic": "mytopic",
                       "attributes_template": [
                         {
                           "value": "${payload.attrs.v}",
                           "key": "${payload.attrs.k}"
                         }
                       ],
-                      "ordering_key_template": "${payload.ok}",
-                      "pubsub_topic": "mytopic"
+                      "ordering_key_template": "${payload.ok}"
                     },
                     "connector": "my_connector_name",
                     "node_status": [
@@ -79117,8 +79152,8 @@
                         }
                       ],
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 16,
+                        "query_mode": "async",
                         "health_check_interval": "15s"
                       }
                     },
@@ -79225,8 +79260,8 @@
                       ],
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 16,
+                        "query_mode": "sync",
                         "batch_time": "0ms",
                         "inflight_window": 100,
                         "request_ttl": "45s",
@@ -79251,8 +79286,8 @@
                         }
                       ],
                       "resource_opts": {
-                        "query_mode": "sync",
                         "worker_pool_size": 16,
+                        "query_mode": "sync",
                         "inflight_window": 100,
                         "request_ttl": "45s",
                         "health_check_interval": "30s"
@@ -79727,8 +79762,8 @@
                       ],
                       "resource_opts": {
                         "batch_size": 10000,
-                        "query_mode": "sync",
                         "worker_pool_size": 16,
+                        "query_mode": "sync",
                         "batch_time": "60s",
                         "inflight_window": 100,
                         "request_ttl": "45s",
@@ -79809,8 +79844,8 @@
                         "table_name": "table_name",
                         "measurement": "${measurement}",
                         "data_source": "${data_source}",
-                        "storage_model_type": "timeseries",
-                        "meta_update_model": "MUM_IGNORE"
+                        "meta_update_model": "MUM_IGNORE",
+                        "storage_model_type": "timeseries"
                       },
                       "connector": "tablestore_connector",
                       "node_status": [
@@ -79953,8 +79988,8 @@
                       ],
                       "resource_opts": {
                         "batch_size": 100,
-                        "query_mode": "sync",
                         "worker_pool_size": 16,
+                        "query_mode": "sync",
                         "batch_time": "10ms",
                         "inflight_window": 100,
                         "request_ttl": "45s",
@@ -80112,14 +80147,14 @@
                       "enable": true,
                       "parameters": {
                         "payload_template": "${payload}",
+                        "pubsub_topic": "mytopic",
                         "attributes_template": [
                           {
                             "value": "${payload.attrs.v}",
                             "key": "${payload.attrs.k}"
                           }
                         ],
-                        "ordering_key_template": "${payload.ok}",
-                        "pubsub_topic": "mytopic"
+                        "ordering_key_template": "${payload.ok}"
                       },
                       "connector": "my_connector_name",
                       "node_status": [
@@ -80338,8 +80373,8 @@
                     },
                     "connector": "my_http_connector",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 16,
+                      "query_mode": "async",
                       "health_check_interval": "15s"
                     }
                   },
@@ -80427,8 +80462,8 @@
                     "connector": "my_connector",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "batch_time": "0ms",
                       "inflight_window": 100,
                       "request_ttl": "45s",
@@ -80448,8 +80483,8 @@
                     },
                     "connector": "my_connector",
                     "resource_opts": {
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "inflight_window": 100,
                       "request_ttl": "45s",
                       "health_check_interval": "30s"
@@ -80818,8 +80853,8 @@
                     "connector": "my_connector",
                     "resource_opts": {
                       "batch_size": 10000,
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "batch_time": "60s",
                       "inflight_window": 100,
                       "request_ttl": "45s",
@@ -80885,8 +80920,8 @@
                       "table_name": "table_name",
                       "measurement": "${measurement}",
                       "data_source": "${data_source}",
-                      "storage_model_type": "timeseries",
-                      "meta_update_model": "MUM_IGNORE"
+                      "meta_update_model": "MUM_IGNORE",
+                      "storage_model_type": "timeseries"
                     },
                     "connector": "tablestore_connector",
                     "resource_opts": {
@@ -80990,8 +81025,8 @@
                     "connector": "my_connector",
                     "resource_opts": {
                       "batch_size": 100,
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "batch_time": "10ms",
                       "inflight_window": 100,
                       "request_ttl": "45s",
@@ -81117,14 +81152,14 @@
                     "enable": true,
                     "parameters": {
                       "payload_template": "${payload}",
+                      "pubsub_topic": "mytopic",
                       "attributes_template": [
                         {
                           "value": "${payload.attrs.v}",
                           "key": "${payload.attrs.k}"
                         }
                       ],
-                      "ordering_key_template": "${payload.ok}",
-                      "pubsub_topic": "mytopic"
+                      "ordering_key_template": "${payload.ok}"
                     },
                     "connector": "my_connector_name",
                     "resource_opts": {
@@ -81374,7 +81409,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "8DACC21694A1D00C"
+            "example": "2CFE33AFE7D3A640"
           }
         ],
         "responses": {
@@ -81459,7 +81494,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "8DACC21694A1D00C"
+            "example": "2CFE33AFE7D3A640"
           }
         ],
         "responses": {
@@ -81987,9 +82022,9 @@
                   "nodes": [
                     "othernode@127.0.0.1"
                   ],
-                  "conn_evict_rate": 10,
-                  "sess_evict_rate": 20,
                   "wait_takeover": "10s",
+                  "sess_evict_rate": 20,
+                  "conn_evict_rate": 10,
                   "wait_health_check": "10s",
                   "rel_sess_threshold": 1.5,
                   "abs_sess_threshold": 10,
@@ -82417,8 +82452,8 @@
                       "base_url": "http://iotdb.local:18080/",
                       "pool_type": "random",
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "health_check_interval": "15s"
                       },
@@ -82514,7 +82549,6 @@
                           "status": "connected"
                         }
                       ],
-                      "local_topic": "mqtt/local/topic",
                       "kafka": {
                         "message": {
                           "timestamp": "${.timestamp}",
@@ -82550,6 +82584,7 @@
                         "partition_count_refresh_interval": "60s",
                         "max_linger_time": "5ms"
                       },
+                      "local_topic": "mqtt/local/topic",
                       "min_metadata_refresh_interval": "3s",
                       "bootstrap_hosts": "localhost:9092",
                       "metadata_request_timeout": "4s"
@@ -82639,8 +82674,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -82686,8 +82721,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, FROM_UNIXTIME(${timestamp}/1000))",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -82704,8 +82739,8 @@
                       "max_retries": 3,
                       "aws_secret_access_key": "******",
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 104857600,
                         "inflight_window": 100,
                         "health_check_interval": 15000
@@ -82734,8 +82769,8 @@
                       "request_timeout": "15s",
                       "pool_type": "random",
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 104857600,
                         "inflight_window": 100,
                         "health_check_interval": 15000
@@ -82762,8 +82797,8 @@
                       "auto_reconnect": "2s",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -82787,8 +82822,8 @@
                       "aws_secret_access_key": "******",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 8,
+                        "query_mode": "sync",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -82811,8 +82846,8 @@
                       "sql": "insert into t_mqtt_msg(ts, msgid, mqtt_topic, qos, payload, arrived) values (${ts}, '${id}', '${topic}', ${qos}, '${payload}', ${timestamp})",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 8,
+                        "query_mode": "sync",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -82868,8 +82903,8 @@
                       "server": "http://127.0.0.1:4242",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -82927,8 +82962,8 @@
                       "sql": "insert into t_mqtt_msgs(msgid, topic, qos, payload) values (${id}, ${topic}, ${qos}, ${payload})",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -82987,12 +83022,12 @@
                         "type": "service_account",
                         "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                         "client_id": "123812831923812319190",
+                        "project_id": "myproject",
                         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "client_email": "test@myproject.iam.gserviceaccount.com",
                         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                         "private_key_id": "kid",
-                        "project_id": "myproject",
                         "token_uri": "https://oauth2.googleapis.com/token"
                       },
                       "pubsub_topic": "mytopic"
@@ -83046,6 +83081,17 @@
                         "max_buffer_bytes": 104857600,
                         "health_check_interval": "15s"
                       },
+                      "egress": {
+                        "local": {
+                          "topic": "emqx/#"
+                        },
+                        "remote": {
+                          "retain": false,
+                          "payload": "${payload}",
+                          "topic": "from_emqx/${topic}",
+                          "qos": "${qos}"
+                        }
+                      },
                       "ingress": {
                         "local": {
                           "retain": "${retain}",
@@ -83056,17 +83102,6 @@
                         "remote": {
                           "topic": "aws/#",
                           "qos": 1
-                        }
-                      },
-                      "egress": {
-                        "local": {
-                          "topic": "emqx/#"
-                        },
-                        "remote": {
-                          "retain": false,
-                          "payload": "${payload}",
-                          "topic": "from_emqx/${topic}",
-                          "qos": "${qos}"
                         }
                       }
                     },
@@ -83084,8 +83119,8 @@
                       "servers": "127.0.0.1:9042",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 8,
+                        "query_mode": "sync",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -83122,12 +83157,12 @@
                         "type": "service_account",
                         "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                         "client_id": "123812831923812319190",
+                        "project_id": "myproject",
                         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "client_email": "test@myproject.iam.gserviceaccount.com",
                         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                         "private_key_id": "kid",
-                        "project_id": "myproject",
                         "token_uri": "https://oauth2.googleapis.com/token"
                       }
                     },
@@ -83146,8 +83181,8 @@
                       "sql": "INSERT INTO messages(data, arrived) VALUES ('${payload}', ${timestamp})",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -83171,8 +83206,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload) values ( ${id}, ${topic}, ${qos}, ${payload} )",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -83201,8 +83236,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -83241,8 +83276,6 @@
                         "offset_reset_policy": "latest"
                       },
                       "min_metadata_refresh_interval": "3s",
-                      "bootstrap_hosts": "localhost:9092",
-                      "metadata_request_timeout": "4s",
                       "topic_mapping": [
                         {
                           "qos": 1,
@@ -83257,6 +83290,8 @@
                           "payload_template": "v = ${.value}"
                         }
                       ],
+                      "bootstrap_hosts": "localhost:9092",
+                      "metadata_request_timeout": "4s",
                       "value_encoding_mode": "none",
                       "key_encoding_mode": "none"
                     },
@@ -83272,8 +83307,8 @@
                       "topic": "TopicTest",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 1,
+                        "query_mode": "sync",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -83302,8 +83337,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -83515,8 +83550,8 @@
                       "base_url": "http://iotdb.local:18080/",
                       "pool_type": "random",
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "health_check_interval": "15s"
                       },
@@ -83612,7 +83647,6 @@
                           "status": "connected"
                         }
                       ],
-                      "local_topic": "mqtt/local/topic",
                       "kafka": {
                         "message": {
                           "timestamp": "${.timestamp}",
@@ -83648,6 +83682,7 @@
                         "partition_count_refresh_interval": "60s",
                         "max_linger_time": "5ms"
                       },
+                      "local_topic": "mqtt/local/topic",
                       "min_metadata_refresh_interval": "3s",
                       "bootstrap_hosts": "localhost:9092",
                       "metadata_request_timeout": "4s"
@@ -83737,8 +83772,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -83784,8 +83819,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, FROM_UNIXTIME(${timestamp}/1000))",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -83802,8 +83837,8 @@
                       "max_retries": 3,
                       "aws_secret_access_key": "******",
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 104857600,
                         "inflight_window": 100,
                         "health_check_interval": 15000
@@ -83832,8 +83867,8 @@
                       "request_timeout": "15s",
                       "pool_type": "random",
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 104857600,
                         "inflight_window": 100,
                         "health_check_interval": 15000
@@ -83860,8 +83895,8 @@
                       "auto_reconnect": "2s",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -83885,8 +83920,8 @@
                       "aws_secret_access_key": "******",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 8,
+                        "query_mode": "sync",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -83909,8 +83944,8 @@
                       "sql": "insert into t_mqtt_msg(ts, msgid, mqtt_topic, qos, payload, arrived) values (${ts}, '${id}', '${topic}', ${qos}, '${payload}', ${timestamp})",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 8,
+                        "query_mode": "sync",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -83966,8 +84001,8 @@
                       "server": "http://127.0.0.1:4242",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -84025,8 +84060,8 @@
                       "sql": "insert into t_mqtt_msgs(msgid, topic, qos, payload) values (${id}, ${topic}, ${qos}, ${payload})",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -84085,12 +84120,12 @@
                         "type": "service_account",
                         "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                         "client_id": "123812831923812319190",
+                        "project_id": "myproject",
                         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "client_email": "test@myproject.iam.gserviceaccount.com",
                         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                         "private_key_id": "kid",
-                        "project_id": "myproject",
                         "token_uri": "https://oauth2.googleapis.com/token"
                       },
                       "pubsub_topic": "mytopic"
@@ -84144,6 +84179,17 @@
                         "max_buffer_bytes": 104857600,
                         "health_check_interval": "15s"
                       },
+                      "egress": {
+                        "local": {
+                          "topic": "emqx/#"
+                        },
+                        "remote": {
+                          "retain": false,
+                          "payload": "${payload}",
+                          "topic": "from_emqx/${topic}",
+                          "qos": "${qos}"
+                        }
+                      },
                       "ingress": {
                         "local": {
                           "retain": "${retain}",
@@ -84154,17 +84200,6 @@
                         "remote": {
                           "topic": "aws/#",
                           "qos": 1
-                        }
-                      },
-                      "egress": {
-                        "local": {
-                          "topic": "emqx/#"
-                        },
-                        "remote": {
-                          "retain": false,
-                          "payload": "${payload}",
-                          "topic": "from_emqx/${topic}",
-                          "qos": "${qos}"
                         }
                       }
                     },
@@ -84182,8 +84217,8 @@
                       "servers": "127.0.0.1:9042",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 8,
+                        "query_mode": "sync",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -84220,12 +84255,12 @@
                         "type": "service_account",
                         "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                         "client_id": "123812831923812319190",
+                        "project_id": "myproject",
                         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "client_email": "test@myproject.iam.gserviceaccount.com",
                         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                         "private_key_id": "kid",
-                        "project_id": "myproject",
                         "token_uri": "https://oauth2.googleapis.com/token"
                       }
                     },
@@ -84244,8 +84279,8 @@
                       "sql": "INSERT INTO messages(data, arrived) VALUES ('${payload}', ${timestamp})",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -84269,8 +84304,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload) values ( ${id}, ${topic}, ${qos}, ${payload} )",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -84299,8 +84334,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -84339,8 +84374,6 @@
                         "offset_reset_policy": "latest"
                       },
                       "min_metadata_refresh_interval": "3s",
-                      "bootstrap_hosts": "localhost:9092",
-                      "metadata_request_timeout": "4s",
                       "topic_mapping": [
                         {
                           "qos": 1,
@@ -84355,6 +84388,8 @@
                           "payload_template": "v = ${.value}"
                         }
                       ],
+                      "bootstrap_hosts": "localhost:9092",
+                      "metadata_request_timeout": "4s",
                       "value_encoding_mode": "none",
                       "key_encoding_mode": "none"
                     },
@@ -84370,8 +84405,8 @@
                       "topic": "TopicTest",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 1,
+                        "query_mode": "sync",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -84400,8 +84435,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -84606,8 +84641,8 @@
                     "base_url": "http://iotdb.local:18080/",
                     "pool_type": "random",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "health_check_interval": "15s"
                     },
@@ -84687,7 +84722,6 @@
                       "sndbuf": "1024KB",
                       "tcp_keepalive": "none"
                     },
-                    "local_topic": "mqtt/local/topic",
                     "kafka": {
                       "message": {
                         "timestamp": "${.timestamp}",
@@ -84723,6 +84757,7 @@
                       "partition_count_refresh_interval": "60s",
                       "max_linger_time": "5ms"
                     },
+                    "local_topic": "mqtt/local/topic",
                     "min_metadata_refresh_interval": "3s",
                     "bootstrap_hosts": "localhost:9092",
                     "metadata_request_timeout": "4s"
@@ -84803,8 +84838,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -84848,8 +84883,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, FROM_UNIXTIME(${timestamp}/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -84866,8 +84901,8 @@
                     "max_retries": 3,
                     "aws_secret_access_key": "******",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 104857600,
                       "inflight_window": 100,
                       "health_check_interval": 15000
@@ -84894,8 +84929,8 @@
                     "request_timeout": "15s",
                     "pool_type": "random",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 104857600,
                       "inflight_window": 100,
                       "health_check_interval": 15000
@@ -84922,8 +84957,8 @@
                     "auto_reconnect": "2s",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -84947,8 +84982,8 @@
                     "aws_secret_access_key": "******",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 8,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -84971,8 +85006,8 @@
                     "sql": "insert into t_mqtt_msg(ts, msgid, mqtt_topic, qos, payload, arrived) values (${ts}, '${id}', '${topic}', ${qos}, '${payload}', ${timestamp})",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 8,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -85028,8 +85063,8 @@
                     "server": "http://127.0.0.1:4242",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -85087,8 +85122,8 @@
                     "sql": "insert into t_mqtt_msgs(msgid, topic, qos, payload) values (${id}, ${topic}, ${qos}, ${payload})",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -85147,12 +85182,12 @@
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
                     },
                     "pubsub_topic": "mytopic"
@@ -85202,6 +85237,17 @@
                       "max_buffer_bytes": 104857600,
                       "health_check_interval": "15s"
                     },
+                    "egress": {
+                      "local": {
+                        "topic": "emqx/#"
+                      },
+                      "remote": {
+                        "retain": false,
+                        "payload": "${payload}",
+                        "topic": "from_emqx/${topic}",
+                        "qos": "${qos}"
+                      }
+                    },
                     "ingress": {
                       "local": {
                         "retain": "${retain}",
@@ -85212,17 +85258,6 @@
                       "remote": {
                         "topic": "aws/#",
                         "qos": 1
-                      }
-                    },
-                    "egress": {
-                      "local": {
-                        "topic": "emqx/#"
-                      },
-                      "remote": {
-                        "retain": false,
-                        "payload": "${payload}",
-                        "topic": "from_emqx/${topic}",
-                        "qos": "${qos}"
                       }
                     }
                   },
@@ -85240,8 +85275,8 @@
                     "servers": "127.0.0.1:9042",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 8,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -85278,12 +85313,12 @@
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
                     }
                   },
@@ -85302,8 +85337,8 @@
                     "sql": "INSERT INTO messages(data, arrived) VALUES ('${payload}', ${timestamp})",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -85327,8 +85362,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload) values ( ${id}, ${topic}, ${qos}, ${payload} )",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -85350,8 +85385,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -85381,8 +85416,6 @@
                       "offset_reset_policy": "latest"
                     },
                     "min_metadata_refresh_interval": "3s",
-                    "bootstrap_hosts": "localhost:9092",
-                    "metadata_request_timeout": "4s",
                     "topic_mapping": [
                       {
                         "qos": 1,
@@ -85397,6 +85430,8 @@
                         "payload_template": "v = ${.value}"
                       }
                     ],
+                    "bootstrap_hosts": "localhost:9092",
+                    "metadata_request_timeout": "4s",
                     "value_encoding_mode": "none",
                     "key_encoding_mode": "none"
                   },
@@ -85412,8 +85447,8 @@
                     "topic": "TopicTest",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 1,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -85435,8 +85470,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -85984,11 +86019,11 @@
                       "nl": 0,
                       "topic": "stomp/topic",
                       "qos": 1,
-                      "rap": 0,
-                      "rh": 0,
                       "sub_props": {
                         "subid": "10"
-                      }
+                      },
+                      "rap": 0,
+                      "rh": 0
                     },
                     "summary": "A STOMP subscription"
                   }
@@ -86064,11 +86099,11 @@
                     "nl": 0,
                     "topic": "stomp/topic",
                     "qos": 1,
-                    "rap": 0,
-                    "rh": 0,
                     "sub_props": {
                       "subid": "10"
-                    }
+                    },
+                    "rap": 0,
+                    "rh": 0
                   },
                   "summary": "A STOMP subscription"
                 }
@@ -86277,10 +86312,10 @@
                         "level": "info"
                       },
                       "failure_action": "drop",
-                      "payload_encoder": {
+                      "payload_decoder": {
                         "type": "json"
                       },
-                      "payload_decoder": {
+                      "payload_encoder": {
                         "type": "json"
                       }
                     },
@@ -87789,17 +87824,17 @@
           "content": {
             "application/json": {
               "examples": {
-                "front": {
-                  "value": {
-                    "position": "front"
-                  },
-                  "summary": "front example"
-                },
                 "rear": {
                   "value": {
                     "position": "rear"
                   },
                   "summary": "rear example"
+                },
+                "front": {
+                  "value": {
+                    "position": "front"
+                  },
+                  "summary": "front example"
                 },
                 "relative_after": {
                   "value": {
@@ -89461,8 +89496,8 @@
                     },
                     "connector": "my_http_connector",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 16,
+                      "query_mode": "async",
                       "health_check_interval": "15s"
                     }
                   },
@@ -89550,8 +89585,8 @@
                     "connector": "my_connector",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "batch_time": "0ms",
                       "inflight_window": 100,
                       "request_ttl": "45s",
@@ -89571,8 +89606,8 @@
                     },
                     "connector": "my_connector",
                     "resource_opts": {
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "inflight_window": 100,
                       "request_ttl": "45s",
                       "health_check_interval": "30s"
@@ -89941,8 +89976,8 @@
                     "connector": "my_connector",
                     "resource_opts": {
                       "batch_size": 10000,
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "batch_time": "60s",
                       "inflight_window": 100,
                       "request_ttl": "45s",
@@ -90008,8 +90043,8 @@
                       "table_name": "table_name",
                       "measurement": "${measurement}",
                       "data_source": "${data_source}",
-                      "storage_model_type": "timeseries",
-                      "meta_update_model": "MUM_IGNORE"
+                      "meta_update_model": "MUM_IGNORE",
+                      "storage_model_type": "timeseries"
                     },
                     "connector": "tablestore_connector",
                     "resource_opts": {
@@ -90113,8 +90148,8 @@
                     "connector": "my_connector",
                     "resource_opts": {
                       "batch_size": 100,
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "batch_time": "10ms",
                       "inflight_window": 100,
                       "request_ttl": "45s",
@@ -90240,14 +90275,14 @@
                     "enable": true,
                     "parameters": {
                       "payload_template": "${payload}",
+                      "pubsub_topic": "mytopic",
                       "attributes_template": [
                         {
                           "value": "${payload.attrs.v}",
                           "key": "${payload.attrs.k}"
                         }
                       ],
-                      "ordering_key_template": "${payload.ok}",
-                      "pubsub_topic": "mytopic"
+                      "ordering_key_template": "${payload.ok}"
                     },
                     "connector": "my_connector_name",
                     "resource_opts": {
@@ -90673,17 +90708,17 @@
           "content": {
             "application/json": {
               "examples": {
-                "front": {
-                  "value": {
-                    "position": "front"
-                  },
-                  "summary": "absolute position 'front'"
-                },
                 "rear": {
                   "value": {
                     "position": "rear"
                   },
                   "summary": "absolute position 'rear'"
+                },
+                "front": {
+                  "value": {
+                    "position": "front"
+                  },
+                  "summary": "absolute position 'front'"
                 },
                 "related_after": {
                   "value": {
@@ -91626,36 +91661,36 @@
                     "value": [
                       "http",
                       "rocketmq",
-                      "rabbitmq",
                       "cassandra",
+                      "rabbitmq",
+                      "confluent_producer",
                       "mongodb",
+                      "sqlserver",
+                      "syskeeper_forwarder",
+                      "gcp_pubsub_producer",
+                      "kafka_producer",
+                      "influxdb",
+                      "greptimedb",
                       "pulsar",
                       "iotdb",
-                      "confluent_producer",
-                      "gcp_pubsub_producer",
-                      "sqlserver",
-                      "azure_event_hub_producer",
-                      "greptimedb",
                       "hstreamdb",
-                      "influxdb",
-                      "kafka_producer",
-                      "syskeeper_forwarder",
+                      "azure_event_hub_producer",
                       "redis",
-                      "opents",
                       "s3",
-                      "kinesis",
                       "datalayers",
+                      "opents",
+                      "kinesis",
                       "mqtt",
-                      "tablestore",
-                      "oracle",
-                      "snowflake",
-                      "azure_blob_storage",
-                      "clickhouse",
                       "couchbase",
                       "tdengine",
+                      "snowflake",
+                      "oracle",
+                      "clickhouse",
                       "timescale",
-                      "matrix",
+                      "azure_blob_storage",
+                      "tablestore",
                       "elasticsearch",
+                      "matrix",
                       "pgsql",
                       "mysql",
                       "dynamo"
@@ -91670,36 +91705,36 @@
                     "enum": [
                       "http",
                       "rocketmq",
-                      "rabbitmq",
                       "cassandra",
+                      "rabbitmq",
+                      "confluent_producer",
                       "mongodb",
+                      "sqlserver",
+                      "syskeeper_forwarder",
+                      "gcp_pubsub_producer",
+                      "kafka_producer",
+                      "influxdb",
+                      "greptimedb",
                       "pulsar",
                       "iotdb",
-                      "confluent_producer",
-                      "gcp_pubsub_producer",
-                      "sqlserver",
-                      "azure_event_hub_producer",
-                      "greptimedb",
                       "hstreamdb",
-                      "influxdb",
-                      "kafka_producer",
-                      "syskeeper_forwarder",
+                      "azure_event_hub_producer",
                       "redis",
-                      "opents",
                       "s3",
-                      "kinesis",
                       "datalayers",
+                      "opents",
+                      "kinesis",
                       "mqtt",
-                      "tablestore",
-                      "oracle",
-                      "snowflake",
-                      "azure_blob_storage",
-                      "clickhouse",
                       "couchbase",
                       "tdengine",
+                      "snowflake",
+                      "oracle",
+                      "clickhouse",
                       "timescale",
-                      "matrix",
+                      "azure_blob_storage",
+                      "tablestore",
                       "elasticsearch",
+                      "matrix",
                       "pgsql",
                       "mysql",
                       "dynamo"
@@ -92436,7 +92471,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "8DACC21694A1D00C"
+            "example": "2CFE33AFE7D3A640"
           }
         ],
         "responses": {
@@ -93071,8 +93106,8 @@
                       ],
                       "idle_timeout": "30s",
                       "mountpoint": "coap/",
-                      "connection_required": false,
                       "enable_stats": true,
+                      "connection_required": false,
                       "notify_type": "qos",
                       "publish_qos": "coap",
                       "subscribe_qos": "coap"
@@ -93403,8 +93438,8 @@
                     "heartbeat": "30s",
                     "idle_timeout": "30s",
                     "mountpoint": "coap2/",
-                    "connection_required": false,
                     "enable_stats": true,
+                    "connection_required": false,
                     "notify_type": "qos",
                     "publish_qos": "coap",
                     "subscribe_qos": "coap"
@@ -93684,8 +93719,8 @@
                         }
                       ],
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 16,
+                        "query_mode": "async",
                         "health_check_interval": "15s"
                       }
                     },
@@ -93792,8 +93827,8 @@
                       ],
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 16,
+                        "query_mode": "sync",
                         "batch_time": "0ms",
                         "inflight_window": 100,
                         "request_ttl": "45s",
@@ -93818,8 +93853,8 @@
                         }
                       ],
                       "resource_opts": {
-                        "query_mode": "sync",
                         "worker_pool_size": 16,
+                        "query_mode": "sync",
                         "inflight_window": 100,
                         "request_ttl": "45s",
                         "health_check_interval": "30s"
@@ -94294,8 +94329,8 @@
                       ],
                       "resource_opts": {
                         "batch_size": 10000,
-                        "query_mode": "sync",
                         "worker_pool_size": 16,
+                        "query_mode": "sync",
                         "batch_time": "60s",
                         "inflight_window": 100,
                         "request_ttl": "45s",
@@ -94376,8 +94411,8 @@
                         "table_name": "table_name",
                         "measurement": "${measurement}",
                         "data_source": "${data_source}",
-                        "storage_model_type": "timeseries",
-                        "meta_update_model": "MUM_IGNORE"
+                        "meta_update_model": "MUM_IGNORE",
+                        "storage_model_type": "timeseries"
                       },
                       "connector": "tablestore_connector",
                       "node_status": [
@@ -94520,8 +94555,8 @@
                       ],
                       "resource_opts": {
                         "batch_size": 100,
-                        "query_mode": "sync",
                         "worker_pool_size": 16,
+                        "query_mode": "sync",
                         "batch_time": "10ms",
                         "inflight_window": 100,
                         "request_ttl": "45s",
@@ -94679,14 +94714,14 @@
                       "enable": true,
                       "parameters": {
                         "payload_template": "${payload}",
+                        "pubsub_topic": "mytopic",
                         "attributes_template": [
                           {
                             "value": "${payload.attrs.v}",
                             "key": "${payload.attrs.k}"
                           }
                         ],
-                        "ordering_key_template": "${payload.ok}",
-                        "pubsub_topic": "mytopic"
+                        "ordering_key_template": "${payload.ok}"
                       },
                       "connector": "my_connector_name",
                       "node_status": [
@@ -94941,8 +94976,8 @@
                         }
                       ],
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 16,
+                        "query_mode": "async",
                         "health_check_interval": "15s"
                       }
                     },
@@ -95049,8 +95084,8 @@
                       ],
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 16,
+                        "query_mode": "sync",
                         "batch_time": "0ms",
                         "inflight_window": 100,
                         "request_ttl": "45s",
@@ -95075,8 +95110,8 @@
                         }
                       ],
                       "resource_opts": {
-                        "query_mode": "sync",
                         "worker_pool_size": 16,
+                        "query_mode": "sync",
                         "inflight_window": 100,
                         "request_ttl": "45s",
                         "health_check_interval": "30s"
@@ -95551,8 +95586,8 @@
                       ],
                       "resource_opts": {
                         "batch_size": 10000,
-                        "query_mode": "sync",
                         "worker_pool_size": 16,
+                        "query_mode": "sync",
                         "batch_time": "60s",
                         "inflight_window": 100,
                         "request_ttl": "45s",
@@ -95633,8 +95668,8 @@
                         "table_name": "table_name",
                         "measurement": "${measurement}",
                         "data_source": "${data_source}",
-                        "storage_model_type": "timeseries",
-                        "meta_update_model": "MUM_IGNORE"
+                        "meta_update_model": "MUM_IGNORE",
+                        "storage_model_type": "timeseries"
                       },
                       "connector": "tablestore_connector",
                       "node_status": [
@@ -95777,8 +95812,8 @@
                       ],
                       "resource_opts": {
                         "batch_size": 100,
-                        "query_mode": "sync",
                         "worker_pool_size": 16,
+                        "query_mode": "sync",
                         "batch_time": "10ms",
                         "inflight_window": 100,
                         "request_ttl": "45s",
@@ -95936,14 +95971,14 @@
                       "enable": true,
                       "parameters": {
                         "payload_template": "${payload}",
+                        "pubsub_topic": "mytopic",
                         "attributes_template": [
                           {
                             "value": "${payload.attrs.v}",
                             "key": "${payload.attrs.k}"
                           }
                         ],
-                        "ordering_key_template": "${payload.ok}",
-                        "pubsub_topic": "mytopic"
+                        "ordering_key_template": "${payload.ok}"
                       },
                       "connector": "my_connector_name",
                       "node_status": [
@@ -96204,8 +96239,8 @@
                     },
                     "connector": "my_http_connector",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 16,
+                      "query_mode": "async",
                       "health_check_interval": "15s"
                     }
                   },
@@ -96287,8 +96322,8 @@
                     "connector": "my_connector",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "batch_time": "0ms",
                       "inflight_window": 100,
                       "request_ttl": "45s",
@@ -96306,8 +96341,8 @@
                     },
                     "connector": "my_connector",
                     "resource_opts": {
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "inflight_window": 100,
                       "request_ttl": "45s",
                       "health_check_interval": "30s"
@@ -96644,8 +96679,8 @@
                     "connector": "my_connector",
                     "resource_opts": {
                       "batch_size": 10000,
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "batch_time": "60s",
                       "inflight_window": 100,
                       "request_ttl": "45s",
@@ -96705,8 +96740,8 @@
                       "table_name": "table_name",
                       "measurement": "${measurement}",
                       "data_source": "${data_source}",
-                      "storage_model_type": "timeseries",
-                      "meta_update_model": "MUM_IGNORE"
+                      "meta_update_model": "MUM_IGNORE",
+                      "storage_model_type": "timeseries"
                     },
                     "connector": "tablestore_connector",
                     "resource_opts": {
@@ -96802,8 +96837,8 @@
                     "connector": "my_connector",
                     "resource_opts": {
                       "batch_size": 100,
-                      "query_mode": "sync",
                       "worker_pool_size": 16,
+                      "query_mode": "sync",
                       "batch_time": "10ms",
                       "inflight_window": 100,
                       "request_ttl": "45s",
@@ -96915,14 +96950,14 @@
                     "enable": true,
                     "parameters": {
                       "payload_template": "${payload}",
+                      "pubsub_topic": "mytopic",
                       "attributes_template": [
                         {
                           "value": "${payload.attrs.v}",
                           "key": "${payload.attrs.k}"
                         }
                       ],
-                      "ordering_key_template": "${payload.ok}",
-                      "pubsub_topic": "mytopic"
+                      "ordering_key_template": "${payload.ok}"
                     },
                     "connector": "my_connector_name",
                     "resource_opts": {
@@ -98910,8 +98945,8 @@
                         "status": "connected"
                       }
                     ],
-                    "acceptors": 16,
                     "handshake_timeout": "16s",
+                    "acceptors": 16,
                     "actions": [
                       "my_action"
                     ]
@@ -99382,8 +99417,8 @@
                       "my_action"
                     ],
                     "endpoint": "https://myinstance.cn-hangzhou.ots.aliyuncs.com",
-                    "storage_model_type": "timeseries",
-                    "instance_name": "myinstance"
+                    "instance_name": "myinstance",
+                    "storage_model_type": "timeseries"
                   },
                   {
                     "name": "my_connector",
@@ -99408,19 +99443,19 @@
                       "start_after_created": true,
                       "health_check_interval": "30s"
                     },
-                    "pipelining": 100,
                     "service_account_json": {
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
-                    }
+                    },
+                    "pipelining": 100
                   },
                   {
                     "name": "clickhouse_connector",
@@ -99650,19 +99685,19 @@
                     "resource_opts": {
                       "request_ttl": "60s"
                     },
-                    "pipelining": 100,
                     "service_account_json": {
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
-                    }
+                    },
+                    "pipelining": 100
                   },
                   {
                     "name": "my_timescale_connector",
@@ -100164,8 +100199,8 @@
                           "status": "connected"
                         }
                       ],
-                      "acceptors": 16,
                       "handshake_timeout": "16s",
+                      "acceptors": 16,
                       "actions": [
                         "my_action"
                       ]
@@ -100696,8 +100731,8 @@
                         "my_action"
                       ],
                       "endpoint": "https://myinstance.cn-hangzhou.ots.aliyuncs.com",
-                      "storage_model_type": "timeseries",
-                      "instance_name": "myinstance"
+                      "instance_name": "myinstance",
+                      "storage_model_type": "timeseries"
                     },
                     "summary": "Tablestore Timeseries Connector"
                   },
@@ -100725,19 +100760,19 @@
                         "start_after_created": true,
                         "health_check_interval": "30s"
                       },
-                      "pipelining": 100,
                       "service_account_json": {
                         "type": "service_account",
                         "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                         "client_id": "123812831923812319190",
+                        "project_id": "myproject",
                         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "client_email": "test@myproject.iam.gserviceaccount.com",
                         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                         "private_key_id": "kid",
-                        "project_id": "myproject",
                         "token_uri": "https://oauth2.googleapis.com/token"
-                      }
+                      },
+                      "pipelining": 100
                     },
                     "summary": "GCP PubSub Consumer Connector"
                   },
@@ -100997,19 +101032,19 @@
                       "resource_opts": {
                         "request_ttl": "60s"
                       },
-                      "pipelining": 100,
                       "service_account_json": {
                         "type": "service_account",
                         "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                         "client_id": "123812831923812319190",
+                        "project_id": "myproject",
                         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "client_email": "test@myproject.iam.gserviceaccount.com",
                         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                         "private_key_id": "kid",
-                        "project_id": "myproject",
                         "token_uri": "https://oauth2.googleapis.com/token"
-                      }
+                      },
+                      "pipelining": 100
                     },
                     "summary": "GCP PubSub Producer Connector"
                   },
@@ -101431,8 +101466,8 @@
                     "type": "syskeeper_proxy",
                     "listen": "127.0.0.1:9092",
                     "enable": true,
-                    "acceptors": 16,
-                    "handshake_timeout": "16s"
+                    "handshake_timeout": "16s",
+                    "acceptors": 16
                   },
                   "summary": "Syskeeper Proxy Connector"
                 },
@@ -101785,8 +101820,8 @@
                     "access_key_id": "******",
                     "access_key_secret": "******",
                     "endpoint": "https://myinstance.cn-hangzhou.ots.aliyuncs.com",
-                    "storage_model_type": "timeseries",
-                    "instance_name": "myinstance"
+                    "instance_name": "myinstance",
+                    "storage_model_type": "timeseries"
                   },
                   "summary": "Tablestore Timeseries Connector"
                 },
@@ -101804,19 +101839,19 @@
                       "start_after_created": true,
                       "health_check_interval": "30s"
                     },
-                    "pipelining": 100,
                     "service_account_json": {
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
-                    }
+                    },
+                    "pipelining": 100
                   },
                   "summary": "GCP PubSub Consumer Connector"
                 },
@@ -101984,19 +102019,19 @@
                     "resource_opts": {
                       "request_ttl": "60s"
                     },
-                    "pipelining": 100,
                     "service_account_json": {
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
-                    }
+                    },
+                    "pipelining": 100
                   },
                   "summary": "GCP PubSub Producer Connector"
                 },
@@ -102688,13 +102723,13 @@
                     "filter": {
                       "e2e_tracing_options": {
                         "client_publish": true,
+                        "topic_match_rules_max": 30,
+                        "clientid_match_rules_max": 30,
                         "attribute_meta_value": "emqxcl",
                         "client_connect_disconnect": true,
                         "client_subscribe_unsubscribe": true,
-                        "clientid_match_rules_max": 30,
                         "msg_trace_level": 0,
-                        "sample_ratio": "10%",
-                        "topic_match_rules_max": 30
+                        "sample_ratio": "10%"
                       },
                       "trace_all": false,
                       "trace_mode": "legacy"
@@ -102747,13 +102782,13 @@
                     "filter": {
                       "e2e_tracing_options": {
                         "client_publish": true,
+                        "topic_match_rules_max": 30,
+                        "clientid_match_rules_max": 30,
                         "attribute_meta_value": "emqxcl",
                         "client_connect_disconnect": true,
                         "client_subscribe_unsubscribe": true,
-                        "clientid_match_rules_max": 30,
                         "msg_trace_level": 0,
-                        "sample_ratio": "10%",
-                        "topic_match_rules_max": 30
+                        "sample_ratio": "10%"
                       },
                       "trace_all": false,
                       "trace_mode": "legacy"
@@ -102811,13 +102846,13 @@
                   "filter": {
                     "e2e_tracing_options": {
                       "client_publish": true,
+                      "topic_match_rules_max": 30,
+                      "clientid_match_rules_max": 30,
                       "attribute_meta_value": "emqxcl",
                       "client_connect_disconnect": true,
                       "client_subscribe_unsubscribe": true,
-                      "clientid_match_rules_max": 30,
                       "msg_trace_level": 0,
-                      "sample_ratio": "10%",
-                      "topic_match_rules_max": 30
+                      "sample_ratio": "10%"
                     },
                     "trace_all": false,
                     "trace_mode": "legacy"
@@ -104060,7 +104095,8 @@
                       "enum": [
                         "UNEXPECTED_ERROR",
                         "ALREADY_INSTALLED",
-                        "BAD_PLUGIN_INFO"
+                        "BAD_PLUGIN_INFO",
+                        "FORBIDDEN"
                       ]
                     },
                     "message": {
@@ -106518,12 +106554,12 @@
                     "active_n": 100
                   },
                   "max_connections": 204800,
-                  "acceptors": 16,
-                  "proxy_protocol": false,
-                  "proxy_protocol_timeout": "3s",
                   "access_rules": [
                     "allow all"
                   ],
+                  "acceptors": 16,
+                  "proxy_protocol": false,
+                  "proxy_protocol_timeout": "3s",
                   "zone": "default",
                   "mountpoint": "/",
                   "current_connections": 10240
@@ -106614,12 +106650,12 @@
                     "active_n": 100
                   },
                   "max_connections": 204800,
-                  "acceptors": 16,
-                  "proxy_protocol": false,
-                  "proxy_protocol_timeout": "3s",
                   "access_rules": [
                     "allow all"
                   ],
+                  "acceptors": 16,
+                  "proxy_protocol": false,
+                  "proxy_protocol_timeout": "3s",
                   "zone": "default",
                   "mountpoint": "/",
                   "current_connections": 10240
@@ -106711,12 +106747,12 @@
                   "active_n": 100
                 },
                 "max_connections": 204800,
-                "acceptors": 16,
-                "proxy_protocol": false,
-                "proxy_protocol_timeout": "3s",
                 "access_rules": [
                   "allow all"
                 ],
+                "acceptors": 16,
+                "proxy_protocol": false,
+                "proxy_protocol_timeout": "3s",
                 "zone": "default",
                 "mountpoint": "/",
                 "current_connections": 10240
@@ -108221,9 +108257,9 @@
                       "max_sessions": 10,
                       "start_at": "2022-01-11",
                       "expiry": false,
+                      "deployment": "bar-deployment",
                       "customer_type": 10,
                       "customer": "Foo",
-                      "deployment": "bar-deployment",
                       "expiry_at": "2295-10-27"
                     }
                   }
@@ -108265,9 +108301,9 @@
                       "max_sessions": 10,
                       "start_at": "2022-01-11",
                       "expiry": false,
+                      "deployment": "bar-deployment",
                       "customer_type": 10,
                       "customer": "Foo",
-                      "deployment": "bar-deployment",
                       "expiry_at": "2295-10-27"
                     }
                   }
@@ -109058,8 +109094,8 @@
                     "base_url": "http://iotdb.local:18080/",
                     "pool_type": "random",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "health_check_interval": "15s"
                     },
@@ -109149,7 +109185,6 @@
                         "status": "connected"
                       }
                     ],
-                    "local_topic": "mqtt/local/topic",
                     "kafka": {
                       "message": {
                         "timestamp": "${.timestamp}",
@@ -109185,6 +109220,7 @@
                       "partition_count_refresh_interval": "60s",
                       "max_linger_time": "5ms"
                     },
+                    "local_topic": "mqtt/local/topic",
                     "min_metadata_refresh_interval": "3s",
                     "bootstrap_hosts": "localhost:9092",
                     "metadata_request_timeout": "4s"
@@ -109265,8 +109301,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -109306,8 +109342,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, FROM_UNIXTIME(${timestamp}/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -109321,8 +109357,8 @@
                     "max_retries": 3,
                     "aws_secret_access_key": "******",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 104857600,
                       "inflight_window": 100,
                       "health_check_interval": 15000
@@ -109348,8 +109384,8 @@
                     "request_timeout": "15s",
                     "pool_type": "random",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 104857600,
                       "inflight_window": 100,
                       "health_check_interval": 15000
@@ -109373,8 +109409,8 @@
                     "auto_reconnect": "2s",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -109395,8 +109431,8 @@
                     "aws_secret_access_key": "******",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 8,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -109416,8 +109452,8 @@
                     "sql": "insert into t_mqtt_msg(ts, msgid, mqtt_topic, qos, payload, arrived) values (${ts}, '${id}', '${topic}', ${qos}, '${payload}', ${timestamp})",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 8,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -109464,8 +109500,8 @@
                     "server": "http://127.0.0.1:4242",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -109514,8 +109550,8 @@
                     "sql": "insert into t_mqtt_msgs(msgid, topic, qos, payload) values (${id}, ${topic}, ${qos}, ${payload})",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -109565,12 +109601,12 @@
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
                     },
                     "pubsub_topic": "mytopic"
@@ -109618,6 +109654,17 @@
                       "max_buffer_bytes": 104857600,
                       "health_check_interval": "15s"
                     },
+                    "egress": {
+                      "local": {
+                        "topic": "emqx/#"
+                      },
+                      "remote": {
+                        "retain": false,
+                        "payload": "${payload}",
+                        "topic": "from_emqx/${topic}",
+                        "qos": "${qos}"
+                      }
+                    },
                     "ingress": {
                       "local": {
                         "retain": "${retain}",
@@ -109628,17 +109675,6 @@
                       "remote": {
                         "topic": "aws/#",
                         "qos": 1
-                      }
-                    },
-                    "egress": {
-                      "local": {
-                        "topic": "emqx/#"
-                      },
-                      "remote": {
-                        "retain": false,
-                        "payload": "${payload}",
-                        "topic": "from_emqx/${topic}",
-                        "qos": "${qos}"
                       }
                     }
                   },
@@ -109653,8 +109689,8 @@
                     "servers": "127.0.0.1:9042",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 8,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -109688,12 +109724,12 @@
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
                     }
                   },
@@ -109709,8 +109745,8 @@
                     "sql": "INSERT INTO messages(data, arrived) VALUES ('${payload}', ${timestamp})",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -109731,8 +109767,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload) values ( ${id}, ${topic}, ${qos}, ${payload} )",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -109758,8 +109794,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -109795,8 +109831,6 @@
                       "offset_reset_policy": "latest"
                     },
                     "min_metadata_refresh_interval": "3s",
-                    "bootstrap_hosts": "localhost:9092",
-                    "metadata_request_timeout": "4s",
                     "topic_mapping": [
                       {
                         "qos": 1,
@@ -109811,6 +109845,8 @@
                         "payload_template": "v = ${.value}"
                       }
                     ],
+                    "bootstrap_hosts": "localhost:9092",
+                    "metadata_request_timeout": "4s",
                     "value_encoding_mode": "none",
                     "key_encoding_mode": "none"
                   },
@@ -109823,8 +109859,8 @@
                     "topic": "TopicTest",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 1,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -109850,8 +109886,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -110031,8 +110067,8 @@
                       "base_url": "http://iotdb.local:18080/",
                       "pool_type": "random",
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "health_check_interval": "15s"
                       },
@@ -110128,7 +110164,6 @@
                           "status": "connected"
                         }
                       ],
-                      "local_topic": "mqtt/local/topic",
                       "kafka": {
                         "message": {
                           "timestamp": "${.timestamp}",
@@ -110164,6 +110199,7 @@
                         "partition_count_refresh_interval": "60s",
                         "max_linger_time": "5ms"
                       },
+                      "local_topic": "mqtt/local/topic",
                       "min_metadata_refresh_interval": "3s",
                       "bootstrap_hosts": "localhost:9092",
                       "metadata_request_timeout": "4s"
@@ -110253,8 +110289,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -110300,8 +110336,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, FROM_UNIXTIME(${timestamp}/1000))",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -110318,8 +110354,8 @@
                       "max_retries": 3,
                       "aws_secret_access_key": "******",
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 104857600,
                         "inflight_window": 100,
                         "health_check_interval": 15000
@@ -110348,8 +110384,8 @@
                       "request_timeout": "15s",
                       "pool_type": "random",
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 104857600,
                         "inflight_window": 100,
                         "health_check_interval": 15000
@@ -110376,8 +110412,8 @@
                       "auto_reconnect": "2s",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -110401,8 +110437,8 @@
                       "aws_secret_access_key": "******",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 8,
+                        "query_mode": "sync",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -110425,8 +110461,8 @@
                       "sql": "insert into t_mqtt_msg(ts, msgid, mqtt_topic, qos, payload, arrived) values (${ts}, '${id}', '${topic}', ${qos}, '${payload}', ${timestamp})",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 8,
+                        "query_mode": "sync",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -110482,8 +110518,8 @@
                       "server": "http://127.0.0.1:4242",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -110541,8 +110577,8 @@
                       "sql": "insert into t_mqtt_msgs(msgid, topic, qos, payload) values (${id}, ${topic}, ${qos}, ${payload})",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -110601,12 +110637,12 @@
                         "type": "service_account",
                         "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                         "client_id": "123812831923812319190",
+                        "project_id": "myproject",
                         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "client_email": "test@myproject.iam.gserviceaccount.com",
                         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                         "private_key_id": "kid",
-                        "project_id": "myproject",
                         "token_uri": "https://oauth2.googleapis.com/token"
                       },
                       "pubsub_topic": "mytopic"
@@ -110660,6 +110696,17 @@
                         "max_buffer_bytes": 104857600,
                         "health_check_interval": "15s"
                       },
+                      "egress": {
+                        "local": {
+                          "topic": "emqx/#"
+                        },
+                        "remote": {
+                          "retain": false,
+                          "payload": "${payload}",
+                          "topic": "from_emqx/${topic}",
+                          "qos": "${qos}"
+                        }
+                      },
                       "ingress": {
                         "local": {
                           "retain": "${retain}",
@@ -110670,17 +110717,6 @@
                         "remote": {
                           "topic": "aws/#",
                           "qos": 1
-                        }
-                      },
-                      "egress": {
-                        "local": {
-                          "topic": "emqx/#"
-                        },
-                        "remote": {
-                          "retain": false,
-                          "payload": "${payload}",
-                          "topic": "from_emqx/${topic}",
-                          "qos": "${qos}"
                         }
                       }
                     },
@@ -110698,8 +110734,8 @@
                       "servers": "127.0.0.1:9042",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 8,
+                        "query_mode": "sync",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -110736,12 +110772,12 @@
                         "type": "service_account",
                         "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                         "client_id": "123812831923812319190",
+                        "project_id": "myproject",
                         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "client_email": "test@myproject.iam.gserviceaccount.com",
                         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                         "private_key_id": "kid",
-                        "project_id": "myproject",
                         "token_uri": "https://oauth2.googleapis.com/token"
                       }
                     },
@@ -110760,8 +110796,8 @@
                       "sql": "INSERT INTO messages(data, arrived) VALUES ('${payload}', ${timestamp})",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -110785,8 +110821,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload) values ( ${id}, ${topic}, ${qos}, ${payload} )",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 1,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -110815,8 +110851,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -110855,8 +110891,6 @@
                         "offset_reset_policy": "latest"
                       },
                       "min_metadata_refresh_interval": "3s",
-                      "bootstrap_hosts": "localhost:9092",
-                      "metadata_request_timeout": "4s",
                       "topic_mapping": [
                         {
                           "qos": 1,
@@ -110871,6 +110905,8 @@
                           "payload_template": "v = ${.value}"
                         }
                       ],
+                      "bootstrap_hosts": "localhost:9092",
+                      "metadata_request_timeout": "4s",
                       "value_encoding_mode": "none",
                       "key_encoding_mode": "none"
                     },
@@ -110886,8 +110922,8 @@
                       "topic": "TopicTest",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "sync",
                         "worker_pool_size": 1,
+                        "query_mode": "sync",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -110916,8 +110952,8 @@
                       "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                       "resource_opts": {
                         "batch_size": 1,
-                        "query_mode": "async",
                         "worker_pool_size": 8,
+                        "query_mode": "async",
                         "max_buffer_bytes": 268435456,
                         "batch_time": 0,
                         "health_check_interval": "15s"
@@ -111100,8 +111136,8 @@
                     "base_url": "http://iotdb.local:18080/",
                     "pool_type": "random",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "health_check_interval": "15s"
                     },
@@ -111183,7 +111219,6 @@
                       "sndbuf": "1024KB",
                       "tcp_keepalive": "none"
                     },
-                    "local_topic": "mqtt/local/topic",
                     "kafka": {
                       "message": {
                         "timestamp": "${.timestamp}",
@@ -111219,6 +111254,7 @@
                       "partition_count_refresh_interval": "60s",
                       "max_linger_time": "5ms"
                     },
+                    "local_topic": "mqtt/local/topic",
                     "min_metadata_refresh_interval": "3s",
                     "bootstrap_hosts": "localhost:9092",
                     "metadata_request_timeout": "4s"
@@ -111301,8 +111337,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -111348,8 +111384,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, FROM_UNIXTIME(${timestamp}/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -111366,8 +111402,8 @@
                     "max_retries": 3,
                     "aws_secret_access_key": "******",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 104857600,
                       "inflight_window": 100,
                       "health_check_interval": 15000
@@ -111396,8 +111432,8 @@
                     "request_timeout": "15s",
                     "pool_type": "random",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 104857600,
                       "inflight_window": 100,
                       "health_check_interval": 15000
@@ -111424,8 +111460,8 @@
                     "auto_reconnect": "2s",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -111449,8 +111485,8 @@
                     "aws_secret_access_key": "******",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 8,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -111473,8 +111509,8 @@
                     "sql": "insert into t_mqtt_msg(ts, msgid, mqtt_topic, qos, payload, arrived) values (${ts}, '${id}', '${topic}', ${qos}, '${payload}', ${timestamp})",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 8,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -111530,8 +111566,8 @@
                     "server": "http://127.0.0.1:4242",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -111589,8 +111625,8 @@
                     "sql": "insert into t_mqtt_msgs(msgid, topic, qos, payload) values (${id}, ${topic}, ${qos}, ${payload})",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -111649,12 +111685,12 @@
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
                     },
                     "pubsub_topic": "mytopic"
@@ -111708,6 +111744,17 @@
                       "max_buffer_bytes": 104857600,
                       "health_check_interval": "15s"
                     },
+                    "egress": {
+                      "local": {
+                        "topic": "emqx/#"
+                      },
+                      "remote": {
+                        "retain": false,
+                        "payload": "${payload}",
+                        "topic": "from_emqx/${topic}",
+                        "qos": "${qos}"
+                      }
+                    },
                     "ingress": {
                       "local": {
                         "retain": "${retain}",
@@ -111718,17 +111765,6 @@
                       "remote": {
                         "topic": "aws/#",
                         "qos": 1
-                      }
-                    },
-                    "egress": {
-                      "local": {
-                        "topic": "emqx/#"
-                      },
-                      "remote": {
-                        "retain": false,
-                        "payload": "${payload}",
-                        "topic": "from_emqx/${topic}",
-                        "qos": "${qos}"
                       }
                     }
                   },
@@ -111746,8 +111782,8 @@
                     "servers": "127.0.0.1:9042",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 8,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -111784,12 +111820,12 @@
                       "type": "service_account",
                       "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQI...",
                       "client_id": "123812831923812319190",
+                      "project_id": "myproject",
                       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                       "client_email": "test@myproject.iam.gserviceaccount.com",
                       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test%40myproject.iam.gserviceaccount.com",
                       "private_key_id": "kid",
-                      "project_id": "myproject",
                       "token_uri": "https://oauth2.googleapis.com/token"
                     }
                   },
@@ -111808,8 +111844,8 @@
                     "sql": "INSERT INTO messages(data, arrived) VALUES ('${payload}', ${timestamp})",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -111833,8 +111869,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload) values ( ${id}, ${topic}, ${qos}, ${payload} )",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 1,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -111856,8 +111892,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -111889,8 +111925,6 @@
                       "offset_reset_policy": "latest"
                     },
                     "min_metadata_refresh_interval": "3s",
-                    "bootstrap_hosts": "localhost:9092",
-                    "metadata_request_timeout": "4s",
                     "topic_mapping": [
                       {
                         "qos": 1,
@@ -111905,6 +111939,8 @@
                         "payload_template": "v = ${.value}"
                       }
                     ],
+                    "bootstrap_hosts": "localhost:9092",
+                    "metadata_request_timeout": "4s",
                     "value_encoding_mode": "none",
                     "key_encoding_mode": "none"
                   },
@@ -111920,8 +111956,8 @@
                     "topic": "TopicTest",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "sync",
                       "worker_pool_size": 1,
+                      "query_mode": "sync",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
@@ -111943,8 +111979,8 @@
                     "sql": "insert into t_mqtt_msg(msgid, topic, qos, payload, arrived) values (${id}, ${topic}, ${qos}, ${payload}, TO_TIMESTAMP((${timestamp} :: bigint)/1000))",
                     "resource_opts": {
                       "batch_size": 1,
-                      "query_mode": "async",
                       "worker_pool_size": 8,
+                      "query_mode": "async",
                       "max_buffer_bytes": 268435456,
                       "batch_time": 0,
                       "health_check_interval": "15s"
