@@ -9,9 +9,6 @@
   > **Workaround:**
   > Disable the listener, then re-enable it after config change.
 
-
-## e5.8.5
-
 - **Node Crash if Linux monotonic clock steps backward (since 5.0)**
 
   In certain virtual Linux environments, the operating system is unable to keep the clocks monotonic,

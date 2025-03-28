@@ -8,8 +8,6 @@
 
   > **解决方法：** 先禁用监听器，修改配置后再启用。
 
-## e5.8.5
-
 - **Linux 单调时钟回调导致 EMQX 节点重启 (始于 5.0)**
 
   在某些虚拟 Linux 环境中，操作系统无法保持时钟的单调性，这可能会导致 Erlang VM 因为错误消息 `OS monotonic time stepped backwards!` 而退出。对于这类环境，可以在 `etc/vm.args` 中将 `+c` 标志设置为 `false`。
