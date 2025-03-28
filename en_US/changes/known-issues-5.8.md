@@ -2,6 +2,24 @@
 
 ## e5.8.6
 
+- **Occasional RPC errors in logs due to failed attempts to contact nodes that had left the cluster (since 5.8.5, will be fixed in 5.9.0)**
+
+  This type of log message surge typically begins after a routine rolling upgrade. Example of such a log event:
+  ```
+  pid: <0.123456.0>, msg: event=connect_to_remote_server, peer=emqx@10.11.12.13, port=5370, reason=ehostunreach
+  ```
+
+  The presence of these messages does not indicate any impact on message delivery for existing connections.
+
+  > **Workaround:**
+  > Run the following command on one of EMQX hosts (replace `emqx@10.11.12.13` with name of the node mentioned in error logs).
+  > Please double-check that this node is not part of the cluster anymore.
+  > ```
+  > $ emqx eval "emqx_router:cleanup_routes('emqx@10.11.12.13')"
+  > ```
+
+  <!-- https://emqx.atlassian.net/browse/EMQX-14055 -->
+
 - **TLS listener started with default configuration cannot be hot-updated to use tlsv1.3 only (since 5.4.0, will be fixed in 5.9.0)**
 
   May fail with error like `incompatible,[client_renegotiation,{versions,['tlsv1.3']}]`
