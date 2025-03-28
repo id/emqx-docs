@@ -12,7 +12,7 @@ For example, you can enable the Swagger UI and configure a listener for the EMQX
 
 Below is a sample Dashboard configuration:
 
-```bash
+```json
 dashboard {
   listeners {
     http {
