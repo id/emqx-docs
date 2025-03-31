@@ -2,6 +2,26 @@
 
 ## e5.8.6
 
+- **由于尝试连接已离开集群的节点失败，日志中偶尔出现 RPC 错误（始于 5.8.5，将在 5.9.0 修复）**
+
+  这种日志消息通常在常规的滚动升级后出现。以下是此类日志时间的示例：
+
+  ```
+  pid: <0.123456.0>, msg: event=connect_to_remote_server, peer=emqx@10.11.12.13, port=5370, reason=ehostunreach
+  ```
+
+  这些消息的出现并不表示会影响现有连接的消息传递。
+
+  > **解决方法：**
+  > 在集群中的任意一台 EMQX 主机上运行以下命令。将 `emqx@10.11.12.13` 替换为错误日志中提到的实际节点名称。
+  > 在执行此命令之前，请再次确认该节点不再是集群的一部分。
+  >
+  > ```
+  > $ emqx eval "emqx_router:cleanup_routes('emqx@10.11.12.13')"
+  > ```
+
+  <!-- https://emqx.atlassian.net/browse/EMQX-14055 -->
+
 - **TLS 监听器默认配置启动后，无法热更新为只使用 tlsv1.3 （始于 5.4.0，将在 5.9.0 修复）**
 
   错误信息如：`incompatible,[client_renegotiation,{versions,['tlsv1.3']}]`

@@ -12,8 +12,9 @@
   The presence of these messages does not indicate any impact on message delivery for existing connections.
 
   > **Workaround:**
-  > Run the following command on one of EMQX hosts (replace `emqx@10.11.12.13` with name of the node mentioned in error logs).
-  > Please double-check that this node is not part of the cluster anymore.
+  > Run the following command on one of EMQX hosts. Replace `emqx@10.11.12.13` with the actual node name mentioned in the error log.
+  > Before executing this command, double-check that this node is no longer part of the cluster.
+  >
   > ```
   > $ emqx eval "emqx_router:cleanup_routes('emqx@10.11.12.13')"
   > ```
