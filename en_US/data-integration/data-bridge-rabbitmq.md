@@ -137,7 +137,7 @@ This section demonstrates how to create a rule in the Dashboard for processing m
 
    ```sql
    SELECT
-     payload as data,
+     payload,
      now_timestamp() as timestamp
    FROM
      "t/#"

@@ -133,7 +133,7 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
 
    ```sql
    SELECT
-     payload as data,
+     payload,
      now_timestamp() as timestamp
    FROM
      "t/#"
