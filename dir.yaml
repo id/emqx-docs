@@ -304,10 +304,10 @@
       collapsed: true
       children:
         - title_en: Schema Registry
-        - title_cn: Schema Registry
-        - path: data-integration/schema-registry
-        - collapsed: true
-        - children:
+          title_cn: Schema Registry
+          path: data-integration/schema-registry
+          collapsed: true
+          children:
             - data-integration/schema-registry-example-avro
             - data-integration/schema-registry-example-protobuf
             - data-integration/sparkplug
