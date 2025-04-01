@@ -108,8 +108,10 @@ Where,
 <!--For detailed parameter list, see [authz-file](../../configuration/configuration-manual.html#authz-file). Need to update the link later-->
 
 ::: tip
+
 The initial file provided by the `path` config is not mutable to EMQX.
 If rules are updated from the dashboard UI or management API, the new rules
 will be stored in `data/authz/acl.conf`, and this original config will no longer be loaded.
+
 ::: <!--This note is not in the Chinese file anymore, remove?-->
 
