@@ -298,22 +298,21 @@
     - data-integration/rule-sql-builtin-functions
     - data-integration/rule-sql-jq
     # - data-integration/rule-sql-user-defined-function
-    - title_en: Schema Registry
-      title_cn: Schema
-      path: data-integration/schema-registry
+    - title_en: Smart Data Hub
+      title_cn: 数据智能中心
+      path: data-integration/smart-data-hub
       collapsed: true
       children:
-        - data-integration/schema-registry-example-avro
-        - data-integration/schema-registry-example-protobuf
-    - title_en: Schema Validation
-      title_cn: Schema 验证
-      path: data-integration/schema-validation
-    - title_en: Message Transformation
-      title_cn: 消息转换
-      path: data-integration/message-transformation
-    - title_en: Sparkplug
-      title_cn: Sparkplug
-      path: data-integration/sparkplug
+        - title_en: Schema Registry
+        - title_cn: Schema Registry
+        - path: data-integration/schema-registry
+        - collapsed: true
+        - children:
+            - data-integration/schema-registry-example-avro
+            - data-integration/schema-registry-example-protobuf
+            - data-integration/sparkplug
+        - data-integration/schema-validation
+        - data-integration/message-transformation
 
 - title_en: Flow Designer
   title_cn: Flow 设计器
@@ -523,6 +522,7 @@
           path: dashboard/bridgeoverview
           children:
             - dashboard/rules
+        - dashboard/data-hub
         - title_en: Management
           title_cn: 管理
           path: dashboard/configuration
