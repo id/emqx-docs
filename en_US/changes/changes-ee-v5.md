@@ -1,5 +1,89 @@
 # EMQX Enterprise Version 5
 
+## 5.8.6
+
+*Release Date: 2025-03-25*
+
+Make sure to check the breaking changes and known issues before upgrading to EMQX 5.8.6.
+
+### Enhancements
+
+- [#14869](https://github.com/emqx/emqx/pull/14869) Added the `connected_at` timestamp field to the `$events/client_disconnected` event payload. This enhancement enables tracking the original connection session time for disconnected clients, preventing outdated disconnect events from overriding newer connection states.
+
+  Previously, when clients frequently reconnected due to unstable networks, delayed disconnect events could lead to incorrect session tracking. With this update, the `connected_at` field is now included in the event payload, aligning its behavior with system topics and ensuring accurate session state management.
+
+- [#14855](https://github.com/emqx/emqx/pull/14855) Added a new configuration option `ignore_unsupported_frames` to the JT/T 808 gateway. This option prevents devices from being disconnected when sending messages that the gateway cannot parse.
+
+- [#14858](https://github.com/emqx/emqx/pull/14858) EMQX supports data integration with TDengine Cloud. The TDengine Cloud requires an additional token parameter for authentication, which is now supported in the TDengine connector.
+
+### Bug Fixes
+
+#### Core MQTT Functionalities
+
+- [#14815](https://github.com/emqx/emqx/pull/14815) Fixed packet ID release for QoS 2 messages. Previously, if a client failed to send a PUBREL for the maximum configured number of pending QoS 2 messages and then disconnected, the packet IDs remained occupied even after exceeding the configured Max Awaiting PUBREL Timeout.
+
+#### Installation and Deployment
+
+- [#14797](https://github.com/emqx/emqx/pull/14797) Fixed macOS release package startup issue due to OpenSSL dynamic linking (backport #14624).
+
+  Previously, the EMQX ZIP package on macOS could fail to start because the `quicer` application dynamically linked to the system-installed OpenSSL, which was not signed during the EMQX build process. Now we have disabled dynamic linking for OpenSSL, aligning with the OTP shipped on macOS. This ensures EMQX starts reliably on macOS 13 and later.
+
+#### Authentication
+
+- [#14847](https://github.com/emqx/emqx/pull/14847) Fixed JWKS authentication failure for wildcard HTTPS endpoints. Previously, JWKS authentication failed to retrieve keys from HTTPS endpoints that used wildcard hostnames, preventing successful authentication.
+- [#14786](https://github.com/emqx/emqx/pull/14786) Fixed JWT authentication settings update when using an external JWKS endpoint. Previously, when updating JWT authentication settings with JWKS (key server) enabled in both the old and new configurations, some settings were not correctly applied.
+
+
+#### REST API
+
+- [#14834](https://github.com/emqx/emqx/pull/14834) Fixed incorrect `Content-Type` header when downloading data backup files. Previously, the response header for downloaded backup files incorrectly used `application/json` instead of `application/octet-stream`.
+- [#14863](https://github.com/emqx/emqx/pull/14863) Fixed a problem with `cluster/:node/invite_async` REST API. Previously, this API could attempt to use a down node as the coordinator.
+
+
+#### Rule Engine
+
+- [#14824](https://github.com/emqx/emqx/pull/14824) Fixed an HTTP 500 error in SQL Rule Tester when handling the `details` key in alarm events. Previously, when testing `alarm_activated` or `alarm_deactivated` events in the SQL Rule Tester, certain values in the `details` key could cause an HTTP 500 error due to improper handling of nested map keys.
+
+#### Data Integration
+
+- [#14796](https://github.com/emqx/emqx/pull/14796) Fixed Pulsar producer inflight state leak. Prior to this fix, the Pulsar client's inflight state could leak, preventing the connector’s inflight counter from returning to zero. This fix also included a performance improvement for Pulsar and Kafka producers on x86.
+
+  Also, implemented proper support for the `buffer.memory_overload_protection` parameter in Pulsar Action. Previously, this configuration had no effect, leading to uncontrolled memory usage.
+
+- [#14902](https://github.com/emqx/emqx/pull/14902) Improved error handling in the SQL Server action for connection failures by treating `IMC0x` SQLSTATE errors as recoverable. This prevents message loss when the external MSSQL service is temporarily unavailable and ensures messages are properly cached for retry.
+  Also enhances connection health checks to correctly detect broken connections and initiate connector reconnection attempts, improving the reliability of the SQL Server connector in unstable network environments.
+
+
+#### Observability
+
+- [#14800](https://github.com/emqx/emqx/pull/14800) Throttled `warning` level log `dropped_qos0_msg`.
+
+- [#14793](https://github.com/emqx/emqx/pull/14793) Added trace log for `protocol_error` in MQTT connections.
+
+  Previously, when a client sent invalid or unexpected MQTT packets causing a `protocol_error`, EMQX logs provided limited details, making it difficult to diagnose the issue.
+  
+  For example, if a client sent a second `CONNECT` packet while already connected, EMQX would log `socket_force_closed` with `protocol_error`, but without indicating the exact cause.
+  
+  With this update, EMQX now logs `unexpected_connect_packet` with `conn_state=connected` before `socket_force_closed`, providing clearer context for debugging protocol violations.
+
+- [#14813](https://github.com/emqx/emqx/pull/14813) Fixed the issue that the outgoing messages sent to the WebSocket clients were not traced in end-to-end tracing.
+
+- [#14880](https://github.com/emqx/emqx/pull/14880) Improved logging for SQL Server connector health-check failures. With this update, the logs now provide more precise failure reasons, such as `timeout errors` or `unexpected_SELECT_1_result`, along with detailed diagnostic information to aid in troubleshooting.
+
+#### Plugin
+
+- [#14802](https://github.com/emqx/emqx/pull/14802) Introduced a new CLI command for plugins:
+
+  ```bash
+   emqx ctl plugins allow NAME-VSN
+  ```
+
+  Before installing a plugin via the HTTP API or Dashboard, this command must be executed to explicitly allow the package, improving security and preventing unauthorized installations.
+
+#### Gateway
+
+- [#14756](https://github.com/emqx/emqx/pull/14756) Improved the JT/T 808 gateway so that when anonymous authentication is enabled, the registration response will carry the default authentication code `anonymous`. This is used to avoid the issue where some clients are unable to parse an empty authentication code.
+
 ## 5.8.5
 
 *Release Date: 2025-02-25*
@@ -1430,14 +1514,12 @@ For more information about the Durable Sessions feature, see [MQTT Durable Sessi
 #### Security
 
 - [#12887](https://github.com/emqx/emqx/pull/12887) Fixed MQTT enhanced auth with sasl scram.
-
 - [#12962](https://github.com/emqx/emqx/pull/12962) TLS clients can now verify server hostname against wildcard certificate. For example, if a certificate is issued for host `*.example.com`, TLS clients is able to verify server hostnames like `srv1.example.com`.
-
-- [#12855](https://github.com/emqx/emqx/pull/12855) Fixed an issue where system topic messages for client subscription/unsubscription notifications were not serialized correctly when clients subscribed or unsubscribed to a shared topic. Also resolved a format error for the `$queue` shared topics in the `/topics` endpoint.
 
 #### MQTT
 
 - [#12996](https://github.com/emqx/emqx/pull/12996) Fixed process leak in `emqx_retainer` application. Previously, client disconnection while receiving retained messages could cause a process leak.
+- [#12855](https://github.com/emqx/emqx/pull/12855) Fixed an issue where system topic messages for client subscription/unsubscription notifications were not serialized correctly when clients subscribed or unsubscribed to a shared topic. Also resolved a format error for the `$queue` shared topics in the `/topics` endpoint.
 - [#12976](https://github.com/emqx/emqx/pull/12976) Fixed the `client.disconnected` event being triggered when taking over a session that the socket has been disconnected before.
 
 #### Data Processing and Integration

@@ -1,5 +1,63 @@
 # EMQX 开源版 v5 版本
 
+## 5.8.6
+
+*发布日期：2025-03-25*
+
+升级前请查看已知问题列表和不兼容变更列表。
+
+### 增强
+
+- [#14869](https://github.com/emqx/emqx/pull/14869) 为 `$events/client_disconnected` 事件 payload 新增 `connected_at` 时间戳字段。此增强功能可用于追踪已断开连接的客户端原始的会话连接时间，防止旧的断开事件覆盖更新的连接状态。
+
+  此前，在网络不稳定的情况下，客户端可能频繁重连，导致延迟的断开事件错误地影响会话状态跟踪。此次更新将 `connected_at` 字段纳入事件 payload ，使其行为与系统主题保持一致，确保会话状态的准确性。
+
+### 修复
+
+#### 核心 MQTT 功能
+
+- [#14815](https://github.com/emqx/emqx/pull/14815) 修复了 QoS 2 消息的报文 ID 释放问题。此前，如果客户端在达到配置的最大挂起 QoS 2 消息数量后仍未发送 PUBREL 并断开连接，即使超过了配置的最大等待 PUBREL 超时时间，报文 ID 仍未被释放，导致资源占用问题。
+
+#### 安装部署
+
+- [#14797](https://github.com/emqx/emqx/pull/14797) 修复 macOS 发行包因 OpenSSL 动态链接导致的启动问题（回溯 #14624）。
+
+  此前，macOS 上的 EMQX ZIP 包可能因 `quicer` 应用动态链接到系统安装的 OpenSSL 而无法启动，而该 OpenSSL 在 EMQX 构建过程中未被签名。现在，我们已禁用 OpenSSL 的动态链接方式，使其与 macOS 上随附的 OTP 保持一致，从而确保 EMQX 在 macOS 13 及更高版本上能够稳定启动。
+
+#### 认证
+
+- [#14847](https://github.com/emqx/emqx/pull/14847) 修复了在使用通配符主机名的 HTTPS 端点时，JWKS 认证失败的问题。此前，JWKS 认证无法从使用通配符主机名的 HTTPS 端点获取密钥，导致认证失败。
+- [#14786](https://github.com/emqx/emqx/pull/14786) 修复了使用外部 JWKS 端点时 JWT 认证配置更新的问题。之前，在更新 JWT 认证配置时，如果旧配置和新配置均启用了 JWKS（密钥服务器），部分配置项可能未正确生效。
+
+#### REST API
+
+- [#14834](https://github.com/emqx/emqx/pull/14834) 修复下载数据备份文件时 `Content-Type` 头字段错误的问题。之前，下载备份文件的响应头错误地使用了 `application/json`，而不是 `application/octet-stream`。
+
+#### 规则引擎
+
+- [#14824](https://github.com/emqx/emqx/pull/14824) 修复 SQL 规则测试在处理告警事件 `details` 键时出现的 HTTP 500 错误。此前，在 SQL 规则测试中测试 `alarm_activated` 或 `alarm_deactivated` 事件时，`details` 键中的某些值由于嵌套 Map 键处理不当，可能会触发 HTTP 500 错误。
+
+#### 可观测性
+
+- [#14800](https://github.com/emqx/emqx/pull/14800) 对 `warning` 级别日志 `dropped_qos0_msg` 进行限流处理。
+
+- [#14793](https://github.com/emqx/emqx/pull/14793) 为 MQTT 连接中的 `protocol_error` 添加了追踪日志。
+   之前，当客户端发送无效或意外的 MQTT 报文导致 `protocol_error` 时，EMQX 记录的日志信息较少，难以诊断具体问题。
+
+  例如，如果客户端在已连接的状态下再次发送 `CONNECT` 报文，EMQX 仅会记录 `socket_force_closed` 并附带 `protocol_error`，但不会指明具体原因。
+
+  现在，EMQX 会在 `socket_force_closed` 之前记录 `unexpected_connect_packet`，并附带 `conn_state=connected`，从而提供更清晰的上下文，方便排查协议违规问题。
+
+#### 插件
+
+- [#14802](https://github.com/emqx/emqx/pull/14802) 新增用于插件管理的 CLI 命令：
+
+  ```
+   emqx ctl plugins allow NAME-VSN
+  ```
+
+  在通过 HTTP API 或 Dashboard 安装插件之前，必须先执行此命令显式允许该插件包，以提升安全性并防止未经授权的安装。
+
 ## 5.8.5
 
 *发布日期：2025-02-25*
@@ -934,8 +992,6 @@
 - [#12948](https://github.com/emqx/emqx/pull/12948) 修复了更新连接器后敏感的 HTTP 标头值（如 `Authorization`）被 `******` 替换的问题。
 
 - [#13118](https://github.com/emqx/emqx/pull/13118) 修复了规则引擎模板渲染中的性能问题。
-
-- [#12880](https://github.com/emqx/emqx/pull/12880) 修复了 InfluxDB 动作配置中的一个问题，当 Tags 值包含字面量整数或浮点数时，序列化失败。现在，标签集值已正确地作为字符串处理。有关标签集的更多详情，请参阅 [Line Protocol - Tag Set](https://docs.influxdata.com/influxdb/v2/reference/syntax/line-protocol/#tag-set).
 
 #### 可观测性
 
