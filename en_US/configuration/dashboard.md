@@ -34,51 +34,51 @@ dashboard {
   swagger_support = true
   default_password = jEdOgGS6vzQ
   sso = {
-  ldap = {
-    enable = true
-    backend = "ldap"
-    query_timeout = "5s"
-    server = "localhost:389"
-    pool_size = 8
-    username = "cn=admin,dc=example,dc=com"
-    password = "secret"
-    base_dn = "dc=example,dc=com"
-    filter = "(& (objectClass=person) (uid=${username}))"
-    request_timeout = "10s"
+    ldap = {
+      enable = true
+      backend = "ldap"
+      query_timeout = "5s"
+      server = "localhost:389"
+      pool_size = 8
+      username = "cn=admin,dc=example,dc=com"
+      password = "secret"
+      base_dn = "dc=example,dc=com"
+      filter = "(& (objectClass=person) (uid=${username}))"
+      request_timeout = "10s"
+    }
+    oidc = {
+      enable = true
+      backend = oidc
+      issuer = "https://issuer.example.com"
+      clientid = "your-client-id"
+      secret = "your-client-secret"
+      scopes = [
+        "openid"
+      ]
+      name_var = "${sub}"
+      dashboard_addr = "http://127.0.0.1:18083"
+      session_expiry = "30s"
+      require_pkce = false
+      preferred_auth_methods = [
+        "client_secret_post",
+        "client_secret_basic",
+        "none"
+      ]
+      provider = generic
+      fallback_methods = [
+        "RS256"
+      ]
+    }
+    saml = {
+      enable = true
+      backend = "saml"
+      dashboard_addr = "https://127.0.0.1:18083"
+      idp_metadata_url = "https://idp.example.com"
+      sp_sign_request = false
+      sp_public_key = "Pub Key"
+      sp_private_key = "SP Private Key"
+    }
   }
-  oidc = {
-    enable = true
-    backend = oidc
-    issuer = "https://issuer.example.com"
-    clientid = "your-client-id"
-    secret = "your-client-secret"
-    scopes = [
-      "openid"
-    ]
-    name_var = "${sub}"
-    dashboard_addr = "http://127.0.0.1:18083"
-    session_expiry = "30s"
-    require_pkce = false
-    preferred_auth_methods = [
-      "client_secret_post",
-      "client_secret_basic",
-      "none"
-    ]
-    provider = generic
-    fallback_methods = [
-      "RS256"
-    ]
-  }
-  saml = {
-    enable = true
-    backend = "saml"
-    dashboard_addr = "https://127.0.0.1:18083"
-    idp_metadata_url = "https://idp.example.com"
-    sp_sign_request = false
-    sp_public_key = "Pub Key"
-    sp_private_key = "SP Private Key"
-  }
-}
 }
 ```
 
