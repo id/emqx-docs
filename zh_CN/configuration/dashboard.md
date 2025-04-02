@@ -33,6 +33,7 @@ dashboard {
   swagger_support = true
   default_password = jEdOgGS6vzQ
   sso = {
+    # Normally, only one of `ldap`, `oidc`, or `smal` can be active at a time. Below is for the demonstration purposes.
     ldap = {
       enable = true
       backend = "ldap"
