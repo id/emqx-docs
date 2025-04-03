@@ -84,7 +84,7 @@ When the X.509 certificate authentication is applied, it will be executed before
 
 ### Workflow
 
-With authentication chain configured, EMQX first tries to retrieve the matching authentication information from the first authenticator, if fails, it switches to the next authenticator to continue the process. 
+With the authentication chain configured, EMQX first tries to retrieve the matching authentication information from the first authenticator, if fails, it switches to the next authenticator to continue the process. 
 
 Taking the password-based authentication as an example, EMQX tries to retrieve the possible authentication information from the configured authenticators:
 
@@ -302,4 +302,57 @@ PUT /api/v5/authentication/password_based%3Abuilt_in_database
 For authentication using [built-in database](./mnesia.md) and [MQTT 5.0 enhanced authentication](./scram.md), EMQX provides HTTP API to manage authentication data, including the operations such as creating, updating, deleting, and listing data. For more information, see [Manage authentication data with HTTP API](./user_management.md).
 
 For more detailed API requests and parameters, see [HTTP API](../../admin/api.md).
+
+## Authentication Cache
+
+EMQX provides an authentication caching mechanism to improve performance and reduce the load on external authentication backends, such as MySQL, MongoDB, and Redis. The cache stores authentication results to avoid redundant external lookups, especially beneficial in high-throughput scenarios.
+
+### How Authentication Cache Works
+
+The authentication cache stores the results of authentication requests to external resources. The following is a typical workflow:
+
+1. A client connects and triggers authentication.
+2. EMQX checks the cache for a previously stored result:
+   - If a valid result is found, it counts as a **Cache Hit**, and no call to the external backend is made.
+   - If no result is found, it counts as a **Cache Miss**, and EMQX queries the external backend.
+
+3. The result returned from the backend is stored in the cache for future use, increasing the **Cache Insert** metric.
+
+This mechanism helps reduce latency, minimize backend usage, and maintain system responsiveness under load.
+
+### Enable and Configure Authentication Cache
+
+You can enable and configure the authentication cache through the EMQX Dashboard:
+
+1. Navigate to **Access Control** -> **Authentication**. 
+2. Click the **External Resource Cache Settings** button in the upper-right corner. A side panel will appear from the right.
+3. In the panel, use the **Enable External Resource Cache** button to turn the caching feature on or off. Once enabled, configure the following cache settings:
+   - **Maximum Number of Cache Items**: Set the maximum number of authentication results stored in the cache per node. The default value is `1000000`.
+   - **Maximum Memory**: Limit the maximum memory that the cache can use. The default setting is `100` MB.
+   - **Cache TTL**: Specify how long a cached authentication result remains valid before expiring. The default setting is `1` minute.
+4. Click **Update** to apply the settings.
+
+Settings are applied cluster-wide to ensure consistent behavior across all nodes.
+
+### Monitor Authentication Cache Status
+
+To monitor cache usage:
+
+1. Click the arrow next to **External Resource Cache Settings** and select **External Resource Cache Status**. A side panel will appear showing cache metrics.
+2. Use the drop-down menu in the upper-right corner to switch between viewing cluster-wide or node-specific statistics.
+
+The statistics include the following:
+
+- **Memory Usage**: Total memory currently used by the cache.
+- **Cache Entries**: Total number of authentication results currently stored in the cache.
+- **Cache Hits**: Number of times EMQX found a valid result in the cache, avoiding a call to the external backend.
+  - Metrics shown: Current rate, 5-minute average, Maximum rate
+- **Cache Misses**: Number of times EMQX looked for a result in the cache but didn’t find one, resulting in a backend query.
+  - Metrics shown: Current rate, 5-minute average, Maximum rate
+- **Cache Inserts**: Number of new results added to the cache after a miss.
+  - Metrics shown: Current rate, 5-minute average, Maximum rate
+
+At the bottom of the panel, a node list provides an overview of **Memory Usage**, **Cache Entries**, and **Cache Hits** for each node in the cluster.
+
+You can refresh or reset the statistics using the buttons in the top-right corner of the panel.
 
