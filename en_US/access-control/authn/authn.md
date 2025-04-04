@@ -104,13 +104,18 @@ The current authenticator will also be skipped when the authenticator is in a di
 
 ![](./assets/authn-chain.png)
 
-### Use Case
+### Preconditions
 
-Users have a large number of clients and a high connection rate, thus users can create an authentication chain with the Redis authenticator and the MySQL or PostgreSQL authenticator. With Redis as a caching layer, the query performance can be greatly improved.
+Starting from EMQX 5.9, a precondition can be added to each authenticator to determine whether the authenticator should be invoked.
+
+The precondition is a [Variform](../../configuration/configuration.md#variform-expressions) expression that can be used to check the client information. If the precondition is not met (does not evaluate to `true`), the authenticator will be skipped.
+
+This allows selective invocation of authenticators based on client information, helping avoid unnecessary out-of-band authentication requests.
+For example, to trigger the HTTP authenticator only for clients connected via `tcp:default`, and Postgre authenticators for those on `ssl:default`, you can use preconditions like `str_eq(listener, 'tcp:default')` or `str_eq(listener, 'ssl:default')`.
 
 ## Super User
 
-Usually, authentication only verifies the client's identity credentials, and whether the client has the right to publish and subscribe to certain topics is determined by the authorization system. But EMQX also provides a super user role and a permission preset feature to facilitate the follow-up publish/subscribe authorization steps. 
+Usually, authentication only verifies the client's identity credentials, and whether the client has the right to publish and subscribe to certain topics is determined by the authorization system. But EMQX also provides a super user role and a permission preset feature to facilitate the follow-up publish/subscribe authorization steps.
 
 ::: tip
 
