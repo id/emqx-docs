@@ -108,6 +108,37 @@ The current authenticator will also be skipped when the authenticator is in a di
 
 Users have a large number of clients and a high connection rate, thus users can create an authentication chain with the Redis authenticator and the MySQL or PostgreSQL authenticator. With Redis as a caching layer, the query performance can be greatly improved.
 
+## External Resource Cache
+
+EMQX provides a node-level caching mechanism for authentication results retrieved from external backends, such as MySQL, MongoDB, or Redis. This cache is designed to improve the performance of authentication result lookups and reduce repeated access to external resources, especially in high-throughput environments.
+
+::: tip Note
+
+The external resource cache applies only to external data sources. For local sources such as the built-in database authenticators, EMQX does not use this cache.
+
+:::
+
+### How External Resource Cache Works
+
+The external resource cache stores authentication results at the node level. These results are shared across all client sessions on the same node and help avoid redundant queries to external authentication backends.
+
+1. A client connects and triggers authentication.
+2. EMQX checks the cache for a previously stored result:
+   - If a valid result is found, it counts as a **Cache Hit**, and no call to the external backend is made.
+   - If no result is found, it counts as a **Cache Miss**, and EMQX queries the external backend.
+
+3. The result returned from the backend is stored in the cache for future use, incrementing the **Cache Insert** metric.
+
+This mechanism helps reduce latency, minimize backend usage, and maintain system responsiveness under load.
+
+### Enable and Configure External Resource Cache
+
+<!--@include: ../config-external-resource-cache.md-->
+
+### Monitor External Resource Cache Status
+
+<!--@include: ../monitor-cache-status.md-->
+
 ## Super User
 
 Usually, authentication only verifies the client's identity credentials, and whether the client has the right to publish and subscribe to certain topics is determined by the authorization system. But EMQX also provides a super user role and a permission preset feature to facilitate the follow-up publish/subscribe authorization steps. 
@@ -205,17 +236,17 @@ EMQX currently supports the following placeholders:
   {allow, all, all, ["${zone}/${username}/#"]}
   ```
 
-## Configure Authenticators
+## Configure Authentication
 
-EMQX provides 3 ways to use authentication, namely: Dashboard, Configuration file and HTTP API.
+EMQX provides three ways to configure the authentication: Dashboard, Configuration file and HTTP API.
 
-### Configure with Dashboard
+### Configure Authentication via Dashboard
 
 EMQX Dashboard is an intuitive way to configure EMQX authenticators, where you can check their status or customize the settings. For example, as shown in the screenshot below, you have configured 2 authenticators: password authentication based on built-in database and JWT authentication. 
 
 ![](./assets/authn-dashboard-2.png)
 
-### Configure with Configuration File
+### Configure Authentication via Configuration File
 
 You can also configure EMQX authenticators with our configuration file. 
 
@@ -249,7 +280,7 @@ gateway.stomp {
 
 Different types of authenticators have different configuration item requirements. For more information, you may refer to the Configuration chapter.<!--后续插入到对应章节的超链接-->
 
-### Configure with HTTP API
+### Configure Authentication via HTTP API
 
 Compared with the configuration file, the HTTP API is more convenient to use and supports runtime updates, which can automatically synchronize configuration changes to the entire cluster.
 
@@ -302,57 +333,4 @@ PUT /api/v5/authentication/password_based%3Abuilt_in_database
 For authentication using [built-in database](./mnesia.md) and [MQTT 5.0 enhanced authentication](./scram.md), EMQX provides HTTP API to manage authentication data, including the operations such as creating, updating, deleting, and listing data. For more information, see [Manage authentication data with HTTP API](./user_management.md).
 
 For more detailed API requests and parameters, see [HTTP API](../../admin/api.md).
-
-## Authentication Cache
-
-EMQX provides an authentication caching mechanism to improve performance and reduce the load on external authentication backends, such as MySQL, MongoDB, and Redis. The cache stores authentication results to avoid redundant external lookups, especially beneficial in high-throughput scenarios.
-
-### How Authentication Cache Works
-
-The authentication cache stores the results of authentication requests to external resources. The following is a typical workflow:
-
-1. A client connects and triggers authentication.
-2. EMQX checks the cache for a previously stored result:
-   - If a valid result is found, it counts as a **Cache Hit**, and no call to the external backend is made.
-   - If no result is found, it counts as a **Cache Miss**, and EMQX queries the external backend.
-
-3. The result returned from the backend is stored in the cache for future use, increasing the **Cache Insert** metric.
-
-This mechanism helps reduce latency, minimize backend usage, and maintain system responsiveness under load.
-
-### Enable and Configure Authentication Cache
-
-You can enable and configure the authentication cache through the EMQX Dashboard:
-
-1. Navigate to **Access Control** -> **Authentication**. 
-2. Click the **External Resource Cache Settings** button in the upper-right corner. A side panel will appear from the right.
-3. In the panel, use the **Enable External Resource Cache** button to turn the caching feature on or off. Once enabled, configure the following cache settings:
-   - **Maximum Number of Cache Items**: Set the maximum number of authentication results stored in the cache per node. The default value is `1000000`.
-   - **Maximum Memory**: Limit the maximum memory that the cache can use. The default setting is `100` MB.
-   - **Cache TTL**: Specify how long a cached authentication result remains valid before expiring. The default setting is `1` minute.
-4. Click **Update** to apply the settings.
-
-Settings are applied cluster-wide to ensure consistent behavior across all nodes.
-
-### Monitor Authentication Cache Status
-
-To monitor cache usage:
-
-1. Click the arrow next to **External Resource Cache Settings** and select **External Resource Cache Status**. A side panel will appear showing cache metrics.
-2. Use the drop-down menu in the upper-right corner to switch between viewing cluster-wide or node-specific statistics.
-
-The statistics include the following:
-
-- **Memory Usage**: Total memory currently used by the cache.
-- **Cache Entries**: Total number of authentication results currently stored in the cache.
-- **Cache Hits**: Number of times EMQX found a valid result in the cache, avoiding a call to the external backend.
-  - Metrics shown: Current rate, 5-minute average, Maximum rate
-- **Cache Misses**: Number of times EMQX looked for a result in the cache but didn’t find one, resulting in a backend query.
-  - Metrics shown: Current rate, 5-minute average, Maximum rate
-- **Cache Inserts**: Number of new results added to the cache after a miss.
-  - Metrics shown: Current rate, 5-minute average, Maximum rate
-
-At the bottom of the panel, a node list provides an overview of **Memory Usage**, **Cache Entries**, and **Cache Hits** for each node in the cluster.
-
-You can refresh or reset the statistics using the buttons in the top-right corner of the panel.
 
