@@ -93,7 +93,7 @@
       path: deploy/install-open-source
       collapsed: true
       children:
-        - title_en: Deploy
+        - title_en: Docker
           title_cn: Docker
           path: deploy/install-docker-ce
         - title_en: Debian
