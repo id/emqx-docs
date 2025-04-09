@@ -544,6 +544,9 @@
     - title_en: Rate Limit
       title_cn: 速率限制
       path: rate-limit/rate-limit
+    - title_en: Multi-tenancy
+      title_cn: Multi-tenancy
+      path: multi-tenancy/config
     - title_en: Logs and Observability
       title_cn: 日志及可观测性
       path: observability/overview
@@ -816,4 +819,3 @@
                          - changes/auth-4.4-to-5.1-compatibility
                          - changes/data-integration-4.4-to-5.1-incompatibility
                          - changes/gateway-4.4-to-5.1-incompatibility
-
