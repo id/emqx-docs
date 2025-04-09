@@ -72,46 +72,61 @@ EMQX supports below authentication methods (referred to as authenticator hereaft
 
 ## Authentication Chain
 
-EMQX allows the creation of authentication chain using multiple authenticators and follows the authenticator's position in the chain to perform the authentication. The authenticators for creating the authentication chain should be of different types.
+EMQX supports the creation of an authentication chain, which allows multiple authenticators to be evaluated in a defined sequence. Each authenticator in the chain must be of a different type (e.g., one HTTP, one LDAP, one built-in database).
 
 ::: tip
 
-Currently, EMQX only supports creating an authentication chain for MQTT clients. For gateways, it is recommended to use its own authenticator, and the authentication chain is also not supported. 
+Currently, EMQX only supports creating an authentication chain for MQTT clients. Gateways do not support authentication chains and should use a single authenticator instead.
 
 :::
 
-When the X.509 certificate authentication is applied, it will be executed before performing the authentication chain.
+When the X.509 certificate-based authentication is applied, it is always executed before performing the authentication chain.
 
-### Workflow
+### How the Authentication Chain Works
 
-With authentication chain configured, EMQX first tries to retrieve the matching authentication information from the first authenticator, if fails, it switches to the next authenticator to continue the process. 
+When an authentication chain is configured, EMQX processes authenticators in the order defined until a match is found or all options are exhausted.
 
-Taking the password-based authentication as an example, EMQX tries to retrieve the possible authentication information from the configured authenticators:
+Here’s how it works, using password-based authentication as an example:
 
-1. If authentication credentials exist, and:
-   - the authentication information matches (e.g. password is correct, JWT is valid), the client will be allowed to connect.
-   - the authentication information does not match, and the client will be denied to connect.
-2. When multiple authenticators are configured, EMQX will look for credentials in order. Once the match is successful it will allow the client to connect.
-   If no credentials are found in the current authenticator, it will:
-   - continue to retrieve the information from other authenticators.
-   - refuse the connection if this is already the last authenticator.
+1. **Evaluate Preconditions (if configured):**
+   If the authenticator has a [precondition](#authenticator-preconditions), EMQX first evaluates the expression based on client information (e.g., `listener`, `clientid`, `username`).
+   - If the expression evaluates to `true`, the authenticator is invoked.
+   - If not, the authenticator is skipped.
+2. **Execute the Authenticator:**
+   - If credentials are found and valid (e.g., the password is correct), the client is authenticated successfully and allowed to connect.
+   - If credentials are found but invalid, the client is denied access.
+   - If no credentials are found, EMQX moves to the next authenticator in the chain.
 
-::: tip 
-
-The current authenticator will also be skipped when the authenticator is in a disabled state or there are errors in the process of authentication, for example, the database is not available.
-
-:::
+3. **Skip on Error or Disabled:**
+   An authenticator will also be skipped if it is disabled, or if there is an internal error during execution, for example, if the database is unavailable.
+4. **Fallback Behavior:**
+   If all authenticators are skipped or none can authenticate the client, EMQX denies the connection by default.
 
 ![](./assets/authn-chain.png)
 
-### Preconditions
+### Authenticator Preconditions
 
-Starting from EMQX 5.9, a precondition can be added to each authenticator to determine whether the authenticator should be invoked.
+Starting from EMQX 5.9, you can assign a precondition to each authenticator to control whether it should be invoked for a given client.
 
-The precondition is a [Variform](../../configuration/configuration.md#variform-expressions) expression that can be used to check the client information. If the precondition is not met (does not evaluate to `true`), the authenticator will be skipped.
+A precondition is a [Variform expression](../../configuration/configuration.md#variform-expressions) that evaluates client metadata (such as `listener`, `username`, `clientid`, etc.). If the expression does not evaluate to `true`, the authenticator is skipped.
 
-This allows selective invocation of authenticators based on client information, helping avoid unnecessary out-of-band authentication requests.
-For example, to trigger the HTTP authenticator only for clients connected via `tcp:default`, and Postgre authenticators for those on `ssl:default`, you can use preconditions like `str_eq(listener, 'tcp:default')` or `str_eq(listener, 'ssl:default')`.
+This feature enables conditional logic in the authentication chain, allowing EMQX to invoke authenticators only when appropriate and avoid unnecessary requests to external systems.
+
+#### Precondition Examples
+
+To authenticate clients connected via different listeners using different authenticators:
+
+- HTTP authenticator for clients on `tcp:default`:
+
+  ```
+  str_eq(listener, 'tcp:default')
+  ```
+
+- PostgreSQL authenticator for clients on `ssl:default`:
+
+  ```
+  str_eq(listener, 'ssl:default')
+  ```
 
 ## Super User
 
