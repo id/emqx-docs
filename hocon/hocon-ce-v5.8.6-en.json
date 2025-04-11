@@ -10881,7 +10881,7 @@
                               "hash" : "V-dashboard-S-dashboard-listeners-S-listeners-http-S-http-num_acceptors",
                               "text" : "num_acceptors",
                               "type" : "Integer",
-                              "default" : "2"
+                              "default" : "20"
                             },
                             {
                               "doc" : "The maximum number of concurrent connections allowed by the listener.",
@@ -11090,7 +11090,7 @@
                               "hash" : "V-dashboard-S-dashboard-listeners-S-listeners-https-S-https-num_acceptors",
                               "text" : "num_acceptors",
                               "type" : "Integer",
-                              "default" : "2"
+                              "default" : "20"
                             },
                             {
                               "doc" : "The maximum number of concurrent connections allowed by the listener.",
