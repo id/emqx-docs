@@ -1,38 +1,45 @@
 # Schema Registry Example - External HTTP Server
 
-::: tip Note
+This page demonstrates how the Schema Registry and Rule Engine support message encoding and decoding using an external HTTP server with custom logic.
 
-Schema Registry is an EMQX Enterprise feature.
+In some scenarios, you might need to apply custom encoding or decoding logic that EMQX does not support natively. EMQX allows you to delegate this processing to an external HTTP service by invoking it through `schema_encode` and `schema_decode` functions within a rule.
 
-:::
+## External HTTP API Specification
 
-This page demonstrates how the schema registry and rule engine support message encoding and decoding using an External HTTP server that contains special logic.
+To implement a custom External HTTP API that integrates with EMQX's `schema_encode` and `schema_decode` functions, your External HTTP server must provide a single `POST` endpoint that handles the encoding or decoding requests from EMQX.  
 
-## Expected API
+### Request Format
 
-The External HTTP server implementing the encoding/decoding API must provide a single `POST` endpoint that will handle the requests.  The request body is a JSON object with the following fields:
+The request body is a JSON object with the following fields:
 
-- `payload`: The base64 encoding of the value provided to the `schema_encode` or `schema_decode` functions in Rule Engine.  Such provided value must be a string.
-- `type`: either the `encode` or the `decode` strings, depending on whether the function being evaluated is `schema_encode` or `schema_decode`, respectively.
-- `schema_name`: a string that is the name of this External HTTP in EMQX configuration.
-- `opts`: an arbitrary string that can be configured in EMQX to provide further options, which is passed unaltered to the HTTP server.
+- `payload`: Base64-encoded string value passed to the `schema_encode` or `schema_decode` function in Rule Engine.
+- `type`: Either the `encode` or the `decode` string, depending on which function is evaluated, `schema_encode` or `schema_decode`.
+- `schema_name`: A string identifying the name of this External HTTP schema configured in EMQX.
+- `opts`: An arbitrary string that can be configured in EMQX to provide further options, which is passed unaltered to the HTTP server.
 
-The successful response status code must be 200, and the response body must be the base64 encoding of the desired result.  Note that this base64 value must not be further JSON-encoded when replying to EMQX.
+### Response Format
 
-## Sample Scenario
+- The server must respond with HTTP status code `200`.
+- The response body must contain a base64-encoded string representing the result. Note that this base64 value must not be further JSON-encoded when replying to EMQX.
 
-A device publishes a binary message that we wish to encode or decode using custom logic that is not readily available in EMQX.
+## Example Use Case
 
-Let's say, for the sake of simplicity, that this custom logic consists of "XORing" the input payload with a fixed value, for both encoding and decoding.
+Suppose a device publishes a binary message, and you want to encode or decode the payload using a custom XOR operation. This section demonstrates how to integrate custom encoding and decoding logic into EMQX by building a simple external HTTP service.
+
+### Build an External HTTP Service
+
+The following example demonstrates how to create and run a simple HTTP server using Python and Flask. The server receives Base64-encoded data and applies an XOR operation to the decoded payload.
 
 <details>
-<summary>Code for sample External HTTP Server</summary>
+<summary><strong>Code for sample External HTTP Server</strong></summary>
 
-Ensure [Flask](https://flask.palletsprojects.com/en/stable/) is installed.
+Ensure [Flask](https://flask.palletsprojects.com/en/stable/) is installed:
 
 ```sh
 pip install Flask==3.1.0
 ```
+
+Sample code:
 
 ```python
 from flask import Flask, request
@@ -49,7 +56,7 @@ def serde():
     payload = base64.b64decode(payload64)
     secret = 122
     response = bytes(b ^ secret for b in payload)
-    # The respone must also be base64 encoded
+    # The response must also be base64 encoded
     response64 = base64.b64encode(response)
     return response64
 ```
@@ -63,21 +70,24 @@ flask --app myapp --debug run -h 0.0.0.0 -p 9500
 
 </details>
 
-### Create Schema
+### Create External HTTP Schema in EMQX
 
-1. Go to the Dashboard, select **Integration** -> **Schema** from the left navigation menu.
+1. Go to the Dashboard, and select **Smart Data Hub** -> **Schema Registry** from the left navigation menu.
 
-2. Create an External HTTP server schema using the following parameters:
+2. In the **Internal** tab page, click **Create**.
 
+3. Create an External HTTP server schema using the following parameters:
    - **Name**: `myhttp`
 
    - **Type**: `External HTTP`
 
    - **URL**: The full URI where your server is running.  For example: `http://server:9500/serde`.
 
-3. Click **Create**.
+4. Click **Create**.
 
-### Create Rule
+### Create a Rule to Apply Schema
+
+Use the EMQX rule engine to create a rule that applies your schema for message encoding and decoding.
 
 1. In the Dashboard, select **Integration** -> **Rules** from the navigation menu.
 
@@ -93,13 +103,19 @@ flask --app myapp --debug run -h 0.0.0.0 -p 9500
      "t/external_http"
    ```
 
-   The key points here are `schema_encode('myhttp', payload)` and `schema_decode('myhttp', encoded)`.  Both will call the configured External HTTP server to encode/decode the given payload.
+   Both `schema_encode('myhttp', payload)` and `schema_decode('myhttp', encoded)` will call the configured External HTTP server to encode/decode the given payload.
 
 4. Click **Add Action**.  Select `Republish` from the drop-down list of the **Action** field.
-5. In the **Topic** field, type `external_http/out` as the destination topic.
-6. In the **Payload** field, type message content template: `${.}`.
 
-This action sends the decoded message to the topic `external_http/out` in JSON format. `${.}` is a variable placeholder that will be replaced at runtime with the value of whole output of the rule.
+5. In the **Topic** field, type `external_http/out` as the destination topic.
+
+6. In the **Payload** field, type message content template: `${.}`. 
+
+7. Click **Add** to add the action to the rule.
+
+   This action sends the decoded message to the topic `external_http/out` in JSON format. `${.}` is a variable placeholder that will be replaced at runtime with the value of the whole output of the rule.
+
+8. Click **Save** to complete the rule creation.
 
 ### Check Rule Execution Results
 
@@ -110,7 +126,7 @@ This action sends the decoded message to the topic `external_http/out` in JSON f
 3. Click **Connect** to connect to the EMQX instance as an MQTT client.
 4. In the **Subscription** area, type `external_http/out` in the **Topic** field and click **Subscribe**.
 
-5. In the **Publish** are, type `t/external_http` in the **Topic** field, write any payload you wish, and click **Publish**.
+5. In the **Publish** area, type `t/external_http` in the **Topic** field, write any payload you wish, and click **Publish**.
 
 6. Check that a message with the topic `external_http/out` is received on the Websocket side.  For example, if your payload was `hello`:
 
