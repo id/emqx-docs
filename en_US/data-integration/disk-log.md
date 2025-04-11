@@ -1,17 +1,35 @@
 # Ingest MQTT Data into Disk Log
-::: tip
+The Disk Log data integration allows EMQX to persist event data to disk in [JSON Lines](https://jsonlines.org/) format, similar to traditional rotating log files. This enables long-term event retention for troubleshooting or historical tracking.
 
-The Disk Log data integration is an EMQX Enterprise edition feature.
-
-:::
-
-Disk Log integration allows events to be written to disk similar to rotating logs in [JSON Lines](https://jsonlines.org/) format.  This allows retaining events for troubleshooting or historical tracking.
-
-This page provides a detailed introduction to the data integration between EMQX with Disk Log, and offers practical guidance on the rule and Sink creation.
+This page provides a detailed introduction to the data integration between EMQX with Disk Log and offers practical guidance on the rule and Sink creation.
 
 ## How It Works
 
-When using Disk Log integration, you set up a directory where log files will be kept, and configure the maximum file size and number to trigger log rotation.  When the maximum file size is reached, a new log file is opened for writing new entries.  When the maximum number of files is reached, the oldest file is truncated and opened for writing new entries.  At least one full entry is written to each log file, even if that single entry surpasses the maximum file size.
+While EMQX includes built-in system logging for monitoring operational events (such as errors, warnings, and system activities), the Disk Log integration serves a different purpose: it enables EMQX to persist actual MQTT message data and client-level events to disk for long-term retention and offline processing.
+
+Implemented using EMQX’s rule engine and Sink mechanism, the Disk Log integration enables users to define exactly what data is captured and how it should be stored:
+
+1. Rules are used to filter, transform, and extract the data of interest from MQTT messages or client events.
+2. A Disk Log Sink is attached to the rule to define how and where to store the data. The Sink forwards the formatted data (as JSON) to the corresponding Connector.
+3. The Disk Log Connector manages the physical writing of data to the file system. It handles the log file path configuration, log file rotation policy, etc.
+4. Once the rule is triggered and the data is passed to the Sink, the Sink invokes the configured Connector to write the data in JSON Lines format to a specified local directory, making it easy to consume using standard tools and downstream data systems.
+
+### Log Rotation
+
+Disk Log integration writes messages to a specified local directory on the local file system. To manage storage usage, each log file is rotated based on file size and file count thresholds:
+
+- EMQX opens a new file and continues writing when the configured maximum file size is reached.
+- When the configured maximum number of files is reached, the oldest file is truncated and opened for writing new entries.
+- Each log file is guaranteed to contain at least one complete entry, even if that entry exceeds the specified file size limit.
+
+## Features and Benefits
+
+Disk Log integration provides a flexible, lightweight, and local-first solution for MQTT message persistence. Below are the key features and advantages:
+
+- **Fine-Grained Data Control**: Log only the messages or events you care about using SQL-based rules. Apply transformation, filtering, and enrichment to message data before logging.
+- **Structured Output Format**: Stores data in JSON Lines for easy machine processing.
+- **Lightweight and Self-Contained**: No need to connect to external storage systems or databases. Ideal for edge deployments, offline scenarios, or environments with storage constraints.
+- **Observability and Debugging**: Enables message-level visibility for troubleshooting or audits. Complements EMQX system logs by recording data flow instead of system events.
 
 ## Before You Start
 
@@ -19,12 +37,12 @@ This section introduces the preparations required before creating a Disk Log Sin
 
 ### Prerequisites
 
-- Understanding of [rules](./rules.md).
-- Understanding of [data integration](./data-bridges.md).
+- Understanding of [rules](./rules.md)
+- Understanding of [data integration](./data-bridges.md)
 
-### Create a directory for log files
+### Create a Log Directory
 
-Ensure that the directory you use for Disk Log files is readable and writable by the EMQX application operating system user.
+Create a writable directory on the EMQX host for storing log files. The EMQX system user must have read/write permissions for this directory.
 
 ## Create a Connector
 
@@ -32,16 +50,16 @@ Before adding the Disk Log Sink, you need to create the corresponding connector.
 
 1. Go to the Dashboard **Integration** -> **Connector** page.
 2. Click the **Create** button in the top right corner.
-3. Select **Disk Log** as the connector type and click next.
+3. Select **Disk Log** as the connector type and click **Next**.
 4. Enter the connector name, a combination of upper and lowercase letters and numbers. Here, enter `my-disk-log`.
 5. Enter the connector parameters.
-   - **Log Filepath**: Where EMQX will write log files to.
-   - **Maximum File Size**: Maximum file size before a new file is opened for writing.
-   - **Maximum Number of Files**: Maximum number of files before rotating over older logs.
+   - **Log Filepath**: Path to the directory where logs will be stored.
+   - **Maximum File Size**: Maximum file size for each file before rotation. Note: At least one entry is written to each log, so the final file size may exceed this maximum if a single log entry exceeds this value.
+   - **Maximum Number of Files**: Maximum number of files to retain before rotating over older logs.
 6. Before clicking **Create**, you can click **Test Connectivity** to test if the connector can write logs to the configured path.
 7. Click the **Create** button at the bottom to complete the connector creation.
 
-You have now completed the connector creation and will proceed to create a rule and Sink for specifying the data to be written into Disk Log.
+You have now completed the connector creation and will proceed to create a rule and Sink for specifying the data to be written into the Disk Log.
 
 ## Create a Rule with Disk Log Sink
 
@@ -72,17 +90,19 @@ This section demonstrates how to create a rule in EMQX to process messages from 
 
 6. Select the `my-disk-log` connector created earlier from the connector dropdown. You can also click the create button next to the dropdown to quickly create a new connector in the pop-up box. The required configuration parameters can be found in [Create a Connector](#create-a-connector).
 
-7. Configure the **Message Template**, which must render to a valid JSON object, and the desired **Write Mode** (async or sync).
+7. Select the desired **Write Mode** (async or sync).
 
-8. Expand **Advanced Settings** and configure the advanced setting options as needed (optional). For more details, refer to [Advanced Settings](#advanced-settings).
+8. Configure the **Message Template**, which must render to a valid JSON object.
 
-9. Use the default values for the remaining settings. Click the **Create** button to complete the Sink creation. After successful creation, the page will return to the rule creation, and the new Sink will be added to the rule actions.
+9. Expand **Advanced Settings** and configure the advanced setting options as needed (optional). For more details, refer to [Advanced Settings](#advanced-settings).
 
-10. Back on the rule creation page, click the **Create** button to complete the entire rule creation process.
+10. Use the default values for the remaining settings. Click the **Create** button to complete the Sink creation. After successful creation, the page will return to the rule creation, and the new Sink will be added to the rule actions.
+
+11. Back on the rule creation page, click the **Create** button to complete the entire rule creation process.
 
 You have now successfully created the rule. You can see the newly created rule on the **Rules** page and the new Disk Log Sink on the **Actions (Sink)** tab.
 
-You can also click **Integration** -> **Flow Designer** to view the topology. The topology visually shows how messages under the topic `t/#` are written to Disk Log after being parsed by the rule `my_rule`.
+You can also click **Integration** -> **Flow Designer** to view the topology. The topology visually shows how messages under the topic `t/#` are written to the Disk Log after being parsed by the rule `my_rule`.
 
 ## Test the Rule
 
