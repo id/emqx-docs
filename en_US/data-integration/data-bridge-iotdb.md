@@ -168,27 +168,27 @@ This section demonstrates how to create a rule in EMQX to process messages from 
 
        For example, consider this template:
 
-      | Timestamp | Measurement | Data Type | Value    |
-      | --------- | ----------- | --------- | -------- |
-      |           | index       | INT32     | ${index} |
-      |           | temperature | FLOAT     | ${temp}  |
+        | Timestamp | Measurement | Data Type | Value    |
+        | --------- | ----------- | --------- | -------- |
+        |           | index       | INT32     | ${index} |
+        |           | temperature | FLOAT     | ${temp}  |
 
-        :::tip
+      :::tip
 
-        `Timestamp` and `Value` support placeholder syntax to fill it with variables.
+      `Timestamp` and `Value` support placeholder syntax to fill it with variables.
 
-        If the `Timestamp` is omitted, it will be automatically filled with the current system time in milliseconds.
+      If the `Timestamp` is omitted, it will be automatically filled with the current system time in milliseconds.
 
-        :::
+      :::
 
-        Then, your MQTT message can be structured as follows:
+      Then, your MQTT message can be structured as follows:
 
-        ```json
+      ```json
       {
-      "index": "42",
-      "temp": "32.67"
-      }
-        ```
+        "index": "42",
+        "temp": "32.67"
+        }
+      ```
 
 11. **Fallback Actions (Optional)**: If you want to improve reliability in case of message delivery failure, you can define one or more fallback actions. These actions will be triggered if the primary Sink fails to process a message. See [Fallback Actions](./data-bridges.md#fallback-actions) for more details.
 
