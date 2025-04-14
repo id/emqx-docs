@@ -1,4 +1,9 @@
 # 集成 OpenTelemetry 查看 EMQX 指标
+::: tip
+
+集成 OpenTelemetry 从 EMQX 5.8.3 版本开始转为 EMQX 企业版功能。
+
+:::
 
 EMQX 内置支持通过 gRPC OTEL 协议将指标直接推送到 OpenTelemetry Collector。然后 Collector 可以将数据路由、过滤并转换到任何想要使用的后端进行存储和可视化。
 

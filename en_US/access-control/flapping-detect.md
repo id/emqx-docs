@@ -26,7 +26,7 @@ Click **Save Changes** to finish the setting.
 
 ## Enable Flapping Detect in Configuration File
 
-You can also enable the flapping detect feature by adding the following configuration to the `emqx.conf` file:
+You can also enable the flapping detect feature by adding the following configuration:
 
 ```bash
 flapping_detect {

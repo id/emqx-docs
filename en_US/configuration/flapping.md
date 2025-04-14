@@ -21,7 +21,7 @@ Where, <!--did not add the dashboard UI as it seems that most configurations lis
 
 ::: tip
 
-You can also customize the settings via the Dashboard by clicking **Access Control** -> **Flapping Detect** on the left navigation menu. Once you have configured these items with Dashboard, your settings will override the same configuration items in `emqx.conf`.
+You can also customize the settings via the Dashboard by clicking **Access Control** -> **Flapping Detect** on the left navigation menu. Once you have configured these items with Dashboard, your settings will override the same configuration items in the config file.
 
 :::
 

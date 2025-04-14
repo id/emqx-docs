@@ -1,5 +1,20 @@
 # EMQX 5.8 中的不兼容变更
 
+## e5.8.6
+
+- [#14802](https://github.com/emqx/emqx/pull/14802) 从此版本开始，通过 REST API 或 Dashboard 安装插件需要显式授权。
+   用户必须在安装插件前，使用以下 CLI 命令获取权限：
+
+  ```bash
+  emqx ctl plugins allow NAME-VSN
+  ```
+
+  此更改提升了安全性，可防止未经授权的插件安装。使用 API 或 Dashboard 管理插件的用户需相应调整操作流程。
+
+## e5.8.5
+
+- [#14703](https://github.com/emqx/emqx/pull/14703) 引入了 `force_shutdown.max_heap_size` 最大允许值的变更，现将其设置为 `128GB`。如果之前将 `max_heap_size` 设置为超过 128GB 的值，升级后可能会导致问题，例如在更新或重新加载配置时出现问题。
+
 ## e5.8.4
 
 - [#14360](https://github.com/emqx/emqx/pull/14360) 在请求 Prometheus 指标的 JSON 格式时，`client` 顶层键将始终是一个 JSON 对象数组，而不再是单个 JSON 对象。此更改可能会影响您的监控工具处理数据的方式。

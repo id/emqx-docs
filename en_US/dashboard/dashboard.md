@@ -16,7 +16,7 @@ In EMQX, messages represent the key data transmitted by all connected MQTT clien
 
 The card in the upper left corner of this overview page provides a clearer and easier way to monitor the rate changes in the current volume of messages incoming and outgoing in the system (message rate is measured in how many messages per second) by visualizing the rate spectrum with real-time rate values.
 
-![message_rate](./assets/message_rate.png)
+<img src="./assets/message_rate.png" alt="message_rate" style="zoom:70%;" />
 
 ### Connections and Subscriptions
 

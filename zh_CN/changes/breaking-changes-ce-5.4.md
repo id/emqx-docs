@@ -10,3 +10,5 @@
   - 钩子回调 `session.unsubscribed` 和 `client.unsubscribe` 现在将以其完整表示形式接收共享订阅，例如 `$share/group1/topic1/#`，而不仅仅是 `topic1/#`。
   - ExHook Proto 发生了变化。消息 `SubOpts` 中的 `share` 字段已被弃用。 ExHook 服务器现在将以其完整表示形式接收共享订阅，例如 `$share/group1/topic1/#`，并从消息 `SubOpts` 中删除 `share` 属性。
   - `session.subscribed` 和 `session.unsubscribed` 规则引擎事件的主题将以其完整表示形式包括共享订阅，例如 `$share/group1/topic1/#`，而不仅仅是 `topic1/#`。
+
+- [#12114](https://github.com/emqx/emqx/pull/12114) ExHook 原型已更改。消息 `TopicFilter` 中的 `qos` 字段已被弃用。ExHook 服务器现在将在消息 `SubOpts` 中接收完整的订阅选项：`qos`、`rh`、`rap`、`nl`。

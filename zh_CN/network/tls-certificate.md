@@ -29,7 +29,7 @@ openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 3650 -out rootCA.crt
 
 ## 签发服务器证书
 
-使用 CA 证书来签发服务器证书，用于验证服务器所有者的身份，服务器证书通常颁发给主机名、服务器名称或域名（如 www.emqx.com, localhot）。我们需要 CA 密钥（rootCA.key）、CA 证书（ rootCA.crt）和服务端 CSR （server.csr）生成服务器证书。
+使用 CA 证书来签发服务器证书，用于验证服务器所有者的身份，服务器证书通常颁发给主机名、服务器名称或域名（如 [www.emqx.com](https://www.emqx.com/zh), localhot）。我们需要 CA 密钥（rootCA.key）、CA 证书（ rootCA.crt）和服务端 CSR （server.csr）生成服务器证书。
 
 1. 运行以下命令生成服务器证书密钥对：
 

@@ -5,7 +5,8 @@ This page introduces how to configure logging behavior for EMQX via the configur
 ::: tip
 
 This page also introduces the Dashboard UI fields corresponding to the configuration items.
-If you configured these items with the Dashboard, the new settings can only temporarily override the same configuration items in `emqx.conf` until the next restart.
+If you want to configure logs from config files, it is recommended to use `base.hocon` instead of `emqx.conf`.
+This is because if the configuration is set in emqx.conf, any changes made through the Dashboard will only be temporary and will be lost when EMQX restarts.
 
 :::
 
@@ -24,7 +25,7 @@ EMQX's log output directory is determined by the environment variable `EMQX_LOG_
 
 For EMQX docker container, the installation directory is `/opt/emqx`, hence the log directory is `/opt/emqx/log`.
 
-To output logs as a file, you may either configure the log handler in the Dashboard or modify the `emqx.conf` file directly as below:
+To output logs as a file, you may either configure the log handler in the Dashboard or modify the `base.hocon` file directly as below:
 
 ```bash
 log {
@@ -50,7 +51,7 @@ log {
 | `rotation_count`      | Max Log Files Number | This sets the max number of log files that can be saved.     | `10`          | `1` - `2,048`                                                |
 | `rotation_size`       | Rotation Size        | This sets the maximum size of a single log file before it is rotated. The old log file will be renamed and moved to an archive directory once it reached the specified value unless it is set to `infinity`, indicating the log file will not be rotated. | `50MB`        | `1` - `infinity`                                             |
 | `time_offset`         | Time Offset          | The time offset relative to UTC in the log.                  | `system`      | --                                                           |
-| `timestamp_formatter` | Timestamp Format     | The format of the timestamp in the log.                      | `auto`        | `auto`: Automatically determines the timestamp format based on the log formatter being used. Utilizes `rfc3339` format for text formatters, and `epoch` format for JSON formatters.<br />`epoch`: Microseconds precision Unix epoch format.<br />`rfc3339`: RFC3339 compliant format for date-time strings. |
+| `timestamp_format` | Timestamp Format     | The format of the timestamp in the log.                      | `auto`        | `auto`: Automatically determines the timestamp format based on the log formatter being used. Utilizes `rfc3339` format for text formatters, and `epoch` format for JSON formatters.<br />`epoch`: Microseconds precision Unix epoch format.<br />`rfc3339`: RFC3339 compliant format for date-time strings. |
 
 ## Output logs with Console
 
@@ -75,7 +76,7 @@ Where,
 | `formatter`           | Log Formatter    | This sets the log format.                                    | `text`        | `text` for free text.<br /> `json` for structured logging.   |
 | `level`               | Log Level        | This sets the log level of the current log handler, that is, the minimum log level you want to record. | `warning`     | `debug`, `info`, `notice`, `warning`, `error`, `critical`, `alert`, `emergency` |
 | `time_offset`         | Time Offset      | The time offset relative to UTC in the log.                  | `system`      | --                                                           |
-| `timestamp_formatter` | Timestamp Format | The format of the timestamp in the log.                      | `auto`        | `auto`: Automatically determines the timestamp format based on the log formatter being used. Utilizes `rfc3339` format for text formatters, and `epoch` format for JSON formatters.<br />`epoch`: Microseconds precision Unix epoch format.<br />`rfc3339`: RFC3339 compliant format for date-time strings. |
+| `timestamp_format` | Timestamp Format | The format of the timestamp in the log.                      | `auto`        | `auto`: Automatically determines the timestamp format based on the log formatter being used. Utilizes `rfc3339` format for text formatters, and `epoch` format for JSON formatters.<br />`epoch`: Microseconds precision Unix epoch format.<br />`rfc3339`: RFC3339 compliant format for date-time strings. |
 
 ::: tip
 

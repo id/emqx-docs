@@ -34,7 +34,7 @@ You can configure the following options for Audit Log:
 
 ### Enable Audit Log via Configuration File
 
-You can also enable the audit log and modify the configuration options under `log.audit` in the `emqx.conf` file, as shown in the example below.
+You can also enable the audit log and modify the configuration options under `log.audit` in the `base.hocon` file, as shown in the example below.
 
 ```bash
 log.audit {

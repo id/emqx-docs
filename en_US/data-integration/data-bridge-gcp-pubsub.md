@@ -51,7 +51,7 @@ This section describes the preparations you need to complete before you start to
 
 You need to create a service account and a service account key to use the GCP PubSub service.
 
-1. Create a [Service Account](https://developers.google.com/identity/protocols/oauth2/service-account#creatinganaccount) in your GCP account.  Ensure that the Service Account has permission to at least publish messages to the topic of interest.
+1. Create a [Service Account](https://developers.google.com/identity/protocols/oauth2/service-account#creatinganaccount) in your GCP account.  Ensure that the Service Account has permission to inspect/read and publish messages to the topic of interest (e.g.: Pub/Sub Editor role).
 
 2. Click the email address for the service account you created. Click the **Key** tab. In the **Add key** drop-down list, select **Create new key** to create a Service Account key for that account and download it in JSON format.
 
@@ -126,9 +126,9 @@ This section demonstrates how to create a rule to specify the data to be saved i
      "/devices/+/events"
    ```
 
-   Note: If you are a beginner user, click **SQL Examples** and **Enable Test** to learn and test the SQL rule. 
+   Note: If you are a beginner user, click **SQL Examples** and **Enable Test** to learn and test the SQL rule.
 
-5. Click the **+ Add Action** button to define an action that will be triggered by the rule. Select `Google PubSub Producer` from the **Type of Action** dropdown list so that EMQX will send the data processed by the rule to GCP Pub/Sub. 
+5. Click the **+ Add Action** button to define an action that will be triggered by the rule. Select `Google PubSub Producer` from the **Type of Action** dropdown list so that EMQX will send the data processed by the rule to GCP Pub/Sub.
 
 6. Keep the **Action** dropdown box with the value `Create Action`. Or, you also can select a GCP Pub/Sub Producer Sink previously created. In this demonstration, you create a new Sink and add it to the rule.
 
@@ -143,7 +143,7 @@ This section demonstrates how to create a rule to specify the data to be saved i
     - If left blank, it will encode all visible inputs from the MQTT message using JSON format, such as clientid, topic, payload, etc.
     - If using the defined template, placeholders of the form `${variable_name}` will be filled with the corresponding value from the MQTT context.  For example, `${topic}` will be replaced with `my/topic` if such is the MQTT message topic.
 
-11. Define templates for formatting the attributes and/or ordering key of the outgoing message in **Attributes Template** and **Ordering Key Template** (optional). 
+11. Define templates for formatting the attributes and/or ordering key of the outgoing message in **Attributes Template** and **Ordering Key Template** (optional).
 
     - For **Attributes**, both keys and values may use placeholders of the form `${variable_name}`.  Such values will be extracted from the MQTT context.  If a key template resolves to an empty string, that key is omitted from the outgoing message to GCP Pub/Sub.
     - For **Ordering Key**, placeholders of the form `${variable_name}` may be used.  If the resolved value is an empty string, the `orderingKey` field will not be set for the GCP Pub/Sub outgoing message.
@@ -187,7 +187,7 @@ Before adding a GCP Pub/Sub Consumer Sink, you need to create a GCP Pub/Sub Cons
 
 ## Create a Rule with GCP Pub/Sub Consumer Source
 
-This section demonstrates how to create a rule in EMQX for consuming the message from GCP Pub/Sub and forwading the message to EMQX. You need to create and configure a Google PubSub Consumer source and add it to the rule as the data inputs. You also need to add a Republish action to the rule to forward the message from GCP Pub/Sub to EMQX. 
+This section demonstrates how to create a rule in EMQX for consuming the message from GCP Pub/Sub and forwading the message to EMQX. You need to create and configure a Google PubSub Consumer source and add it to the rule as the data inputs. You also need to add a Republish action to the rule to forward the message from GCP Pub/Sub to EMQX.
 
 1. Go to EMQX Dashboard, and click **Integration** -> **Rules**.
 
@@ -197,7 +197,7 @@ This section demonstrates how to create a rule in EMQX for consuming the message
 
 4. Under the **Data Inputs** tab on the right, delete the default Input `Messages`. Click **Add Input**.
 
-5. From the **Input Type** dropdown, select `Google PubSub Consumer`. 
+5. From the **Input Type** dropdown, select `Google PubSub Consumer`.
 
 6. Keep the default value `Create Source` for the **Source** dropdown. This demonstration will create a new Source and add it to the rule.
 
@@ -223,7 +223,7 @@ This section demonstrates how to create a rule in EMQX for consuming the message
       "$bridges/gcppubsub:my-gcppubsub-source"
     ```
 
-    Note: If you are a beginner user, click **SQL Examples** and **Enable Test** to learn and test the SQL rule. 
+    Note: If you are a beginner user, click **SQL Examples** and **Enable Test** to learn and test the SQL rule.
 
     From the `my-gcppubsub-source`, the rule SQL can access the GCP Pub/Sub message fields shown in the following GCP Pub/Sub-to-MQTT topic mapping table. You can adjust the rule SQL for data processing. In this example, you can use the default SQL.
 

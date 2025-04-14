@@ -1,6 +1,32 @@
 # EMQX 5.8 已知问题
 
-## e5.8.5
+## e5.8.6
+
+- **由于尝试连接已离开集群的节点失败，日志中偶尔出现 RPC 错误（始于 5.8.5，将在 5.9.0 修复）**
+
+  这种日志消息通常在常规的滚动升级后出现。以下是此类日志时间的示例：
+
+  ```
+  pid: <0.123456.0>, msg: event=connect_to_remote_server, peer=emqx@10.11.12.13, port=5370, reason=ehostunreach
+  ```
+
+  这些消息的出现并不表示会影响现有连接的消息传递。
+
+  > **解决方法：**
+  > 在集群中的任意一台 EMQX 主机上运行以下命令。将 `emqx@10.11.12.13` 替换为错误日志中提到的实际节点名称。
+  > 在执行此命令之前，请再次确认该节点不再是集群的一部分。
+  >
+  > ```
+  > $ emqx eval "emqx_router:cleanup_routes('emqx@10.11.12.13')"
+  > ```
+
+  <!-- https://emqx.atlassian.net/browse/EMQX-14055 -->
+
+- **TLS 监听器默认配置启动后，无法热更新为只使用 tlsv1.3 （始于 5.4.0，将在 5.9.0 修复）**
+
+  错误信息如：`incompatible,[client_renegotiation,{versions,['tlsv1.3']}]`
+
+  > **解决方法：** 先禁用监听器，修改配置后再启用。
 
 - **Linux 单调时钟回调导致 EMQX 节点重启 (始于 5.0)**
 
@@ -26,6 +52,34 @@
 
   <!-- https://emqx.atlassian.net/browse/EMQX-12290 -->
 
+- **分片副本集变化在丢失节点数量达到一定程度后卡住（始于 5.8.0，已在 5.8.5 中修复）**
+
+  该问题仅在启用了持久会话并且后端使用 DS Raft 存储时发生。
+
+  当作为持久存储数据复制站点的节点在没有先交接数据的情况下永久离开集群时，可能会导致任何请求的副本集转换永远无法完成。
+
+  以下是一个简化的示例，展示了在 `emqx ctl ds info` 输出中的表现。在此示例中，节点 `emqx@emqxc1-core0.local` 在仍然负责并且是所有分片的唯一复制站点的情况下离开了集群，然后请求 `emqx@emqxc2-core0.local` 接管并执行 `emqx ds join messages ABCDEF2222222222`。
+
+  ```shell
+  Site
+  ABCDEF1111111111 'emqx@emqxc1-core0.local' (!) UNIDENTIFIED
+  ABCDEF2222222222 'emqx@emqxc2-core0.local' up
+  <...>
+  
+  Shard            Replicas
+  messages/0       (!) ABCDEF1111111111
+  messages/1       (!) ABCDEF1111111111
+  <...>
+  messages/9       (!) ABCDEF1111111111
+  
+  Shard             Transitions
+  messages/0        +ABCDEF2222222222 -ABCDEF1111111111
+  messages/1        +ABCDEF2222222222 -ABCDEF1111111111
+  <...>
+  messages/9        +ABCDEF2222222222 -ABCDEF1111111111
+  ```
+
+  在这个例子中，转换 `+ABCDEF2222222222` 永远不会完成。
 
 ## e5.8.1
 

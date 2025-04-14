@@ -29,7 +29,7 @@ This page introduces how to create self-signed Certificate Authority (CA) certif
 
 ## Issue Server Certificates
 
-Use the CA certificate you just generated to issue a server certificate, which is used to verify the identity of the server owner. The server certificate is usually issued to the hostname, server name, or domain name (such as [www.emqx.com](http://www.emqx.com/)). We need to use the CA key (rootCA.key), CA certificate (rootCA.crt), and server Certificate Signing Request (CSR) (server.csr) to generate the server certificate.
+Use the CA certificate you just generated to issue a server certificate, which is used to verify the identity of the server owner. The server certificate is usually issued to the hostname, server name, or domain name (such as [www.emqx.com](https://www.emqx.com/en)). We need to use the CA key (rootCA.key), CA certificate (rootCA.crt), and server Certificate Signing Request (CSR) (server.csr) to generate the server certificate.
 
 1. Run the following command to generate a key pair for the server certificate:
 

@@ -1,6 +1,32 @@
 # Known Issues in EMQX 5.8
 
-## e5.8.5
+## e5.8.6
+
+- **Occasional RPC errors in logs due to failed attempts to contact nodes that had left the cluster (since 5.8.5, will be fixed in 5.9.0)**
+
+  This type of log message surge typically begins after a routine rolling upgrade. Example of such a log event:
+  ```
+  pid: <0.123456.0>, msg: event=connect_to_remote_server, peer=emqx@10.11.12.13, port=5370, reason=ehostunreach
+  ```
+
+  The presence of these messages does not indicate any impact on message delivery for existing connections.
+
+  > **Workaround:**
+  > Run the following command on one of EMQX hosts. Replace `emqx@10.11.12.13` with the actual node name mentioned in the error log.
+  > Before executing this command, double-check that this node is no longer part of the cluster.
+  >
+  > ```
+  > $ emqx eval "emqx_router:cleanup_routes('emqx@10.11.12.13')"
+  > ```
+
+  <!-- https://emqx.atlassian.net/browse/EMQX-14055 -->
+
+- **TLS listener started with default configuration cannot be hot-updated to use tlsv1.3 only (since 5.4.0, will be fixed in 5.9.0)**
+
+  May fail with error like `incompatible,[client_renegotiation,{versions,['tlsv1.3']}]`
+
+  > **Workaround:**
+  > Disable the listener, then re-enable it after config change.
 
 - **Node Crash if Linux monotonic clock steps backward (since 5.0)**
 
@@ -29,6 +55,36 @@
   > Delete the `data/mnesia` directory and restart the node.
 
   <!-- https://emqx.atlassian.net/browse/EMQX-12290 -->
+
+- **Shard Replica Set Changes Become Stuck once Number of Sites are Lost (since 5.8.0, fixed in 5.8.5)**
+
+  _This issue may occur only when Durable Sessions are enabled and backed by DS Raft backend._
+
+  When nodes acting as replication sites for Durable Storage data permanently leave the cluster without handing off the data first, it may lead to a situation where any requested replica set transitions will never finish.
+
+  As a simplified example, this is how it could look in `emqx ctl ds info` output. Here, node `emqx@emqxc1-core0.local` has left the cluster while it was still responsible and was the only replication site for all shards, and then `emqx@emqxc2-core0.local` was asked to take over with `emqx ds join messages ABCDEF2222222222`.
+  ```
+  Site
+  ABCDEF1111111111 'emqx@emqxc1-core0.local' (!) UNIDENTIFIED
+  ABCDEF2222222222 'emqx@emqxc2-core0.local' up
+  <...>
+  
+  Shard            Replicas
+  messages/0       (!) ABCDEF1111111111
+  messages/1       (!) ABCDEF1111111111
+  <...>
+  messages/9       (!) ABCDEF1111111111
+  
+  Shard             Transitions
+  messages/0        +ABCDEF2222222222 -ABCDEF1111111111
+  messages/1        +ABCDEF2222222222 -ABCDEF1111111111
+  <...>
+  messages/9        +ABCDEF2222222222 -ABCDEF1111111111
+  ```
+
+  In this example, transition `+ABCDEF2222222222` would never finish.
+
+  <!-- https://emqx.atlassian.net/browse/EMQX-13886 -->
 
 ## e5.8.1
 

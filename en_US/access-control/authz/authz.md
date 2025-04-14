@@ -70,6 +70,8 @@ If set properly, caching can greatly improve performance. So, it is recommended 
 
 EMQX authorizers allow using placeholders in their configuration. During the authorization step, these placeholders are replaced with actual client information to construct a query or HTTP request that matches the current client.
 
+A valid placeholder follows the format `${PATH.TO.VALUE}`, where PATH.TO.VALUE is a dot-notated path to a value in an object. Valid characters include letters, digits, dots (`.`), and underscores (`_`). Placeholders containing unsupported characters will be treated as plain text. 
+
 #### Placeholders in Data Queries
 
 Placeholders are used to construct query statement. For example, in one EMQX MySQL authorizer, the default query SQL uses the placeholder `${username}`:
@@ -205,7 +207,7 @@ EMQX Dashboard is an intuitive way to configure EMQX authorizer, where you can c
 
 ### Configure with Configuration File
 
-You can also configure authorization in the `authorization` fields in the configuration file `emqx.conf`. The general config structure is the following:
+You can also configure authorization in the `authorization` fields in the configuration file. The general config structure is the following:
 
 ```bash
 authorization {

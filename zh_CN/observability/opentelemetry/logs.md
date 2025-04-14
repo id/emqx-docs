@@ -1,4 +1,9 @@
 # 集成 OpenTelemetry 进行日志管理
+::: tip
+
+集成 OpenTelemetry 从 EMQX 5.8.3 版本开始转为 EMQX 企业版功能。
+
+:::
 
 与基于文件的日志一样，OpenTelemetry 日志同样用于记录关键事件、状态信息和错误消息，帮助开发人员和运维团队理解应用程序的行为和故障排查。不同的是，OpenTelemetry 日志使用了规范化的日志记录格式，使得日志更易于解析、分析和处理。除此之外， OpenTelemetry 日志还支持在记录中添加丰富的上下文信息，如 Trace ID、标签、属性等。
 

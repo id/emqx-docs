@@ -109,6 +109,9 @@ The following steps assume that you run both EMQX and Oracle Database on the loc
    - **Oracle Database SID**: Enter `XE`.
    - **Username**: Enter `system`.
    - **Password**: Enter `oracle`.
+   - **Role**: Select the role used to connect to the Oracle database. 
+     - **normal**: Do not use any special roles.
+     - **sysdba**: Use the system database administrator role with advanced privileges.
 5. Advanced settings (optional):  For details, see [Features of Sink](./data-bridges.md#features-of-sink).
 6. Before clicking **Create**, you can click **Test Connectivity** to test if the connector can connect to the Oracle Database server.
 7. Click the **Create** button at the bottom to complete the creation of the connector. In the pop-up dialog, you can click **Back to Connector List** or click **Create Rule** to continue creating rules with Sinks to specify the data to be forwarded to the Oracle Database and to record client events. For detailed steps, see [Create a Rule with Oracle Database Sink for Message Storage](#create-a-rule-with-oracle-database-sink-for-message-storage) and [Create a Rule with Oracle Database Sink for Events Recording](#create-a-rule-with-oracle-database-sink-for-events-recording).

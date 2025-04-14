@@ -70,7 +70,7 @@ Therefore, users need to carefully design MQTT packet topics and topic rewrite r
 
 ## Example
 
-Assume that the following topic rewrite rules have been added to the `etc/emqx.conf` file:
+Assume that the following topic rewrite rules have been added to the configuration file:
 
 ```bash
 rewrite = [
