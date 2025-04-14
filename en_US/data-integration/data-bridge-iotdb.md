@@ -164,24 +164,24 @@ This section demonstrates how to create a rule in EMQX to process messages from 
 
 10. Configure the **Write Data** to specify the ways to generate IoTDB data from MQTT messages.
 
-      You can define a template in the **Write Data** section, including as many items as needed, each with the required contextual information per row. When this template is provided, the system will generate IoTDB data by applying it to the MQTT message. The template for writing data supports batch setting via CSV file. For details, refer to [Batch Setting](#batch-setting).
+    You can define a template in the **Write Data** section, including as many items as needed, each with the required contextual information per row. When this template is provided, the system will generate IoTDB data by applying it to the MQTT message. The template for writing data supports batch setting via CSV file. For details, refer to [Batch Setting](#batch-setting).
 
-       For example, consider this template:
+    For example, consider this template:
 
-        | Timestamp | Measurement | Data Type | Value    |
-        | --------- | ----------- | --------- | -------- |
-        |           | index       | INT32     | ${index} |
-        |           | temperature | FLOAT     | ${temp}  |
+       | Timestamp | Measurement | Data Type | Value    |
+       | --------- | ----------- | --------- | -------- |
+       |           | index       | INT32     | ${index} |
+       |           | temperature | FLOAT     | ${temp}  |
 
-      :::tip
+    :::tip
 
-      `Timestamp` and `Value` support placeholder syntax to fill it with variables.
+    `Timestamp` and `Value` support placeholder syntax to fill it with variables.
 
-      If the `Timestamp` is omitted, it will be automatically filled with the current system time in milliseconds.
+    If the `Timestamp` is omitted, it will be automatically filled with the current system time in milliseconds.
 
-      :::
+    :::
 
-      Then, your MQTT message can be structured as follows:
+    Then, your MQTT message can be structured as follows:
 
       ```json
       {
