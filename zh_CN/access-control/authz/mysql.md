@@ -121,7 +121,7 @@ $ mqttx sub -u emqx_u -t t/3 -q 1
 
 ## 配置项
 
-详细配置请参考 [authz:mysql](../../configuration/configuration-manual.html#authz:mysql)。
+详细配置请参考 [EMQX 开源版配置手册](https://docs.emqx.com/zh/emqx/v@CE_VERSION@/hocon/)和 [EMQX 企业版配置手册](https://docs.emqx.com/zh/enterprise/v@EE_VERSION@/hocon/)。
 
 <!--MySQL authorizer 由 `type=mysql` 标识。-->
 
@@ -185,4 +185,4 @@ MySQL 密码，可选。
 
 ### ssl
 
-用于 [安全连接到 MySQL](https://dev.mysql.com/doc/refman/en/using-encrypted-connections.html) 的标准 SSL 选项]。
+用于 [安全连接到 MySQL](https://dev.mysql.com/doc/refman/en/using-encrypted-connections.html) 的标准 SSL 选项。

@@ -58,11 +58,13 @@ The levels are defined from development perspectives and are only for recommenda
 
 ## Get Alarms
 
-EMQX provides you with various ways to get alarms and check detailed alarm information. One way is to view the alarms on EMQX Dashboard, where you can view a list of active or historical alarms. However, it is only a central place for easy access to an overview of alarms that have been triggered. Another way is to subscribe to system topics through MQTT to receive real-time notifications of alarms with detailed alarm information. Alarms can also be accessed from the log or via REST API.
+EMQX offers several methods for retrieving alarms and viewing detailed information about them. One way is through the EMQX Dashboard, where you can view both active and historical alarms in a user-friendly interface. This serves as a central location to easily access an overview of alarms that have been triggered. 
+
+Additionally, you can subscribe to system topics via MQTT to receive real-time notifications of system alarms. Another method is through Webhook integration, where alarm events can be sent to an external HTTP service for further processing. Alarms can also be accessed through logs or the REST API.
 
 ### View Alarms on Dashboard
 
-On EMQX Dashboard, click **Monitoring** -> **Alarms**. Select the **Active** or **History** tab, and you can see the list of currently active alarms and historical alarms.
+On the EMQX Dashboard, click **Monitoring** -> **Alarms**. Then, select the **Active** or **History** tab to view a list of currently active alarms and historical alarms.
 
 <img src="./assets/view-alarms.png" alt="view-alarms" style="zoom:50%;" />
 
@@ -100,13 +102,33 @@ You can query and manage alarms through the API. Click **Alarms** on the left na
 
 <img src="./assets/view-alarms-api.png" alt="view-alarms-api" style="zoom:45%;" />
 
+### Integrate Webhook to Send Alarm Events
+
+Starting from EMQX version 5.8.5, the rule engine supports two new alarm events:
+
+- [$events/sys/alarm_activated](../data-integration/rule-sql-events-and-fields.md#system-alarm-activated-event-events-sys-alarm-activated)
+- [$events/sys/alarm_deactivated](../data-integration/rule-sql-events-and-fields.md#system-alarm-deactivated-event-events-sys-alarm-deactivated)
+
+These events allow you to receive notifications of alarm activities via external HTTP services through Webhook integration.
+
+To configure Webhook integration:
+
+1. In the EMQX Dashboard, navigate to **Monitoring** -> **Alarms**. 
+2. Click the **Set Up Webhook** button in the upper right corner to open the Webhook integration setup page.
+3. Enter a name for the Webhook integration and a note (optional). In the **Trigger** field,  `Alarm Activated` and `Alarm Deactivated` are pre-selected.
+4. Enter the Webhook URL where you want to send the notifications.
+5. For more configuration options, refer to [Create Webhook](../data-integration/webhook.md).
+6. Click **Save** when you finish.
+
+![alarm_webhook_setup](./assets/alarm_webhook_setup.png)
+
 ## Alarm Configuration
 
 Alarm configuration includes configuring alarm settings and alarm thresholds. Alarm settings determine how the alarm message is displayed and stored, while alarm thresholds establish limits or values that trigger the alarm when potential problems are detected. The alarm configuration feature allows you to customize the alarm settings and thresholds to meet your business needs.
 
 ### Configure Alarm Settings
 
-The settings for alarms can only be configured by modifying the configuration items in `emqx.conf` file. The following table lists the configuration items available for alarm setting configuration.
+The settings for alarms can only be configured by modifying the configuration items in the configuration file. The following table lists the configuration items available for alarm setting configuration.
 
 | Configuration Item    | Description                                                  | Default Value        | Optional Values |
 | --------------------- | ------------------------------------------------------------ | -------------------- | --------------- |
@@ -160,7 +182,7 @@ After you complete the configurations, click **Save Changes**.
 
 ### Configure Alarm Thresholds via Configuration Items
 
-You can also configure alarm thresholds by modifying the configuration items for alarm thresholds. The following configuration items are currently available to be modified in `emqx.conf` file:
+You can also configure alarm thresholds by modifying the configuration items for alarm thresholds. The following configuration items are currently available to be modified in the configuration file:
 
 | Configuration Item                | Description                                                  | Default Value |
 | --------------------------------- | ------------------------------------------------------------ | ------------- |
@@ -182,7 +204,7 @@ You can also configure alarm thresholds by modifying the configuration items for
 | sysmon.top.sample_interlval       | Check interval for top processes.                            | `2s`          |
 | sysmon.top.max_procs              | Stop collecting data when the number of processes in the VM exceeds this value. | `1000000`     |
 
-The EMQX Enterprise will raise an alarm when the license expires in less than 30 days, or if the number of connections exceeds the high watermark. You can adjust the high/low watermark for the number of connections by modifying the following configuration items in `emqx.conf` file. For more information on how to configure settings for the license, see [License](../configuration/license.md).
+The EMQX Enterprise will raise an alarm when the license expires in less than 30 days, or if the number of connections exceeds the high watermark. You can adjust the high/low watermark for the number of connections by modifying the following configuration items in the configuration file. For more information on how to configure settings for the license, see [License](../configuration/license.md).
 
 | Configuration item                      | Description                                                  | Default value |
 | --------------------------------------- | ------------------------------------------------------------ | ------------- |

@@ -70,7 +70,7 @@ EMQX 或 MQTT 协议并没有直接对每个客户端的消息接收速率进行
 
 支持。EMQX 提供了 [命令行接口](../admin/cli.md#clients) `emqx ctl clients kick <Client ID>` 与 REST API `DELETE /clients/{clientid}`，允许用户手动踢除 MQTT 连接，用户也可以在 Dashboard 的客户端列表页完成此操作。
 
-详细的 REST API 使用，请参考[开源版 API 文档](https://docs.emqx.com/cn/emqx/v@CE_MINOR_VERSION@/admin/api-docs.html)和[企业版 API 文档](https://docs.emqx.com/cn/enterprise/v@EE_MINOR_VERSION@/admin/api-docs.html)。
+详细的 REST API 使用，请参考[开源版 API 文档](https://docs.emqx.com/zh/emqx/v@CE_MINOR_VERSION@/admin/api-docs.html)和[企业版 API 文档](https://docs.emqx.com/zh/enterprise/v@EE_MINOR_VERSION@/admin/api-docs.html)。
 
 ## 我想监听设备的上下线事件，该怎么操作？
 

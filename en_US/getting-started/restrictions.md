@@ -52,7 +52,7 @@ The operating limitations can be classified into:
 | Number of topic rewrite rules         | 30                        |
 | Number of auto subscription rules     | 30                        |
 | Number of delayed publish             | Unlimited                 |
-| Delayed maximum duration              | 4294967 seconds           |
+| Delayed maximum duration              | 42949670 seconds          |
 | **Rules**                             |                           |
 | Number of rules                       | Unlimited                 |
 | Rule execution timeout                | Unlimited                 |

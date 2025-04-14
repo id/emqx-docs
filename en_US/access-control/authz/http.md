@@ -86,13 +86,13 @@ For untrusted environments, HTTPS should be used.
 
    - **Request Method**: Select the HTTP request method, optional values: `GET`, `POST`.
    - **URL**: Enter the IP address of the HTTP application.
-   - **Headers** (optional): Configure the HTTP request headers. <!--The key, value, and add of this content.-->
+   - **Headers** (optional): Configure the HTTP request headers. Keys and values support using [placeholders](./authz.md#authorization-placeholders).
 
    **Connection Configuration**: Configure concurrent connections, connection timeout, maximum HTTP requests, and request timeout.
 
-   - **Pool size** (optional): Integer, specifies the number of concurrent connections from EMQX nodes to external HTTP servers; default value: **8**. <!--Is there a range?-->
+   - **Pool size** (optional): This is an integer that specifies the number of concurrent connections from EMQX nodes to external HTTP servers. The default value is `8`. 
    - **Connection Timeout** (optional): Enter the duration to wait for a connection timeout, with optional units: **hours**, **minutes**, **seconds**, **milliseconds**.
-   - **HTTP Pipelining** (optional): Positive integer, specifies the maximum number of HTTP requests that can be sent without waiting for a response; default value: **100**.
+   - **HTTP Pipelining** (optional): Positive integer, specifies the maximum number of HTTP requests that can be sent without waiting for a response; default value: `100`.
    - **Request Timeout** (optional): Enter the duration to wait for a request timeout, with optional units: **hours**, **minutes**, **seconds**, **milliseconds**.
    - **TLS Configuration**: Configure whether to enable TLS.
 

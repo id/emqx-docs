@@ -31,9 +31,9 @@ Click **Update** to confirm the changes.
 
 ## Configure with Configuration File
 
-EMQX also provides the option to enable OCSP Stapling through configuration files `emqx.conf`.
+EMQX also provides the option to enable OCSP Stapling through configuration files `base.hocon`.
 
-To activate this feature, simply append the relative configuration items to the end of the `emqx.conf` file. Restart EMQX for changes to take effect.
+To activate this feature, simply append the relative configuration items to the end of the configuration file. Restart EMQX for changes to take effect.
 
 **Example Code**:
 

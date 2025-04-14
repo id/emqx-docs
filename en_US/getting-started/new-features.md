@@ -130,7 +130,7 @@ The new gateway framework further improves EMQX's usability by unifying access a
 
 ### Simplified Configuration
 
-The `emqx.conf` configuration file has been changed to a concise and readable [HOCON](https://github.com/emqx/hocon) format, and contains commonly used configuration items by default, to improve the readability and maintainability.
+The configuration files have been changed to a concise and readable [HOCON](https://github.com/emqx/hocon) format, and contains commonly used configuration items by default, to improve the readability and maintainability.
 
 ### Improved REST API
 

@@ -14,3 +14,5 @@
   * `session.subscribed` and `session.unsubscribed` rule-engine events will have shared subscriptions in their full representation for `topic`, e.g. `$share/group1/topic1/#` instead of just `topic1/#`.
 
 - [#12129](https://github.com/emqx/emqx/pull/12129) The default license capacity has been adjusted from 100 concurrent connections to 25 concurrent connections.
+
+- [#12114](https://github.com/emqx/emqx/pull/12114) ExHook Proto changed. The `qos` field in message `TopicFilter` was deprecated. ExHook Server will now receive full subscription options: `qos`, `rh`, `rap`, `nl` in message `SubOpts`.

@@ -16,7 +16,7 @@ Telemetry is enabled by default. Some people may feel uncomfortable collecting s
 
 ### Disable Before Starting EMQX
 
-You can permanently disable telemetry through the configuration file `etc/emqx.conf`.
+You can permanently disable telemetry through the configuration file:
 
 ```
 telemetry.enable = false

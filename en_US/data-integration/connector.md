@@ -48,7 +48,7 @@ You can also create a connector during the process of creating a Sink/Source, wh
 
 ## View and Manage Connectors
 
-After a connector is created, you can view its basic information on the Connector page. You can also enable or disable it, and manage it, such as editing the settings, creating rules, duplicating the connector, or deleting it through the **Actions** column of the connector list. 
+After a connector is created, you can view its basic information on the Connectors page. You can also enable or disable it, and manage it, such as editing the settings, creating rules, duplicating the connector, or deleting it through the **Actions** column of the connector list. 
 
 <img src="./assets/view_connector.png" alt="view_connector"  />
 

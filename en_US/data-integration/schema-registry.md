@@ -114,7 +114,7 @@ Starting with version 5.8.1, EMQX supports configuring an external Confluent Sch
 
 You can configure an external schema registry directly through the EMQX Dashboard, making it easy to manage your schema integration.
 
-Go to **Integration** -> **Schema** on EMQX Dashboard. Select the **External** tab on the Schema page.
+Go to **Integration** -> **Schema Registry** on EMQX Dashboard. Select the **External** tab on the Schema page.
 
 Click the **Create** button at the upper right corner. Configure the following fields:
 

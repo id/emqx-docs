@@ -47,6 +47,8 @@ The rules are matched from top to bottom. If a rule matches, its permission is a
   * `{username, {re, "^dash"}}` : clients with user name matching the [regular expression](https://www.erlang.org/doc/man/re.html#regexp_syntax) `^dash`
   * `{clientid, "dashboard"}` : clients with client ID `dashboard`; also can be `{client, "dashboard"}`
   * `{clientid, {re, "^dash"}}` : clients with client ID matching the [regular expression](https://www.erlang.org/doc/man/re.html#regexp_syntax) `^dash`
+  * `{client_attr, "name", "dashboard"}` : clients with client attribute `name` equal to `dashboard`
+  * `{client_attr, "name", {re, "^dash"}}` : clients with client attribute `name` matching the [regular expression](https://www.erlang.org/doc/man/re.html#regexp_syntax) `^dash`
   * `{ipaddr, "127.0.0.1"}`: clients connecting from IP address `127.0.0.1`. Netmasks are allowed. If EMQX is behind a load balance, `proxy_protocol` should be enabled for the client's MQTT listener. 
   * `{ipaddrs, ["127.0.0.1", ..., ]}` : clients connecting from one of the specified IP addresses `127.0.0.1, ..., `. Netmasks are allowed.
   * `all` : any clients
@@ -106,8 +108,10 @@ Where,
 <!--For detailed parameter list, see [authz-file](../../configuration/configuration-manual.html#authz-file). Need to update the link later-->
 
 ::: tip
+
 The initial file provided by the `path` config is not mutable to EMQX.
 If rules are updated from the dashboard UI or management API, the new rules
 will be stored in `data/authz/acl.conf`, and this original config will no longer be loaded.
+
 ::: <!--This note is not in the Chinese file anymore, remove?-->
 

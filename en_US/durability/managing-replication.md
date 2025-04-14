@@ -95,33 +95,53 @@ When disasters occur, knowing how to efficiently recover is crucial to maintaini
 
 One of the most common disaster scenarios is the complete loss of a node, which can occur due to unrecoverable hardware failure, disk corruption, or even human error.
 
-1. Restore availability by reallocating shards.
-   
-    If a node is completely lost, the cluster's availability is compromised to some extent. The first step is to restore availability by reallocating the lost node’s shards to other nodes in the cluster.
-    
-    You can use the standard `leave` command to achieve this. This command can still function even if the lost node is unreachable, although the transition may take longer to complete.
+If a node is completely lost, the cluster's availability is compromised to some extent. It can be restored by _reallocating_ shard replicas to other healthy sites in the cluster.
+
+1. Acknowledge node loss.
+
+    First, make sure to notify the cluster that the node is no longer part of it. Otherwise, the reallocation process will treat it as temporarily offline, potentially causing some transitions to stall indefinitely.
     ```shell
-   $ emqx ctl ds leave messages 5C6028D6CE9459C7 # Here, 5C6028D6CE9459C7 is the lost node's Site ID
-   ```
-   
-2. Monitor the cluster status and wait for all shard transitions to complete successfully. Ensure there are no more transitions before proceeding to the next step.
+    $ emqx ctl cluster force-leave emqx@n2.local
+    ```
+
+2. Initiate shard transitions.
+
+    The next step is to restore availability by reallocating the lost node’s shards to other nodes in the cluster. You can use the standard `leave` command to achieve this. This command can still function even if the node is lost or unreachable, although the transition may take longer to complete.
+    ```shell
+    $ emqx ctl ds leave messages 5C6028D6CE9459C7 # Here, 5C6028D6CE9459C7 is the lost node's Site ID
+    ```
+
+3. Monitor the cluster status.
+
+    Wait for all shard transitions to complete successfully. You can check which transitions are still in progress with `info` command.
 
     ```shell
     $ emqx ctl ds info
     <...>
 
     SITES:
-    D8894F95DC86DFDB    'emqx@n1.local'        up
-    5C6028D6CE9459C7    'emqx@n2.local'        (x) down
-    <...>
+    .------------------.-------------------.----------.
+    : Site             : Node              : Status   :
+    :------------------:-------------------:----------:
+    : D8894F95DC86DFDB : 'emqx@n1.local'   : up       :
+    : 5C6028D6CE9459C7 : 'emqx@n2.local'   : (!) LOST :
+    : <...>
 
-    REPLICA TRANSITIONS:
-    Shard                         Transitions
-    messages/0                    -5C6028D6CE9459C7 +D8894F95DC86DFDB
-    <...>
+    SHARDS:
+    .------------.----------------------.------------------------.
+    : DB/Shard   : Replicas             : Transitions            :
+    :------------:----------------------:------------------------:
+    :-messages/0-:----------------------:------------------------:
+    :            : 5C6028D6CE9459C7 (!) : - 5C6028D6CE9459C7 (!) :
+    :            : <...>                : + D8894F95DC86DFDB     :
+    : <...>
     ```
 
-3. Once all shard transitions are complete, you need to inform the cluster that the lost node will not be returning.
+    Ensure there are no more transitions before proceeding to the next step.
+
+4. Finish up.
+
+    Once all shard transitions are complete, you need to inform the cluster that the lost site will never come back.
 
     ```shell
     $ emqx ctl ds forget messages 5C6028D6CE9459C7

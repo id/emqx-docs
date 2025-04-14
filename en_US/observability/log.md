@@ -106,7 +106,7 @@ When file logging is enabled (log.to = file or both), the following files will a
 
 ## Configure Logging via Configuration File
 
-You can also configure EMQX logging through configuration files. For example, if you want to export the warning-level logs to a file or output with a console, you can modify the configuration items under `log` in `emqx.conf` as shown below. The configuration takes effect after the node restarts. For more information on configuring logging with configuration files, see [Configuration - Logs](../configuration/logs.md).
+You can also configure EMQX logging through configuration files. For example, if you want to export the warning-level logs to a file or output with a console, you can modify the configuration items under `log` in `base.hocon` as shown below. The configuration takes effect after the node restarts. For more information on configuring logging with configuration files, see [Configuration - Logs](../configuration/logs.md).
 
 ```bash
 log {
@@ -185,6 +185,7 @@ Throttling is applied only to the following log events:
 - "connection_rejected_due_to_license_limit_reached"
 - "data_bridge_buffer_overflow"
 - "dropped_msg_due_to_mqueue_is_full"
+- "dropped_qos0_msg"
 - "external_broker_crashed"
 - "failed_to_fetch_crl"
 - "failed_to_retain_message"
