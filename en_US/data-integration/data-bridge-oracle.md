@@ -131,7 +131,7 @@ This section demonstrates how to create a rule in the Dashboard for processing m
    FROM
      "t/#"
    ```
-   
+
    Note: If you are a beginner user, click **SQL Examples** and **Enable Test** to learn and test the SQL rule. 
 
 4. Click the + **Add Action** button to define an action to be triggered by the rule. With this action, EMQX sends the data processed by the rule to Oracle Database. 
@@ -157,10 +157,10 @@ This section demonstrates how to create a rule in the Dashboard for processing m
      TO_TIMESTAMP('1970-01-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') + NUMTODSINTERVAL(${timestamp}/1000, 'SECOND')
    )
    ```
-   
-9. Leave other options as default.
 
-10. Advanced settings (optional):  Choose whether to use **sync** or **async** query mode as needed. For details, see the relevant configuration information in [Features of Sink](./data-bridges.md#features-of-sink).
+9. **Fallback Actions (Optional)**: If you want to improve reliability in case of message delivery failure, you can define one or more fallback actions. These actions will be triggered if the primary Sink fails to process a message. See [Fallback Actions](./data-bridges.md#fallback-actions) for more details.
+
+10. **Advanced settings (optional)**:  Choose whether to use **sync** or **async** query mode as needed. For details, see the relevant configuration information in [Features of Sink](./data-bridges.md#features-of-sink).
 
 11. Before clicking **Create**, you can click **Test Connectivity** to test that the Sink can be connected to the Oracle Database server.
 
