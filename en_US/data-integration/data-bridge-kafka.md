@@ -8,7 +8,7 @@ This page provides a comprehensive introduction to the data integration between 
 
 ## How It Works
 
-Apache Kafka data integration is an out-of-the box feature in EMQX designed to bridge the gap between MQTT-based IoT data and Kafka's powerful data processing capabilities. With a built-in [rule engine](./rules.md) component, the integration simplifies the process of streaming and processing data between the two platforms, eliminating the need for complex coding. 
+Apache Kafka data integration is an out-of-the box feature in EMQX designed to bridge the gap between MQTT-based IoT data and Kafka's powerful data processing capabilities. With a built-in [rule engine](./rules.md) component, the integration simplifies the process of streaming and processing data between the two platforms, eliminating the need for complex coding.
 
 The diagram below illustrates a typical architecture of data integration between EMQX and Kafka used in automotive IoT.
 
@@ -138,7 +138,7 @@ This section demonstrates how to create a rule in EMQX to process messages from 
 
 8. Configure the data-sending method for the Sink, including:
 
-   - **Kafka Topic**: Enter `testtopic-in`. Starting from EMQX v5.7.2, this field also supports dynamic topics configuration. Refer to [Use Variable Templates](#use-variable-templates) for details. 
+   - **Kafka Topic**: Enter `testtopic-in`. Starting from EMQX v5.7.2, this field also supports dynamic topics configuration. Refer to [Use Variable Templates](#use-variable-templates) for details.
 
    - **Kafka Headers**: Enter metadata or context information related to Kafka messages (optional). The value of the placeholder must be an object. You can choose the encoding type for the header value from the **Kafka Header Value Encod Type** dropdown list. You can also add more key-value pairs by clicking **Add**.
 
@@ -222,7 +222,7 @@ To prevent leakage of other system environment variables, the names of environme
    ```bash
    bin/kafka-console-consumer.sh --bootstrap-server 127.0.0.1:9092 \
      --topic testtopic-in
-   
+
    {"payload":"payload string","kafka_topic":"testtopic-in"}
    {"payload":"payload string","kafka_topic":"testtopic-in"}
    ```
@@ -246,7 +246,7 @@ For this specific example, ensure that the message payload sent to Kafka contain
 
 Failure to include this key will result in topic rendering failure, leading to message drops that cannot be recovered.
 
-You also need to pre-create all resolved topics in Kafka, such as `device-1`, `device-2`, and so on. If the template resolves to a topic name that does not exist in Kafka or if Kafka does not allow automatic topic creation, messages will also be dropped due to unrecoverable errors.
+You also need to pre-create all resolved topics in Kafka, such as `device-1`, `device-2`, and so on. If the template resolves to a topic name that does not exist in Kafka, messages will also be dropped due to unrecoverable errors.
 
 ## Test Kafka Producer Rule
 
@@ -310,7 +310,7 @@ This section demonstrates how to create a rule in EMQX to further process the me
 
 ### Add Kafka Consumer Source as Data Input
 
-1. Select the **Data Inputs** tab on the right side of the Create Rule page and click **Add Input**. 
+1. Select the **Data Inputs** tab on the right side of the Create Rule page and click **Add Input**.
 2. Select **Kafka Consumer** from the **Input Type** dropdown list. keep the **Source** dropdown box to the default `Create Source` option, or choose a previously created Kafka Consumer source from the **Source** dropdown box. This demonstration creates a new consumer source and adds it to the rule.
 3. Enter the name and description of the Source in the corresponding text boxes below.
 4. In the **Connector** dropdown box, select the `my-kafka-consumer` connector you just created. You can also click the button next to the dropdown box to quickly create a new connector in the pop-up box, with the required configuration parameters referring to [Create a Kafka Consumer Connector](#create-a-kafka-consumer-connector).
@@ -329,7 +329,7 @@ This section demonstrates how to create a rule in EMQX to further process the me
 
 ### Add a Republish Action
 
-1. Select the **Action Outputs** tab and click the + **Add Action** button to define an action that will be triggered by the rule. 
+1. Select the **Action Outputs** tab and click the + **Add Action** button to define an action that will be triggered by the rule.
 2. Select **Republish** from the **Type of Action** drop-down list.
 3. In **Topic** and **Payload** fields, you can enter the topic and payload for the messages you want to republish. For example, enter `t/1` and `${.}` for this demonstration.
    - You can also use `${}` in the **Topic** field to dynamically specify the MQTT topic, such as `t/${key}` (Note: The parameter provided inside `${}` must be included in the SQL `Select` statement).

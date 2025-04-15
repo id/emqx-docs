@@ -1,5 +1,15 @@
 # Incompatible Changes in EMQX 5.8
 
+## v5.8.6
+
+- [#14802](https://github.com/emqx/emqx/pull/14802) Starting from this version, plugin installation via the REST API or Dashboard requires explicit permission. Users must obtain this permission using the following CLI command before installing.
+
+  ```bash
+  emqx ctl plugins allow NAME-VSN
+  ```
+
+  This change enhances security by preventing unauthorized plugin installations. Users managing plugins via the API or Dashboard must adjust their workflows accordingly.
+
 ## v5.8.5
 
 - [#14703](https://github.com/emqx/emqx/pull/14703) Introduced a change to the maximum allowed value for `force_shutdown.max_heap_size`, which is now set to `128GB`. If the `max_heap_size` was previously set to a value exceeding 128GB, this could lead to issues after upgrading, such as during configuration reloading or updates.

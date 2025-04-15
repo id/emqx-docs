@@ -124,11 +124,9 @@ To manage system plugins, navigate to **Plugins** under the **Extensions** menu 
 
 The **Plugins** page displays a list of installed plugins, showing details such as the plugin name, version, author, and running status. To locate specific plugins, use the filters at the top of the page to search by name or running status.
 
-### Install a Plugin
+### Install Plugins
 
-1. Click the **+ Install Plugin** button in the upper-right corner to open the plugin installation page.
-2. Upload the plugin package or drag and drop it into the dotted box.
-3. Click the **Install** button to complete the installation.
+For detailed steps, refer to [Install Plugins via Dashboard](../extensions/plugins.md#install-plugins-via-dashboard).
 
 Once the package is successfully installed, you will be redirected to the plugin list page. Newly installed plugins are stopped by default. To activate a plugin, click the **Start** button next to it.
 
@@ -141,7 +139,7 @@ For systems with multiple plugins, the order of execution is determined by the e
 
 The updated execution order takes effect after the next node restart.
 
-### Uninstall a Plugin
+### Uninstall Plugins
 
 To remove a plugin, click the **Uninstall** button under the **More** menu in the **Actions** column.
 

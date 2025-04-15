@@ -6,7 +6,7 @@ The basic process of plugin development and operation is as follows:
 
 - Download and install our [rebar3 emqx-plugin template](https://github.com/emqx/emqx-plugin-template).
 - Generate the corresponding plugin tarball using the plugin template provided by EMQX.
-- Install the plugin package via Dashboard or CLI.
+- Install the plugin package via Dashboard or Command Line Interface (CLI).
 - Start/stop/uninstall your plugin via Dashboard or CLI.
 
 :::tip Prerequisite
@@ -325,20 +325,68 @@ The following are several example snippets. For more detailed examples, refer to
 
 Including Avro Schema and i18n files in your plugin package ensures they are incorporated during plugin compilation and packaging. You can use the `emqx_plugins:get_config/1,2,3,4` function in your plugin code to retrieve configuration settings.
 
-## Install and Launch the Plugin
+## Install Plugins
 
-To install the compiled plugin package, use the command line interface (CLI) as follows:
+EMQX supports plugin installation via the Dashboard and CLI. However, due to security enhancements, plugin installation via the Dashboard now requires explicit permission before proceeding.
+
+### Install Plugins via Dashboard
+
+::: tip Important Security Update
+
+For security reasons, EMQX now requires explicit authorization before plugin installation via the Dashboard.
+
+- Installation permission must be granted before initiating the process.
+
+- The allowed state is temporary and is automatically revoked after installation completes.
+
+- If running in a clustered environment, permission must be granted on all nodes before installation.
+
+  :::
+
+1. Run the following command in the CLI to explicitly allow the plugin installation:
+
+   ```bash
+   emqx ctl plugins allow $NAME-$VSN
+   ```
+
+   - `{NAME}`: The name of your plugin (e.g., `my_emqx_plugin`).
+   - `{VSN}`: The version of the plugin (e.g., `1.2.3`).
+
+   Once this command is executed, you can proceed with the installation through the Dashboard.
+
+2. Navigate to **Management** -> **Plugins** in the EMQX Dashboard. 
+3. Click the **+ Install plugin** button to open the Install plugin page.
+4. Upload the plugin package by clicking the upload button or by drag and drop.
+5. Click the **Install** button to complete the installation.
+
+To revoke permission for a previously allowed plugin, either:
+
+1. Uninstall the plugin (if already installed).
+2. Or explicitly disallow it using the following command:
+
+```bash
+emqx ctl plugins disallow $NAME-$VSN
+```
+
+### Install Plugins via CLI
+
+To install a compiled plugin package directly via the CLI, use the following command:
 
 ```bash
 ./bin/emqx ctl plugins install {pluginName}
 ```
 
-## Uninstall the Plugin
+## Uninstall Plugins
 
-When the plugin is no longer needed, you can uninstall it using the CLI with this command:
+If a plugin is no longer needed, you can uninstall it either via Dashboard or CLI.
+
+To uninstall a plugin via Dashboard, click the **Uninstall** button under the **More** menu in the **Actions** column on the plugin list page.
+
+To uninstall a plugin via CLI, you can use the following command:
 
 ```bash
 ./bin/emqx ctl plugins uninstall {pluginName}
 ```
 
 <!-- **Note**: (EMQX enterprise) Plugins need to be reinstalled after hot upgrades. -->
+

@@ -61,7 +61,7 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
    - **Password**: `guest`
 2. 点击顶部菜单栏中的 **Exchanges** 页签，展开 **Add a new exchange** 并输入以下信息：
    * **Name**: 输入 `test_exchange`
-   * **Type**: 从下拉列表中选择 `direct` 
+   * **Type**: 从下拉列表中选择 `direct`
    * **Durability**: 选择 `Durable` 使 exchange 持久化
    * **Auto delete**: `No`
    * **Internal**: `No`
@@ -75,7 +75,7 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
    * **Arguments**: 留空
 5. 点击 **Add queue** 按钮完成 queue 的创建。 新建的 `test_queue` 应出现在 **All queues** 区域。
 6. 点击 **Name** 列中的 **test_queue** 以打开详情页。展开 **Bindings**，在 **Add binding to this queue** 区域，输入以下信息：
-   * **From exchange**: 输入 `test_exchange` 
+   * **From exchange**: 输入 `test_exchange`
    * **Routing key**: 输入 `test_routing_key`
    * **Arguments**: 留空
 7. 点击 **Bind** 按钮将 `test_queue` 通过指定的 routing key 与 `test_exchange` 绑定。
@@ -126,8 +126,8 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
 4. 在 SQL 编辑器中输入规则，例如我们希望将 `t/#` 主题的 MQTT 消息转发至 RabbitMQ，可通过如下规则 SQL 实现：
 
    ```sql
-   SELECT 
-     payload as data,
+   SELECT
+     payload,
      now_timestamp() as timestamp
    FROM
      "t/#"
@@ -163,7 +163,7 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
 
      交换机和路由健支持配置为模板值，可以使用占位符从接收到的 MQTT 消息 payload 中提取值，从而实现动态路由。例如，可以根据 payload 中的某个字段动态设置路由健，将其配置为 `${payload.akey}`，从 payload 中提取 `akey` 字段的值并作为路由键。
 
-     **注意**：在批量模式下，交换机和路由健的模板值必须在批次中的所有消息中保持一致，以确保路由的统一性并避免批处理过程中出现冲突。 
+     **注意**：在批量模式下，交换机和路由健的模板值必须在批次中的所有消息中保持一致，以确保路由的统一性并避免批处理过程中出现冲突。
 
      :::
 
@@ -218,7 +218,7 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
 
 1. 在 Dashboard 页面，点击左侧导航目录中的**问题分析** -> **WebSocket 客户端**。
 
-2. 填写当前 EMQX 的连接信息。 
+2. 填写当前 EMQX 的连接信息。
 
    - 如果 EMQX 在本地运行，可直接使用默认配置。
    - 如果您修改过 EMQX 的默认配置，如修改过访问规则的配置，则需要输入用户名和密码。
@@ -341,8 +341,8 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
 
    ```bash
    rabbitmqadmin --username=guest --password=guest \
-   	publish routing_key=message-send \
-   	payload="{ \"msg\": \"Hello EMQX\"}"
+        publish routing_key=message-send \
+        payload="{ \"msg\": \"Hello EMQX\"}"
    ```
 
    - `publish` 是用来发布一个消息的命令。

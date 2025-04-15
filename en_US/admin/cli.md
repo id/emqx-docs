@@ -414,6 +414,7 @@ This command is used to view and manage plugin installation.
 | ---------------------------------------- | ------------------------------------------------------------ |
 | plugins list                             | List all installed plugins.                                  |
 | plugins describe \<Name-Vsn\>            | Display detailed information about an installed plugin.      |
+| plugins allow \<Name-Vsn\>               | Grant the permission to install a specified plugin via the Dashboard. |
 | plugins install \<Name-Vsn\>             | Install a plugin package that is located in the plugin installation directory. |
 | plugins uninstall \<Name-Vsn\>           | Uninstall a specified plugin.                                |
 | plugins start \<Name-Vsn\>               | Start a specified plugin.                                    |
@@ -432,6 +433,12 @@ emqx ctl plugins list
 
 ```bash
 emqx ctl plugins describe emqx_auth_mnesia-3.0.1
+```
+
+### plugins allow \<Name-Vsn\>
+
+```bash
+emqx ctl plugins allow emqx_auth_mnesia-3.0.1
 ```
 
 ### plugins install \<Name-Vsn\>

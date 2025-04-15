@@ -42,9 +42,13 @@ TDengine 数据集成为您的业务带来了以下功能和优势：
 - 了解[规则](./rules.md)。
 - 了解[数据集成](./data-bridges.md)。
 
-### 安装 TDengine
+### 启动 TDengine 并创建数据库
 
-通过 Docker 安装并启动 TDengine：
+您可以通过以下两种方式来启动 TDengine 或连接到一个 TDengine 服务，并创建数据库：
+
+:::: tabs
+
+::: tab Docker
 
 ```bash
 # 启动一个 TDengine 容器
@@ -63,7 +67,27 @@ CREATE DATABASE mqtt;
 use mqtt;
 ```
 
-我们将在 TDengine 中创建两张表：
+:::
+
+::: tab TDengine Cloud
+
+如果您使用的是 [TDengine Cloud](https://cloud.tdengine.com/)， 则只需要登录到控制台后选中您所使用的 Instance，点击左侧 Explorer 进入到 SQL 执行页面。执行以下语句创建数据库：
+
+```bash
+# 创建并选择数据库
+
+CREATE DATABASE mqtt;
+
+use mqtt;
+```
+
+![create database](./assets/tdengine_cloud_create_db.jpg)
+
+:::
+
+::::
+
+### 在 TDengine 中创建数据表
 
 数据表 `t_mqtt_msg`，用于存储每条消息的发布者客户端 ID、主题、Payload 以及发布时间：
 
@@ -90,17 +114,50 @@ CREATE TABLE emqx_client_events (
 
 ## 创建连接器
 
-在创建 TDengine Sink 之前，您需要创建一个 TDengine 连接器，以便 EMQX 与 TDengine 服务建立连接。以下示例假定您在本地机器上同时运行 EMQX 和 TDengine。如果您在远程运行 TDengine 和 EMQX，请相应地调整设置。
+在创建 TDengine Sink 之前，您需要创建一个 TDengine 连接器，以便 EMQX 与 TDengine 服务建立连接。
 
-1. 转到 Dashboard **集成** -> **连接器** 页面。点击页面右上角的**创建**。
-2. 在连接器类型中选择 **TDengine**，点击**下一步**。
-3. 在 **配置** 步骤，配置以下信息：
 
-   - **连接器名称**：应为大写和小写字母及数字的组合，例如：`my_opentsdb`。
-   - **主机列表**：填写 `127.0.0.1:6041`。
+1. 转到 Dashboard**集成** -> **连接器**页面。点击页面右上角的**创建**。
+
+2. 在连接器类型中选择 **TDengine**，点击**下一步**，进入到连接器配置页面。
+
+3. 根据您连接到 TDengine 或 TDengine Cloud 填写连接器配置信息：
+
+   :::: tabs
+
+   ::: tab 连接到 TDengine
+
+   以下配置示例假定您在本地机器上同时运行 EMQX 和 TDengine。如果您在远程运行 TDengine 和 EMQX，请相应地调整设置。
+
+   - **连接器名称**：应为大写和小写字母及数字的组合，例如：`my_tdenginedb`。
+   - **服务器地址**：填写 `127.0.0.1:6041`。
    - **数据库**：填写 `mqtt`。
    - **用户名**：填写 `root`。
    - **密码**：填写 `taosdata`。
+   - **Token**：保持为空，连接器将尝试使用**用户名**和**密码**进行身份验证。
+     :::
+
+     ::: tab 连接到 TDengine Cloud
+
+   1. 在 TDengine Cloud 的控制台页面中选中正确的 Instance。
+
+   2. 进入左侧的 Programming 选项页，选中 **REST API** 连接方式，如下图所示，可得到对应的连接地址和 Token:
+
+      ![url and token](./assets/tdengine_cloud_url_and_token.png)
+
+   3. 填写以下连接器配置信息：
+
+      - **连接器名称**：应为大写和小写字母及数字的组合，例如：`my_tdenginedb`。
+      - **服务器地址**：填写 TDengine Cloud 给出的 `TDENGINE_CLOUD_URL` 的值。即：`https://gw.***.cloud.tdengine.com`。
+      - **数据库**：填写 `mqtt`。
+      - **用户名**：保持为空。
+      - **密码**：保持为空。
+      - **Token**：填写 TDengine Cloud 给出的 `TDENGINE_CLOUD_TOKEN` 的值。即：`a2ba69cc6****f0c18cd`。
+
+      :::
+
+      ::::
+
 4. 高级配置（可选）：详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
 5. 在点击**创建**之前，您可以点击**测试连接**来测试连接器是否能连接到 TDengine 服务器。
 6. 点击**创建**按钮完成连接器创建。
