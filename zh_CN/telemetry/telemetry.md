@@ -1,8 +1,8 @@
 # 遥测
 
-::: tip
+::: tip 注意
 
-遥测是 EMQX 开源版功能。
+默认情况下，EMQX 社区 License 启用遥测功能，而 EMQX 商业 License 禁用遥测功能。使用社区 License 时，您可以选择退出遥测功能；使用商业 License 时，您可以选择启用遥测功能。
 
 :::
 

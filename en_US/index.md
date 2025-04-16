@@ -67,7 +67,7 @@ EMQX Enterprise provides a graphical management system called the [Dashboard](./
 
 ## Deployment Modes and Edition Comparison
 
-EMQ provides four deployment options for EMQX: two managed services (EMQX Cloud Serverless and EMQX Dedicated Cloud) and two self-hosted options (EMQX Open Source and EMQX Enterprise). To help you choose the best deployment option for your requirements, the following table lists a comparison of feature support across different deployment types. For a comparison of supported features in detail, refer to [Feature Comparison](./getting-started/feature-comparison.md). 
+EMQ provides three deployment options for EMQX: two managed services (EMQX Cloud Serverless and EMQX Dedicated Cloud) and one self-hosted option (EMQX Enterprise). To help you choose the best deployment option for your requirements, the following table lists a comparison of feature support across different deployment types. For a comparison of supported features in detail, refer to [Feature Comparison](./getting-started/feature-comparison.md). 
 
 <table>
 <thead>
@@ -78,20 +78,17 @@ EMQ provides four deployment options for EMQX: two managed services (EMQX Cloud 
 </thead>
 <tbody>
   <tr>
-    <td>EMQX Open Source</td>
     <td>EMQX Enterprise</td>
     <td>EMQX Cloud Serverless</td>
     <td>EMQX Dedicated Cloud</td>
   </tr>
   <tr>
-    <td><a href="https://www.emqx.com/en/try?product=broker">Open Source Download</a></td>
     <td><a href="https://www.emqx.com/en/apply-licenses/emqx">Get a Free Trial License</a></td>
     <td><a href="https://accounts.emqx.com/signup?continue=https%3A%2F%2Fcloud-intl.emqx.com%2Fconsole%2Fdeployments%2F0%3Foper%3Dnew">Get Started Free</a></td>
     <td><a href="https://accounts.emqx.com/signup?continue=https%3A%2F%2Fcloud-intl.emqx.com%2Fconsole%2Fdeployments%2F0%3Foper%3Dnew">Start a Free 14-Day Trial</a></td>
   </tr>
   <tr>
-    <td>✔️ Apache Version 2.0<br>✔️ MQTT over QUIC<br>✔️ Session storage in memory<br>✔️ Supports Webhook and MQTT data bridge.<br>✔️ Audit log and single sign-on (SSO)<br>✔️ Multi-protocol gateways, including MQTT-SN, STOMP and CoAP<br>✔️ Open source community<br> </td>
-    <td>✔️ Commercial license (Business source license)<br>✔️ MQTT over QUIC<br>✔️ Session persistence in RocksDB<br>✔️ Data integration with 40+ enterprise systems, including Kafka/Confluent, Timescale, InfluxDB, PostgreSQL, Redis etc.<br>✔️ Audit log and single sign-on (SSO)<br>✔️ Role-Based Access Control (RBAC)<br>✔️ File transfer<br>✔️ Message codec<br>✔️ Multi-protocol gateways, with extra support on OCPP, JT/808 and GBT32960<br>✔️ 24/7 global technical support<br> </td>
+    <td>✔️ Business Source License (BSL) 1.1<br>✔️ MQTT over QUIC<br>✔️ Session persistence in RocksDB<br>✔️ Data integration with 40+ enterprise systems, including Kafka/Confluent, Timescale, InfluxDB, PostgreSQL, Redis etc.<br>✔️ Audit log and single sign-on (SSO)<br>✔️ Role-Based Access Control (RBAC)<br>✔️ File transfer<br>✔️ Message codec<br>✔️ Multi-protocol gateways, with extra support on OCPP, JT/808 and GBT32960<br>✔️ 24/7 global technical support<br> </td>
     <td>✔️ Pay as you go<br>✔️ Free quota every month<br>✔️ 1000 maximum connections<br>✔️ Start deployment in seconds<br>✔️ Auto scaling<br>✔️ 8/5 global technical support</td>
     <td>✔️ 14-days free trial<br>✔️ Hourly billing<br>✔️ Multi-cloud regions worldwide<br>✔️ Flexible specifications<br>✔️ VPC peering, NAT gateway, load balance and more<br>✔️ Out-of-box integration with over 40+ cloud services<br>✔️ 24/7 global technical support<br> </td>
   </tr>
@@ -99,20 +96,6 @@ EMQ provides four deployment options for EMQX: two managed services (EMQX Cloud 
 </table>
 
 
-The following is a list of feature comparisons between EMQX Enterprise and Open Source edition.
-
-
-|                                   | **EMQX Platform**                                            | **EMQX Open Source**                                         |
-| :-------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| **Positioning**                   | The reliable and scalable enterprise MQTT Platform           | The World's #1 open source MQTT Broker                       |
-| **Scalability**                   | Up to 100 nodes cluster<br />Up to 100 million MQTT connections per cluster | Up to 3 nodes cluster<br />Up to 100,000 connections in production |
-| **Performance**                   | 5M+ MQTT messages per second                                 | 100,000 MQTT messages per second                             |
-| **Availability**                  | Core-Replica cluster                                         | Masterless cluster                                           |
-| **Reliability**                   | Data persistence in RocksDB with highly available replication | Session persistence                                          |
-| **Latency**                       | 1~5 millisecond                                              | 1~5 millisecond                                              |
-| **Integrations (Out-of-the-box)** | 40+                                                          | 2                                                            |
-| **License Model**                 | Commercial license (Business source license)                 | Apache Version 2.0                                           |
-| **Technical Support**             | 24/7 Global support                                          | Open source community                                        |
 
 ## Use Cases
 

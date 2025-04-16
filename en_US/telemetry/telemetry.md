@@ -1,8 +1,8 @@
 # Telemetry
 
-::: tip
+::: tip Note
 
-The telemetry is an EMQX Open Source edition feature.
+By default, telemetry is enabled for EMQX Community License usage and disabled for EMQX Commercial License usage. You can choose to opt out when using a Community License or opt in when using a Commercial License.
 
 :::
 

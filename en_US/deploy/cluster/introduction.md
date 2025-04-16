@@ -2,6 +2,12 @@
 
 Besides working with a single EMQX node, EMQX natively supports a distributed cluster architecture, which can handle a large number of clients and messages while ensuring high availability, fault tolerance, and scalability. With the EMQX cluster, you can enjoy the benefits of fault tolerance and high availability by allowing the cluster to continue operating even if one or more nodes fail.
 
+::: tip Note
+
+Clustering is available during the trial period, but once the trial period ends, you will need to purchase a Commercial license to continue using it. Without a valid Commercial license, the clustering feature will be disabled after the trial period expires.
+
+:::
+
 This chapter introduces the [benefits of clustering](#reasons-for-clustering), the new [Mria and RLOG](./mria-introduction.md) architecture, how to [create a cluster manually or automatically](./create-cluster.md), how to [implement load balancing](./lb.md), and how to ensure [communication security](./security.md) within a cluster.
 
 ## Reasons for Clustering
