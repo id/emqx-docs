@@ -12,5 +12,5 @@
 - [日志及可观测性](../observability/overview.md)介绍了 EMQX 中的指标观测和监控功能，便于您进行系统监控和调试。
 - [备份与恢复](../operations/backup-restore.md)指导您如何对 EMQX 数据进行备份和恢复。
 - [插件与扩展](../extensions/introduction.md)帮助您通过开发插件来扩展 EMQX 的功能。
-- [遥测](../telemetry/telemetry.md)介绍了通过启用遥测来共享您的使用情况以帮助产品改进。遥测功能仅针对 EMQX 开源版。
+- [遥测](../telemetry/telemetry.md)介绍了通过启用遥测来共享您的使用情况以帮助产品改进。
 

@@ -93,7 +93,7 @@ This is the cluster unaggregated metric mode, returning the individual metrics o
 
 ::::
 
-For more information about Prometheus pull endpoints, refer to the [EMQX Open Source API documentation](https://docs.emqx.com/en/emqx/v@CE_MINOR_VERSION@/admin/api-docs.html) and [EMQX Enterprise API documentation](https://docs.emqx.com/en/enterprise/v@EE_MINOR_VERSION@/admin/api-docs.html).
+For more information about Prometheus pull endpoints, refer to the [EMQX Enterprise API documentation](https://docs.emqx.com/en/enterprise/v@EE_MINOR_VERSION@/admin/api-docs.html).
 
 ::: tip 
 

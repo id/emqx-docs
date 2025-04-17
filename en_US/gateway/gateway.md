@@ -14,8 +14,6 @@ The Multi-Protocol Gateway supports protocols such as MQTT-SN, STOMP, CoAP, LwM2
 - [LwM2M](./lwm2m.md)
 - [ExProto](./exproto.md)
 
-The following gateways are only supported in the EMQX Enterprise edition:
-
 - [OCPP](./ocpp.md)
 - [GB/T 32960](./gbt32960.md)
 - [JT/T 808](./jt808.md)

@@ -75,13 +75,13 @@ Configuring rate limiting ensures the stability of the system and network when m
 
 For more detailed configuration on rate limiting, refer to [Rate Limit](../rate-limit/rate-limit.md).
 
-For more details on listener configuration, refer to [EMQX Open Source Configuration Manual](https://docs.emqx.com/en/emqx/v@CE_VERSION@/hocon/) and  [EMQX Enterprise Configuration Manual](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/).
+For more details on listener configuration, refer to [EMQX Enterprise Configuration Manual](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/).
 
 ### Manage Listeners
 
 After adding a listener, you can see it in the list. Click on the listener's name to enter the editing page, where you can modify or delete the listener configuration. Note that the listener name, type, and listener address cannot be modified in the settings.
 
-Click the **Delete** button in the editing page to remove the listener. When deleting a listener, you will need to enter the listener's name to confirm the deletion. You can also toggle the enable switch to enable or disable the listener. The list also shows the number of connections for each listener.
+Click the **Delete** button on the editing page to remove the listener. When deleting a listener, you will need to enter the listener's name to confirm the deletion. You can also toggle the enable switch to enable or disable the listener. The list also shows the number of connections for each listener.
 
 ::: tip Warning
 

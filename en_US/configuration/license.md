@@ -46,6 +46,6 @@ You can also configure the license file through the EMQX Dashboard. For how to c
 
 ::: tip
 
-EMQX offers more configuration items to better serve customized needs. For details, see the [EMQX Open Source Configuration Manual](https://docs.emqx.com/en/emqx/v@CE_VERSION@/hocon/) and [EMQX Enterprise Configuration Manual for Enterprise](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/).
+EMQX offers more configuration items to better serve customized needs. For details, see the [EMQX Enterprise Configuration Manual for Enterprise](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/).
 
 :::
