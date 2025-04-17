@@ -191,14 +191,14 @@
           title_cn: EMQX 企业版 API 文档
           lang: cn
           path: https://docs.emqx.com/en/enterprise/v${EE_MINOR_VERSION}/admin/api-docs.html
-        - title_en: EMQX Open Source API Docs
-          title_cn: EMQX Open Source API Docs
-          lang: en
-          path: https://docs.emqx.com/en/emqx/v${CE_MINOR_VERSION}/admin/api-docs.html
-        - title_en: EMQX 开源版 API 文档
-          title_cn: EMQX 开源版 API 文档
-          lang: cn
-          path: https://docs.emqx.com/en/emqx/v${CE_MINOR_VERSION}/admin/api-docs.html
+       # - title_en: EMQX Open Source API Docs
+       #   title_cn: EMQX Open Source API Docs
+       #   lang: en
+       #   path: https://docs.emqx.com/en/emqx/v${CE_MINOR_VERSION}/admin/api-docs.html
+       # - title_en: EMQX 开源版 API 文档
+       #   title_cn: EMQX 开源版 API 文档
+       #   lang: cn
+       #   path: https://docs.emqx.com/en/emqx/v${CE_MINOR_VERSION}/admin/api-docs.html
 
 - title_en: EMQX Clustering
   title_cn: 构建集群
@@ -481,14 +481,14 @@
       title_cn: EMQX 企业版配置手册
       lang: en
       path: https://docs.emqx.com/en/enterprise/v${EE_VERSION}/hocon/
-    - title_en: EMQX Open Source Configuration Manual
-      title_cn: EMQX 开源版配置手册
-      lang: cn
-      path: https://docs.emqx.com/zh/emqx/v${CE_VERSION}/hocon/
-    - title_en: EMQX Open Source Configuration Manual
-      title_cn: EMQX 开源版配置手册
-      lang: en
-      path: https://docs.emqx.com/en/emqx/v${CE_VERSION}/hocon/
+    #- title_en: EMQX Open Source Configuration Manual
+    #  title_cn: EMQX 开源版配置手册
+    #  lang: cn
+    #  path: https://docs.emqx.com/zh/emqx/v${CE_VERSION}/hocon/
+    #- title_en: EMQX Open Source Configuration Manual
+    #  title_cn: EMQX 开源版配置手册
+    #  lang: en
+    #  path: https://docs.emqx.com/en/emqx/v${CE_VERSION}/hocon/
     - title_en: Command Line Interface
       title_cn: 命令行接口
       path: admin/cli

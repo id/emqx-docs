@@ -24,10 +24,6 @@ export EMQX_TELEMETRY__ENABLE=false && ./bin/emqx foreground
 
 通过自定义这些设置，您可以控制是否收集遥测数据。
 
-### 运行中禁用
-
-在 Dashboard 点击页面顶部功能区的 设置 按钮，关闭**启动遥测**选项即可永久性禁用遥测。
-
 ## 指标收集
 
 我们收集的遥测数据主要包括：
