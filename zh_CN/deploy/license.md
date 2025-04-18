@@ -2,7 +2,7 @@
 
 从 EMQX 5.9 开始，EMQX 采用了商业源代码许可证（BSL）1.1，这是一种源代码可用的许可证，允许开放开发，同时保护 EMQX 的商业使用。
 
-作为安装包的一部分，EMQX 企业版已包含一个单节点社区 License，具有有限的商业使用权限。但是，如果您要将 EMQX 企业版用于全面的商业用途和集群部署，您必须获得商业 License。
+作为安装包的一部分，EMQX 企业版已包含一个单节点社区版 License，具有有限的商业使用权限。但是，如果您要将 EMQX 企业版用于全面的商业用途和集群部署，您必须获得商业 License。
 
 本页将指导您如何购买商业 License 并导入到 EMQX 中。
 
@@ -17,7 +17,7 @@
 
 ::: tip 注意
 
-在试用期间，所有 EMQX 企业版功能均可使用。然而，试用期结束后，某些功能，如集群功能，将会被禁用。您需要购买商业 License 才能继续使用这些功能。
+在试用期间，所有 EMQX 企业版功能均可使用。然而，试用期结束后，集群功能将会被禁用。您需要购买商业 License 才能继续使用集群功能。
 
 试用 License 下的 EMQX Enterprise 不允许用于生产环境。
 
@@ -41,7 +41,22 @@
 
 4. 点击**保存修改**保存您的设置。
 
-   <img src="./assets/license.png" alt="license" style="zoom:33%;" />
+   <img src="./assets/license.png" alt="license" style="zoom: 50%;" />
+
+#### 在 Dashboard 中重置 License
+
+除了更新 License 外，EMQX Dashboard 还提供了一个**重置 License** 按钮。该功能允许用户将系统恢复为默认的单节点社区版 License。
+
+重置为默认 License 后：
+
+- 当前的 License 将被清除，并替换为默认的社区版 License。
+- 当前已超出限额的连接可以继续保持，但无法建立新的连接。
+
+::: tip 提示
+
+默认 License 不支持完整的商业用途，仅适用于单节点部署。重置 License 将会禁用集群部署。
+
+:::
 
 ### 命令行
 

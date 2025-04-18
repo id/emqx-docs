@@ -23,7 +23,7 @@ Suppose you prefer to try EMQX Enterprise before purchasing. In that case, you c
 
 ::: tip Note
 
-All the EMQX Enterprise features are available during the trial period. However, some features such as Clustering will be disabled after the trial period expires. You will need to purchase a Commercial License to continue using them.
+All the EMQX Enterprise features are available during the trial period. However, the Clustering feature will be disabled after the trial period expires. You will need to purchase a Commercial License to continue using the Clustering feature.
 
 EMQX Enterprise under a Trial License is not permitted for use in production environments.
 
@@ -39,7 +39,7 @@ You can update your license file and configure the settings for the license conn
 
 1. On the EMQX Dashboard, click **System** -> **License** from the left navigation menu. In the **Basic Info** section on the License page, you can check information such as License connection quota usage, EMQX version, and issue information. 
 
-2. Click the **Update License** button. Paste your License Key in the popup dialog box, and click **Save**. The license information on the page automatically refreshes following your submission.
+2. Click the **Update License** button. Paste your License Key in the pop-up dialog box, and click **Save**. The license information on the page automatically refreshes following your submission.
 
    Verify the information to confirm that the new license file has taken effect.
 
@@ -50,21 +50,20 @@ You can update your license file and configure the settings for the license conn
 
 4. Click **Save Changes** to save your License settings.
 
-   <img src="./assets/license.png" alt="license" style="zoom: 33%;" />
+   <img src="./assets/license.png" alt="license" style="zoom: 50%;" />
 
 #### Reset License in the Dashboard
 
 In addition to updating the license, the EMQX Dashboard also provides a **Reset License** button. This feature allows users to reset the system to the default single-node community license.
 
-When resetting the license:
+After resetting to the default License:
 
 - The current license will be cleared and replaced with the default community license.
-- Existing client connections that exceed the default license limit will be retained.
-- New client connections will be denied if the default license limit has been reached.
+- Existing connections that exceed the license limit will remain active, but new connections will be rejected.
 
 ::: tip Note
 
-The default license does not allow full commercial use and supports only single-node deployments. Resetting the license will disable advanced features and clustered environments.
+The default license does not allow full commercial use and supports only single-node deployments. Resetting the license will disable clustered deployment.
 
 :::
 
