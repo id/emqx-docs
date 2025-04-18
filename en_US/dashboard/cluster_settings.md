@@ -97,7 +97,7 @@ EMQX supports two types of log output: console log and file log. You can choose 
 
 In the **Log Throttling** tab page, you can configure the time window for log throttling. For more information on log throttling, refer to [Log Rate Limiting](../observability/log.md#log-throttling).
 
-In the **Audit Log** page, you can enable or disable the audit log feature in the EMQX Enterprise edition and configure it. For detailed configuration instructions, refer to [Audit Log](./audit-log.md).
+In the **Audit Log** page, you can enable or disable the audit log feature in the EMQX and configure it. For detailed configuration instructions, refer to [Audit Log](./audit-log.md).
 
 ## Monitoring
 

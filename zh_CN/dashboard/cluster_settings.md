@@ -75,7 +75,7 @@ EMQX 提供了热配置能力，可以在运行时动态修改配置，无需重
 
 更多关于速率限制的详细配置文档，请参考[速率限制](../rate-limit/rate-limit.md)。
 
-更多关于监听器配置的详情，请参考[开源版配置手册](https://docs.emqx.com/zh/emqx/v@CE_VERSION@/hocon/)和[企业版配置手册](https://docs.emqx.com/zh/enterprise/v@EE_VERSION@/hocon/)。
+更多关于监听器配置的详情，请参考[企业版配置手册](https://docs.emqx.com/zh/enterprise/v@EE_VERSION@/hocon/)。
 
 ### 管理监听器
 
@@ -100,12 +100,6 @@ EMQX 支持两种不同的日志输出方式：控制台输出日志和文件输
 在**审计日志**配置页面，您可以启用或禁用审计日志这一企业版功能并对该功能进行相关配置。详细的配置说明，参考[通过 Dashboard 启用](./audit-log.md#通过-dashboard-启用)。
 
 ## 监控
-
-::: tip 注意
-
-监控功能仅适用于 EMQX 企业版。
-
-:::
 
 点击左侧配置中的**管理** -> **监控**进入监控集成的配置页面。该页面下包含有两个标签页：
 

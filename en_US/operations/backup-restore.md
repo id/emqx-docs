@@ -63,12 +63,6 @@ Therefore, importing data into an EMQX cluster without clearing data may require
 
 ## Dashboard Example
 
-::: tip
-
-This section only applies to the EMQX Enterprise edition.
-
-:::
-
 This section explains how to perform data import and export operations on the Dashboard.
 
 :::tip

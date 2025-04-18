@@ -1,7 +1,7 @@
 # EMQX Overview
 EMQX is a large-scale distributed MQTT messaging platform that offers "unlimited connections, seamless integration, and anywhere deployment." As a high-performance, scalable MQTT message server, EMQX Enterprise provides reliable real-time message transmission and device connectivity solutions for IoT applications. EMQX has accumulated more than 20,000 corporate users from more than 50 countries, connecting more than 100 million IoT devices worldwide, serving enterprises' digital, real-time, and intelligent transformation.
 
-[EMQX Enterprise](https://www.emqx.com/en/products/emqx) is the commercial version of EMQX. With its robust built-in rule engine and data integration capabilities, EMQX Enterprise can perform real-time data processing, transformation, and routing for massive IoT data. It seamlessly integrates IoT data with various backend databases and analytics tools, enabling enterprises to rapidly build IoT platforms and applications with leading competitiveness.
+As a commercial self-hosted MQTT messaging platform, [EMQX Enterprise](https://www.emqx.com/en/products/emqx) supports up to 100 million concurrent MQTT connections per cluster. A single server can handle and process millions of MQTT messages per second, all while maintaining millisecond-level latency. With its robust built-in rule engine and data integration capabilities, EMQX Enterprise can perform real-time data processing, transformation, and routing for massive IoT data. It seamlessly integrates IoT data with various backend databases and analytics tools, enabling enterprises to rapidly build IoT platforms and applications with leading competitiveness.
 
 <img src="./assets/emqx_platform.jpg" alt="emqx_platform" style="zoom:70%;" />
 
@@ -19,7 +19,7 @@ EMQX is a large-scale distributed MQTT messaging platform that offers "unlimited
 
 ## Main Components
 
-EMQX Enterprise consists of multiple components that together build a powerful and scalable MQTT messaging platform. Here are the core components of EMQX Enterprise Edition:
+EMQX Enterprise consists of multiple components that together build a powerful and scalable MQTT messaging platform. Here are the core components of EMQX Enterprise:
 
 ### Device Connectivity
 
@@ -47,7 +47,7 @@ Through [TLS/SSL encryption](./network/overview.md) and [authentication](./acces
 
 EMQX Enterprise includes multiple client authentication mechanisms, including username/password, JWT, enhanced authentication, PSK, and X.509 certificates. It provides publish/subscribe authorization mechanisms based on ACLs. Authentication and authorization data can be integrated and managed through external enterprise security systems, such as LDAP, HTTP services, SQL, and NoSQL databases, allowing for flexible and diverse client security protection solutions.
 
-Additionally, the Enterprise Edition offers [audit logs](./dashboard/audit-log.md), role and permission management, and [single sign-on](./dashboard/sso.md) to meet SOC 2 compliance requirements and GDPR data privacy protection. Its comprehensive security features help enterprises build trusted IoT applications that comply with industry security standards.
+Additionally, the EMQX Enterprise offers [audit logs](./dashboard/audit-log.md), role and permission management, and [single sign-on](./dashboard/sso.md) to meet SOC 2 compliance requirements and GDPR data privacy protection. Its comprehensive security features help enterprises build trusted IoT applications that comply with industry security standards.
 
 ### Rule Engine and Data Integration
 
