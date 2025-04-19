@@ -12,17 +12,9 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#14721](https://github.com/emqx/emqx/pull/14721) Delayed publish interval limit changed from 4294967 seconds (49.7 days) to 42949670 seconds (497 days).
 
-- [#14639](https://github.com/emqx/emqx/pull/14639) Switch to Erlang/OTP 27.2.
-
 - [#14595](https://github.com/emqx/emqx/pull/14595) Deprecate `retainer.enable` flag. Retainer starts and stops automatically based on the `mqtt.retain_available` flag in zone configurations.
 
-- [#14456](https://github.com/emqx/emqx/pull/14456) Add a simple firewall script `bin/emqx_fw` to protect EMQX listener from SYN flooding.
-
-  This is Linux only.
-
-- [#14454](https://github.com/emqx/emqx/pull/14454) Introduced `max_publish_rate` option for the retainer. The option controls the maximum allowed rate of publishing retained messages in each node. The messages that are published over the limit are delivered but not stored as retained. This option is useful to limit the load on the configured retained message storage.
-
-- [#14047](https://github.com/emqx/emqx/pull/14047) Lower default `active_n` value from `100` to `10`.
+- [#14047](https://github.com/emqx/emqx/pull/14047) Lowered default `active_n` value from `100` to `10`.
 
   This change improves the responsiveness of MQTT clients to control signals, particularly when publishing at high rates with small messages.
 
@@ -38,49 +30,55 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#14582](https://github.com/emqx/emqx/pull/14582) Avoid pre- and post-processing of internal JSON representation before serialization and after deserialization respectively, in cases where it is completely unnecessary.
 
-#### Clustering
+#### Authentication & Authorization
 
-- [#14907](https://github.com/emqx/emqx/pull/14907) Improve stability of node evacuation. Previously, the evacuation could enter a dead loop and require manual intervention to recover.
+- [#14665](https://github.com/emqx/emqx/pull/14665) EMQX now supports client attribute as ACL rule pre-condition.
 
-#### Administration
+  For example, below rule will alow clients with an attribute `"type"` of value `"internal"` to publish or subscribe all topics: `{allow, {client_attr, "type", "internal"}, all, ["#"]}.`
 
-- [#14773](https://github.com/emqx/emqx/pull/14773) Improved rate-limiting functionality (`bytes_rate`, `messages_rate`, `max_conn_rate` configured for zones or listeners).
+  And the rule below should deny all clients with an attribute `"type"` prefixed with `"external-"` to publish any message: `{deny, {client_attr, "type", {re, "external-.*"}}, publish, ["#"]}.`
 
-  - The rate-limiting algorithm is simplified to work more predictably. It does not try to impose backpressure on the client(s). Instead, it drops the messages. For QoS1/QoS2 messages the appropriate reason code is also returned.
-  - Rate limiting now allows reconfiguration at runtime.
-  - Rate limiting configuration now allows to specify window size and limit per each window explicitly: `messages_rate = "300/5m"` means 300 messages per 5 minutes (with any possible fluctuation within this period), while `messages_rate = "10/10s"` means 10 messages per 10 seconds. Although the configured RPS is the same, the latter variant is much more strict about fluctuations in the actual rate.
-  - Burst rate is provided via the `messages_burst`, `bytes_burst`, `max_conn_burst` zone and listener options. The burst value `messages_burst = 1000/h` means a client can send 1000 additional messages each hour without applying rate limiting.
-- [#14341](https://github.com/emqx/emqx/pull/14341) This enhancement allow the namespace feature to support per-namespace session count limit. It support `quota_exceeded` error reason from `client.authenticate` hook point callback.
-- [#14679](https://github.com/emqx/emqx/pull/14679) Updated the `exhook.proto` to v3 for passing `User-Property` parameters in the OnMessagePublish callback.
-- [#14963](https://github.com/emqx/emqx/pull/14963) Provide plugins with the ability health status with the new `on_health_check/1` callback.
-  Export health status via HTTP API and CLI.
+- [#14358](https://github.com/emqx/emqx/pull/14358) Limit variables used in LDAP authentication/authorization templates to the ones that are allowed in the other authentication/authorization sources. The unsupported variables are kept unrendered.
 
-#### Dashboard
+- [#14610](https://github.com/emqx/emqx/pull/14610) Handle additional fields in authorization rules fetched from the external sources or stored in the built-in database.
 
-- [#14750](https://github.com/emqx/emqx/pull/14750) In the Dashboard, fix displaying the "Shared Subscriptions" value. Previously, an outdated value may appear.
-- [#14638](https://github.com/emqx/emqx/pull/14638) Added support for using file secrets (i.e.: `file://...`) to define the Dashboard default password.
-- [#14255](https://github.com/emqx/emqx/pull/14255) Introduced a password expiration mechanism for Dashboard users.
-- [#15014](https://github.com/emqx/emqx/pull/15014) Dashboard security improved.
-  The ability to log into the dashboard is blocked for a period after several unsuccessful attempts.
-  Number of attempts and lock duration can be configured.
+  The new supported fields are:
 
-#### Rule Engine
+  `username_re`: A regex for filtering rules by username. 
 
+  `clientid_re`: A regex for filtering rules by clientid. 
+
+  `ipaddr`: An IP address/mask for filtering rules by IP address.
+
+  A rule is applied only if all the present filters match.
+
+- [#14329](https://github.com/emqx/emqx/pull/14329) Made `${peerport}` variable available for use in templates of external requests made by authentication and authorization.
+
+- [#14286](https://github.com/emqx/emqx/pull/14286) Implemented node-level cache for authorization and authentication.
+
+  Some authentication and authorization methods require an external service to be called. This may result in excessive load on EMQX and the external service, especially when clients reconnect frequently.
+
+  This feature provides a way to enable node-level caching for such authentication and authorization methods. Caching is available for the authnetication and authorization backends with the following mechanisms:
+
+  - HTTP
+  - LDAP
+  - MongoDB
+  - MySQL
+  - PostgreSQL
+  - Redis
+
+#### REST API
+
+- [#14507](https://github.com/emqx/emqx/pull/14507) Added two new HTTP APIs: `GET /actions_summary` and `GET /sources_summary`. These are similar to the existing `GET /actions` and `GET /sources`, respectively, but with more lightweight contents: basically, they do not return the configurations for all entities.
+- [#14496](https://github.com/emqx/emqx/pull/14496) Added extra validation to the `root_keys` parameters of `POST /data/export`. Now, invalid root keys will result in an error instead of being silently ignored.
+- [#14254](https://github.com/emqx/emqx/pull/14254) Return cluster name in `/status` HTTP endpoint.
+- [#14972](https://github.com/emqx/emqx/pull/14972) Implemented API methods for downloading/uploading individual plugin configs.
+- [#15013](https://github.com/emqx/emqx/pull/15013) Added a new `action_details` field to the rule information returned by Rule Engine HTTP APIs.  This new fields contains the type, name and status of actions referenced by each rule.
 - [#14735](https://github.com/emqx/emqx/pull/14735) Added a `last_modified_at` field to rule information in Rule Engine HTTP APIs.
 
-#### Observability
+#### Clustering
 
-- [#14723](https://github.com/emqx/emqx/pull/14723) Add `method` option to the Prometheus Push Gateway configuration. Before this change, the default value was `post`. Now, it is `put`.
-
-  The `put` method is used to replace the metrics of the same job in Pushgateway to avoid the metrics being retained in Pushgateway after being removed from the emqx cluster.
-
-  See the [PUT method](https://github.com/prometheus/pushgateway?tab=readme-ov-file#put-method) for more details.
-
-- [#14656](https://github.com/emqx/emqx/pull/14656) Enhance Prometheus push to support more metrics and allow the cluster name to be used as a variable name for the Job.
-- [#14645](https://github.com/emqx/emqx/pull/14645) Added more log messages to help debug fetching CRLs for the first time (before they are cached and refreshed automatically). Successes and failures are logged at `debug` and `warning` levels, respectively.
-- [#14636](https://github.com/emqx/emqx/pull/14636) The `packets.publish.dropped` metric was deprecated and replaced by two new, more semantic metrics: `messages.dropped.quota_exceeded` and `messages.dropped.receive_maximum`. Those are bumped when a message is dropped due to an administrative quota limit being reached (more precisely, when a QoS 0 message is received by the broker and the client has exceeded its maximum [message rate limit](https://docs.emqx.com/en/emqx/latest/configuration/limiter.html#rate-limiter-configuration)) or the Receive Maximum for the session being reached while publishing a QoS 2 message, respectively.
-- [#14627](https://github.com/emqx/emqx/pull/14627) Added two new rule engine events: `$events/alarm_activated` and `$events/alarm_deactivated`. These are triggered when alarms are toggled on and off.
-- [#14540](https://github.com/emqx/emqx/pull/14540) Introduce configurable latency measurement for authentication and authorization. Metrics are exposed as Prometheus histograms.
+- [#14907](https://github.com/emqx/emqx/pull/14907) Improved stability of node evacuation. Previously, the evacuation could enter a dead loop and require manual intervention to recover.
 
 #### Data Integration
 
@@ -104,49 +102,55 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
   }
   ```
 
+#### Administration
+
+- [#14773](https://github.com/emqx/emqx/pull/14773) Improved rate-limiting functionality (`bytes_rate`, `messages_rate`, `max_conn_rate` configured for zones or listeners).
+
+  - The rate-limiting algorithm is simplified to work more predictably. It does not try to impose backpressure on the client(s). Instead, it drops the messages. For QoS1/QoS2 messages the appropriate reason code is also returned.
+  - Rate limiting now allows reconfiguration at runtime.
+  - Rate limiting configuration now allows to specify window size and limit per each window explicitly: `messages_rate = "300/5m"` means 300 messages per 5 minutes (with any possible fluctuation within this period), while `messages_rate = "10/10s"` means 10 messages per 10 seconds. Although the configured RPS is the same, the latter variant is much more strict about fluctuations in the actual rate.
+  - Burst rate is provided via the `messages_burst`, `bytes_burst`, `max_conn_burst` zone and listener options. The burst value `messages_burst = 1000/h` means a client can send 1000 additional messages each hour without applying rate limiting.
+- [#14341](https://github.com/emqx/emqx/pull/14341) This enhancement allow the namespace feature to support per-namespace session count limit. It support `quota_exceeded` error reason from `client.authenticate` hook point callback.
+- [#14679](https://github.com/emqx/emqx/pull/14679) Updated the `exhook.proto` to v3 for passing `User-Property` parameters in the OnMessagePublish callback.
+- [#14963](https://github.com/emqx/emqx/pull/14963) Provide plugins with the ability health status with the new `on_health_check/1` callback.
+  Export health status via HTTP API and CLI.
+
+#### Dashboard
+
+- [#14750](https://github.com/emqx/emqx/pull/14750) In the Dashboard, fixed displaying the "Shared Subscriptions" value. Previously, an outdated value may appear.
+- [#14638](https://github.com/emqx/emqx/pull/14638) Added support for using file secrets (i.e.: `file://...`) to define the Dashboard default password.
+- [#14255](https://github.com/emqx/emqx/pull/14255) Introduced a password expiration mechanism for Dashboard users.
+- [#15014](https://github.com/emqx/emqx/pull/15014) Dashboard security improved.
+  The ability to log into the dashboard is blocked for a period after several unsuccessful attempts.
+  The number of attempts and lock duration can be configured.
+
+#### Observability
+
+- [#14723](https://github.com/emqx/emqx/pull/14723) Add `method` option to the Prometheus Push Gateway configuration. Before this change, the default value was `post`. Now, it is `put`.
+
+  The `put` method is used to replace the metrics of the same job in Pushgateway to avoid the metrics being retained in Pushgateway after being removed from the emqx cluster.
+
+  See the [PUT method](https://github.com/prometheus/pushgateway?tab=readme-ov-file#put-method) for more details.
+
+- [#14656](https://github.com/emqx/emqx/pull/14656) Enhanced Prometheus push to support more metrics and allow the cluster name to be used as a variable name for the Job.
+
+- [#14645](https://github.com/emqx/emqx/pull/14645) Added more log messages to help debug fetching CRLs for the first time (before they are cached and refreshed automatically). Successes and failures are logged at `debug` and `warning` levels, respectively.
+
+- [#14636](https://github.com/emqx/emqx/pull/14636) The `packets.publish.dropped` metric has been deprecated and replaced with two new, more meaningful metrics:
+
+  - `messages.dropped.quota_exceeded`: Triggered when a client exceeds its configured rate limit, such as the allowed number of QoS 0 messages.
+  - `messages.dropped.receive_maximum`: Triggered when the session reaches its Receive Maximum limit while publishing QoS 2 messages.
+
+  These new metrics provide more precise insight into why messages are dropped under different conditions.
+
+- [#14540](https://github.com/emqx/emqx/pull/14540) Introduced configurable latency measurement for authentication and authorization. Metrics are exposed as Prometheus histograms.
+
+- [#14264](https://github.com/emqx/emqx/pull/14264) Added a timestamp to the crash_dump file to ensure that it is not overwritten by the next crash dump.
+
 
 #### CLI
 
 - [#14691](https://github.com/emqx/emqx/pull/14691) Added the possibility of filtering which data to be exported to the CLI command `emqx ctl data export`. It's now possible to specify which root keys from the `cluster.hocon` file and which table sets are exported, in the same vein as how `POST /data/export` works.
-
-#### Authentication & Authorization
-
-- [#14665](https://github.com/emqx/emqx/pull/14665) Support client attribute as ACL rule pre-condition.
-
-  For example, below rule will alow clients with an attribute `"type"` of value `"internal"` to publish or subscribe all topics: `{allow, {client_attr, "type", "internal"}, all, ["#"]}.`
-
-  And the rule below should deny all clients with an attribute `"type"` prefixed with `"external-"` to publish any message: `{deny, {client_attr, "type", {re, "external-.*"}}, publish, ["#"]}.`
-
-- [#14358](https://github.com/emqx/emqx/pull/14358) Limit variables used in LDAP authentication/authorization templates to the ones that are allowed in the other authentication/authorization sources. The unsupported variables are kept unrendered.
-
-- [#14610](https://github.com/emqx/emqx/pull/14610) Handle additional fields in authorization rules fetched from the external sources or stored in the built-in database.
-
-  The new supported fields are:
-
-   `username_re` — a regex for filtering rules by username. 
-
-  `clientid_re` — a regex for filtering rules by clientid. 
-
-  `ipaddr` — an IP address/mask for filtering rules by IP address.
-
-  A rule is applied only if all the present filters match.
-
-- [#14329](https://github.com/emqx/emqx/pull/14329) Made `${peerport}` variable available for use in templates of external requests made by authentication and authorization.
-
-- [#14286](https://github.com/emqx/emqx/pull/14286) Implemented node-level cache for authorization and authentication.
-
-  Some authentication and authorization methods require an external service to be called. This may result in excessive load on EMQX and the external service, especially when clients reconnect frequently.
-
-  This feature provides a way to enable node-level caching for such authentication and authorization methods. Caching is available for the authnetication and authorization backends with the following mechanisms:
-
-  - HTTP
-  - LDAP
-  - MongoDB
-  - MySQL
-  - PostgreSQL
-  - Redis
-
-- [#14264](https://github.com/emqx/emqx/pull/14264) Add a timestamp to the crash_dump file to ensure that it is not overwritten by the next crash dump.
 
 #### Configuration File
 
@@ -164,82 +168,55 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
   NOTE: This is hidden configuration for troubleshooting only.
 
-- [#14431](https://github.com/emqx/emqx/pull/14431) Switch to newer QUIC stack: quicer 0.2.3,
+- [#14431](https://github.com/emqx/emqx/pull/14431) Switched to newer QUIC stack: quicer 0.2.3:
 
   - msquic 2.3.8 + patches
 
   - Advance resource management
 
-  - Prepare to support more dynamic config changes on the listeners
+  - Prepared to support more dynamic config changes on the listeners
 
-#### REST API
+#### Development Environment
 
-- [#14507](https://github.com/emqx/emqx/pull/14507) Added two new HTTP APIs: `GET /actions_summary` and `GET /sources_summary`. These are similar to the existing `GET /actions` and `GET /sources`, respectively, but with more lightweight contents: basically, they do not return the configurations for all entities.
-- [#14496](https://github.com/emqx/emqx/pull/14496) Added extra validation to the `root_keys` parameters of `POST /data/export`. Now, invalid root keys will result in an error instead of being silently ignored.
-- [#14254](https://github.com/emqx/emqx/pull/14254) Return cluster name in `/status` HTTP endpoint.
-- [#14972](https://github.com/emqx/emqx/pull/14972) Implemented API methods for downloading/uploading individual plugin configs.
-- [#15013](https://github.com/emqx/emqx/pull/15013) Added a new `action_details` field to the rule information returned by Rule Engine HTTP APIs.  This new fields contains the type, name and status of actions referenced by each rule.
+- [#14639](https://github.com/emqx/emqx/pull/14639) Switched the remaining CI workflows to use Erlang/OTP 27.
 
 ### Bug Fixes
 
 #### Core MQTT Functionalities
 
-- [#14815](https://github.com/emqx/emqx/pull/14815) Fix release of packet ids for QoS 2 message. Previously, if client did not send PUBREL for the maximum configured number of pending QoS 2 messages and disconnected, the packet ids were not released even after the configured Max Awaiting PUBREL Timeout.
-
 - [#14707](https://github.com/emqx/emqx/pull/14707) Fixed an issue where, in strict_mode, PUBLISH packets with QoS 2 and the DUP flag set were incorrectly considered invalid packets.
 
-- [#14192](https://github.com/emqx/emqx/pull/14192) Allow will messages to be sent by the clients that disconnect because of authentication/authorization expiration. Previously, such clients could not send a will message because the sending occurred just after the authorization expiration, so the message could not pass the authorization rules.
+- [#14192](https://github.com/emqx/emqx/pull/14192) Allowed will messages to be sent by the clients that disconnect because of authentication/authorization expiration. Previously, such clients could not send a will message because the sending occurred just after the authorization expiration, so the message could not pass the authorization rules.
 
 - [#14122](https://github.com/emqx/emqx/pull/14122) Fixed handling of `PUBACK` and `PUBREC`/`PUBCOMP` when the published message has QoS 2 and 1, repectively.
 
   Prior to this fix, the broker would accept `PUBACK` and `PUBREC`/`PUBCOMP` packets from clients referencing packet identifiers that corresponded to messages with QoS 2 and 1, respectively. Now, the broker will disconnect clients that behave like this.
 
-#### Rule Engine
+#### Installation
 
-- [#14849](https://github.com/emqx/emqx/pull/14849) Removed an spurious fild (`event_type`) from `POST /rule_test` responses. This was an internal field that doesn't actually appear in real events, so its presence in rule test outputs could be confusing.
-- [#14824](https://github.com/emqx/emqx/pull/14824) Fixed an issue where, depending on the provided values of the `details` key of an `alarm_activated` or `alarm_deactivated` event to the SQL Rule Tester, a 500 error could be returned.
+- [#14624](https://github.com/emqx/emqx/pull/14624) Fixed macOS release package dynamic linking openssl.e
 
-#### Administration
+  EMQX zip package may fail to start on macOS because quicer application dynamic links to sys installed openssl which is not signed by EMQX build process.
 
-- [#14834](https://github.com/emqx/emqx/pull/14834) Fixed the `Content-Type` header when downloading data backup files.
-- [#14774](https://github.com/emqx/emqx/pull/14774) Resolved plugin related issues
-  - Fixed a retrieval issue with the plugin configuration file from cluster nodes when initiating the plugin without an existing configuration file.
-
-- [#14826](https://github.com/emqx/emqx/pull/14826) Fixed the issue where the exhook server's return of "IGNORE" was not taking effect.
-- [#14931](https://github.com/emqx/emqx/pull/14931) The configuration `mqtt.max_qos_allowed` is now used as the granted subscription QoS and returned as the `reason code` in the **SUBACK** packet.
-  Previously, the `reason code` in **SUBACK** packets was hard-coded to the subscription QoS instead of dynamically reflecting the granted QoS.
-- [#14975](https://github.com/emqx/emqx/pull/14975) Fix an issue preventing on-the-fly updates to certain TLS listener options, requiring a disable-enable cycle for changes to take effect.
-- [#15037](https://github.com/emqx/emqx/pull/15037) Fix rate limiting for dynamically created zones. Previously, the rate-limiting was not applied if a zone was created after the EMQX node was started.
-
-#### Clustering
-
-- [#14778](https://github.com/emqx/emqx/pull/14778) Fixed a bug where, if a running node had broken symlinks in its `data/certs` or `data/authz` directories, another node would fail to join it.
-- [#14936](https://github.com/emqx/emqx/pull/14936) Resolved an issue where, in rare cases, the global routing table could indefinitely retain routing information for nodes that had long left the cluster.
+  Now we change to disabled dynamic linking as the OTP we shipped on macOS also disabled dynamic linking of openssl.
 
 #### Authentication & Authorization
 
-- [#14777](https://github.com/emqx/emqx/pull/14777) Fix settings update for JWT authentication. Previously, some fields may be not updated correctly for a configuration with external JWKS endpoint.
+- [#14777](https://github.com/emqx/emqx/pull/14777) Fixed settings update for JWT authentication. Previously, some fields may be not updated correctly for a configuration with external JWKS endpoint.
 
-- [#14585](https://github.com/emqx/emqx/pull/14585) Use case-insensitive comparisons when comparing password hashes with strings obtained from external sources.
+- [#14585](https://github.com/emqx/emqx/pull/14585) Used case-insensitive comparisons when comparing password hashes with strings obtained from external sources.
 
-- [#14556](https://github.com/emqx/emqx/pull/14556) Fix rarely possible false positive authentication while the node is starting or shutting down.
+- [#14556](https://github.com/emqx/emqx/pull/14556) Fixed rarely possible false positive authentication while the node is starting or shutting down.
 
-- [#15059](https://github.com/emqx/emqx/pull/15059) Fix the reaction to updating the Redis authentication config with invalid values.
+- [#15059](https://github.com/emqx/emqx/pull/15059) Fixed the reaction to updating the Redis authentication config with invalid values.
 
   Previously, the authenticator could crash and stop being applied during authentication.
   Now, proper errors are provided to the user and the update is denied.
 
-#### MQTT over QUIC
+#### Rule Engine
 
-- [#14775](https://github.com/emqx/emqx/pull/14775) QUIC Listener: fix issue where zone configurations are not applied after a config reload.
-
-#### REST API
-
-- [#14771](https://github.com/emqx/emqx/pull/14771) Fixed an issue where the number of results that the `GET /clients_v2` HTTP API returned could exceed the requested limit.
-
-  Note: while performing a rolling upgrade, this API may not list all existing clients until all nodes are migrated. As a workaround, if HTTP API requests are issued to old core nodes, all clients can be listed before all nodes are fully upgraded.
-
-- [#14182](https://github.com/emqx/emqx/pull/14182) Previously, if a delayed message was published via the `POST /publish` HTTP API, a 202 reponse with the reason code 16 ("no matching subscribers") would be returned. Now, a 200 response is sent along with the message identifier.
+- [#14849](https://github.com/emqx/emqx/pull/14849) Removed an spurious fild (`event_type`) from `POST /rule_test` responses. This was an internal field that doesn't actually appear in real events, so its presence in rule test outputs could be confusing.
+- [#14824](https://github.com/emqx/emqx/pull/14824) Fixed an issue where, depending on the provided values of the `details` key of an `alarm_activated` or `alarm_deactivated` event to the SQL Rule Tester, a 500 error could be returned.
 
 #### Data Integration
 
@@ -258,20 +235,41 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 - [#15000](https://github.com/emqx/emqx/pull/15000) Fixed an issue where loading a configuration via CLI or HTTP API could cause instabilities in Connectors, Actions and/or Sources.
 - [#15010](https://github.com/emqx/emqx/pull/15010) Previously, disabling any Connector could take about 5 to 10 s, even when it was healthy.  This has been fixed.  Note that some Connectors still naturally require time to disable, especially when they have Actions and when they are unhealthy.
 
+#### Clustering
+
+- [#14778](https://github.com/emqx/emqx/pull/14778) Fixed a bug where, if a running node had broken symlinks in its `data/certs` or `data/authz` directories, another node would fail to join it.
+- [#14936](https://github.com/emqx/emqx/pull/14936) Resolved an issue where, in rare cases, the global routing table could indefinitely retain routing information for nodes that had long left the cluster.
+
+#### REST API
+
+- [#14771](https://github.com/emqx/emqx/pull/14771) Fixed an issue where the number of results that the `GET /clients_v2` HTTP API returned could exceed the requested limit.
+
+  Note: while performing a rolling upgrade, this API may not list all existing clients until all nodes are migrated. As a workaround, if HTTP API requests are issued to old core nodes, all clients can be listed before all nodes are fully upgraded.
+
+- [#14182](https://github.com/emqx/emqx/pull/14182) Previously, if a delayed message was published via the `POST /publish` HTTP API, a 202 reponse with the reason code 16 ("no matching subscribers") would be returned. Now, a 200 response is sent along with the message identifier.
+
 #### MQTT Durable Sessions
 
 - [#14674](https://github.com/emqx/emqx/pull/14674) Limit number and size of RocksDB info log files created by EMQX durable storage.
-- [#14498](https://github.com/emqx/emqx/pull/14498) Improve performance of durable sessions:
-  - Idle durable sessions no longer consume CPU cycles
-  - Fix QoS upgrade feature: subscribers will no longer receive messages with QoS higher than QoS of the subscription when feature is enabled
+- [#14498](https://github.com/emqx/emqx/pull/14498) Improved performance of durable sessions:
+  - Idle durable sessions no longer consume CPU cycles.
+  - Fixed QoS upgrade feature: subscribers will no longer receive messages with QoS higher than QoS of the subscription when feature is enabled.
 
-#### Installation
+#### Administration
 
-- [#14624](https://github.com/emqx/emqx/pull/14624) Fix macOS release package dynamic linking openssl
+- [#14834](https://github.com/emqx/emqx/pull/14834) Fixed the `Content-Type` header when downloading data backup files.
+- [#14774](https://github.com/emqx/emqx/pull/14774) Resolved plugin related issues
+  - Fixed a retrieval issue with the plugin configuration file from cluster nodes when initiating the plugin without an existing configuration file.
 
-  EMQX zip package may fail to start on macOS because quicer application dynamic links to sys installed openssl which is not signed by EMQX build process.
+- [#14826](https://github.com/emqx/emqx/pull/14826) Fixed the issue where the exhook server's return of "IGNORE" was not taking effect.
+- [#14931](https://github.com/emqx/emqx/pull/14931) The configuration `mqtt.max_qos_allowed` is now used as the granted subscription QoS and returned as the `reason code` in the **SUBACK** packet.
+  Previously, the `reason code` in **SUBACK** packets was hard-coded to the subscription QoS instead of dynamically reflecting the granted QoS.
+- [#14975](https://github.com/emqx/emqx/pull/14975) Fixed an issue preventing on-the-fly updates to certain TLS listener options, requiring a disable-enable cycle for changes to take effect.
+- [#15037](https://github.com/emqx/emqx/pull/15037) Fixed rate limiting for dynamicalley created zones. Previously, the rate-limiting was not applied if a zone was created after the EMQX node was started.
 
-  Now we change to disabled dynamic linking as the OTP we shipped on macOS also disabled dynamic linking of openssl.
+#### MQTT over QUIC
+
+- [#14775](https://github.com/emqx/emqx/pull/14775) QUIC Listener: Fixed issue where zone configurations are not applied after a config reload.
 
 ## 5.8.6
 

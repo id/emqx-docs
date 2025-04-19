@@ -1,5 +1,252 @@
 # EMQX 企业版 v5 版本
 
+## 5.9.0
+
+*发布日期：2025-04-22*
+
+升级前请查看已知问题列表和不兼容变更列表。
+
+### 增强
+
+#### 核心 MQTT 功能
+
+- [#14721](https://github.com/emqx/emqx/pull/14721) 延迟发布间隔限制已从 4294967 秒（49.7 天）更改为 42949670 秒（497 天）。
+
+- [#14595](https://github.com/emqx/emqx/pull/14595) 弃用 `retainer.enable` 标志。保留机制会根据区域配置中的 `mqtt.retain_available` 标志自动启动和停止。
+
+- [#14047](https://github.com/emqx/emqx/pull/14047) 将默认的 `active_n` 值从 `100` 降低到 `10`。
+
+  这一变化提高了 MQTT 客户端对控制信号的响应性，特别是在高频率发布小消息时。
+
+  新的 `active_n` 值为 `10`，故意设定为低于默认的 Receive-Maximum（`32`），以在以下场景中在 TCP 层引入更多的回退：
+
+  - MQTT 客户端进程在执行外部授权检查时被阻塞。
+  - MQTT 客户端进程在进行数据集成消息发送时被阻塞。
+  - EMQX 正在经历过载条件。
+
+  性能测试表明，在各种场景（单播、一对多和多播）下，8 核、16GB 内存节点的延迟没有显著增加。然而，在 2 核、4GB 内存节点上，当 `active_n = 100` 时，基线延迟已经处于较高的三位数范围，并且 CPU 使用率较高。决定降低 `active_n` 是为了优化更常见的使用场景，在这些场景中，系统稳定性优先于延迟（尤其是在较小实例上）。
+
+- [#14582](https://github.com/emqx/emqx/pull/14582) 在完全不必要的情况下，避免在序列化之前和反序列化之后对内部 JSON 表示进行预处理和后处理。
+
+#### 认证与授权
+
+- [#14665](https://github.com/emqx/emqx/pull/14665) 支持将客户端属性作为 ACL 规则的前置条件。
+
+  例如，以下规则将允许客户端属性 `"type"` 值为 `"internal"` 的客户端发布或订阅所有主题：
+   `{allow, {client_attr, "type", "internal"}, all, ["#"]}.`
+
+  而以下规则将拒绝属性 `"type"` 以 `"external-"` 开头的所有客户端发布任何消息：
+   `{deny, {client_attr, "type", {re, "external-.*"}}, publish, ["#"]}.`
+
+- [#14358](https://github.com/emqx/emqx/pull/14358) 限制 LDAP 认证/授权模板中可用的变量，仅允许使用在其他认证/授权来源中支持的变量。所有不支持的变量将不会被渲染。
+
+- [#14610](https://github.com/emqx/emqx/pull/14610) 支持处理从外部来源获取或存储在内置数据库中的授权规则中新增的字段。
+
+  新增支持的字段包括：
+
+  - `username_re`：用于按用户名进行规则过滤的正则表达式
+  - `clientid_re`：用于按客户端 ID 进行规则过滤的正则表达式
+  - `ipaddr`：用于按 IP 地址进行规则过滤的 IP 地址或掩码
+
+  只有当所有过滤条件都满足时，规则才会生效。
+
+- [#14329](https://github.com/emqx/emqx/pull/14329) 支持在认证和授权发出的外部请求模板中使用 `${peerport}` 变量。
+
+- [#14286](https://github.com/emqx/emqx/pull/14286) 实现认证与授权的节点级缓存功能。
+
+  某些认证和授权方法需要调用外部服务，这在客户端频繁重连的场景下可能对 EMQX 和外部服务带来较大压力。
+
+  此功能允许为这些认证与授权方法启用节点级缓存。目前支持缓存的认证与授权后端包括：
+
+  - HTTP
+  - LDAP
+  - MongoDB
+  - MySQL
+  - PostgreSQL
+  - Redis
+
+#### REST API
+
+- [#14507](https://github.com/emqx/emqx/pull/14507) 新增两个 HTTP API 接口：`GET /actions_summary` 和 `GET /sources_summary`。这两个接口类似于现有的 `GET /actions` 和 `GET /sources`，但返回内容更轻量：不会包含所有实体的完整配置信息。
+- [#14496](https://github.com/emqx/emqx/pull/14496) 为 `POST /data/export` 接口的 `root_keys` 参数添加了额外的校验。现在，如果传入无效的 root key，将返回错误，而不会被静默忽略。
+- [#14254](https://github.com/emqx/emqx/pull/14254) 在 `/status` HTTP 接口的返回结果中新增集群名称字段。
+- [#14972](https://github.com/emqx/emqx/pull/14972) 实现了用于下载和上传单个插件配置的 API 接口。
+- [#15013](https://github.com/emqx/emqx/pull/15013) 在规则引擎相关的 HTTP API 返回结果中新增 `action_details` 字段。该字段包含每条规则中引用的动作的类型、名称和状态信息。
+- [#14735](https://github.com/emqx/emqx/pull/14735) 在规则引擎的 HTTP API 返回的规则信息中新增 `last_modified_at` 字段。
+
+#### 集群
+
+- [#14907](https://github.com/emqx/emqx/pull/14907) 提升了节点迁移的稳定性。此前在某些情况下，迁移过程可能会进入死循环，需手动干预才能恢复。
+
+#### 数据集成
+
+- [#14722](https://github.com/emqx/emqx/pull/14722) 在 MQTT 连接器中新增 `connect_timeout` 配置项。该参数用于控制连接过程中最长允许等待的秒数。适当调低该值可以更快反馈连接失败的问题。
+
+- [#14615](https://github.com/emqx/emqx/pull/14615) 为多个使用 `ehttpc` HTTP 驱动的数据集成插件添加了对 `max_inactive` 参数的支持。
+
+- [#14459](https://github.com/emqx/emqx/pull/14459) 新增对失败备选动作的支持。
+
+  当消息在数据集成动作中处理失败时（例如因缓冲区溢出或到达生存时间而被丢弃），将触发配置的备选动作。所有数据集成动作均可配置备选动作。
+
+  以下是 Kafka 动作的示例配置片段：
+
+  ```
+  actions.kafka_producer.my_action {
+    fallback_actions = [
+      {kind = reference, type = mqtt, name = mqtt_fallback_publisher},
+      {kind = republish, args = {topic = "fallback/action/republish"}}
+    ]
+    # ...
+  }
+  ```
+
+#### 运维管理
+
+- [#14773](https://github.com/emqx/emqx/pull/14773) 改进了速率限制功能（适用于 Zone 或监听器的 `bytes_rate`、`messages_rate`、`max_conn_rate` 配置项）：
+  - 简化了速率限制算法，使其行为更加可预测。新的实现不会尝试对客户端施加回压，而是直接丢弃超出限制的消息。对于 QoS1/QoS2 消息，将返回相应的原因码。
+  - 支持在运行时动态调整速率限制配置。
+  - 速率限制配置现在支持显式指定窗口大小和每个窗口的限制，例如：`messages_rate = "300/5m"` 表示每 5 分钟最多允许 300 条消息（可有一定波动），而 `messages_rate = "10/10s"` 则表示每 10 秒最多 10 条消息。尽管两者每秒速率（RPS）相同，后者在波动控制上更严格。
+  - 可通过 `messages_burst`、`bytes_burst` 和 `max_conn_burst` 等选项配置突发速率。例如：`messages_burst = 1000/h` 表示每小时允许额外发送 1000 条消息而不触发速率限制。
+- [#14341](https://github.com/emqx/emqx/pull/14341) 增强了命名空间功能，支持为每个命名空间配置会话数量上限。当超过限制时，可通过 `client.authenticate` 钩子返回 `quota_exceeded` 错误码。
+- [#14679](https://github.com/emqx/emqx/pull/14679) 将 `exhook.proto` 升级为 v3，以支持在 OnMessagePublish 回调中传递 `User-Property` 参数。
+- [#14963](https://github.com/emqx/emqx/pull/14963) 插件支持实现新的 `on_health_check/1` 回调函数，用于上报健康状态。同时支持通过 HTTP API 和 CLI 查询插件的健康状态。
+
+#### Dashboard
+
+- [#14750](https://github.com/emqx/emqx/pull/14750) 修复了 Dashboard 中“共享订阅”数值的显示问题。此前可能会显示过期的旧数据。
+- [#14638](https://github.com/emqx/emqx/pull/14638) 新增支持使用文件形式的密钥（如：`file://...`）来定义 Dashboard 的默认密码。
+- [#14255](https://github.com/emqx/emqx/pull/14255) 为 Dashboard 用户引入密码过期机制。
+- [#15014](https://github.com/emqx/emqx/pull/15014) 提升 Dashboard 安全性。在多次登录失败后，将暂时禁止登录。失败次数与锁定时长均可配置。
+
+#### 可观测性
+
+- [#14723](https://github.com/emqx/emqx/pull/14723) 为 Prometheus Push Gateway 配置新增 `method` 选项。此前默认使用 `post` 方法，现在默认值改为 `put`。
+
+  `put` 方法用于替换 Pushgateway 中相同 job 的指标数据，从而避免在 EMQX 节点移除后，相关指标仍保留在 Pushgateway 中。
+
+  更多信息可参考 [PUT method 文档](https://github.com/prometheus/pushgateway?tab=readme-ov-file#put-method)。
+
+- [#14656](https://github.com/emqx/emqx/pull/14656) 增强对 Prometheus Push 的支持：支持更多指标，并允许将集群名称作为 Job 名称中的变量。
+
+- [#14645](https://github.com/emqx/emqx/pull/14645) 增加了更多日志信息，以帮助调试首次获取 CRL（证书吊销列表）时的情况（即缓存和自动刷新机制启动前）。成功会以 `debug` 等级记录，失败会以 `warning` 等级记录。
+
+- [#14636](https://github.com/emqx/emqx/pull/14636) 弃用了原有的指标 `packets.publish.dropped`，并引入两个更具语义化的新指标：`messages.dropped.quota_exceeded` 和 `messages.dropped.receive_maximum`。
+
+  - `messages.dropped.quota_exceeded`：当客户端达到配置的速率限制（例如 QoS 0 消息数量限制）时触发。
+  - `messages.dropped.receive_maximum`：当会话达到其 QoS 2 消息的最大接收数量时触发。
+
+  这两个指标提供了更准确的消息丢弃原因追踪。
+
+- [#14540](https://github.com/emqx/emqx/pull/14540) 引入可配置的认证与鉴权延迟监测功能，相关指标以 Prometheus 直方图的形式暴露。
+
+- [#14264](https://github.com/emqx/emqx/pull/14264) 为 crash_dump 文件添加时间戳，以防止它在下一次崩溃时被覆盖。
+
+#### CLI
+
+- [#14691](https://github.com/emqx/emqx/pull/14691) 为 CLI 命令 `emqx ctl data export` 添加了数据筛选功能。现在可以指定从 `cluster.hocon` 文件中导出哪些根键（root keys），以及导出哪些数据表集，行为与 `POST /data/export` 接口一致。
+
+#### 配置文件
+
+- [#14647](https://github.com/emqx/emqx/pull/14647)  `cluster.hocon` 文件的备份现在支持通过可配置的时间间隔进行。此前每次配置变更都会创建一次备份，现在改为收集多个更改后再进行一次备份，以减少不必要的备份频率。
+
+#### MQTT over QUIC
+
+- [#14583](https://github.com/emqx/emqx/pull/14583) QUIC 监听器现在支持将 TLS 密钥导出至 `SSLKEYLOGFILE`，以便用于流量解密。
+
+  Wireshark 可使用 `SSLKEYLOGFILE` 解密实时或捕获的 QUIC 流量，从而解析出 MQTT 数据包。
+
+  示例环境变量配置：
+
+  `EMQX_LISTENERS__QUIC__DEFAULT__SSLKEYLOGFILE=/tmp/EMQX_SSLKEYLOGFILE`
+
+  **注意**：此为隐藏配置，仅用于排障目的。
+
+- [#14431](https://github.com/emqx/emqx/pull/14431) QUIC 协议栈更新至新版：`quicer 0.2.3`
+
+  - 基于 `msquic 2.3.8`（附带补丁）
+  - 增强资源管理能力
+  - 为后续支持监听器动态配置做好准备
+
+#### 开发环境
+
+- [#14639](https://github.com/emqx/emqx/pull/14639) 将剩余的 CI 流程中的 Erlang 版本统一切换为 Erlang/OTP 27。
+
+### 修复
+
+#### 核心 MQTT 功能
+
+- [#14707](https://github.com/emqx/emqx/pull/14707) 修复在启用 strict_mode 时，带有 DUP 标志的 QoS 2 PUBLISH 报文被错误地视为无效报文的问题。
+- [#14192](https://github.com/emqx/emqx/pull/14192) 修复由于认证/授权过期导致断开的客户端无法发送遗嘱消息的问题。此前由于遗嘱发送发生在权限过期之后，导致消息无法通过授权校验而被阻止。
+- [#14122](https://github.com/emqx/emqx/pull/14122) 修复当客户端错误地将 QoS 2 消息使用 PUBACK 响应，或将 QoS 1 消息使用 PUBREC/PUBCOMP 响应时，EMQX 未断开连接的问题。现在若客户端使用错误的应答流程，EMQX 将主动断开连接。
+
+#### 安装部署
+
+- [#14624](https://github.com/emqx/emqx/pull/14624) 修复 macOS 发行包的 OpenSSL 动态链接问题。此前，由于 quicer 模块链接了系统中的 OpenSSL 而非 EMQX 构建包，可能导致 zip 包无法启动。现在已禁用动态链接，与 OTP 中的配置保持一致。
+
+#### 认证与授权
+
+- [#14777](https://github.com/emqx/emqx/pull/14777) 修复 JWT 授权配置更新时部分字段未正确更新的问题，尤其是使用外部 JWKS endpoint 时。
+- [#14585](https://github.com/emqx/emqx/pull/14585) 密码哈希比对时改为忽略大小写，以提升兼容性。
+- [#14556](https://github.com/emqx/emqx/pull/14556) 修复在节点启动或关闭期间极少发生的认证误判（false positive）问题。
+- [#15059](https://github.com/emqx/emqx/pull/15059) 修复 Redis 授权配置被更新为非法值时导致认证模块崩溃的问题。现在将返回错误提示并阻止更新。
+
+#### 规则引擎
+
+- [#14849](https://github.com/emqx/emqx/pull/14849) 移除 `POST /rule_test` 接口返回中的无效字段 `event_type`，该字段在实际事件中并不存在，可能导致测试结果混淆。
+- [#14824](https://github.com/emqx/emqx/pull/14824) 修复 SQL 规则测试器中，当输入事件为 `alarm_activated` 或 `alarm_deactivated` 且包含特殊 `details` 值时可能引发 500 错误的问题。
+
+#### 数据集成
+
+- [#14716](https://github.com/emqx/emqx/pull/14716) 添加和移除数据动作/数据源的流程已异步化，不再与配置变更操作同步执行，从而避免因超时而导致资源状态与配置状态不一致的问题。
+
+- [#14519](https://github.com/emqx/emqx/pull/14519) 修复节点启动时若已有配置数据源，在数据源刚启动便收到数据的情况下，可能输出警告日志的问题。
+
+  示例日志：
+
+  ```
+  2025-01-08T07:48:36.421822+00:00 [warning] tag: RESOURCE, msg: handle_resource_metrics_failed, reason: {badkey,received}, stacktrace: ..., event: received, kind: error, hint: transient failures may occur when restarting a resource, resource_id: <<"source:mqtt:tset:connector:mqtt:test">>
+  ```
+
+- [#14992](https://github.com/emqx/emqx/pull/14992) 修复在连接器连接测试中因极少数竞争条件而可能造成的资源泄漏问题。
+
+- [#15000](https://github.com/emqx/emqx/pull/15000) 修复通过 CLI 或 HTTP API 加载配置时可能引发连接器、动作或数据源不稳定的问题。
+
+- [#15010](https://github.com/emqx/emqx/pull/15010) 修复关闭连接器时耗时较长的问题（5~10 秒），即便连接器处于健康状态。目前已优化该流程，但部分连接器由于存在动作或处于异常状态，关闭过程仍可能需要时间。
+
+#### 集群
+
+- [#14778](https://github.com/emqx/emqx/pull/14778) 修复当某节点的 `data/certs` 或 `data/authz` 目录下存在损坏的符号链接时，其他节点无法加入集群的问题。
+- [#14936](https://github.com/emqx/emqx/pull/14936) 修复在极少数情况下，全局路由表长时间保留已离开集群节点路由信息的问题。
+
+#### REST API
+
+- [#14771](https://github.com/emqx/emqx/pull/14771) 修复 `GET /clients_v2` 返回的客户端数量可能超过请求限制的问题。
+
+  注意：滚动升级过程中，此 API 可能无法完整列出所有客户端，直到所有节点升级完毕。建议升级期间向旧节点发送请求以获取完整客户端列表。
+
+- [#14182](https://github.com/emqx/emqx/pull/14182) 修复 `POST /publish` 接口发布延迟消息时响应码不一致的问题。此前会返回 202 和原因码 16（无匹配订阅者），现在返回 200 并附带消息 ID。
+
+#### MQTT 持久会话
+
+- [#14674](https://github.com/emqx/emqx/pull/14674) 限制 EMQX 持久化存储中 RocksDB 日志文件的数量和大小，避免日志堆积。
+- [#14498](https://github.com/emqx/emqx/pull/14498) 提升持久会话性能：
+  - 空闲会话将不再消耗 CPU。
+  - 修复 QoS 升级功能：开启该功能后，订阅者将不再接收到超过其订阅等级的消息。
+
+#### 运维管理
+
+- [#14834](https://github.com/emqx/emqx/pull/14834) 修复下载数据备份文件时 `Content-Type` 响应头设置错误的问题。
+- [#14774](https://github.com/emqx/emqx/pull/14774) 修复插件相关问题：
+  - 启动插件时若集群节点上未存在插件配置文件，导致配置拉取失败的问题已解决。
+- [#14826](https://github.com/emqx/emqx/pull/14826) 修复 exhook 服务返回 "IGNORE" 不生效的问题。
+- [#14931](https://github.com/emqx/emqx/pull/14931) `mqtt.max_qos_allowed` 现在会被用于决定订阅确认（SUBACK）中的 `reason code`，此前返回的 QoS 等级是订阅请求中的值，而非实际授予的 QoS。
+- [#14975](https://github.com/emqx/emqx/pull/14975) 修复某些 TLS 监听器配置项无法热更新的问题。此前必须先禁用再启用监听器，才能使更改生效。
+- [#15037](https://github.com/emqx/emqx/pull/15037) 修复动态创建的 Zone 无法应用速率限制的问题。此前如果 Zone 在节点启动后创建，其速率限制配置不会生效。
+
+#### MQTT over QUIC
+
+- [#14775](https://github.com/emqx/emqx/pull/14775) 修复配置热重载后 QUIC 监听器未正确应用 zone 配置的问题。
+
 ## 5.8.6
 
 *发布日期：2025-03-25*
