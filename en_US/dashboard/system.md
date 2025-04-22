@@ -54,19 +54,15 @@ You can view the details of the API key by clicking the name in the **Name** col
 
 ## License
 
-Click on **License** under the **System** menu on the left to access the License page. On this page, you can view the basic information of your current License, including the License connection quota usage, EMQX version, customer, and issue information. Click **Update License** to upload your License Key. In the **License Settings** section, you can set the high and low watermark limits for the license connection quota usage.
+Click on **License** under the **System** menu on the left to access the License page. On this page, you can view the basic information of your current License, including the License connection quota usage, EMQX version, customer, and issue information. 
 
-<img src="./assets/license.png" alt="license" style="zoom:35%;" />
+Click **Update License** to upload your License Key. In the **License Settings** section, you can set the high and low watermark limits for the license connection quota usage. For more information about the license, see [Work with EMQX Enterprise License](../deploy/license.md).
 
 ## Settings
 
 The Settings can be accessed by clicking the setting icon on the top right corner of the page. You can change the language and theme color of the Dashboard, the theme color can be selected if you want to synchronize the OS theme, if this is enabled, the Dashboard theme will be automatically synchronized with the user's OS theme and cannot be selected manually. 
 
 <img src="./assets/settings_ee.png" alt="settings_ee" style="zoom:67%;" />
-
-For EMQX Open Source users, you can enable the telemetry to share usage information with EMQX to help the EMQX development team understand how users are using EMQX for continuous improvement.
-
-![image](./assets/settings.png)
 
 ## SSO
 
