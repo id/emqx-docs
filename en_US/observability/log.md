@@ -77,8 +77,6 @@ Configure the following settings for file log handler:
 
 - **Log Formatter**: Select the log format from the drop-down list. Optional values are: `text` and `json`. Default value is `text`. 
 
-  Note: If you select `json`, it is recommended to disable the toggle switch for **Single Log Max Length**, otherwise you will get incomplete json data.
-
 - **Time Offset**: Define the format of the timestamp in the log. `system` is typed by default.
 
 After you finish the configurations, click **Save Changes**.
