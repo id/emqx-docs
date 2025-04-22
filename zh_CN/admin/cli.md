@@ -1010,10 +1010,11 @@ Actions:
 
 ## license
 
-| 命令                   | 描述                |
-| ---------------------- | ------------------- |
-| license info           | 显示 License 信息。 |
-| license update License | 更新 License 信息。 |
+| 命令                   | 描述                     |
+| ---------------------- | ------------------------ |
+| license info           | 显示 License 信息。      |
+| license update License | 更新 License 信息。      |
+| license update default | 恢复为默认社区版 License |
 
 ### license info
 
@@ -1037,3 +1038,9 @@ emqx ctl license update <YOUR_LICENSE_STRING>
 ```
 
 请将 `YOUR_LICENSE_STRING` 替换为实际的 License 字符串。
+
+### license update default
+
+```bash
+emqx ctl license update default
+```

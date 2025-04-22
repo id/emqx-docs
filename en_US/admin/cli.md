@@ -1015,10 +1015,11 @@ CLI is only for inspection, Rule and action managements are managed from dashboa
 
 ## license
 
-| Command                | Description                  |
-| ---------------------- | ---------------------------- |
-| license info           | Display License information. |
-| license update License | Update License information.  |
+| Command                | Description                         |
+| ---------------------- | ----------------------------------- |
+| license info           | Display License information.        |
+| license update License | Update License information.         |
+| license update default | Revert to default Community License |
 
 ### license info
 
@@ -1042,3 +1043,9 @@ emqx ctl license update <YOUR_LICENSE_STRING>
 ```
 
 You need to replace `YOUR_LICENSE_STRING` with the actual License string.
+
+### license update default
+
+```bash
+emqx ctl license update default
+```

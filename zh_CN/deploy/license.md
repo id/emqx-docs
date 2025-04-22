@@ -43,18 +43,24 @@
 
    <img src="./assets/license.png" alt="license" style="zoom: 50%;" />
 
-#### 在 Dashboard 中重置 License
+#### 恢复社区版 License
 
-除了更新 License 外，EMQX Dashboard 还提供了一个**重置 License** 按钮。该功能允许用户将系统恢复为默认的单节点社区版 License。
-
-重置为默认 License 后：
-
-- 当前的 License 将被清除，并替换为默认的社区版 License。
-- 当前已超出限额的连接可以继续保持，但无法建立新的连接。
+EMQX Dashboard 还提供了一个**移除 License** 按钮，允许用户将系统恢复为默认的单节点社区版 License。
 
 ::: tip 提示
 
-默认 License 不支持完整的商业用途，仅适用于单节点部署。重置 License 将会禁用集群部署。
+集群模式下无法移除 License。如果您正在使用集群部署，需要先解散集群。
+
+:::
+
+恢复为默认的社区版 License 后：
+
+- 当前的 License 将被清除，并替换为默认的社区版 License。
+- 当前已连接的客户端不会受到影响。
+
+::: tip 提示
+
+社区版 License 不支持完整的商业用途，仅适用于单节点部署。移除 License 将会禁用集群部署。
 
 :::
 
@@ -67,6 +73,7 @@
 
     license info             # 显示 license 信息 
     license update <License> # 更新 license，<License> 为 license 字符串
+    license update default   # 恢复为默认社区版 License
 ```
 
 ### 配置文件

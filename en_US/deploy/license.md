@@ -16,7 +16,7 @@ This page guides you through the process of obtaining a Commercial License and i
 
 To apply for a Commercial License with a valid License Key, contact your EMQ sales representative or fill out the contact information on our [Contact Us](https://www.emqx.com/en/contact?product=emqx&channel=apply-Licenses) page to apply for a commercial license. Our sales representative will contact you as soon as possible. 
 
-Suppose you prefer to try EMQX Enterprise before purchasing. In that case, you can apply for a Trial License on our [Trial License application page](https://www.emqx.com/en/apply-licenses/emqx) and the license file will be sent to your email box immediately:
+Suppose you prefer to try EMQX Enterprise before purchasing. In that case, you can apply for a Trial License on our [Trial License application page,](https://www.emqx.com/en/apply-licenses/emqx) and the license file will be sent to your email box immediately:
 
 - The Trial License is valid for 15 days;
 - The Trial License supports 10,000 concurrent connection lines.
@@ -52,18 +52,24 @@ You can update your license file and configure the settings for the license conn
 
    <img src="./assets/license.png" alt="license" style="zoom: 50%;" />
 
-#### Reset License on Dashboard
+#### Revert to Community License
 
-In addition to updating the license, the EMQX Dashboard also provides a **Reset License** button. This feature allows users to reset the system to the default single-node community license.
-
-After resetting to the default License:
-
-- The current license will be cleared and replaced with the default community license.
-- Existing connections that exceed the license limit will remain active, but new connections will be rejected.
+The EMQX Dashboard also provides a **Remove License** button to allow users to revert to the default single-node Community License.
 
 ::: tip Note
 
-The default license does not allow full commercial use and supports only single-node deployments. Resetting the license will disable clustered deployment.
+In cluster mode, the License cannot be removed. If you are using EMQX in cluster mode, you must first dissolve the cluster.
+
+:::
+
+After reverting to the Community License:
+
+- The current license will be cleared and replaced with the Community License.
+- Existing client connections will remain active.
+
+::: tip Note
+
+The Community License does not allow full commercial use and supports only single-node deployments. Removing the license will disable clustered deployment.
 
 :::
 
@@ -76,6 +82,7 @@ You can also use the following command to update your EMQX Enterprise License:
 
     license info             # Show license info 
     license update <License> # Update license given as a string
+    license update default   # Revert to default Community License
 ```
 
 ### Configuration File
