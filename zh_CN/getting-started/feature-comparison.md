@@ -15,8 +15,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -173,6 +173,7 @@
 
 
 
+
 ## 可扩展性与性能
 
 <div style="text-align: center;">
@@ -186,8 +187,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -239,6 +240,7 @@
 
 
 
+
 ## 集群架构
 
 <div style="text-align: center;">
@@ -252,8 +254,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -354,6 +356,7 @@
 
 
 
+
 ## MQTT 与其他连接协议支持
 
 <div style="text-align: center;">
@@ -367,8 +370,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -511,6 +514,7 @@
 
 
 
+
 ## 安全
 
 <div style="text-align: center;">
@@ -524,8 +528,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -591,7 +595,6 @@
 
 
 
-
 ## 认证与授权
 
 <div style="text-align: center;">
@@ -605,8 +608,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -679,6 +682,7 @@
 
 
 
+
 ## 数据集成
 
 <div style="text-align: center;">
@@ -691,8 +695,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -870,7 +874,6 @@
 
 
 
-
 ## 规则引擎
 
 <div style="text-align: center;">
@@ -884,8 +887,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -972,7 +975,6 @@
 
 
 
-
 ## 可扩展性
 
 <div style="text-align: center;">
@@ -986,8 +988,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -1039,7 +1041,6 @@
 
 
 
-
 ## 可操作性
 
 <div style="text-align: center;">
@@ -1053,8 +1054,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -1106,6 +1107,7 @@
 
 
 
+
 ## 可观测性
 
 <div style="text-align: center;">
@@ -1119,8 +1121,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -1214,7 +1216,6 @@
 
 
 
-
 ## 云原生与 K8S
 
 <div style="text-align: center;">
@@ -1228,8 +1229,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -1260,6 +1261,7 @@
 
 
 
+
 ## 云平台支持
 
 <div style="text-align: center;">
@@ -1273,8 +1275,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -1326,6 +1328,7 @@
 
 
 
+
 ## MQTT 开发工具与 SDKs
 
 <div style="text-align: center;">
@@ -1339,8 +1342,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>
@@ -1420,6 +1423,7 @@
 
 
 
+
 ## 客户支持服务
 
 <div style="text-align: center;">
@@ -1433,8 +1437,8 @@
   </tr>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
 </thead>
 <tbody>

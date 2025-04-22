@@ -15,8 +15,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -172,6 +172,7 @@ This page lists features supported across different deployment types in detail.
 </div>
 
 
+
 ## Scalability and Performance
 
 <div style="text-align: center;">
@@ -185,8 +186,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -238,6 +239,7 @@ This page lists features supported across different deployment types in detail.
 
 
 
+
 ## Clustering Architecture
 
 <div style="text-align: center;">
@@ -251,8 +253,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -392,6 +394,7 @@ This page lists features supported across different deployment types in detail.
 </tbody>
 </table>
 </div>
+
 
 
 ## MQTT and Connectivity
@@ -407,8 +410,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -550,6 +553,7 @@ This page lists features supported across different deployment types in detail.
 </div>
 
 
+
 ## Security
 
 <div style="text-align: center;">
@@ -563,8 +567,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -629,6 +633,7 @@ This page lists features supported across different deployment types in detail.
 </div>
 
 
+
 ## Authentication and Authorization
 
 <div style="text-align: center;">
@@ -642,8 +647,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -715,6 +720,7 @@ This page lists features supported across different deployment types in detail.
 </div>
 
 
+
 ## Data Integration
 
 <div style="text-align: center;">
@@ -727,8 +733,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -905,6 +911,7 @@ This page lists features supported across different deployment types in detail.
 </div>
 
 
+
 ## Rule Engine
 
 <div style="text-align: center;">
@@ -918,8 +925,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -1005,6 +1012,7 @@ This page lists features supported across different deployment types in detail.
 </div>
 
 
+
 ## Extensibility
 
 <div style="text-align: center;">
@@ -1018,8 +1026,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -1070,6 +1078,7 @@ This page lists features supported across different deployment types in detail.
 </div>
 
 
+
 ## Operability
 
 <div style="text-align: center;">
@@ -1083,8 +1092,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -1135,6 +1144,7 @@ This page lists features supported across different deployment types in detail.
 </div>
 
 
+
 ## Observability
 
 <div style="text-align: center;">
@@ -1148,8 +1158,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -1242,6 +1252,7 @@ This page lists features supported across different deployment types in detail.
 </div>
 
 
+
 ## Cloud Native and K8S
 
 <div style="text-align: center;">
@@ -1255,8 +1266,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -1286,6 +1297,7 @@ This page lists features supported across different deployment types in detail.
 </div>
 
 
+
 ## Cloud Platform Availability
 
 <div style="text-align: center;">
@@ -1299,8 +1311,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -1350,6 +1362,7 @@ This page lists features supported across different deployment types in detail.
 </div>
 
 
+
 ## MQTT Tools and SDKs
 
 <div style="text-align: center;">
@@ -1363,8 +1376,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>
@@ -1443,6 +1456,7 @@ This page lists features supported across different deployment types in detail.
 </div>
 
 
+
 ## Support Services
 
 <div style="text-align: center;">
@@ -1456,8 +1470,8 @@ This page lists features supported across different deployment types in detail.
   </tr>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
 </thead>
 <tbody>

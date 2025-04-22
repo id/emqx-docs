@@ -52,7 +52,7 @@ You can update your license file and configure the settings for the license conn
 
    <img src="./assets/license.png" alt="license" style="zoom: 50%;" />
 
-#### Reset License in the Dashboard
+#### Reset License on Dashboard
 
 In addition to updating the license, the EMQX Dashboard also provides a **Reset License** button. This feature allows users to reset the system to the default single-node community license.
 

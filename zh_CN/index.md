@@ -67,20 +67,20 @@ EMQX 企业版提供图形化的管理系统 [Dashboard](./dashboard/introductio
 
 ## 部署模式和版本对比
 
-EMQX 有三种部署模式，包括两种云服务模式（EMQX Cloud Serverless 和 EMQX Cloud 专有版）和一种自托管模式（EMQX 企业版）。以下表格列出了这些部署模式的对比，以帮助您根据业务需求进行选择。想进一步了解具体的功能对比，参考[功能对比](./getting-started/feature-comparison.md)。
+EMQX 有三种部署模式，包括两种云服务模式（EMQX Serverless 和 EMQX 专有版）和一种自托管模式（EMQX 企业版）。以下表格列出了这些部署模式的对比，以帮助您根据业务需求进行选择。想进一步了解具体的功能对比，参考[功能对比](./getting-started/feature-comparison.md)。
 
 <table>
 <thead>
   <tr>
-     <th colspan="2">自托管模式</th>
+     <th colspan="1">自托管模式</th>
     <th colspan="2">云服务模式</th>
   </tr>
 </thead>
 <tbody>
   <tr>
     <td>EMQX 企业版</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Cloud 专有版</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX 专有版</td>
   </tr>
   <tr>
     <td><a href="https://www.emqx.com/zh/apply-licenses/emqx">免费试用</a></td>
@@ -94,6 +94,7 @@ EMQX 有三种部署模式，包括两种云服务模式（EMQX Cloud Serverless
   </tr>
 </tbody>
 </table>
+
 
 
 

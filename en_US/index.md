@@ -67,20 +67,20 @@ EMQX Enterprise provides a graphical management system called the [Dashboard](./
 
 ## Deployment Modes and Edition Comparison
 
-EMQ provides three deployment options for EMQX: two managed services (EMQX Cloud Serverless and EMQX Dedicated Cloud) and one self-hosted option (EMQX Enterprise). To help you choose the best deployment option for your requirements, the following table lists a comparison of feature support across different deployment types. For a comparison of supported features in detail, refer to [Feature Comparison](./getting-started/feature-comparison.md). 
+EMQ provides three deployment options for EMQX: two managed services (EMQX Serverless and EMQX Dedicated) and one self-hosted option (EMQX Enterprise). To help you choose the best deployment option for your requirements, the following table lists a comparison of feature support across different deployment types. For a comparison of supported features in detail, refer to [Feature Comparison](./getting-started/feature-comparison.md). 
 
 <table>
 <thead>
   <tr>
-    <th colspan="2">Self Hosted</th>
+    <th colspan="1">Self-Hosted</th>
     <th colspan="2">MQTT as a Service</th>
   </tr>
 </thead>
 <tbody>
   <tr>
     <td>EMQX Enterprise</td>
-    <td>EMQX Cloud Serverless</td>
-    <td>EMQX Dedicated Cloud</td>
+    <td>EMQX Serverless</td>
+    <td>EMQX Dedicated</td>
   </tr>
   <tr>
     <td><a href="https://www.emqx.com/en/apply-licenses/emqx">Get a Free Trial License</a></td>
@@ -94,6 +94,8 @@ EMQ provides three deployment options for EMQX: two managed services (EMQX Cloud
   </tr>
 </tbody>
 </table>
+
+
 
 
 
