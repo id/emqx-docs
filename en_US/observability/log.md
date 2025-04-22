@@ -53,11 +53,7 @@ Configure the following fields for general settings of the console log handler:
 
 - **Time Offset**: Define the format of the timestamp in the log. `system` is typed by default.
 
-- **Single Log Max Length**: Disabled by default, which means the maximum length of a single log message is unlimited. If you enable the toggle switch, you can specify the maximum length. When the length exceeds the limit, the log message will be truncated.
-
 - **Log Formatter**: Select the log format from the drop-down list. Optional values are: `text` and `json`. Default value is `text`. 
-
-  Note: If you select `json`, it is recommended to disable the toggle switch for **Single Log Max Length**, otherwise you will get incomplete json data.
 
 - **Single Line Mode**: Enabled by default. If you disable the toggle switch, log messages wrap around when being printed.
 
@@ -105,11 +101,7 @@ Configure the following fields for the general settings of the console log handl
 
 - **Time Offset**: Define the format of the timestamp in the log. `system` is typed by default.
 
-- **Single Log Max Length**: Disabled by default, which means the maximum length of a single log message is unlimited. If you enable the toggle switch, you can specify the maximum length. When the length exceeds the limit, the log message will be truncated.
-
 - **Log Formatter**: Select the log format from the drop-down list. Optional values are: `text` and `json`. Default value is `text`. 
-
-  Note: If you select `json`, it is recommended to disable the toggle switch for **Single Log Max Length**, otherwise you will get incomplete json data.
 
 - **Single Line Mode**: Enabled by default. When disabled, log messages wrap around when being printed.
 
