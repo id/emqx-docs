@@ -83,13 +83,9 @@ Configure the following settings for file log handler:
 
 - **Log Formatter**: Select the log format from the drop-down list. Optional values are `text` and `JSON`. The default value is `text`.
 
-  Note: If you select `JSON`, it is recommended to disable the toggle switch for **Single Log Max Length**, otherwise you will get incomplete JSON data.
-
-
 - **Timestamp Format**: Select the format of the timestamp in the log. Optional values are:
 
   - `auto`: Automatically determines the timestamp format based on the log formatter being used. Utilizes `rfc3339` format for text formatters, and `epoch` format for JSON formatters.
-
 
   - `epoch`: Represents timestamps in microseconds precision Unix epoch format.
 
