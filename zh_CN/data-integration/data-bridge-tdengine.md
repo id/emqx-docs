@@ -136,7 +136,7 @@ CREATE TABLE emqx_client_events (
    以下配置示例假定您在本地机器上同时运行 EMQX 和 TDengine。如果您在远程运行 TDengine 和 EMQX，请相应地调整设置。
 
    - **连接器名称**：应为大写和小写字母及数字的组合，例如：`my_tdenginedb`。
-   - **主机列表**：填写 `127.0.0.1:6041`。
+   - **服务器地址**：填写 `127.0.0.1:6041`。
    - **数据库**：填写 `mqtt`。
    - **用户名**：填写 `root`。
    - **密码**：填写 `taosdata`。
@@ -154,7 +154,7 @@ CREATE TABLE emqx_client_events (
    3. 填写以下连接器配置信息：
 
       - **连接器名称**：应为大写和小写字母及数字的组合，例如：`my_tdenginedb`。
-      - **主机列表**：填写 TDengine Cloud 给出的 `TDENGINE_CLOUD_URL` 的值。即：`https://gw.***.cloud.tdengine.com`。
+      - **服务器地址**：填写 TDengine Cloud 给出的 `TDENGINE_CLOUD_URL` 的值。即：`https://gw.***.cloud.tdengine.com`。
       - **数据库**：填写 `mqtt`。
       - **用户名**：保持为空。
       - **密码**：保持为空。
