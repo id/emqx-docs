@@ -1025,14 +1025,14 @@ CLI is only for inspection, Rule and action managements are managed from dashboa
 
 ```bash
 $ emqx ctl license info
-customer        : Evaluation
+customer        : Developer
 email           : contact@emqx.io
-deployment      : default
-max_connections : 100
-start_at        : 2023-01-09
-expiry_at       : 2028-01-08
-type            : trial
-customer_type   : 10
+deployment      : Development
+max_sessions    : 10000000
+start_at        : 2025-03-02
+expiry_at       : 2029-03-01
+type            : community
+customer_type   : 11
 expiry          : false
 ```
 
