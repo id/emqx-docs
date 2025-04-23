@@ -66,6 +66,10 @@ EMQX Dashboard 是一个 Web 应用程序，默认监听 `18083` 端口。下载
 ./bin/emqx ctl admins passwd <Username> <Password>
 ```
 
+### 密码过期
+
+如果您当前 Dashboard 登录密码的使用时间超过了配置的密码过期时间 (`password_expired_time`)，在您登录时系统会要求您修改密码。关于 `password_expired_time` 配置的详细信息，参考 [Dashboard 配置](../configuration/dashboard.md)。
+
 ## 配置 Dashboard
 
 Dashboard 默认监听 HTTP 端口，端口号默认为 18083，用户可以启用 HTTPS 或更改监听器端口。更多关于 Dashboard 如何配置和修改的使用方法请参考 [EMQX 开源版配置手册](https://docs.emqx.com/zh/emqx/v@CE_VERSION@/hocon/)和 [EMQX 企业版配置手册](https://docs.emqx.com/zh/enterprise/v@EE_VERSION@/hocon/)。

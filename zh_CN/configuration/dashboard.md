@@ -4,6 +4,7 @@
 
 - `listeners`
 - `token_expired_time`
+- `password_expired_time`
 - `cors`
 - `swagger_support`
 - `sso`
@@ -29,6 +30,7 @@ dashboard {
     }
   }
   token_expired_time = 60m
+  password_expired_time = 0
   cors = false
   swagger_support = true
   default_password = jEdOgGS6vzQ
@@ -102,6 +104,10 @@ dashboard {
 - `token_expired_time`
 
   JWT Token 的过期时间，等同于“浏览器会话过期时间”。用户登录后，EMQX 会生成一个 JWT Token 和一个刷新 Token。会话会在到期前自动续期。默认值为 `60m`。
+
+- `password_expired_time`
+
+  设置用户用于登录 Dashboard 的密码的过期时间，比如 `1h`。超过此时间，用户在登录 Dashbaord 时必须修改密码。默认值 `0` 表示密码永不过期。
 
 - `cors`
 

@@ -4,6 +4,7 @@ The EMQX Dashboard is a web-based graphical interface that enables real-time man
 
 - `listeners`
 - `token_expired_time`
+- `password_expired_time`
 - `cors`
 - `swagger_support`
 - `sso`
@@ -30,6 +31,7 @@ dashboard {
     }
   }
   token_expired_time = 60m
+  password_expired_time = 0
   cors = false
   swagger_support = true
   default_password = jEdOgGS6vzQ
@@ -103,6 +105,10 @@ Where,
 - `token_expired_time`
 
   JWT token expiration time. It is equivalent to "browser session expiration time". When a user logs in, EMQX generates a JWT token along with a refresh token. The session is automatically renewed before expiration. The default value is `60m`.
+
+- `password_expired_time`
+
+  Set the expiration time for the user's password used to log in to the Dashboard, such as `1h`. After this time, the user must change their password when logging into the Dashboard. The default value `0` means the password never expires.
 
 - `cors`
 

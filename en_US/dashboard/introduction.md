@@ -66,6 +66,10 @@ You can reset your Dashboard login password via the `admins` command. For detail
 ./bin/emqx ctl admins passwd <Username> <Password>
 ```
 
+### Password Expiration
+
+If the usage time of your current Dashboard login password exceeds the configured password expiration time (`password_expired_time`), the system will prompt you to change your password when you log in. For detailed information about the `password_expired_time` configuration, refer to [Dashboard Configuration](../configuration/dashboard.md).
+
 ## Configure Dashboard
 
 Dashboard listens to the HTTP by default, and the default port number is 18083. Users can enable HTTPS or change the listener port. For more information on how to configure and modify the Dashboard settings,  refer to the [EMQX Open Source Configuration Manual](https://docs.emqx.com/en/emqx/v@CE_VERSION@/hocon/) and [EMQX Enterprise Configuration Manual](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/).
