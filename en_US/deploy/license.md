@@ -54,7 +54,7 @@ You can update your license file and configure the settings for the license conn
 
 #### Revert to Community License
 
-The EMQX Dashboard also provides a **Remove License** button to allow users to revert to the default single-node Community License.
+The EMQX Dashboard allows users to revert to the default single-node Community License. You can click the **Remove License** button on the **License** page and confirm in the pop-up dialog to remove the current License.
 
 ::: tip Note
 
@@ -64,12 +64,12 @@ In cluster mode, the License cannot be removed. If you are using EMQX in cluster
 
 After reverting to the Community License:
 
-- The current license will be cleared and replaced with the Community License.
+- The current License will be cleared and replaced with the Community License.
 - Existing client connections will remain active.
 
 ::: tip Note
 
-The Community License does not allow full commercial use and supports only single-node deployments. Removing the license will disable clustered deployment.
+The Community License does not allow full commercial use and supports only single-node deployments. Removing the License will disable clustered deployment.
 
 :::
 

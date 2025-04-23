@@ -45,7 +45,7 @@
 
 #### 恢复社区版 License
 
-EMQX Dashboard 还提供了一个**移除 License** 按钮，允许用户将系统恢复为默认的单节点社区版 License。
+EMQX Dashboard 允许用户将系统恢复为默认的单节点社区版 License。您可以在 **License** 页面上点击**移除 License** 按钮，在弹出的对话框中进行二次确认以移除当前的 License。
 
 ::: tip 提示
 
