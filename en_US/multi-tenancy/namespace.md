@@ -57,7 +57,7 @@ With these two methods, you can choose the most appropriate way to create namesp
 
 ## Quick Start: Configure Rate Limiter per Namespace
 
-You can configure per-namespace rate limiters to control traffic and message flow for specific client groups. These limiters work in conjunction with EMQX's existing rate-limiting existing rate limiters for zones and listeners, depending on the type of limiter configured.
+You can configure per-namespace rate limiters to control traffic and message flow for specific client groups. These limiters work in conjunction with EMQX's existing rate limiters for zones and listeners, depending on the type of limiter configured.
 
 ### Limiter Types
 
