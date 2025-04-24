@@ -3,6 +3,7 @@
 EMQX provides hot configuration capabilities, which can dynamically modify the configuration at runtime without restarting the EMQX node. The EMQX Dashboard provides a visual configuration page for the hot configuration function, allowing you to easily modify the configuration of EMQX. The following configuration items are currently provided:
 
 - MQTT Settings
+- Namespace
 - Listeners
 - Logging
 - Monitoring
@@ -43,6 +44,10 @@ You can configure settings for the following fields in the **Force Shutdown** ta
 - **Enable Force Shutdown**: This toggle switch enables or disables the force shutdown feature. When enabled, the system automatically triggers the shutdown of client processes if the specified resource thresholds are surpassed. It is enabled by default.
 - **Max Heap Size**: Specifies the maximum allowed heap size for the system. If the heap size surpasses this limit, the system will initiate a forced shutdown to maintain stability. The default value is `32 MB`.
 - **Max Mailbox Size**: Defines the maximum allowed length for the mailbox message queue. If the queue exceeds this length, a forced shutdown will be triggered to prevent system overload. The default value is `1000`.
+
+## Namespace
+
+The Namespace feature in EMQX provides logical isolation for different client groups within a single cluster. You can manage namespaces on the **Namespace **page. For more detailed guidance on how to manage and configure namespaces, refer to the [Namespace](../multi-tenancy/namespace.md).
 
 ## Listeners
 
