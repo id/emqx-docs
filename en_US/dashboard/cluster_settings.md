@@ -47,7 +47,7 @@ You can configure settings for the following fields in the **Force Shutdown** ta
 
 ## Namespace
 
-The Namespace feature in EMQX provides logical isolation for different client groups within a single cluster. You can manage namespaces on the **Namespace **page. For more detailed guidance on how to manage and configure namespaces, refer to the [Namespace](../multi-tenancy/namespace.md).
+The Namespace feature in EMQX provides logical isolation for different client groups within a single cluster. You can manage namespaces on the **Namespace** page. For more detailed guidance on how to manage and configure namespaces, refer to the [Namespace](../multi-tenancy/namespace.md).
 
 ## Listeners
 
