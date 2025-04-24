@@ -26,8 +26,6 @@
 
   性能测试表明，在各种场景（单播、一对多和多播）下，8 核、16GB 内存节点的延迟没有显著增加。然而，在 2 核、4GB 内存节点上，当 `active_n = 100` 时，基线延迟已经处于较高的三位数范围，并且 CPU 使用率较高。决定降低 `active_n` 是为了优化更常见的使用场景，在这些场景中，系统稳定性优先于延迟（尤其是在较小实例上）。
 
-- [#14582](https://github.com/emqx/emqx/pull/14582) 在完全不必要的情况下，避免在序列化之前和反序列化之后对内部 JSON 表示进行预处理和后处理。
-
 #### 认证与授权
 
 - [#14665](https://github.com/emqx/emqx/pull/14665) 支持将客户端属性作为 ACL 规则的前置条件。
@@ -100,6 +98,8 @@
   }
   ```
 
+- [#14582](https://github.com/emqx/emqx/pull/14582) 在完全不必要的情况下，避免在序列化之前和反序列化之后对内部 JSON 表示进行预处理和后处理。
+
 #### 运维管理
 
 - [#14773](https://github.com/emqx/emqx/pull/14773) 改进了速率限制功能（适用于 Zone 或监听器的 `bytes_rate`、`messages_rate`、`max_conn_rate` 配置项）：
@@ -167,9 +167,9 @@
   - 增强资源管理能力
   - 为后续支持监听器动态配置做好准备
 
-#### 开发环境
+#### 系统升级
 
-- [#14639](https://github.com/emqx/emqx/pull/14639) 将剩余的 CI 流程中的 Erlang 版本统一切换为 Erlang/OTP 27。
+- [#14639](https://github.com/emqx/emqx/pull/14639) EMQX 现已支持 Erlang/OTP 27。
 
 ### 修复
 

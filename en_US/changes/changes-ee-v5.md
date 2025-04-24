@@ -28,8 +28,6 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
   Performance testing showed no significant increase in latency across various scenarios (one-to-one, fan-in, and fan-out) on 8-core, 16GB memory nodes. However, on 2-core, 4GB memory nodes, the baseline latency (with active_n = `100`) was already in the higher 3-digit range with high CPU utilization. The decision to lower `active_n` optimizes for more common use cases where system stablity takes precedence over latency (in smaller instances).
 
-- [#14582](https://github.com/emqx/emqx/pull/14582) Avoid pre- and post-processing of internal JSON representation before serialization and after deserialization respectively, in cases where it is completely unnecessary.
-
 #### Authentication & Authorization
 
 - [#14665](https://github.com/emqx/emqx/pull/14665) EMQX now supports client attribute as ACL rule pre-condition.
@@ -101,6 +99,8 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
     # ...
   }
   ```
+
+- [#14582](https://github.com/emqx/emqx/pull/14582) Avoid pre- and post-processing of internal JSON representation before serialization and after deserialization respectively, in cases where it is completely unnecessary.
 
 #### Administration
 
@@ -176,9 +176,9 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
   - Prepared to support more dynamic config changes on the listeners
 
-#### Development Environment
+#### System Upgrade
 
-- [#14639](https://github.com/emqx/emqx/pull/14639) Switched the remaining CI workflows to use Erlang/OTP 27.
+- [#14639](https://github.com/emqx/emqx/pull/14639) EMQX is now released on Erlang/OTP 27.
 
 ### Bug Fixes
 
