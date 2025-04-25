@@ -49,7 +49,7 @@ Manage and configure user accounts, audit logs, API keys, license settings, and 
 EMQX Dashboard is a web application that listens to port `18083` by default. After installing EMQX successfully, you can access and use the EMQX Dashboard by opening <http://localhost:18083/> (replace localhost with the actual IP address if deployed on a non-local machine) through your browser.
 
 ::: tip
-EMQX can still be used normally without Dashboard enabled, Dashboard just provides the option for users to use it visually.
+EMQX can still be used normally without the Dashboard enabled. The Dashboard just provides the option for users to use it visually.
 :::
 
 ### First Login
