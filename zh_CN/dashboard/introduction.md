@@ -68,7 +68,21 @@ EMQX Dashboard 是一个 Web 应用程序，默认监听 `18083` 端口。下载
 
 ### 密码过期
 
-如果您当前 Dashboard 登录密码的使用时间超过了配置的密码过期时间 (`password_expired_time`)，在您登录时系统会要求您修改密码。关于 `password_expired_time` 配置的详细信息，参考 [Dashboard 配置](../configuration/dashboard.md)。
+如果当前 Dashboard 登录密码的使用时长超过了配置的密码过期时间 (`password_expired_time`)，系统将在您登录时提示您修改密码。关于 `password_expired_time` 设置的详细信息，参考 [Dashboard 配置](../configuration/dashboard.md)。
+
+“管理员”角色的用户也可以通过 [REST API](../admin/api.md) 配置密码过期时间。
+
+**示例**：
+
+```bash
+curl -X 'PUT' \
+  'http://admin:ppp@localhost:18083/api/v5/configs/dashboard' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"password_expired_time": "1d"}'
+```
+
+上述示例中，密码过期时间被设置为 1 天。
 
 ## 配置 Dashboard
 

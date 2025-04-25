@@ -56,7 +56,7 @@ EMQX can still be used normally without Dashboard enabled, Dashboard just provid
 
 For users who have installed EMQX for the first time, you can use the default username `admin` and default password `public` to log in web page after opening the Dashboard in your browser.
 
-After logging in for the first time, the system will automatically detect that you are logging in with the default username and password, and will force you to change the default password, which is good for the security of accessing Dashboard, note that the changed password cannot be the same as the original password, and it is not recommended to use `public` as the login password again.
+After logging in for the first time, the system will automatically detect that you are logging in with the default username and password. It will force you to change the default password, which is good for the security of accessing the Dashboard. Note that the changed password cannot be the same as the original password, and it is not recommended to use `public` as the login password again.
 
 ### Reset Password
 
@@ -68,7 +68,21 @@ You can reset your Dashboard login password via the `admins` command. For detail
 
 ### Password Expiration
 
-If the usage time of your current Dashboard login password exceeds the configured password expiration time (`password_expired_time`), the system will prompt you to change your password when you log in. For detailed information about the `password_expired_time` configuration, refer to [Dashboard Configuration](../configuration/dashboard.md).
+If the duration of your current Dashboard login password exceeds the configured password expiration period (`password_expired_time`), you will be prompted to update your password upon login. For details about the `password_expired_time` setting, refer to the [Dashboard Configuration](../configuration/dashboard.md).
+
+Users with the "Administrator" role can also configure the password expiration time using the [REST API](../admin/api.md). 
+
+**Example**:
+
+```bash
+curl -X 'PUT' \
+  'http://admin:ppp@localhost:18083/api/v5/configs/dashboard' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"password_expired_time": "1d"}'
+```
+
+In this example, the password expiration time is set to 1 day.
 
 ## Configure Dashboard
 
