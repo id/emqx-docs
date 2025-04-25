@@ -56,7 +56,7 @@ To better handle the access pressure brought by a large number of publish/subscr
 
 - **No Match Action**: The action to take when all authorizers fail to retrieve authorization information; values to choose: **allow** (to operate), **deny** (to operate); default value: **allow**.
 
-- **Deny Action**: The action to take when denying the operating request from the current client; values to choose: **ignore** (operating request), **disconnect** (the connection of current client); default value: **allow**.
+- **Deny Action**: The action to take when denying the operating request from the current client; values to choose: **ignore** (operating request), **disconnect** (the connection of current client); default value: **ignore**.
 
 - **Clear Cache**: Clear the cache of all current authorization results. 
 
