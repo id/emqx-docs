@@ -24,7 +24,7 @@
 
 要将现有的 EMQX 集群升级到 5.1 或更高版本，您当前必须运行 4.4.x 版本。
 
-如果您运行的是早于 4.4.x 版本的版本，您必须首先逐个升级到 4.4.x 版本。例如，如果您当前运行的是 4.3.x 版本，则必须先升级到 4.4 版本，然后再升级到 5.x 版本。请参考 [4.4 升级指南](https://docs.emqx.com/zh/enterprise/v4.4/changes/upgrade-4.4.html#data-and-config-backup)获取指导。
+如果您运行的是早于 4.4.x 版本，您必须首先逐个升级到 4.4.x 版本。例如，如果您当前运行的是 4.3.x 版本，则必须先升级到 4.4 版本，然后再升级到 5.x 版本。请参考 [4.4 升级指南](https://docs.emqx.com/zh/enterprise/v4.4/changes/upgrade-4.4.html#data-and-config-backup)获取指导。
 
 ### 不兼容更改
 
