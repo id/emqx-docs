@@ -30,29 +30,11 @@
 
 在开始升级之前，您需要解决当前部署中的所有不兼容性或冲突。为了确定可能影响您的应用程序和部署的潜在兼容性问题和重大更改，请参考 [从 EMQX 4.4 到 EMQX 5.1 的不兼容变更](../changes/breaking-changes-5.1.0.md)，以及以下版本中的不兼容变更文档：
 
-:::: tabs type:card
-
-::: tab EMQX 企业版
-
 - [EMQX 5.4 中的不兼容变更](../changes/breaking-changes-ee-5.4.md)
 - [EMQX 5.5 中的不兼容变更](../changes/breaking-changes-ee-5.5.md)
 - [EMQX 5.6 中的不兼容变更](../changes/breaking-changes-ee-5.6.md)
 - [EMQX 5.7 中的不兼容变更](../changes/breaking-changes-ee-5.7.md)
 - [EMQX 5.8 中的不兼容变更](../changes/breaking-changes-ee-5.8.md)
-
-:::
-
-::: tab EMQX 开源版
-
-- [EMQX 5.4 中的不兼容变更](../changes/breaking-changes-ce-5.4.md)
-- [EMQX 5.5 中的不兼容变更](../changes/breaking-changes-ce-5.5.md)
-- [EMQX 5.6 中的不兼容变更](../changes/breaking-changes-ce-5.6.md)
-- [EMQX 5.7 中的不兼容变更](../changes/breaking-changes-ce-5.7.md)
-- [EMQX 5.8 中的不兼容变更](../changes/breaking-changes-ce-5.8.md)
-
-:::
-
-::::
 
 此外，建议在将升级部署到生产环境之前，在测试环境中充分测试您的应用程序。这将有助于确保平稳过渡并最小化潜在的中断。
 
