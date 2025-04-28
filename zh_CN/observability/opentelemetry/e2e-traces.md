@@ -48,7 +48,7 @@
 
 4. 点击**追踪高级配置**，根据需要进行高级设置。参考[通过配置文件配置端对端追踪](#通过配置文件配置端对端追踪)中的配置示例。
 
-   - **追踪配置**：用于设置其他追踪选项，包括是否追踪特定事件（如客户端连接、消息传输等）。
+   - **追踪配置**：用于设置其他追踪选项，包括是否追踪特定事件（如客户端连接、消息传输、规则引擎执行及数据集成动作等）。
      - **跟随 Traceparent**：设置是否跟随 `traceparent`，设置为 `true` 时 EMQX 将尝试从客户端传入的 `User-Property` 中获取 `traceparent` 标识并将端到端追踪与之关联。否则 EMQX 将为端到端追踪生成新的追踪。默认为 `true` 。
    - **客户端 ID 白名单**：设置一个客户端 ID 白名单，以限制哪些客户端的连接或消息会被追踪。可以避免不必要的追踪以降低额外的系统资源消耗。
    - **主题白名单**：设置一个主题白名单，只有匹配的主题才能被追踪，类似于客户端白名单的作用，帮助控制追踪的范围。
@@ -75,10 +75,12 @@ opentelemetry {
    e2e_tracing_options {
      ## 是否追踪客户端连接/断开事件
      client_connect_disconnect = true
-     ## 是否追踪客户端消息事件
-     client_messaging = true
      ## 是否追踪客户端订阅/取消订阅事件
      client_subscribe_unsubscribe = true
+     ## 是否追踪客户端消息事件
+     client_messaging = true
+     ## 是否追踪规则引擎执行
+     trace_rule_engine = true
      ## 客户端ID 白名单最大长度
      clientid_match_rules_max = 30
      ## 主题过滤器白名单最大长度
@@ -142,6 +144,23 @@ opentelemetry {
    特别地，由于客户端 `mqttx_9137a6bb` 与消息发布者连接在不同的 EMQX 节点。在消息向该客户端投递时需要跨节点传输，所以具有两个额外的跨度：`message.forward` 与 `message.handle_forward`。
 
    ![Jaeger-WEB-UI-e2e-Message](./assets/e2e-message.png)
+
+   此外，对于触发了规则引擎执行的消息或事件，在开启了追踪规则引擎选项的情况下，还能获取到规则及动作执行的追踪信息。
+
+   ![Jaeger-WEB-UI-e2e-With-Rule-Engine](./assets/e2e-with-rule-engine.png)
+
+   ::: tip
+
+   仅 EMQX 5.9.0 及以上版本支持规则引擎的端到端追踪功能。
+
+   :::
+
+   ::: warning 重要提示
+
+   请谨慎开启此功能，在某个消息或时间将触发多个规则及动作的情况下，在单个 Trace 中可能产生大量 Span，这将增大系统负载。
+   请视消息量及规则和动作数量估算合适的跟踪抽样率。
+
+   :::
 
 ## 管理追踪跨度过载
 
