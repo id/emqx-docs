@@ -8,9 +8,68 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 ### Enhancements
 
-- [#14996](https://github.com/emqx/emqx/pull/14996) RabbitMQ action supports using the default exchange.
+- [#14930](https://github.com/emqx/emqx/pull/14930) Start releasing macOS 15 (Sequoia) packages
 
-- [#14979](https://github.com/emqx/emqx/pull/14979) Support for `zone` and `listener` in authentication and authorization templates.  
+- [#14590](https://github.com/emqx/emqx/pull/14590) Limit the maximum uptime for a node running under evaluation license to one month. After reaching the uptime limit, the node will reject new connections.
+
+- [#14017](https://github.com/emqx/emqx/pull/14017) Support for parsing customized types of InfoReport data messages in the GB/T 32960 gateway
+
+#### Core MQTT Functionalities
+
+- [#14047](https://github.com/emqx/emqx/pull/14047) Lowered default `active_n` value from `100` to `10`.
+
+  This change improves the responsiveness of MQTT clients to control signals, particularly when publishing at high rates with small messages.
+
+  The new `active_n` value of `10` is set deliberately lower than the default Receive-Maximum (`32`), to introduce more push-back at the TCP layer in the following scenarios:
+
+  - The MQTT client process is blocked while performing external authorization checks.
+
+  - The MQTT client process is blocked during data integration message sends.
+
+  - EMQX is experiencing overload conditions.
+
+  Performance testing showed no significant increase in latency across various scenarios (one-to-one, fan-in, and fan-out) on 8-core, 16GB memory nodes. However, on 2-core, 4GB memory nodes, the baseline latency (with active_n = `100`) was already in the higher 3-digit range with high CPU utilization. The decision to lower `active_n` optimizes for more common use cases where system stablity takes precedence over latency (in smaller instances).
+
+- [#14721](https://github.com/emqx/emqx/pull/14721) Delayed publish interval limit changed from 4294967 seconds (49.7 days) to 42949670 seconds (497 days).
+
+- [#14595](https://github.com/emqx/emqx/pull/14595) Deprecate `retainer.enable` flag. Retainer starts and stops automatically based on the `mqtt.retain_available` flag in zone configurations.
+
+#### Multi-tenancy
+
+- [#14261](https://github.com/emqx/emqx/pull/14261) Introduced enhancements to facilitate multi-tenancy in MQTT client management.
+
+  New features:
+
+  - **Multi-Tenant Client Recognition**: MQTT clients with a `tns` attribute are now treated as multi-tenant clients.
+  - **Namespace Indexing**: Added the MQTT client namespace (`tns`) to the client ID index to support multi-tenancy scenarios.
+
+  APIs:
+
+  - **List Namespaces**: Introduced a paginated API to retrieve namespaces:
+    Endpoint: `/api/v5/mt/ns_list`
+  - **List Client Sessions in a Namespace**: Added a paginated API to fetch client sessions within a specific namespace:
+    Endpoint: `/api/v5/mt/:ns/client_list`
+  - **Count Live Client Sessions in a Namespace**: New API to retrieve the number of active client sessions in a namespace:
+    Endpoint: `/api/v5/mt/:ns/client_count`
+
+  Configuration:
+
+  - **Session Limit Per Namespace**: Added the `multi_tenancy.default_max_sessions` configuration to enforce limits on the number of client sessions allowed per namespace.
+
+  Notes:
+
+  - Admin multi-tenancy (admin user groups) is not included in this pull request and remains under development.
+
+- [#14884](https://github.com/emqx/emqx/pull/14884) Added HTTP API to manage multi-tenancy configurations.
+
+- [#14840](https://github.com/emqx/emqx/pull/14840) Added HTTP API endpoints to configure client and tenant rate limiters for multi-tenancy feature.
+
+
+#### Authentication & Authorization
+
+- [#14584](https://github.com/emqx/emqx/pull/14584) Support authenticator app for dashboard 2FA (2-factor authentication) login.
+
+- [#14979](https://github.com/emqx/emqx/pull/14979) Support for `zone` and `listener` in authentication and authorization templates.
   Also added `zone` and `listener` to the `who` match conditions in ACL rules.
 
   This enables per-listener or per-zone access control.
@@ -28,110 +87,6 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
   For example, to trigger the HTTP authenticator only for clients connected via `tcp:default`, and Postgre authenticators for those on `ssl:default`, you can use preconditions like str_eq(listener, 'tcp:default') or str_eq(listener, 'ssl:default').
 
 - [#14966](https://github.com/emqx/emqx/pull/14966) Added the possibility of deleting the default dashboard admin user.  For that, at least one other admin user must exist.
-
-- [#14930](https://github.com/emqx/emqx/pull/14930) Start releasing macOS 15 (Sequoia) packages
-
-- [#14901](https://github.com/emqx/emqx/pull/14901) Added a new type of schema to Schema Registry: `external_http`.  With this new schema type, it's possible to setup an external HTTP server that performs arbitrary operations to the payload and return the result to be used in Rules.
-
-- [#14892](https://github.com/emqx/emqx/pull/14892) 1. Fix load imbalance in core/replicant cluster.
-     Previously, under certain conditions all transactions from the replicants could be sent to a single core node.
-
-  2. Add CLI commands for rebalancing replicant nodes in relation to core nodes:
-     - `emqx_ctl cluster core rebalance plan`
-     - `emqx_ctl cluster core rebalance status`
-     - `emqx_ctl cluster core rebalance confirm`
-     - `emqx_ctl cluster core rebalance abort`
-
-- [#14884](https://github.com/emqx/emqx/pull/14884) Added HTTP API to manage multi-tenancy configurations.
-
-- [#14876](https://github.com/emqx/emqx/pull/14876) End-to-end tracing support for Rule Engine, including tracing for the following entry:
-
-  - Client-published messages triggering Rules
-  - Client events and alert events triggering Rules
-  - Source-triggered Rules
-  - Actions executed by Rules
-
-  Limitations:
-  Fallback action tracing is not currently supported.
-
-- [#14845](https://github.com/emqx/emqx/pull/14845) Avoid unnecessary restarts of existing listeners when changing gateway configurations and listeners.
-
-
-- [#14840](https://github.com/emqx/emqx/pull/14840) Added HTTP API endpoints to configure client and tenant rate limiters for multi-tenancy feature.
-
-- [#14794](https://github.com/emqx/emqx/pull/14794) Add the `payload_limit` parameter to the HTTP API interface for the Log Trace.
-  Previously, the payload print would be truncated if its size exceeded 1024 bytes.
-  Now, this limit is configurable.
-
-- [#14766](https://github.com/emqx/emqx/pull/14766) Added safeguards to `emqx ctl cluster leave` command to prevent nodes responsible for Durable Storage data replication from leaving the cluster.
-
-- [#14642](https://github.com/emqx/emqx/pull/14642) Added new Connector and Action types that allow logging events to local disk in JSON lines format.
-
-- [#14629](https://github.com/emqx/emqx/pull/14629) Added support for [JSON Lines](https://jsonlines.org/) container types for S3 and Azure Blob Storage Actions.
-
-- [#14590](https://github.com/emqx/emqx/pull/14590) Limit the maximum uptime for a node running under evaluation license to one month. After reaching the uptime limit, the node will reject new connections.
-
-- [#14584](https://github.com/emqx/emqx/pull/14584) Support authenticator app for dashboard 2FA (2-factor authentication) login.
-
-- [#14261](https://github.com/emqx/emqx/pull/14261) Introduced enhancements to facilitate multi-tenancy in MQTT client management.
-
-  New features:
-
-  - **Multi-Tenant Client Recognition**: MQTT clients with a `tns` attribute are now treated as multi-tenant clients.
-  - **Namespace Indexing**: Added the MQTT client namespace (`tns`) to the client ID index to support multi-tenancy scenarios.
-
-  APIs:
-
-  - **List Namespaces**: Introduced a paginated API to retrieve namespaces:
-    Endpoint: `/api/v5/mt/ns_list`
-  - **List Client Sessions in a Namespace**: Added a paginated API to fetch client sessions within a specific namespace:  
-    Endpoint: `/api/v5/mt/:ns/client_list`
-  - **Count Live Client Sessions in a Namespace**: New API to retrieve the number of active client sessions in a namespace:  
-    Endpoint: `/api/v5/mt/:ns/client_count`
-
-  Configuration:
-
-  - **Session Limit Per Namespace**: Added the `multi_tenancy.default_max_sessions` configuration to enforce limits on the number of client sessions allowed per namespace.
-
-  Notes:
-
-  - Admin multi-tenancy (admin user groups) is not included in this pull request and remains under development.
-
-- [#14118](https://github.com/emqx/emqx/pull/14118) Support `ON DUPLICATE KEY UPDATE` in mysql actions.
-
-  Now the user can specify `ON DUPLICATE KEY UPDATE` in the `mysql` action, e.g.:
-
-  ```
-  INSERT INTO t1 (a,b,c) VALUES (${id},${clientid},${qos}) ON DUPLICATE KEY UPDATE a=a;
-  ```
-
-  Note that the `ON DUPLICATE KEY UPDATE` clause doesn't support placeholders (`${var}`).
-
-- [#14040](https://github.com/emqx/emqx/pull/14040) Added timeouts to the internal RPC calls during node rebalance. Previously, the rebalance process could hang if a node was unresponsive.
-
-- [#14017](https://github.com/emqx/emqx/pull/14017) Support for parsing customized types of InfoReport data messages in the GB/T 32960 gateway
-
-#### Core MQTT Functionalities
-
-- [#14721](https://github.com/emqx/emqx/pull/14721) Delayed publish interval limit changed from 4294967 seconds (49.7 days) to 42949670 seconds (497 days).
-
-- [#14595](https://github.com/emqx/emqx/pull/14595) Deprecate `retainer.enable` flag. Retainer starts and stops automatically based on the `mqtt.retain_available` flag in zone configurations.
-
-- [#14047](https://github.com/emqx/emqx/pull/14047) Lowered default `active_n` value from `100` to `10`.
-
-  This change improves the responsiveness of MQTT clients to control signals, particularly when publishing at high rates with small messages.
-
-  The new `active_n` value of `10` is set deliberately lower than the default Receive-Maximum (`32`), to introduce more push-back at the TCP layer in the following scenarios:
-
-  - The MQTT client process is blocked while performing external authorization checks.
-
-  - The MQTT client process is blocked during data integration message sends.
-
-  - EMQX is experiencing overload conditions.
-
-  Performance testing showed no significant increase in latency across various scenarios (one-to-one, fan-in, and fan-out) on 8-core, 16GB memory nodes. However, on 2-core, 4GB memory nodes, the baseline latency (with active_n = `100`) was already in the higher 3-digit range with high CPU utilization. The decision to lower `active_n` optimizes for more common use cases where system stablity takes precedence over latency (in smaller instances).
-
-#### Authentication & Authorization
 
 - [#14358](https://github.com/emqx/emqx/pull/14358) Limit variables used in LDAP authentication/authorization templates to the ones that are allowed in the other authentication/authorization sources. The unsupported variables are kept unrendered.
 
@@ -171,9 +126,40 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 #### Clustering
 
+- [#14766](https://github.com/emqx/emqx/pull/14766) Added safeguards to `emqx ctl cluster leave` command to prevent nodes responsible for Durable Storage data replication from leaving the cluster.
+
+- [#14040](https://github.com/emqx/emqx/pull/14040) Added timeouts to the internal RPC calls during node rebalance. Previously, the rebalance process could hang if a node was unresponsive.
+
+- [#14892](https://github.com/emqx/emqx/pull/14892) 1. Fix load imbalance in core/replicant cluster.
+     Previously, under certain conditions all transactions from the replicants could be sent to a single core node.
+
+  2. Add CLI commands for rebalancing replicant nodes in relation to core nodes:
+     - `emqx_ctl cluster core rebalance plan`
+     - `emqx_ctl cluster core rebalance status`
+     - `emqx_ctl cluster core rebalance confirm`
+     - `emqx_ctl cluster core rebalance abort`
+
 - [#14907](https://github.com/emqx/emqx/pull/14907) Improved stability of node evacuation. Previously, the evacuation could enter a dead loop and require manual intervention to recover.
 
 #### Data Integration
+
+- [#14118](https://github.com/emqx/emqx/pull/14118) Support `ON DUPLICATE KEY UPDATE` in mysql actions.
+
+  Now the user can specify `ON DUPLICATE KEY UPDATE` in the `mysql` action, e.g.:
+
+  ```
+  INSERT INTO t1 (a,b,c) VALUES (${id},${clientid},${qos}) ON DUPLICATE KEY UPDATE a=a;
+  ```
+
+  Note that the `ON DUPLICATE KEY UPDATE` clause doesn't support placeholders (`${var}`).
+
+- [#14629](https://github.com/emqx/emqx/pull/14629) Added support for [JSON Lines](https://jsonlines.org/) container types for S3 and Azure Blob Storage Actions.
+
+- [#14642](https://github.com/emqx/emqx/pull/14642) Added new Connector and Action types that allow logging events to local disk in JSON lines format.
+
+- [#14996](https://github.com/emqx/emqx/pull/14996) RabbitMQ action supports using the default exchange.
+
+- [#14901](https://github.com/emqx/emqx/pull/14901) Added a new type of schema to Schema Registry: `external_http`.  With this new schema type, it's possible to setup an external HTTP server that performs arbitrary operations to the payload and return the result to be used in Rules.
 
 - [#14722](https://github.com/emqx/emqx/pull/14722) Added a new `connect_timeout` option to MQTT Connector. This controls how long in seconds the connection process is allowed to be stuck waiting to establish connection. Lower values may improve connection problem feedback times.
 
@@ -199,6 +185,8 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 #### Administration
 
+- [#14845](https://github.com/emqx/emqx/pull/14845) Avoid unnecessary restarts of existing listeners when changing gateway configurations and listeners.
+
 - [#14773](https://github.com/emqx/emqx/pull/14773) Improved rate-limiting functionality (`bytes_rate`, `messages_rate`, `max_conn_rate` configured for zones or listeners).
 
   - The rate-limiting algorithm is simplified to work more predictably. It does not try to impose backpressure on the client(s). Instead, it drops the messages. For QoS1/QoS2 messages the appropriate reason code is also returned.
@@ -220,6 +208,20 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
   The number of attempts and lock duration can be configured.
 
 #### Observability
+
+- [#14794](https://github.com/emqx/emqx/pull/14794) Add the `payload_limit` parameter to the HTTP API interface for the Log Trace.
+  Previously, the payload print would be truncated if its size exceeded 1024 bytes.
+  Now, this limit is configurable.
+
+- [#14876](https://github.com/emqx/emqx/pull/14876) End-to-end tracing support for Rule Engine, including tracing for the following entry:
+
+  - Client-published messages triggering Rules
+  - Client events and alert events triggering Rules
+  - Source-triggered Rules
+  - Actions executed by Rules
+
+  Limitations:
+  Fallback action tracing is not currently supported.
 
 - [#14723](https://github.com/emqx/emqx/pull/14723) Add `method` option to the Prometheus Push Gateway configuration. Before this change, the default value was `post`. Now, it is `put`.
 
