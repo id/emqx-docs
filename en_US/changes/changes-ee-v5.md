@@ -8,6 +8,109 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 ### Enhancements
 
+- [#14996](https://github.com/emqx/emqx/pull/14996) RabbitMQ action supports using the default exchange.
+
+- [#14979](https://github.com/emqx/emqx/pull/14979) Support for `zone` and `listener` in authentication and authorization templates.  
+  Also added `zone` and `listener` to the `who` match conditions in ACL rules.
+
+  This enables per-listener or per-zone access control.
+  Examples:
+
+  - Send the `zone` name in requests to the HTTP authenticator using a body template like:
+    `{"username": "${username}", "zone": "${zone}"}`
+
+  - In `acl.conf`, allow clients to subscribe to `${username}/#` only if connected via the SSL listener:
+    `{allow, {listener, "ssl:default"}, subscribe, ["${username}/#"]}.`
+
+- [#14976](https://github.com/emqx/emqx/pull/14976) Added support for the precondition configuration for authenticators.
+
+  This allows selective invocation of authenticators based on client information, helping avoid unnecessary authentication requests.
+  For example, to trigger the HTTP authenticator only for clients connected via `tcp:default`, and Postgre authenticators for those on `ssl:default`, you can use preconditions like str_eq(listener, 'tcp:default') or str_eq(listener, 'ssl:default').
+
+- [#14966](https://github.com/emqx/emqx/pull/14966) Added the possibility of deleting the default dashboard admin user.  For that, at least one other admin user must exist.
+
+- [#14930](https://github.com/emqx/emqx/pull/14930) Start releasing macOS 15 (Sequoia) packages
+
+- [#14901](https://github.com/emqx/emqx/pull/14901) Added a new type of schema to Schema Registry: `external_http`.  With this new schema type, it's possible to setup an external HTTP server that performs arbitrary operations to the payload and return the result to be used in Rules.
+
+- [#14892](https://github.com/emqx/emqx/pull/14892) 1. Fix load imbalance in core/replicant cluster.
+     Previously, under certain conditions all transactions from the replicants could be sent to a single core node.
+
+  2. Add CLI commands for rebalancing replicant nodes in relation to core nodes:
+     - `emqx_ctl cluster core rebalance plan`
+     - `emqx_ctl cluster core rebalance status`
+     - `emqx_ctl cluster core rebalance confirm`
+     - `emqx_ctl cluster core rebalance abort`
+
+- [#14884](https://github.com/emqx/emqx/pull/14884) Added HTTP API to manage multi-tenancy configurations.
+
+- [#14876](https://github.com/emqx/emqx/pull/14876) End-to-end tracing support for Rule Engine, including tracing for the following entry:
+
+  - Client-published messages triggering Rules
+  - Client events and alert events triggering Rules
+  - Source-triggered Rules
+  - Actions executed by Rules
+
+  Limitations:
+  Fallback action tracing is not currently supported.
+
+- [#14845](https://github.com/emqx/emqx/pull/14845) Avoid unnecessary restarts of existing listeners when changing gateway configurations and listeners.
+
+
+- [#14840](https://github.com/emqx/emqx/pull/14840) Added HTTP API endpoints to configure client and tenant rate limiters for multi-tenancy feature.
+
+- [#14794](https://github.com/emqx/emqx/pull/14794) Add the `payload_limit` parameter to the HTTP API interface for the Log Trace.
+  Previously, the payload print would be truncated if its size exceeded 1024 bytes.
+  Now, this limit is configurable.
+
+- [#14766](https://github.com/emqx/emqx/pull/14766) Added safeguards to `emqx ctl cluster leave` command to prevent nodes responsible for Durable Storage data replication from leaving the cluster.
+
+- [#14642](https://github.com/emqx/emqx/pull/14642) Added new Connector and Action types that allow logging events to local disk in JSON lines format.
+
+- [#14629](https://github.com/emqx/emqx/pull/14629) Added support for [JSON Lines](https://jsonlines.org/) container types for S3 and Azure Blob Storage Actions.
+
+- [#14590](https://github.com/emqx/emqx/pull/14590) Limit the maximum uptime for a node running under evaluation license to one month. After reaching the uptime limit, the node will reject new connections.
+
+- [#14584](https://github.com/emqx/emqx/pull/14584) Support authenticator app for dashboard 2FA (2-factor authentication) login.
+
+- [#14261](https://github.com/emqx/emqx/pull/14261) Introduced enhancements to facilitate multi-tenancy in MQTT client management.
+
+  New features:
+
+  - **Multi-Tenant Client Recognition**: MQTT clients with a `tns` attribute are now treated as multi-tenant clients.
+  - **Namespace Indexing**: Added the MQTT client namespace (`tns`) to the client ID index to support multi-tenancy scenarios.
+
+  APIs:
+
+  - **List Namespaces**: Introduced a paginated API to retrieve namespaces:
+    Endpoint: `/api/v5/mt/ns_list`
+  - **List Client Sessions in a Namespace**: Added a paginated API to fetch client sessions within a specific namespace:  
+    Endpoint: `/api/v5/mt/:ns/client_list`
+  - **Count Live Client Sessions in a Namespace**: New API to retrieve the number of active client sessions in a namespace:  
+    Endpoint: `/api/v5/mt/:ns/client_count`
+
+  Configuration:
+
+  - **Session Limit Per Namespace**: Added the `multi_tenancy.default_max_sessions` configuration to enforce limits on the number of client sessions allowed per namespace.
+
+  Notes:
+
+  - Admin multi-tenancy (admin user groups) is not included in this pull request and remains under development.
+
+- [#14118](https://github.com/emqx/emqx/pull/14118) Support `ON DUPLICATE KEY UPDATE` in mysql actions.
+
+  Now the user can specify `ON DUPLICATE KEY UPDATE` in the `mysql` action, e.g.:
+
+  ```
+  INSERT INTO t1 (a,b,c) VALUES (${id},${clientid},${qos}) ON DUPLICATE KEY UPDATE a=a;
+  ```
+
+  Note that the `ON DUPLICATE KEY UPDATE` clause doesn't support placeholders (`${var}`).
+
+- [#14040](https://github.com/emqx/emqx/pull/14040) Added timeouts to the internal RPC calls during node rebalance. Previously, the rebalance process could hang if a node was unresponsive.
+
+- [#14017](https://github.com/emqx/emqx/pull/14017) Support for parsing customized types of InfoReport data messages in the GB/T 32960 gateway
+
 #### Core MQTT Functionalities
 
 - [#14721](https://github.com/emqx/emqx/pull/14721) Delayed publish interval limit changed from 4294967 seconds (49.7 days) to 42949670 seconds (497 days).
@@ -165,6 +268,51 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 - [#14639](https://github.com/emqx/emqx/pull/14639) EMQX is now released on Erlang/OTP 27.
 
 ### Bug Fixes
+
+- [#15087](https://github.com/emqx/emqx/pull/15087) Fixed an issue with `hocon` library in which, if one had any string one-liner field that ended in a lone backslash, the configuration file would fail to be parsed later.
+
+- [#15084](https://github.com/emqx/emqx/pull/15084) Client attributes `zone` and `listener` can be used as various string function input.
+
+  Previously functions like `regex_match` would raise exception because `zone` and `listener` are internally atoms.
+
+- [#15067](https://github.com/emqx/emqx/pull/15067) Fixed a couple of issues with Cluster Linking Route Replication.
+  * Replication process may enter erratic reconnect loop when the Cluster Link is misconfigured on local or remote side, which will hinder replication once misconfiguration is resolved.
+  * Replication process may crash during attempts to close non-existing MQTT client connection.
+  * Replication boostrapping may crash if shared subscriptions are present in the routing table.
+
+- [#15056](https://github.com/emqx/emqx/pull/15056) For MQTT messages whose payload is a JSON list object, it is no longer necessary to explicitly decode the payload in the `foreach` statement.
+
+- [#15051](https://github.com/emqx/emqx/pull/15051) Enhance the TDEngine connector by adding parameter validation and updating the driver version to provide clearer error messages.
+
+- [#15018](https://github.com/emqx/emqx/pull/15018) Fixed a bug with Exhook in which attemtping to import an invalid `exhook` configuration via the CLI would result in a crash with a `badarg` error.
+
+- [#15012](https://github.com/emqx/emqx/pull/15012) Fixed an issue where the `publish_confirmation_timeout` parameter of RabbitMQ Actions were being multiplied by 1000.
+
+- [#14989](https://github.com/emqx/emqx/pull/14989) Reduced the number of API calls that Kinesis Connection and Action do when (re)starting and during health checks.
+
+  Previously, upon (re)starting the Connector, it would perform one `ListStreams` request for each worker in its connection pool.  Additionally, each periodic health check would do `ListStreams` for each worker.  The Action health check would do `DescribeStream` for each connection worker in the pool.
+
+  Now, the Connector no longer performs the initial `ListStreams` upon (re)starting.  Both Connector and Action attempt to check if at least one worker has a healthy response from their respective API requests: the request is attempted by each worker serially, and the Connector or Action is considered `connected` upon the first successful response received.  Thus, in the best case scenario, each Connector and each Action will do 1 API request each per health check, regardless of pool sizea.  In the worst case scenario, each worker in the pool might still perform one request each, if they fail to receive a sucessful response.
+
+- [#14988](https://github.com/emqx/emqx/pull/14988) Fixed an issue where schema validation or message transformation configurations could be imported before schema registry when restoring a backup, leading to validation errors.
+
+- [#14977](https://github.com/emqx/emqx/pull/14977) Fix `emqx ctl conf cluster_sync status` command node display order.
+
+  Previously the node name for new/old config were printed in the other way around.
+
+- [#14933](https://github.com/emqx/emqx/pull/14933) Resolved a rare edge case where a Durable Storage backed by DS Raft could be assigned to storage sites that had left the cluster long ago.
+
+- [#14767](https://github.com/emqx/emqx/pull/14767) Kafka producer now smoothly handles Kafka topic re-creation with fewer partitions.
+  Previously, the lost partition producers may linger behind to retry and write large amount of error logs.
+
+- [#14303](https://github.com/emqx/emqx/pull/14303) Fix `scram:http` authentication.
+
+- [#14121](https://github.com/emqx/emqx/pull/14121) Deprecated the `health_check_topic` configuration for Kafka Consumer Connector to avoid further confusion.  This parameters was never actually used for this connector type.
+
+- [#14906](https://github.com/emqx/emqx/pull/14906) Update Mria to 0.8.12.1 to eliminate occasional warnings caused by unexpected exit signals.
+  ```
+  2025-01-10T20:00:00+00:00 [warning] clientid: C1, msg: emqx_session_mem_unknown_message, message: {'EXIT',<0.123456.0>,normal}
+  ```
 
 #### Core MQTT Functionalities
 
