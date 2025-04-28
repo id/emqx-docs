@@ -28,14 +28,6 @@
 
 #### 认证与授权
 
-- [#14665](https://github.com/emqx/emqx/pull/14665) 支持将客户端属性作为 ACL 规则的前置条件。
-
-  例如，以下规则将允许客户端属性 `"type"` 值为 `"internal"` 的客户端发布或订阅所有主题：
-   `{allow, {client_attr, "type", "internal"}, all, ["#"]}.`
-
-  而以下规则将拒绝属性 `"type"` 以 `"external-"` 开头的所有客户端发布任何消息：
-   `{deny, {client_attr, "type", {re, "external-.*"}}, publish, ["#"]}.`
-
 - [#14358](https://github.com/emqx/emqx/pull/14358) 限制 LDAP 认证/授权模板中可用的变量，仅允许使用在其他认证/授权来源中支持的变量。所有不支持的变量将不会被渲染。
 
 - [#14610](https://github.com/emqx/emqx/pull/14610) 支持处理从外部来源获取或存储在内置数据库中的授权规则中新增的字段。
@@ -65,8 +57,6 @@
 
 #### REST API
 
-- [#14507](https://github.com/emqx/emqx/pull/14507) 新增两个 HTTP API 接口：`GET /actions_summary` 和 `GET /sources_summary`。这两个接口类似于现有的 `GET /actions` 和 `GET /sources`，但返回内容更轻量：不会包含所有实体的完整配置信息。
-- [#14496](https://github.com/emqx/emqx/pull/14496) 为 `POST /data/export` 接口的 `root_keys` 参数添加了额外的校验。现在，如果传入无效的 root key，将返回错误，而不会被静默忽略。
 - [#14254](https://github.com/emqx/emqx/pull/14254) 在 `/status` HTTP 接口的返回结果中新增集群名称字段。
 - [#14972](https://github.com/emqx/emqx/pull/14972) 实现了用于下载和上传单个插件配置的 API 接口。
 - [#15013](https://github.com/emqx/emqx/pull/15013) 在规则引擎相关的 HTTP API 返回结果中新增 `action_details` 字段。该字段包含每条规则中引用的动作的类型、名称和状态信息。
@@ -126,10 +116,6 @@
 
   更多信息可参考 [PUT method 文档](https://github.com/prometheus/pushgateway?tab=readme-ov-file#put-method)。
 
-- [#14656](https://github.com/emqx/emqx/pull/14656) 增强对 Prometheus Push 的支持：支持更多指标，并允许将集群名称作为 Job 名称中的变量。
-
-- [#14645](https://github.com/emqx/emqx/pull/14645) 增加了更多日志信息，以帮助调试首次获取 CRL（证书吊销列表）时的情况（即缓存和自动刷新机制启动前）。成功会以 `debug` 等级记录，失败会以 `warning` 等级记录。
-
 - [#14636](https://github.com/emqx/emqx/pull/14636) 弃用了原有的指标 `packets.publish.dropped`，并引入两个更具语义化的新指标：`messages.dropped.quota_exceeded` 和 `messages.dropped.receive_maximum`。
 
   - `messages.dropped.quota_exceeded`：当客户端达到配置的速率限制（例如 QoS 0 消息数量限制）时触发。
@@ -157,18 +143,7 @@
 
 #### MQTT over QUIC
 
-- [#14583](https://github.com/emqx/emqx/pull/14583) QUIC 监听器现在支持将 TLS 密钥导出至 `SSLKEYLOGFILE`，以便用于流量解密。
-
-  Wireshark 可使用 `SSLKEYLOGFILE` 解密实时或捕获的 QUIC 流量，从而解析出 MQTT 数据包。
-
-  示例环境变量配置：
-
-  `EMQX_LISTENERS__QUIC__DEFAULT__SSLKEYLOGFILE=/tmp/EMQX_SSLKEYLOGFILE`
-
-  **注意**：此为隐藏配置，仅用于排障目的。
-
 - [#14431](https://github.com/emqx/emqx/pull/14431) QUIC 协议栈更新至新版：`quicer 0.2.3`
-
   - 基于 `msquic 2.3.8`（附带补丁）
   - 增强资源管理能力
   - 为后续支持监听器动态配置做好准备
@@ -193,14 +168,12 @@
 #### 认证与授权
 
 - [#14777](https://github.com/emqx/emqx/pull/14777) 修复 JWT 授权配置更新时部分字段未正确更新的问题，尤其是使用外部 JWKS endpoint 时。
-- [#14585](https://github.com/emqx/emqx/pull/14585) 密码哈希比对时改为忽略大小写，以提升兼容性。
 - [#14556](https://github.com/emqx/emqx/pull/14556) 修复在节点启动或关闭期间极少发生的认证误判（false positive）问题。
 - [#15059](https://github.com/emqx/emqx/pull/15059) 修复 Redis 授权配置被更新为非法值时导致认证模块崩溃的问题。现在将返回错误提示并阻止更新。
 
 #### 规则引擎
 
-- [#14849](https://github.com/emqx/emqx/pull/14849) 移除 `POST /rule_test` 接口返回中的无效字段 `event_type`，该字段在实际事件中并不存在，可能导致测试结果混淆。
-- [#14824](https://github.com/emqx/emqx/pull/14824) 修复 SQL 规则测试器中，当输入事件为 `alarm_activated` 或 `alarm_deactivated` 且包含特殊 `details` 值时可能引发 500 错误的问题。
+- [#14849](https://github.com/emqx/emqx/pull/14849) 从 `POST /rule_test` 响应中移除了一个多余的字段（`event_type`）。这个字段是一个内部字段，实际上在真实事件中并不存在，因此它出现在规则测试输出中可能会引起混淆。
 
 #### 数据集成
 
@@ -242,10 +215,6 @@
 
 #### 运维管理
 
-- [#14834](https://github.com/emqx/emqx/pull/14834) 修复下载数据备份文件时 `Content-Type` 响应头设置错误的问题。
-- [#14774](https://github.com/emqx/emqx/pull/14774) 修复插件相关问题：
-  - 启动插件时若集群节点上未存在插件配置文件，导致配置拉取失败的问题已解决。
-- [#14826](https://github.com/emqx/emqx/pull/14826) 修复 exhook 服务返回 "IGNORE" 不生效的问题。
 - [#14931](https://github.com/emqx/emqx/pull/14931) `mqtt.max_qos_allowed` 现在会被用于决定订阅确认（SUBACK）中的 `reason code`，此前返回的 QoS 等级是订阅请求中的值，而非实际授予的 QoS。
 - [#14975](https://github.com/emqx/emqx/pull/14975) 修复某些 TLS 监听器配置项无法热更新的问题。此前必须先禁用再启用监听器，才能使更改生效。
 - [#15037](https://github.com/emqx/emqx/pull/15037) 修复动态创建的 Zone 无法应用速率限制的问题。此前如果 Zone 在节点启动后创建，其速率限制配置不会生效。
@@ -253,6 +222,8 @@
 #### 插件与扩展
 
 - [#15073](https://github.com/emqx/emqx/pull/15073) 为 `exhook` 配置中的服务器 URL 添加了验证器。这样可以确保只有有效的 URL 能够被保存。无效的 URL 将触发错误并阻止保存，从而避免在导入过程中出现问题，以前无效的 URL 可能会被接受。
+- [#14774](https://github.com/emqx/emqx/pull/14774) 修复插件相关问题：启动插件时若集群节点上未存在插件配置文件，导致配置拉取失败的问题已解决。
+- [#14826](https://github.com/emqx/emqx/pull/14826) 修复 exhook 服务返回 "IGNORE" 不生效的问题。
 
 #### MQTT over QUIC
 

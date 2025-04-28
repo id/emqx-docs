@@ -30,12 +30,6 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 #### Authentication & Authorization
 
-- [#14665](https://github.com/emqx/emqx/pull/14665) EMQX now supports client attribute as ACL rule pre-condition.
-
-  For example, below rule will alow clients with an attribute `"type"` of value `"internal"` to publish or subscribe all topics: `{allow, {client_attr, "type", "internal"}, all, ["#"]}.`
-
-  And the rule below should deny all clients with an attribute `"type"` prefixed with `"external-"` to publish any message: `{deny, {client_attr, "type", {re, "external-.*"}}, publish, ["#"]}.`
-
 - [#14358](https://github.com/emqx/emqx/pull/14358) Limit variables used in LDAP authentication/authorization templates to the ones that are allowed in the other authentication/authorization sources. The unsupported variables are kept unrendered.
 
 - [#14610](https://github.com/emqx/emqx/pull/14610) Handle additional fields in authorization rules fetched from the external sources or stored in the built-in database.
@@ -67,8 +61,6 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 #### REST API
 
-- [#14507](https://github.com/emqx/emqx/pull/14507) Added two new HTTP APIs: `GET /actions_summary` and `GET /sources_summary`. These are similar to the existing `GET /actions` and `GET /sources`, respectively, but with more lightweight contents: basically, they do not return the configurations for all entities.
-- [#14496](https://github.com/emqx/emqx/pull/14496) Added extra validation to the `root_keys` parameters of `POST /data/export`. Now, invalid root keys will result in an error instead of being silently ignored.
 - [#14254](https://github.com/emqx/emqx/pull/14254) Return cluster name in `/status` HTTP endpoint.
 - [#14972](https://github.com/emqx/emqx/pull/14972) Implemented API methods for downloading/uploading individual plugin configs.
 - [#15013](https://github.com/emqx/emqx/pull/15013) Added a new `action_details` field to the rule information returned by Rule Engine HTTP APIs.  This new fields contains the type, name and status of actions referenced by each rule.
@@ -132,10 +124,6 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
   See the [PUT method](https://github.com/prometheus/pushgateway?tab=readme-ov-file#put-method) for more details.
 
-- [#14656](https://github.com/emqx/emqx/pull/14656) Enhanced Prometheus push to support more metrics and allow the cluster name to be used as a variable name for the Job.
-
-- [#14645](https://github.com/emqx/emqx/pull/14645) Added more log messages to help debug fetching CRLs for the first time (before they are cached and refreshed automatically). Successes and failures are logged at `debug` and `warning` levels, respectively.
-
 - [#14636](https://github.com/emqx/emqx/pull/14636) The `packets.publish.dropped` metric has been deprecated and replaced with two new, more meaningful metrics:
 
   - `messages.dropped.quota_exceeded`: Triggered when a client exceeds its configured rate limit, such as the allowed number of QoS 0 messages.
@@ -163,16 +151,6 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
   - Introduced a new method for updating plugin configurations that respects the result of the `on_config_changed` callback.
 
 #### MQTT over QUIC
-
-- [#14583](https://github.com/emqx/emqx/pull/14583) QUIC listener now supports dumping TLS secrets to SSLKEYLOGFILE for traffic decryption.
-
-  The SSLKEYLOGFILE could be used by wireshark to decrypt live or captured QUIC traffic so that the MQTT packets could be decoded.
-
-  example:
-
-  `EMQX_LISTENERS__QUIC__DEFAULT__SSLKEYLOGFILE=/tmp/EMQX_SSLKEYLOGFILE`
-
-  NOTE: This is hidden configuration for troubleshooting only.
 
 - [#14431](https://github.com/emqx/emqx/pull/14431) Switched to newer QUIC stack: quicer 0.2.3:
 
@@ -212,8 +190,6 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#14777](https://github.com/emqx/emqx/pull/14777) Fixed settings update for JWT authentication. Previously, some fields may be not updated correctly for a configuration with external JWKS endpoint.
 
-- [#14585](https://github.com/emqx/emqx/pull/14585) Used case-insensitive comparisons when comparing password hashes with strings obtained from external sources.
-
 - [#14556](https://github.com/emqx/emqx/pull/14556) Fixed rarely possible false positive authentication while the node is starting or shutting down.
 
 - [#15059](https://github.com/emqx/emqx/pull/15059) Fixed the reaction to updating the Redis authentication config with invalid values.
@@ -223,8 +199,7 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 #### Rule Engine
 
-- [#14849](https://github.com/emqx/emqx/pull/14849) Removed an spurious fild (`event_type`) from `POST /rule_test` responses. This was an internal field that doesn't actually appear in real events, so its presence in rule test outputs could be confusing.
-- [#14824](https://github.com/emqx/emqx/pull/14824) Fixed an issue where, depending on the provided values of the `details` key of an `alarm_activated` or `alarm_deactivated` event to the SQL Rule Tester, a 500 error could be returned.
+- [#14849](https://github.com/emqx/emqx/pull/14849) Removed an spurious field (`event_type`) from `POST /rule_test` responses. This was an internal field that doesn't actually appear in real events, so its presence in rule test outputs could be confusing.
 
 #### Data Integration
 
@@ -265,11 +240,6 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 #### Administration
 
-- [#14834](https://github.com/emqx/emqx/pull/14834) Fixed the `Content-Type` header when downloading data backup files.
-- [#14774](https://github.com/emqx/emqx/pull/14774) Resolved plugin related issues
-  - Fixed a retrieval issue with the plugin configuration file from cluster nodes when initiating the plugin without an existing configuration file.
-
-- [#14826](https://github.com/emqx/emqx/pull/14826) Fixed the issue where the exhook server's return of "IGNORE" was not taking effect.
 - [#14931](https://github.com/emqx/emqx/pull/14931) The configuration `mqtt.max_qos_allowed` is now used as the granted subscription QoS and returned as the `reason code` in the **SUBACK** packet.
   Previously, the `reason code` in **SUBACK** packets was hard-coded to the subscription QoS instead of dynamically reflecting the granted QoS.
 - [#14975](https://github.com/emqx/emqx/pull/14975) Fixed an issue preventing on-the-fly updates to certain TLS listener options, requiring a disable-enable cycle for changes to take effect.
@@ -278,6 +248,8 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 #### Plugin and Extention
 
 - [#15073](https://github.com/emqx/emqx/pull/15073) Added a validator for the server URL in the `exhook` configuration. This ensures that only valid URLs can be saved. Invalid URLs will now trigger an error and prevent being saved, which helps avoid issues during the import process, where previously invalid URLs could be accepted.
+- [#14774](https://github.com/emqx/emqx/pull/14774) Resolved plugin related issues. Fixed a retrieval issue with the plugin configuration file from cluster nodes when initiating the plugin without an existing configuration file.
+- [#14826](https://github.com/emqx/emqx/pull/14826) Fixed the issue where the exhook server's return of "IGNORE" was not taking effect.
 
 #### MQTT over QUIC
 
