@@ -84,6 +84,14 @@ curl -X 'PUT' \
 
 In this example, the password expiration time is set to 1 day.
 
+### Account Lockout and Unlock
+
+To enhance security, the EMQX Dashboard implements an "Account Lockout and Unlock" mechanism. When a user enters the wrong password 5 times within a 5-minute window, their account will be locked for 10 minutes.
+
+Users with the "Administrator" role can manually unlock the account via the CLI by resetting the user's password. After 10 minutes, the account will automatically be unlocked, and the user will be able to log in again normally.
+
+Administrators can also configure the lockout duration and the number of failed attempts required for lockout through the backend settings.
+
 ## Configure Dashboard
 
 Dashboard listens to the HTTP by default, and the default port number is 18083. Users can enable HTTPS or change the listener port. For more information on how to configure and modify the Dashboard settings,  refer to the [EMQX Open Source Configuration Manual](https://docs.emqx.com/en/emqx/v@CE_VERSION@/hocon/) and [EMQX Enterprise Configuration Manual](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/).
