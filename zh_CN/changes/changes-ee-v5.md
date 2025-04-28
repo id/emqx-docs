@@ -2,7 +2,7 @@
 
 ## 5.9.0
 
-*发布日期：2025-04-22*
+*发布日期：2025-05-02*
 
 升级前请查看已知问题列表和不兼容变更列表。
 
@@ -149,6 +149,12 @@
 
 - [#14647](https://github.com/emqx/emqx/pull/14647)  `cluster.hocon` 文件的备份现在支持通过可配置的时间间隔进行。此前每次配置变更都会创建一次备份，现在改为收集多个更改后再进行一次备份，以减少不必要的备份频率。
 
+#### 插件与扩展
+
+- [#14957](https://github.com/emqx/emqx/pull/14957) 增强了插件配置更新的处理：
+  - 增加了对插件 `on_config_changed` 回调响应的支持。确保在更新插件配置时，即使插件已停止，也能正确调用插件的回调来处理配置变化。
+  - 引入了一种新的插件配置更新方法，该方法会根据 `on_config_changed` 回调的结果来进行配置更新。
+
 #### MQTT over QUIC
 
 - [#14583](https://github.com/emqx/emqx/pull/14583) QUIC 监听器现在支持将 TLS 密钥导出至 `SSLKEYLOGFILE`，以便用于流量解密。
@@ -178,6 +184,7 @@
 - [#14707](https://github.com/emqx/emqx/pull/14707) 修复在启用 strict_mode 时，带有 DUP 标志的 QoS 2 PUBLISH 报文被错误地视为无效报文的问题。
 - [#14192](https://github.com/emqx/emqx/pull/14192) 修复由于认证/授权过期导致断开的客户端无法发送遗嘱消息的问题。此前由于遗嘱发送发生在权限过期之后，导致消息无法通过授权校验而被阻止。
 - [#14122](https://github.com/emqx/emqx/pull/14122) 修复当客户端错误地将 QoS 2 消息使用 PUBACK 响应，或将 QoS 1 消息使用 PUBREC/PUBCOMP 响应时，EMQX 未断开连接的问题。现在若客户端使用错误的应答流程，EMQX 将主动断开连接。
+- [#15106](https://github.com/emqx/emqx/pull/15106) 修复了 `GET api/v5/clients_v2` API 返回重复 `clientid` 值的 bug。该问题是由于 `chaninfo` 事件意外复活，导致客户端数据重复。修复确保此类事件不会无意中影响客户端列表，从而解决了客户端页面上出现重复客户端的情况。
 
 #### 安装部署
 
@@ -242,6 +249,10 @@
 - [#14931](https://github.com/emqx/emqx/pull/14931) `mqtt.max_qos_allowed` 现在会被用于决定订阅确认（SUBACK）中的 `reason code`，此前返回的 QoS 等级是订阅请求中的值，而非实际授予的 QoS。
 - [#14975](https://github.com/emqx/emqx/pull/14975) 修复某些 TLS 监听器配置项无法热更新的问题。此前必须先禁用再启用监听器，才能使更改生效。
 - [#15037](https://github.com/emqx/emqx/pull/15037) 修复动态创建的 Zone 无法应用速率限制的问题。此前如果 Zone 在节点启动后创建，其速率限制配置不会生效。
+
+#### 插件与扩展
+
+- [#15073](https://github.com/emqx/emqx/pull/15073) 为 `exhook` 配置中的服务器 URL 添加了验证器。这样可以确保只有有效的 URL 能够被保存。无效的 URL 将触发错误并阻止保存，从而避免在导入过程中出现问题，以前无效的 URL 可能会被接受。
 
 #### MQTT over QUIC
 

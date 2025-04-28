@@ -2,7 +2,7 @@
 
 ## 5.9.0
 
-*Release Date: 2025-03-25*
+*Release Date: 2025-05-02*
 
 Make sure to check the breaking changes and known issues before upgrading to EMQX 5.9.0.
 
@@ -156,6 +156,12 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#14647](https://github.com/emqx/emqx/pull/14647) `cluster.hocon` backups are now made at a configurable interval. Instead of create a backup for each single config update operation, now we collect several changes before backing the file up, reducing the number of such backups.
 
+#### Plugin and Extension
+
+- [#14957](https://github.com/emqx/emqx/pull/14957) Enhanced plugin configuration update handling:
+  - Added support for respecting the `on_config_changed` callback response for plugins. This ensures that when the configuration of a plugin is updated, the plugin’s callback is properly called to handle the change, even for stopped plugins.
+  - Introduced a new method for updating plugin configurations that respects the result of the `on_config_changed` callback.
+
 #### MQTT over QUIC
 
 - [#14583](https://github.com/emqx/emqx/pull/14583) QUIC listener now supports dumping TLS secrets to SSLKEYLOGFILE for traffic decryption.
@@ -191,6 +197,8 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 - [#14122](https://github.com/emqx/emqx/pull/14122) Fixed handling of `PUBACK` and `PUBREC`/`PUBCOMP` when the published message has QoS 2 and 1, repectively.
 
   Prior to this fix, the broker would accept `PUBACK` and `PUBREC`/`PUBCOMP` packets from clients referencing packet identifiers that corresponded to messages with QoS 2 and 1, respectively. Now, the broker will disconnect clients that behave like this.
+
+- [#15106](https://github.com/emqx/emqx/pull/15106) Fixed a bug where duplicated `clientid` values were being returned by the `GET api/v5/clients_v2` API. This issue occurred due to the accidental resurrection of `chaninfo` events, causing unexpected client data duplication. The fix ensures that such events do not inadvertently affect the client list, resolving the issue where clients appeared as duplicated on the client page.
 
 #### Installation
 
@@ -266,6 +274,10 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
   Previously, the `reason code` in **SUBACK** packets was hard-coded to the subscription QoS instead of dynamically reflecting the granted QoS.
 - [#14975](https://github.com/emqx/emqx/pull/14975) Fixed an issue preventing on-the-fly updates to certain TLS listener options, requiring a disable-enable cycle for changes to take effect.
 - [#15037](https://github.com/emqx/emqx/pull/15037) Fixed rate limiting for dynamicalley created zones. Previously, the rate-limiting was not applied if a zone was created after the EMQX node was started.
+
+#### Plugin and Extention
+
+- [#15073](https://github.com/emqx/emqx/pull/15073) Added a validator for the server URL in the `exhook` configuration. This ensures that only valid URLs can be saved. Invalid URLs will now trigger an error and prevent being saved, which helps avoid issues during the import process, where previously invalid URLs could be accepted.
 
 #### MQTT over QUIC
 
