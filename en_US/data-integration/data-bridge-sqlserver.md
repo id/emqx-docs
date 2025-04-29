@@ -250,7 +250,7 @@ The following steps assume that you run both EMQX and Microsoft SQL Server on th
    
    - **Password**: Enter the preset password `mqtt_public1`, or use the actual password.
    
-   - **SQL Server Driver Name**: Enter `ms-sql`, as the DSN Name configured in `odbcinst.ini`
+   - **SQL Server Driver Name**: Enter `ms-sql`, as the DSN Name configured in `odbcinst.ini`.
    
 5. Advanced settings (optional):  For details, see [Features of Sink](./data-bridges.md#features-of-sink).
 
