@@ -15,8 +15,6 @@ A Namespace is a logical boundary in EMQX used to group MQTT clients and apply i
 Namespaces can be used to control:
 
 - Topic isolation using automatic topic prefixing (mountpoint)
-- Client ID isolation to avoid clashes between tenants
-- Authentication and authorization policies per namespace
 - Per-namespace client count limits and connection tracking
 - Logging metadata enrichment with namespace information
 - Rate limiting per namespace
@@ -56,7 +54,7 @@ There are two methods for creating namespaces: explicit creation and automatic c
     :::: tip Note
     Automatic namespace creation is only enabled when `multi_tenancy.allow_only_managed_namespaces = false`.
     ::::
-With these two methods, you can choose the most appropriate way to create namespaces based on your needs. Explicit creation is ideal for environments requiring strict control, while automatic creation is suitable for dynamic environments with reduced manual intervention.
+   With these two methods, you can choose the most appropriate way to create namespaces based on your needs. Explicit creation is ideal for environments requiring strict control, while automatic creation is suitable for dynamic environments with reduced manual intervention.
 
 ## Quick Start: Configure Rate Limiter per Namespace
 
@@ -72,9 +70,8 @@ In a managed namespace, there are two types of rate limiters:
 
 Both limiter types can define limits for:
 
-- **Message rate limits**: the maximum number of messages a client or tenant can publish over a given time period
-- **Byte throughput limits**: the maximum allowed size for message payloads over time
-- **Subscription rate limits**: the maximum number of topics a client can subscribe to within a specified time window
+- **Message rate limits**: The maximum number of messages a client or tenant can publish over a given time period.
+- **Byte throughput limits**: The maximum allowed size for message payloads over time.
 
 ::: tip
 
@@ -216,7 +213,7 @@ Automatically created namespaces cannot be edited in the Dashboard.
 
 3. After completing the configuration, click **Create**. The new namespace will appear in the list.
 
-#### Manage Namespaces
+#### Edit and Delete Namespaces
 
 To edit the settings for a specific namespace, click **Edit** in the **Actions** column for that namespace.
 
