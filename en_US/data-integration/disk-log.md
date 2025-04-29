@@ -5,7 +5,7 @@ This page provides a detailed introduction to the data integration between EMQX 
 
 ## How It Works
 
-While EMQX includes built-in system logging for monitoring operational events (such as errors, warnings, and system activities), the Disk Log integration serves a different purpose: it enables EMQX to persist actual MQTT message data and client-level events to disk for long-term retention and offline processing.
+While EMQX includes built-in system logging for monitoring operational events (such as errors, warnings, and system activities), the Disk Log integration serves a different purpose: it enables EMQX to persist actual MQTT message data and client-level events to disk for retention and offline processing.
 
 Implemented using EMQX’s rule engine and Sink mechanism, the Disk Log integration enables users to define exactly what data is captured and how it should be stored:
 
