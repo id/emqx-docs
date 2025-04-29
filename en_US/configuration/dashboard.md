@@ -139,7 +139,7 @@ Where,
 
 - `unsuccessful_login_interval`
 
-  Defines the time window (in minutes) during which failed login attempts are counted towards the limit. For example, if set to `5`, it means that the maximum number of failed attempts will be checked within a 5-minute interval. The default value is `5` minutes.
+  Defines the time window during which failed login attempts are counted towards the limit. For example, if set to `5`, the system will track the number of failed login attempts within a 5-minute period. The default value is `5` minutes.
 
 - `sso`
 
