@@ -13,7 +13,7 @@ This process allows EMQX to extend beyond just message transmission between IoT 
 - Currently, EMQX only supports the following external data systems to be served as Sources:
 
   - MQTT Services
-  - Kafka 
+  - Kafka
   - GCP PubSub
 
   Among them, Kafka and GCP PubSub Sources are only supported in the EMQX Enterprise edition.
@@ -124,6 +124,7 @@ The EMQX Open Source edition only supports two types of data integrations: [MQTT
 - [Amazon S3](./s3.md)
 - [Azure Blob Storage](./azure-blob-storage.md)
 - [Snowflake](./snowflake.md)
+- [Disk Log](./disk-log.md)
 
 ## Features of Sink
 
@@ -180,6 +181,68 @@ INSERT INTO msg(topic, qos, payload) VALUES(${topic}, ${qos}, ${payload});
 
 In addition to automatically inferring field types, the prepared statement technology also prevents SQL injection to enhance security.
 
+### Fallback Actions
+
+Starting from EMQX 5.9.0, you can define a set of fallback actions for any given action. These fallback actions will be triggered when the primary action fails to process a message. This mechanism helps improve data reliability and observability by allowing messages to be redirected to secondary targets such as another Sink or a republish action.
+
+Fallback actions can be used to:
+
+- Forward failed messages to a backup data system (e.g., another Sink).
+- Republish failed messages to a monitoring topic for troubleshooting or alerting.
+- Minimize data loss in the event of temporary issues with the primary action.
+
+#### Key Characteristics
+
+- Fallback actions are triggered only when the primary action fails to process a message. Failures include delivery errors, buffer overflow, and request TTL expiry.
+- They always operate in asynchronous request mode, regardless of their own configuration.
+- All defined fallback actions will be triggered concurrently. EMQX does not attempt them one-by-one or stop at the first success.
+- Fallback actions share the same buffering mechanism as regular actions, meaning messages are retried up to their request TTL or if there is buffer overflow.
+- Fallback actions do **not** trigger further fallback actions. If a fallback action itself fails, its own configured fallback actions (if any) will **not** be triggered.
+- Processing of messages by fallback actions do not affect metrics of their primary actions or of the original rule that triggered the primary action.
+
+#### Define a Fallback Action
+
+Suppose you have an HTTP action named `my_http`, and you want to define fallback actions for it. You also have an existing MQTT action called `fallback`.
+
+You can configure the fallback logic as follows:
+
+```hcl
+actions {
+  http {
+    my_http {
+      fallback_actions = [
+        {kind = reference, type = mqtt, name = fallback},
+        {
+          kind = republish,
+          args = {
+            topic = "fallback/republish/topic"
+            qos = 1
+            payload = "${payload}"
+          }
+        }
+      ]
+      # other configs omitted
+    }
+  }
+  mqtt {
+    fallback {
+      fallback_actions = [
+        {kind = reference, type = mqtt, name = another_fallback}
+      ]
+      # other configs omitted
+    }
+  }
+}
+```
+
+In this example:
+
+- If the HTTP action `my_http` fails, the message will be:
+  - Forwarded to the MQTT action `fallback`
+  - Republished to the topic `fallback/republish/topic`
+- If `fallback` also fails, the fallback action `another_fallback` defined under `fallback` will **not** be triggered. Fallback actions do not support recursive chaining.
+- If `fallback` is triggered as a primary action in a different rule and fails, then its own fallback (`another_fallback`) would apply.
+
 ## Sink Status and Statistics
 
 You can view the running status and statistics of a Sink on the Dashboard to know if the Sink is operating properly.
@@ -220,7 +283,7 @@ The `success` statistic counts the number of messages that were successfully rec
 
 The `failed` statistic counts the number of messages that failed to be received by the external data system.  `retried.failed` is a sub-count of `failed` which tracks the number of messages with delivery retried at least once.  Therefore, `retried.failed <= failed`.
 
-#### Dropped 
+#### Dropped
 
 The `dropped` statistic counts the number of messages that were dropped without any delivery attempt. It contains several more specific categories, each indicating a distinct reason for the drop. The calculation for `dropped` is:`dropped = dropped.expired + dropped.queue_full + dropped.resource_stopped + dropped.resource_not_found`.
 

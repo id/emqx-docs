@@ -363,6 +363,9 @@
     - title_en: Datalayers
       title_cn: Datalayers
       path: data-integration/data-bridge-datalayers
+    - title_en: Disk Log
+      title_cn: Disk Log
+      path: data-integration/disk-log
     - title_en: DynamoDB
       title_cn: DynamoDB
       path: data-integration/data-bridge-dynamo
