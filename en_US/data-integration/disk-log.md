@@ -28,7 +28,7 @@ Disk Log integration provides a flexible, lightweight, and local-first solution 
 
 - **Fine-Grained Data Control**: Log only the messages or events you care about using SQL-based rules. Apply transformation, filtering, and enrichment to message data before logging.
 - **Structured Output Format**: Stores data in JSON Lines for easy machine processing.
-- **Lightweight and Self-Contained**: No need to connect to external storage systems or databases. Ideal for edge deployments, offline scenarios, or environments with storage constraints.
+- **Lightweight and Self-Contained**: No need to connect to external storage systems or databases.
 - **Observability and Debugging**: Enables message-level visibility for troubleshooting or audits. Complements EMQX system logs by recording data flow instead of system events.
 
 ## Before You Start
