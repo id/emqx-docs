@@ -1,15 +1,18 @@
 # Dashboard Configuration
 
-The EMQX Dashboard is a web-based graphical interface that enables real-time management and monitoring of EMQX and its connected devices. You can configure the following settings for the Dashboard:
+The EMQX Dashboard is a web-based graphical interface that enables real-time management and monitoring of EMQX and its connected devices. 
+
+EMQX Dashboard configuration includes many configuration items. For example, you can enable the Swagger UI through the `swagger_support` configuration and configure a listener for the EMQX Dashboard to accept all incoming connections. In addition, the following common configuration items are also available:
 
 - `listeners`
 - `token_expired_time`
 - `password_expired_time`
 - `cors`
-- `swagger_support`
+- `default_password`
+- `unsuccessful_login_max_attempts`
+- `unsuccessful_login_duration`
+- `unsuccessful_login_interval`
 - `sso`
-
-For example, you can enable the Swagger UI and configure a listener for the EMQX Dashboard to accept all incoming connections. 
 
 Below is a sample Dashboard configuration:
 
@@ -35,6 +38,9 @@ dashboard {
   cors = false
   swagger_support = true
   default_password = jEdOgGS6vzQ
+  unsuccessful_login_max_attempts = 5
+  unsuccessful_login_lock_duration = 10m
+  unsuccessful_login_interval = 5m
   sso = {
     ldap = {
       enable = true
@@ -121,6 +127,19 @@ Where,
 - `default_password`
 
   The password used to initialize the database record for `admin` user. NOTE: Changing this config after EMQX has booted for the first time has no effect. Once initialized, the default password `public` (which comes with the installation) must be changed from the Dashboard or CLI.
+
+
+- `unsuccessful_login_max_attempts`
+
+  Specifies the maximum number of failed login attempts allowed within a specific period. If the user exceeds this limit, their account will be temporarily locked. The default value is `5`.
+
+- `unsuccessful_login_duration`
+
+  Sets the duration (in minutes) for which the account will be locked after reaching the maximum number of unsuccessful login attempts. The default value is `10` minutes.
+
+- `unsuccessful_login_interval`
+
+  Defines the time window (in minutes) during which failed login attempts are counted towards the limit. For example, if set to `5`, it means that the maximum number of failed attempts will be checked within a 5-minute interval. The default value is `5` minutes.
 
 - `sso`
 

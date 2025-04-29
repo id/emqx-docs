@@ -90,7 +90,7 @@ To enhance security, the EMQX Dashboard implements an "Account Lockout and Unloc
 
 Users with the "Administrator" role can manually unlock the account via the CLI by resetting the user's password. After 10 minutes, the account will automatically be unlocked, and the user will be able to log in again normally.
 
-Administrators can also configure the lockout duration and the number of failed attempts required for lockout through the backend settings.
+Administrators can also configure the lockout duration and the number of failed attempts required for lockout through the backend settings. For details of the settings, refer to the [Dashboard Configuration](../configuration/dashboard.md).
 
 ## Configure Dashboard
 

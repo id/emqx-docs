@@ -1,15 +1,18 @@
 # Dashboard 配置
 
-在 EMQX 中， Dashboard 是一个基于 Web 的图形界面，用于实时管理和监控 EMQX 及连接的设备。您可以配置以下 Dashboard 配置项：
+在 EMQX 中， Dashboard 是一个基于 Web 的图形界面，用于实时管理和监控 EMQX 及连接的设备。
+
+EMQX Dashboard 配置包括很多配置项，例如，为 Dashboard 配置 `swagger_support` 和一个监听器以接受所有传入连接。除此以外，还有以下常用的配置项：
 
 - `listeners`
 - `token_expired_time`
 - `password_expired_time`
 - `cors`
-- `swagger_support`
+- `default_password`
+- `unsuccessful_login_max_attempts`
+- `unsuccessful_login_duration`
+- `unsuccessful_login_interval`
 - `sso`
-
-例如，为 EMQX Dashboard 配置 `swagger_support` 和一个监听器以接受所有传入连接。
 
 以下为 Dashboard 配置示例：
 
@@ -34,6 +37,9 @@ dashboard {
   cors = false
   swagger_support = true
   default_password = jEdOgGS6vzQ
+  unsuccessful_login_max_attempts = 5
+  unsuccessful_login_lock_duration = 10m
+  unsuccessful_login_interval = 5m
   sso = {
     ldap = {
       enable = true
@@ -120,6 +126,19 @@ dashboard {
 - `default_password`
 
   用于为 `admin` 用户初始化数据库条目的默认密码。注意：一旦 EMQX 初次启动成功，修改这个密码将不再不起作用。初始化后，密码必须在控制台或者命令行进行修改。
+
+
+- `unsuccessful_login_max_attempts`
+
+  指定在特定时间内允许的最大登录失败次数。如果用户超过此限制，账户将被暂时锁定。默认值为 `5`。
+
+- `unsuccessful_login_duration`
+
+  设置达到最大失败登录次数后账户被锁定的持续时间。默认值为 `10` 分钟。
+
+- `unsuccessful_login_interval`
+
+  定义失败登录尝试被计入限制的时间窗口。例如，如果设置为 `5`，则意味着在 5 分钟的时间间隔内检查最大失败次数。默认值为 `5` 分钟。
 
 - `sso`
 
