@@ -53,6 +53,9 @@ There are two methods for creating namespaces: explicit creation and automatic c
 
    :::
 
+    :::: tip Note
+    Automatic namespace creation is only enabled when `multi_tenancy.allow_only_managed_namespaces = false`.
+    ::::
 With these two methods, you can choose the most appropriate way to create namespaces based on your needs. Explicit creation is ideal for environments requiring strict control, while automatic creation is suitable for dynamic environments with reduced manual intervention.
 
 ## Quick Start: Configure Rate Limiter per Namespace
