@@ -181,6 +181,68 @@ INSERT INTO msg(topic, qos, payload) VALUES(${topic}, ${qos}, ${payload});
 
 除了自动推导字段类型外，SQL 预处理技术还能避免 SQL 注入以提高安全性。
 
+### 备选动作
+
+从 EMQX 5.9.0 起，您可以为任意一个动作配置一组备选动作。当主动作在处理消息时发生失败时，这些备选动作将会被触发。通过配置备选动作，您可以将失败的消息转发到其他目标（如另一个 Sink 或重发布动作），从而提升数据的可靠性和可观测性。
+
+备选动作的典型用途包括：
+
+- 将失败的消息转发到备用数据系统（例如另一个 Sink）；
+- 将失败的消息重发布到监控主题，用于故障排查或告警通知；
+- 在主动作发生临时故障时，减少消息丢失的风险。
+
+#### 主要特性
+
+- 仅当主动作处理消息失败时，备选动作才会被触发。失败情形包括投递失败、缓冲区溢出、请求超时（TTL 到期）等。
+- 无论其自身配置如何，所有备选动作始终以异步模式执行。
+- 所有配置的备选动作会同时被触发，EMQX 不会逐个尝试，也不会在第一个成功后停止。
+- 备选动作使用与主动作相同的缓冲机制，消息将在 TTL 到期前被多次尝试，或在缓冲溢出前排入队列。
+- 备选动作**不会**递归触发新的备选动作：如果某个备选动作自身失败，即使它也配置了备选动作，也不会继续执行。
+- 备选动作的执行不会影响主动作或其所属规则的运行统计数据，两者是相互独立的。
+
+#### 定义备选动作
+
+假设您有一个名为 `my_http` 的 HTTP 动作，并希望为其配置备选动作，同时已有一个名为 `fallback` 的 MQTT 动作。
+
+可以按如下方式配置备选逻辑：
+
+```hcl
+actions {
+  http {
+    my_http {
+      fallback_actions = [
+        {kind = reference, type = mqtt, name = fallback},
+        {
+          kind = republish,
+          args = {
+            topic = "fallback/republish/topic"
+            qos = 1
+            payload = "${payload}"
+          }
+        }
+      ]
+      # 其他配置省略
+    }
+  }
+  mqtt {
+    fallback {
+      fallback_actions = [
+        {kind = reference, type = mqtt, name = another_fallback}
+      ]
+      # 其他配置省略
+    }
+  }
+}
+```
+
+在上述示例中：
+
+- 如果 HTTP 动作 `my_http` 执行失败，消息将被：
+  - 转发至 MQTT 动作 `fallback`；
+  - 同时重发布至主题 `fallback/republish/topic`。
+- 如果 `fallback` 也执行失败，即使它配置了备选动作 `another_fallback`，该动作也**不会被触发**，因为备选动作不支持递归。
+- 只有当 `fallback` 作为其他规则中的主动作运行并失败时，才会触发其配置的备选动作 `another_fallback`。
+
 ## Sink 的状态与指标
 
 您可以在 Dashboard 上查看 Sink 的运行状态和数据集成统计信息，以了解 Sink 和集成是否正常运行。

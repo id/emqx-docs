@@ -182,22 +182,28 @@ In addition to automatically inferring field types, the prepared statement techn
 
 ### Fallback Actions
 
-Since EMQX 5.9.0, for a given Action, it's possible to define a set of Actions that will be triggered if processing of a message fails for whatever reason.  Such set of Actions is called Fallback Actions.  With Fallback Actions, it's possible to send data to secondary Sinks, reducing the probability of data loss, and may also serve to help observability of problems.
+Starting from EMQX 5.9.0, you can define a set of fallback actions for any given action. These fallback actions will be triggered when the primary action fails to process a message. This mechanism helps improve data reliability and observability by allowing messages to be redirected to secondary targets such as another Sink or a republish action.
 
-A few key facts about Fallback Actions:
+Fallback actions can be used to:
 
-- They are triggered whenever the primary Action fails or drops the message (due to buffer overflow or request TTL being reached).
-- They are always triggered in Async Query Mode, regardless of their configuration.
-- All configured Fallback Actions of a primary Action are triggered (i.e., we don't try one-by-one and stop at the first success).
-- Fallback Actions use the same buffering layer as all other actions, meaning that messages will be retried up to their request TTL or if there's buffer overflow.
-- Fallback Actions do **not** trigger further Fallback Actions: if a message being processed by a Fallback Action fails with an unrecoverable error or is dropped, no further Actions are triggered, even if there are other Fallback Actions configured.
-- Processing of messages by Fallback Actions do not affect metrics of their Primary Actions or of the original Rule that triggered the Primary Action.
+- Forward failed messages to a backup data system (e.g., another Sink).
+- Republish failed messages to a monitoring topic for troubleshooting or alerting.
+- Minimize data loss in the event of temporary issues with the primary action.
 
-#### Defining a Fallback Action
+#### Key Characteristics
 
-Let's say, for example, we want to configure some Fallback Actions for our HTTP Action called `my_http`.  Let's also assume there exists an MQTT Action called `fallback` already configured.
+- Fallback actions are triggered only when the primary action fails to process a message. Failures include delivery errors, buffer overflow, and request TTL expiry.
+- They always operate in asynchronous request mode, regardless of their own configuration.
+- All defined fallback actions will be triggered concurrently. EMQX does not attempt them one-by-one or stop at the first success.
+- Fallback actions share the same buffering mechanism as regular actions, meaning messages are retried up to their request TTL or if there is buffer overflow.
+- Fallback actions do **not** trigger further fallback actions. If a fallback action itself fails, its own configured fallback actions (if any) will **not** be triggered.
+- Processing of messages by fallback actions do not affect metrics of their primary actions or of the original rule that triggered the primary action.
 
-In that case, we may simply define the following configuration:
+#### Define a Fallback Action
+
+Suppose you have an HTTP action named `my_http`, and you want to define fallback actions for it. You also have an existing MQTT action called `fallback`.
+
+You can configure the fallback logic as follows:
 
 ```hcl
 actions {
@@ -228,7 +234,13 @@ actions {
 }
 ```
 
-In the example above, if a message fails to be processed by `my_http`, then we will forward the same message to the `fallback` MQTT Action, and also republish the original message according to the parameters above.  If the message then fails to be processed by `fallback`, even though there is a Fallback Action `another_fallback` configured for `fallback`, the message will **not** be further forwarded to `another_fallback`.  If `fallback` were to receive a message itself as a Primary Action, then `another_fallback` could be triggered on processing failures.
+In this example:
+
+- If the HTTP action `my_http` fails, the message will be:
+  - Forwarded to the MQTT action `fallback`
+  - Republished to the topic `fallback/republish/topic`
+- If `fallback` also fails, the fallback action `another_fallback` defined under `fallback` will **not** be triggered. Fallback actions do not support recursive chaining.
+- If `fallback` is triggered as a primary action in a different rule and fails, then its own fallback (`another_fallback`) would apply.
 
 ## Sink Status and Statistics
 
