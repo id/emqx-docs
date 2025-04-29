@@ -124,6 +124,7 @@ EMQX 企业版除了 MQTT Services 和 Webhook/HTTP Server, 还支持与以下�
 - [Amazon S3](./s3.md)
 - [Azure Blob Storage](./azure-blob-storage.md)
 - [Snowflake](./snowflake.md)
+- [Disk Log](./disk-log.md)
 
 ## Sink 的特性
 
