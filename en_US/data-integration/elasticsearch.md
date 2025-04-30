@@ -114,13 +114,13 @@ This section demonstrates how to create a rule in EMQX to process messages from 
    FROM
        "t/#"
    ```
-   
+
    ::: tip
-   
+
    If you are new to SQL, you can click **SQL Examples** and **Enable Debugging** to learn and test the rule SQL results.
-   
+
    :::
-   
+
 4. Click **Add Action**. Select `Elasticsearch` from the **Action Type** dropdown list. Keep the **Action** dropdown box as the default `Create Action` option. Or, you can select a previously created Elasticsearch action from the action dropdown box. This demonstration will create a new Sink and add it to the rule.
 
 5. Enter the name and description of the Sink.
@@ -155,9 +155,10 @@ This section demonstrates how to create a rule in EMQX to process messages from 
      }
      ```
 
-8. Keep the rest of the parameters at their default values. 
-9.  Click the **Create** button to complete the creation of the Sink. The new Sink will be added to the **Action Outputs**.
-10. Back on the Create Rule page, click the **Create** button to complete the entire rule creation.
+8. **Fallback Actions (Optional)**: If you want to improve reliability in case of message delivery failure, you can define one or more fallback actions. These actions will be triggered if the primary Sink fails to process a message. See [Fallback Actions](./data-bridges.md#fallback-actions) for more details.
+9. Keep the rest of the parameters at their default values. 
+10. Click the **Create** button to complete the creation of the Sink. The new Sink will be added to the **Action Outputs**.
+11. Back on the Create Rule page, click the **Create** button to complete the entire rule creation.
 
 Now you have successfully created the rule. You can see the newly created rule on the **Rules** page and the new Elasticsearch Sink under the **Actions (Sink)** tab.
 

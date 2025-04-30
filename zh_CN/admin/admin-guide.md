@@ -7,6 +7,7 @@
 - [MQTT 会话持久化](../durability/management.md)指导您如何配置和管理会话持久化功能以及如何为高可用性数据副本设置参数。
 - [EMQX Dashboard](../dashboard/introduction.md) 为您全面介绍 EMQX 内置的管理控制台，您将了解如何管理和监控 EMQX 集群并配置和使用所需的各项功能。
 - [单点登录](../dashboard/sso.md)介绍了 EMQX 支持的几种主流身份服务提供商，以及如何在 Dashboard 中配置基于这些服务的单点登录功能。
+- [多因素认证](../multi-factor-authn/multi-factor-authentication.md) 介绍了如何设置和使用多因素认证登录 EMQX Dashboard 以提升安全性。
 - [审计日志](../dashboard/audit-log.md)介绍了如何启用和配置审计日志功能来实时追踪 EMQX 集群的重要操作变更。
 - [速率限制](../rate-limit/rate-limit.md)介绍了如何通过配置消息接入速度限制器避免系统过载，从而保证系统稳定。
 - [日志及可观测性](../observability/overview.md)介绍了 EMQX 中的指标观测和监控功能，便于您进行系统监控和调试。

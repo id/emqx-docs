@@ -184,7 +184,7 @@ This section demonstrates how to create a rule in the Dashboard for processing m
 
 6. Enter a name for the Sink. The name should be a combination of upper/lower case letters and numbers.
 
-8. From the **Connector** dropdown box, select the `my_rocketmq` created before. You can also create a new Connector by clicking the button next to the dropdown box. For the configuration parameters, see [Create a Connector](#create-a-connector).
+7. From the **Connector** dropdown box, select the `my_rocketmq` created before. You can also create a new Connector by clicking the button next to the dropdown box. For the configuration parameters, see [Create a Connector](#create-a-connector).
 
 8. In the **RocketMQ Topic** field, enter `TopicTest`.
 
@@ -196,13 +196,15 @@ This section demonstrates how to create a rule in the Dashboard for processing m
 
    :::
 
-10. Advanced settings (optional): For details, see [Features of Sink](./data-bridges.md#features-of-sink).
+10. **Fallback Actions (Optional)**: If you want to improve reliability in case of message delivery failure, you can define one or more fallback actions. These actions will be triggered if the primary Sink fails to process a message. See [Fallback Actions](./data-bridges.md#fallback-actions) for more details.
 
-11. Before clicking **Create**, you can click **Test Connectivity** to test that the Sink can be connected to the RocketMQ server.
+11. **Advanced settings (optional)**: For details, see [Features of Sink](./data-bridges.md#features-of-sink).
 
-12. Click the **Create** button to complete the Sink configuration. A new Sink will be added to the **Action Outputs.**
+12. Before clicking **Create**, you can click **Test Connectivity** to test that the Sink can be connected to the RocketMQ server.
 
-13. Back on the **Create Rule** page, verify the configured information. Click the **Create** button to generate the rule. 
+13. Click the **Create** button to complete the Sink configuration. A new Sink will be added to the **Action Outputs.**
+
+14. Back on the **Create Rule** page, verify the configured information. Click the **Create** button to generate the rule. 
 
 You have now successfully created the rule for the RocketMQ Sink. You can see the newly created rule on the **Integration** -> **Rules** page. Click the **Actions(Sink)** tab and you can see the new RocketMQ Sink.
 

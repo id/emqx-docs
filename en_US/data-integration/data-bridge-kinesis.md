@@ -137,13 +137,15 @@ This section demonstrates how to create a rule for processing messages from the 
     - If using the defined template, placeholders of the form `${variable_name}` will be filled with the corresponding value from the MQTT context. For example, `${topic}` will be replaced with `my/topic` if such is the MQTT message topic.
 
 
-11. Advanced settings (optional): Choose whether to use buffer queue and batch mode as needed. For details, see [Features of Sink](./data-bridges.md#features-of-sink).
+11. **Fallback Actions (Optional)**: If you want to improve reliability in case of message delivery failure, you can define one or more fallback actions. These actions will be triggered if the primary Sink fails to process a message. See [Fallback Actions](./data-bridges.md#fallback-actions) for more details.
 
-12. Before clicking **Create**, you can click **Test Connectivity** to test that the Sink can be connected to the Amazon Kinesis Data Streams service.
+12. **Advanced settings (optional)**: Choose whether to use buffer queue and batch mode as needed. For details, see [Features of Sink](./data-bridges.md#features-of-sink).
 
-13. Click the **Create** button to complete the Sink configuration. A new Sink will be added to the **Action Outputs.**
+13. Before clicking **Create**, you can click **Test Connectivity** to test that the Sink can be connected to the Amazon Kinesis Data Streams service.
 
-14. Back on the **Create Rule** page, verify the configured information. Click the **Create** button to generate the rule. 
+14. Click the **Create** button to complete the Sink configuration. A new Sink will be added to the **Action Outputs.**
+
+15. Back on the **Create Rule** page, verify the configured information. Click the **Create** button to generate the rule. 
 
 You have now successfully created the rule for forwarding data through the Amazon Kinesis Sink. You can see the newly created rule on the **Integration** -> **Rules** page. Click the **Actions(Sink)** tab and you can see the new Amazon Kinesis Sink.
 

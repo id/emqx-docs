@@ -18,11 +18,7 @@ def check_md_content(md_file):
         return
 
     md_content = re.sub(r'<!--([\s\S]*?)-->', '', open(md_file, 'r').read())
-
-    if 'ee' in directory_file:
-        md_content = re.sub(r'{% emqxce %}([\s\S]*?){% endemqxce %}', '', md_content)
-    else:
-        md_content = re.sub(r'{% emqxee %}([\s\S]*?){% endemqxee %}', '', md_content)
+    md_content = re.sub(r'{% emqxee %}([\s\S]*?){% endemqxee %}', '', md_content)
 
     image_list = re.findall('(.*?)!\[(.*?)\]\((.*?)\)', md_content)
     url_list = re.findall('(.*?)\[(.*?)\]\((.*?)\)', md_content)
