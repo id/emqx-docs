@@ -89,7 +89,7 @@ When an authentication chain is configured, EMQX processes authenticators in the
 Here’s how it works, using password-based authentication as an example:
 
 1. **Evaluate Preconditions (if configured):**
-   If the authenticator has a [precondition](#authenticator-preconditions), EMQX first evaluates the expression based on client information (e.g., `listener`, `clientid`, `username`).
+   If the authenticator has a [precondition](#authenticator-preconditions), EMQX first evaluates the expression based on client attributes information (e.g., `listener`, `clientid`, `username`).
    - If the expression evaluates to `true`, the authenticator is invoked.
    - If not, the authenticator is skipped.
 2. **Execute the Authenticator:**
@@ -106,11 +106,23 @@ Here’s how it works, using password-based authentication as an example:
 
 ### Authenticator Preconditions
 
-Starting from EMQX 5.9, you can assign a precondition to each authenticator to control whether it should be invoked for a given client.
+Starting from EMQX 5.9, you can assign a precondition to each authenticator to control whether it should be invoked for a given client. A precondition is a [Variform expression](../../configuration/configuration.md#variform-expressions) that evaluates client attributes (such as `listener`, `username`, `clientid`, etc.). If the expression does not evaluate to `true`, the authenticator is skipped.
 
-A precondition is a [Variform expression](../../configuration/configuration.md#variform-expressions) that evaluates client metadata (such as `listener`, `username`, `clientid`, etc.). If the expression does not evaluate to `true`, the authenticator is skipped.
+This feature enables conditional logic in the authentication chain. It allows for fine-grained control over authentication logic, such as applying different authenticators for clients connecting through different listeners or based on client attributes. EMQX can then invoke authenticators only when appropriate and avoid unnecessary requests to external systems.
 
-This feature enables conditional logic in the authentication chain, allowing EMQX to invoke authenticators only when appropriate and avoid unnecessary requests to external systems.
+#### Supported Client Attributes in Precondition
+
+Supported client attributes in a precondition include:
+
+- `username`: The username of the client
+- `password`: The password of the client
+- `clientid`: The client ID of the client
+- `client_attrs.*`: The client attributes of the client
+- `cert_common_name`: The subject field from the client's TLS certificate
+- `cert_subject`: The Common Name (CN) from the client's TLS certificate
+- `peersni`: The SNI (Server Name Indication) sent by the TLS client
+- `listener`: The listener ID (e.g. `tcp:default`)
+- `zone`: The associated config zone
 
 #### Precondition Examples
 
