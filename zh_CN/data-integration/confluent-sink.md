@@ -1,11 +1,5 @@
 # 将 MQTT 数据传输到 Confluent
 
-:::tip
-
-Confluent 数据集成是 EMQX 企业版的功能。
-
-:::
-
 [Confluent Cloud](https://www.confluent.io/) 基于 Apache Kafka，是一项弹性、可扩展、并完全托管的流式数据服务。EMQX 支持通过规则引擎与 Sink 实现与 Confluent 的数据集成，使您能够轻松将 MQTT 数据流式传输到 Confluent，实现数据的实时处理、存储和分析。
 
 ![EMQX Confluent Integration](./assets/confluent-integration.png)

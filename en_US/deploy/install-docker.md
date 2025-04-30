@@ -3,11 +3,11 @@ description: This page introduces how to use the official Docker image to instal
 ---
 
 # Install EMQX Using Docker
-This page introduces how to use the official Docker image to install and run the EMQX Enterprise edition, and how to use Docker Compose to build an EMQX cluster.
+This page introduces how to use the official Docker image to install and run the EMQX Enterprise, and how to use Docker Compose to build an EMQX cluster.
 
 ## Use Docker to Run A Single EMQX Node
 
-This section will introduce how to use the Docker image to install the latest version of EMQX. For more information about EMQX official docker image, see [Docker Hub - emqx/emqx-enterprise](https://hub.docker.com/r/emqx/emqx-enterprise). 
+This section will introduce how to use the Docker image to install the latest version of EMQX. For more information about the EMQX official Docker image, see [Docker Hub - emqx/emqx-enterprise](https://hub.docker.com/r/emqx/emqx-enterprise). 
 
 1. To get the Docker image, run: 
 

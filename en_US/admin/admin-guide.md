@@ -14,5 +14,5 @@ This Administration Guide is designed to assist administrators and operators in 
 - [Log and Observability](../observability/overview.md) introduces metric observation and monitoring features in EMQX, facilitating system monitoring and debugging.
 - [Backup and Restore](../operations/backup-restore.md) guides you on how to back up and restore EMQX data.
 - [Plugins and Extensions](../extensions/introduction.md) help you extend the functionality of EMQX by developing plugins.
-- [Telemetry](../telemetry/telemetry.md) explains how to share your usage information by enabling telemetry to help improve the product. The telemetry function is only for the EMQX Open Source edition.
+- [Telemetry](../telemetry/telemetry.md) explains how to share your usage information by enabling telemetry to help improve the product.
 

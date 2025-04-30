@@ -1,11 +1,5 @@
 # 将 MQTT 数据写入到 MongoDB
 
-::: tip
-
-MongoDB 数据集成是 EMQX 企业版功能。
-
-:::
-
 [MongoDB](https://www.mongodb.com/)，作为领先的 NoSQL 数据库，以其在模式设计的灵活性、可扩展性以及存储大量结构化和半结构化数据的能力而闻名。通过将 EMQX 与 MongoDB 的数据集成，用户可以高效地将 MQTT 消息和客户端事件直接导入 MongoDB。这有助于在 MongoDB 中进行长期序列数据存储和高级查询。集成确保了单向流动，即 EMQX 的 MQTT 消息被写入 MongoDB 数据库。这种强大的组合是寻求有效管理其物联网数据的企业的坚实基础。
 
 本页提供了 EMQX 与 MongoDB 数据集成的全面介绍，并提供了创建和验证数据集成的实用指导。

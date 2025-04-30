@@ -1,11 +1,5 @@
 # Bridge MQTT Data into RocketMQ
 
-::: tip
-
-The RocketMQ data integration is an EMQX Enterprise edition feature.
-
-:::
-
 EMQX supports bridging data into [RocketMQ](https://rocketmq.apache.org/), so you can forward MQTT messages and client events to RocketMQ. For example, you can use RocketMQ to collect sensor data from devices, log data, etc.
 
 This page provides a detailed overview of the data integration between EMQX and RocketMQ with practical instructions on creating and validating the data integration.

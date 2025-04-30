@@ -1,11 +1,5 @@
 # Stream MQTT Data into Confluent
 
-::: tip
-
-The Confluent data integration is an EMQX Enterprise edition feature.
-
-:::
-
 [Confluent Cloud](https://www.confluent.io/), based on Apache Kafka, is a resilient, scalable, and fully managed streaming data service. EMQX supports data integration with Confluent through its rule engine and Sink, enabling easy streaming of MQTT data into Confluent for real-time processing, storage, and analysis.
 
 ![EMQX Confluent Integration](./assets/confluent-integration.png)

@@ -2,6 +2,12 @@
 
 You can create an EMQX cluster either manually or automatically. This page will introduce you to both manual and automatic clustering methods and guide you in creating and managing EMQX clusters using these two different approaches.
 
+::: tip
+
+The cluster mode is only available with a valid license key.
+
+:::
+
 ## Basic Concepts
 
 You can learn about the basic knowledge of the EMQX cluster and how it works in [Cluster](./introduction.md) and [Architecture](./mria-introduction.md). To create a cluster, you also need to be familiar with the following concepts:
@@ -116,24 +122,6 @@ If you plan to run EMQX on Docker environments across multiple physical machines
 
 2. Start the first node and set the node name through environment variables. The default clustering method by EMQX is manual, so no extra settings are needed. Add the node to the Docker network and set a network alias that matches the node host.
 
-   For EMQX Open Source edition:
-
-   ```bash
-   docker run -d \
-       --name emqx1 \
-       -e "EMQX_NODE_NAME=emqx@node1.emqx.com" \
-       --network emqx-bridge \
-       --network-alias node1.emqx.com \
-       -p 1883:1883 \
-       -p 8083:8083 \
-       -p 8084:8084 \
-       -p 8883:8883 \
-       -p 18083:18083 \
-       emqx/emqx:@CE_VERSION@
-   ```
-
-   For EMQX Enterprise edition:
-
    ```bash
    docker run -d \
        --name emqx1 \
@@ -149,19 +137,6 @@ If you plan to run EMQX on Docker environments across multiple physical machines
    ```
    
 3. After the first node starts, launch the second node. The new node needs to join the same network as the first node. Since the first node has already occupied ports such as 1883, no port mapping is done here.
-
-   For EMQX Open Source edition:
-
-   ```bash
-   docker run -d \
-       --name emqx2 \
-       -e "EMQX_NODE_NAME=emqx@node2.emqx.com" \
-       --network emqx-bridge \
-       --network-alias node2.emqx.com \
-       emqx/emqx:@CE_VERSION@
-   ```
-
-   For EMQX Enterprise edition:
 
    ```bash
    docker run -d \
@@ -197,8 +172,6 @@ If you plan to run EMQX on Docker environments across multiple physical machines
 
    Also, you need to add the node to the Docker network and set a network alias matching the node host.
 
-   For EMQX Open Source edition:
-
    ```bash
    docker run -d \
        --name emqx1 \
@@ -212,43 +185,10 @@ If you plan to run EMQX on Docker environments across multiple physical machines
        -p 8084:8084 \
        -p 8883:8883 \
        -p 18083:18083 \
-       emqx/emqx:@CE_VERSION@
-   ```
-
-   For EMQX Enterprise edition:
-
-   ```bash
-   docker run -d \
-       --name emqx1 \
-       -e "EMQX_NODE_NAME=emqx@node1.emqx.com" \
-       -e "EMQX_CLUSTER__DISCOVERY_STRATEGY=static" \
-       -e "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.com,emqx@node2.emqx.com]" \
-       --network emqx-bridge \
-       --network-alias node1.emqx.com \
-       -p 1883:1883 \
-       -p 8083:8083 \
-       -p 8084:8084 \
-       -p 8883:8883 \
-       -p 18083:18083 \
-       emqx/emqx-enterprise:@CE_VERSION@
+       emqx/emqx-enterprise:@EE_VERSION@
    ```
    
 3. After the first node starts, launch the second node. The clustering method and the new node need to join the same network as the first node. Since the first node has already occupied ports such as 1883, no port mapping is done here.
-
-   For EMQX Open Source edition:
-
-   ```bash
-   docker run -d \
-       --name emqx2 \
-       -e "EMQX_NODE_NAME=emqx@node2.emqx.com" \
-       -e "EMQX_CLUSTER__DISCOVERY_STRATEGY=static" \
-       -e "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.com,emqx@node2.emqx.com]" \
-       --network emqx-bridge \
-       --network-alias node2.emqx.com \
-       emqx/emqx:@CE_VERSION@
-   ```
-
-   For EMQX Enterprise edition:
 
    ```bash
    docker run -d \

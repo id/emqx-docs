@@ -40,7 +40,7 @@ In this method, you use API keys and secret keys as the username and password to
 
 ::: tip Note
 
-For security reasons, starting from EMQX 5.0.0, you cannot use Dashboard user credentials to authenticate REST API requests. Instead, you need to create and use API keys for authentication. Note that role-based API credentials are available only in the EMQX Enterprise edition.
+For security reasons, starting from EMQX 5.0.0, you cannot use Dashboard user credentials to authenticate REST API requests. Instead, you need to create and use API keys for authentication.
 
 :::
 
@@ -76,7 +76,7 @@ Each time EMQX starts, it will add the data set in the file to the API key list.
 
 #### Roles and Permissions
 
-In the EMQX Enterprise, the REST API implements role-based access control. When creating an API key, you can assign one of the following three predefined roles:
+The REST API implements role-based access control. When creating an API key, you can assign one of the following three predefined roles:
 
 - **Administrator**: This role can access all resources and is the default value if no role is specified. The corresponding role identifier is `administrator`.
 - **Viewer**: This role can only view resources and data, corresponding to all GET requests in the REST API. The corresponding role identifier is `viewer`.

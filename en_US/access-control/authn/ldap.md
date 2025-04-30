@@ -1,11 +1,5 @@
 # Integrate with LDAP
 
-::: tip Note
-
-LDAP integration for authentication is only available in the EMQX Enterprise edition.
-
-:::
-
 [Lightweight Directory Access Protocol (LDAP)](https://ldap.com/) is a protocol used to access and manage directory information. EMQX supports integrating with an LDAP server for password authentication. This integration enables users to use their LDAP credentials for authentication in EMQX.
 
 ::: tip Prerequisite
