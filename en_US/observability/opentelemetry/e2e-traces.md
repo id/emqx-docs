@@ -48,7 +48,7 @@ This section guides you through enabling OpenTelemetry-based end-to-end tracing 
 
 4. Click **Trace Advanced Configuration** to configure advanced settings if necessary.
 
-   - **Trace Configuration**: Used to set additional trace options, including whether to trace specific events (such as client connections, message transmissions, etc.).
+   - **Trace Configuration**: Used to set additional trace options, including whether to trace specific events (such as client connections, message transmissions, rule-engine executions, etc.).
      - **Follow Traceparent**: Set whether to follow the `traceparent`. When set to `true`, EMQX will attempt to retrieve the `traceparent` identifier from the `User-Property` sent by the client and associate the end-to-end tracing with it. Otherwise, EMQX will generate a new trace for the end-to-end tracing. The default value is `true`.
    - **Client ID White List**: Set a whitelist to restrict which clients' connections or messages will be traced. This can help avoid unnecessary tracing and reduce additional system resource consumption.
    - **Topic White List**: Set a topic whitelist, allowing only matching topics to be traced. This works similarly to the client whitelist, helping to control the scope of the tracing.
@@ -76,10 +76,12 @@ opentelemetry {
    e2e_tracing_options {
      ## Trace client connection/disconnection events
      client_connect_disconnect = true
-     ## Trace client messaging events
-     client_messaging = true
      ## Trace client subscription/unsubscription events
      client_subscribe_unsubscribe = true
+     ## Trace client messaging events
+     client_messaging = true
+     ## Trace Rule-Engine Executions
+     trace_rule_engine = true
      ## Maximum whitelist length for client IDs
      clientid_match_rules_max = 30
      ## Maximum whitelist length for topic filters
@@ -141,6 +143,23 @@ opentelemetry {
    Notably, since the client `mqttx_9137a6bb` is connected to a different EMQX node than the publisher, two additional spans (`message.forward` and `message.handle_forward`) appear to represent cross-node transmission.
 
    ![Jaeger-WEB-UI-e2e-Message](./assets/e2e-message.png)
+
+   In addition, for messages or events that trigger the execution of the rule engine, when the rule engine tracking option is enabled, the tracking information of rule and action execution can also be obtained.
+
+   ![Jaeger-WEB-UI-e2e-With-Rule-Engine](./assets/e2e-with-rule-engine.png)
+
+   ::: tip
+
+   The end-to-end tracing with rule-engine execution feature is supported only in EMQX version 5.9.0 and later.
+
+   :::
+
+   ::: warning Important Notice
+
+   Please enable this feature with caution. When a message or event triggers multiple rules and actions, a single trace may generate a large number of spans, increasing system load.
+   Please estimate an appropriate sampling rate based on message volume and the number of rules and actions.
+
+   :::
 
 ## Manage Trace Span Overload
 

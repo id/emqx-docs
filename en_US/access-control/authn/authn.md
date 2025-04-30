@@ -24,7 +24,7 @@ The authentication mechanisms supported in EMQX include:
 
 ### X.509 Certificate Authentication
 
-EMQX supports [X.509 certificate authentication](./x509.md) for client authentication. Using X.509 certificate authentication in EMQX, clients and servers can establish trusted connections through TLS/SSL, ensuring the authenticity of communication parties and the integrity of the data transmitted. EMQX allows for both one-way and two-way authentication: one-way authentication where only the server is authenticated by the client, and two-way authentication where both client and server mutually verify each other's certificates. This flexibility caters to various levels of security requirements and deployment scenarios.
+EMQX supports [X.509 certificate authentication](./x509.md) for client authentication. Using X.509 certificate authentication in EMQX, clients and servers can establish trusted connections through TLS/SSL, ensuring the authenticity of communication parties and the integrity of the data transmitted. EMQX allows for both one-way and two-way authentication: one-way authentication, where only the server is authenticated by the client, and two-way authentication, where both client and server mutually verify each other's certificates. This flexibility caters to various levels of security requirements and deployment scenarios.
 
 ### JWT Authentication
 
@@ -209,7 +209,9 @@ EMQX currently supports the following placeholders:
 
 - `${peerhost}`: It will be replaced with the client's IP address at runtime. EMQX supports [Proxy Protocol](http://www.haproxy.org/download/1.8/doc/proxy-protocol.txt), that is, even if EMQX is deployed behind some TCP proxy or load balancer, users can still use this placeholder to get the real IP address.
 
-- `${peerport}`: It will be replaced with the client's IP port in runtime.
+- `${peerport}`: It will be replaced with the client's IP port at runtime.
+
+- `${peername}`:  It will be replaced with the client's IP address and port at runtime, and the format is `IP: PORT`.
 
 - `${cert_subject}`: It will be replaced by the subject of the client's TLS certificate at runtime. If the load balancer sends client certificate information to the TCP listener, ensure that Proxy Protocol v2 is in use.
 

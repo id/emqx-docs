@@ -70,7 +70,7 @@ foo:3CA92E5F-30AB-41F5-B3E6-8D7E213BE97E:publisher
 
 通过此方式创建的 API 密钥有效期为永久有效。
 
-每次 EMQX 启动时，会将文件中设置的数据将添加到 API 密钥列表中，如果存在相同的 API Key，则将更新其 Secret Key 与 Role。
+每次 EMQX 启动时，会将文件中设置的数据添加到 API 密钥列表中，如果存在相同的 API Key，则将更新其 Secret Key 与 Role。
 
 #### 角色与权限
 
