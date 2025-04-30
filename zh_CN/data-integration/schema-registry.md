@@ -109,7 +109,7 @@ SELECT json_decode(payload) AS p FROM "t/#" WHERE p.x = p.y
 
 您可以直接通过 EMQX Dashboard 配置外部 Schema Registry，方便地管理 Schema 集成。
 
-进入 EMQX Dashboard 的 **集成** -> **Schema** 页面。在 Schema 页面中选择 **外部 Schema** 选项卡。
+进入 EMQX Dashboard 的**数据智能中心** -> **Schema Registry** 页面。在 Schema 页面中选择 **外部 Schema** 选项卡。
 
 点击右上角的**创建**按钮，并配置以下字段：
 
