@@ -208,6 +208,8 @@
   - `epoch`: 时间戳以微秒精度的 Unix 纪元时间格式表示。
   - `rfc3339`: 时间戳使用符合 RFC3339 标准的日期时间字符串格式，格式示例为 `2024-03-26T11:52:19.777087+00:00`。
 
+- [#12417](https://github.com/emqx/emqx/pull/12417) 支持通过配置文件指定 MQTT 消息过期时间。有关更多详情，请参阅 `mqtt.conf.example` 文件中 `message_expiry_interval` 配置的描述。
+
 ### 修复
 
 - [#11868](https://github.com/emqx/emqx/pull/11868) 修复了会话接管后未发布遗嘱消息的问题。
