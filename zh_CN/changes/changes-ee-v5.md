@@ -124,9 +124,9 @@
 
 #### 数据集成
 
-- [#14118](https://github.com/emqx/emqx/pull/14118) 支持在 MySQL 操作中使用 `ON DUPLICATE KEY UPDATE`。
+- [#14118](https://github.com/emqx/emqx/pull/14118) 支持在 MySQL 动作中使用 `ON DUPLICATE KEY UPDATE`。
 
-  现在，用户可以在 MySQL 操作中指定 `ON DUPLICATE KEY UPDATE`，例如：
+  现在，用户可以在 MySQL 动作中指定 `ON DUPLICATE KEY UPDATE`，例如：
 
   ```
   INSERT INTO t1 (a,b,c) VALUES (${id},${clientid},${qos}) ON DUPLICATE KEY UPDATE a=a;
