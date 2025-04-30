@@ -62,13 +62,21 @@ listeners.tcp.default {
 也可以通过配置文件设置，例如，可以在 emqx.conf 中按以下进行配置：
 
 ```bash
-limiter {
+mqtt.limiter {
   max_conn_rate = "1000/s"
   max_conn_burst = "10000/60m"
   messages_rate = "500/10s"
   messages_burst = "10000/60m"
   bytes_rate = "500KB/s"
   bytes_burst = "100MB/60m"
+}
+```
+
+节点级别限制器可以嵌入到 `zone` 配置中，如下所示：
+
+```bash
+zones.my_zone.mqtt {
+  limiter {...}
 }
 ```
 

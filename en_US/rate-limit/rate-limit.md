@@ -62,7 +62,7 @@ You can configure rate limits for each listener on the **Management** -> **MQTT 
 Alternatively, you can configure them through the configuration file. For example, you can configure the following in `emqx.conf`:
 
 ```bash
-limiter {
+mqtt.limiter {
   max_conn_rate = "1000/s"
   max_conn_burst = "10000/60m"
   messages_rate = "500/10s"
@@ -72,10 +72,14 @@ limiter {
 }
 ```
 
-This configuration means:
+Zone level limiters can be embedded in the `zone` section as follows:
 
-- Each node can accept a maximum of 1000 connections per second.
-- The node can accept up to 10,000 connections in bursts over 60 minutes.
+```bash
+zones.my_zone.mqtt {
+  limiter {...}
+}
+```
+
 - The node can receive a maximum of 500 messages every 10 seconds, and any excess will be dropped/rejected.
 - The node allows a burst of up to 10,000 messages within a short period every 60 minutes.
 - The node can receive a maximum of 500MB of data every 10 seconds, and any excess will be dropped/rejected.
