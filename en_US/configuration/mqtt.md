@@ -118,7 +118,7 @@ This section introduces how to configure sessions.
 **Example code:**
 
 ```bash
-session {
+mqtt {
     max_subscriptions = infinity
     upgrade_qos = false
     max_inflight = 32
@@ -130,12 +130,10 @@ session {
     mqueue_priorities = disabled
     mqueue_default_priority = lowest
     mqueue_store_qos0 = true
-    
     force_shutdown {
       max_mailbox_size = 1000
       max_heap_size = 32MB
     }
-
     force_gc {
       count  =  16000
       bytes  =  16MB
