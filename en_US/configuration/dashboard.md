@@ -43,6 +43,7 @@ dashboard {
   unsuccessful_login_lock_duration = 10m
   unsuccessful_login_interval = 5m
   sso = {
+    # Normally, only one of `ldap`, `oidc`, or `smal` can be active at a time. Below is for the demonstration purposes.
     ldap = {
       enable = true
       backend = "ldap"

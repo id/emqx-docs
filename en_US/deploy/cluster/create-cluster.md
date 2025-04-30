@@ -16,7 +16,7 @@ You can learn about the basic knowledge of the EMQX cluster and how it works in 
 
 EMQX nodes are identified by their names. All nodes are set with a unique node name in the format of `name@host`, where the host must be an IP address or fully qualified domain name (FQDN). For example:
 
-- For EMQX node deployed on server `s1.emqx.io`, the node name should be `emqx@s1.emqx.io`;
+- For an EMQX node deployed on server `s1.emqx.io`, the node name should be `emqx@s1.emqx.io`;
 - If this server has a static IP (`192.168.0.10`), the node name should be `emqx@192.168.0.10`.
 
 ::: tip
@@ -265,6 +265,8 @@ Suppose you have two nodes, `emqx@node1.emqx.com` and `emqx@node2.emqx.com`. You
    ```
 
 Now you have successfully created a cluster with two nodes, you can read the [Query Cluster Status](#query-cluster-status), [Manage Cluster Nodes](#manage-cluster-nodes), and [Configure Network Protocols](#configure-network-protocols) sections on how to monitor the cluster status and how to manage the cluster.
+
+Starting from EMQX v5.9.0, you can also invite and manage nodes via the EMQX Dashboard. For detailed information, refer to [Cluster](../../dashboard/cluster_settings.md#cluster).
 
 ## Auto Clustering
 
