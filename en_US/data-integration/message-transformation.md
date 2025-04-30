@@ -30,7 +30,7 @@ This section demonstrates how to configure the message transformation feature an
 
 This section demonstrates how to create and configure a message transformation in the Dashboard.
 
-1. Go to Dashboard, and click **Integrations** -> **Message Transform** in the left navigation menu.
+1. Go to Dashboard, and click **Smart Data Hub** -> **Message Transform** in the left navigation menu.
 2. Click **Create** at the top right of the **Message Transform** page.
 3. On the Create Message Transform page, configure the following information:
    - **Name**: Enter the name of the transformation.

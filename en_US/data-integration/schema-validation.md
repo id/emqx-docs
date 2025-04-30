@@ -46,7 +46,7 @@ This section demonstrates how to configure the schema validation feature and how
 
 This section demonstrates how to create and configure a schema validator in the Dashboard.
 
-1. Click on **Integrations** -> **Schema Validation** in the left navigation of the Dashboard.
+1. Click on **Smart Data Hub** -> **Schema Validation** in the left navigation of the Dashboard.
 2. Click **Create** at the top right of the **Schema Validation** page.
 3. On the Create Schema Validation page, configure the following settings:
    - **Name**: Enter the name of the validator.
