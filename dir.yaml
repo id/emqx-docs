@@ -543,6 +543,9 @@
         - dashboard/sso-ldap
         - dashboard/sso-saml
         - dashboard/sso-oidc
+    - title_en: Multi-factor Authentication
+      title_cn: 多因素认证
+      path: multi-factor-authn/multi-factor-authentication
     - dashboard/audit-log
     - title_en: Rate Limit
       title_cn: 速率限制
