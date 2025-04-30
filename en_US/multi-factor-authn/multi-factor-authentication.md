@@ -25,6 +25,16 @@ The goal of MFA is to ensure that even if someone obtains your password, they ca
 
 MFA is disabled by default. To enable MFA for users, the administrator must configure the system to support MFA and set it up for individual users. Only users with [administrator privileges](../dashboard/system.md#users) can enable or disable MFA for other users.
 
+### Enable MFA by Default for the Dashboard
+
+To enable MFA for all Dashboard users by default, the administrator needs to configure the `dashboard.default_mfa` setting in the configuration file. This can be set to either `none` (to disable MFA) or `{mechanism: totp}` (to enable TOTP-based MFA).
+
+Example configuration:
+
+```bash
+dashboard.default_mfa = {mechanism: totp}
+```
+
 ### Enable MFA for Users via EMQX Dashboard
 
  Administrators can enable MFA directly from the Dashboard by following these steps:
@@ -58,16 +68,6 @@ The POST and DELETE methods on the `/users/{username}/mfa` endpoint can only be 
 For more information on the role-based access control implementation of the REST API, see [Roles and Permissions](../admin/api.md#roles-and-permissions).
 
 :::
-
-#### Enable MFA for the Dashboard
-
-To enable MFA for the entire Dashboard, the administrator needs to configure the `dashboard.default_mfa` setting in the configuration file. This can be set to either `none` (to disable MFA) or `{mechanism: totp}` (to enable TOTP-based MFA).
-
-Example configuration:
-
-```bash
-dashboard.default_mfa = {mechanism: totp}
-```
 
 #### Enable MFA for a Specific User
 
