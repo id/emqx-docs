@@ -8,9 +8,6 @@
 
 ### 增强
 
-- [#14930](https://github.com/emqx/emqx/pull/14930) 开始发布 macOS 15 (Sequoia) 版本的安装包。
-- [#14590](https://github.com/emqx/emqx/pull/14590) 将试用 License 下运行的节点的最大运行时间限制为一个月。达到运行时间限制后，节点将拒绝新的连接。
-
 #### 核心 MQTT 功能
 
 - [#14047](https://github.com/emqx/emqx/pull/14047) 将默认的 `active_n` 值从 `100` 降低到 `10`。
@@ -28,6 +25,11 @@
 - [#14721](https://github.com/emqx/emqx/pull/14721) 延迟发布间隔限制已从 4294967 秒（49.7 天）更改为 42949670 秒（497 天）。
 
 - [#14595](https://github.com/emqx/emqx/pull/14595) 弃用 `retainer.enable` 标志。保留机制会根据区域配置中的 `mqtt.retain_available` 标志自动启动和停止。
+
+#### 安装部署
+
+- [#14930](https://github.com/emqx/emqx/pull/14930) 开始发布 macOS 15 (Sequoia) 版本的安装包。
+- [#14590](https://github.com/emqx/emqx/pull/14590) 将试用 License 下运行的节点的最大运行时间限制为一个月。达到运行时间限制后，节点将拒绝新的连接。
 
 #### 命名空间
 

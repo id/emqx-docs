@@ -8,9 +8,6 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 ### Enhancements
 
-- [#14930](https://github.com/emqx/emqx/pull/14930) Start releasing macOS 15 (Sequoia) packages.
-- [#14590](https://github.com/emqx/emqx/pull/14590) Limit the maximum uptime for a node running under evaluation license to one month. After reaching the uptime limit, the node will reject new connections.
-
 #### Core MQTT Functionalities
 
 - [#14047](https://github.com/emqx/emqx/pull/14047) Lowered default `active_n` value from `100` to `10`.
@@ -30,6 +27,11 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 - [#14721](https://github.com/emqx/emqx/pull/14721) Delayed publish interval limit changed from 4294967 seconds (49.7 days) to 42949670 seconds (497 days).
 
 - [#14595](https://github.com/emqx/emqx/pull/14595) Deprecate `retainer.enable` flag. Retainer starts and stops automatically based on the `mqtt.retain_available` flag in zone configurations.
+
+#### Installation and Deployment
+
+- [#14930](https://github.com/emqx/emqx/pull/14930) Start releasing macOS 15 (Sequoia) packages.
+- [#14590](https://github.com/emqx/emqx/pull/14590) Limit the maximum uptime for a node running under evaluation license to one month. After reaching the uptime limit, the node will reject new connections.
 
 #### Namespace
 
@@ -62,7 +64,7 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 - [#14840](https://github.com/emqx/emqx/pull/14840) Added HTTP API endpoints to configure client and tenant rate limiters for Namespace feature.
 
 
-#### Authentication & Authorization
+#### Authentication and Authorization
 
 - [#14584](https://github.com/emqx/emqx/pull/14584) Added support authenticator app for Dashboard 2FA (2-factor authentication) login.
 
@@ -128,18 +130,18 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 - [#14040](https://github.com/emqx/emqx/pull/14040) Added timeouts to the internal RPC calls during node rebalance. Previously, the rebalance process could hang if a node was unresponsive.
 
 - [#14892](https://github.com/emqx/emqx/pull/14892) Enhanced cluster load rebalancing:
-     
-     - Fixed load imbalance in core/replicant cluster. Previously, under certain conditions, all transactions from the replicants could be sent to a single core node.
   
+     - Fixed load imbalance in core/replicant cluster. Previously, under certain conditions, all transactions from the replicants could be sent to a single core node.
+    
   - Add CLI commands for rebalancing replicant nodes in relation to core nodes:
     - `emqx_ctl cluster core rebalance plan`
   
     - `emqx_ctl cluster core rebalance status`
 
        - `emqx_ctl cluster core rebalance confirm`
-     
+    
        - `emqx_ctl cluster core rebalance abort`
-     
+  
 - [#14907](https://github.com/emqx/emqx/pull/14907) Improved stability of node evacuation. Previously, the evacuation could enter a dead loop and require manual intervention to recover.
 
 #### Data Integration
@@ -274,8 +276,6 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 ### Bug Fixes
 
-- 
-
 #### Core MQTT Functionalities
 
 - [#14707](https://github.com/emqx/emqx/pull/14707) Fixed an issue where, in strict_mode, PUBLISH packets with QoS 2 and the DUP flag set were incorrectly considered invalid packets.
@@ -324,7 +324,7 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#14933](https://github.com/emqx/emqx/pull/14933) Resolved a rare edge case where a Durable Storage backed by DS Raft could be assigned to storage sites that had left the cluster long ago.
 
-#### Authentication & Authorization
+#### Authentication and Authorization
 
 - [#14777](https://github.com/emqx/emqx/pull/14777) Fixed settings update for JWT authentication. Previously, some fields may be not updated correctly for a configuration with external JWKS endpoint.
 
