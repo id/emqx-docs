@@ -44,7 +44,7 @@ EMQX 提供了一个内置的管理控制台，即 EMQX Dashboard。方便用户
 
 管理和配置用户帐户、审计日志、API 密钥、License 设置和单点登录等功能。
 
-## 启动
+## 启动 Dashboard
 
 EMQX Dashboard 是一个 Web 应用程序，默认监听 `18083` 端口。下载安装 EMQX 并成功启动之后，可以通过浏览器打开 <http://localhost:18083/>（如部署在非本机的，可将 localhost 替换为实际 IP 地址）来访问和使用 EMQX Dashboard。
 
@@ -65,6 +65,32 @@ EMQX Dashboard 是一个 Web 应用程序，默认监听 `18083` 端口。下载
 ```bash
 ./bin/emqx ctl admins passwd <Username> <Password>
 ```
+
+### 密码过期
+
+如果当前 Dashboard 登录密码的使用时长超过了配置的密码过期时间 (`password_expired_time`)，系统将在您登录时提示您修改密码。关于 `password_expired_time` 设置的详细信息，参考 [Dashboard 配置](../configuration/dashboard.md)。
+
+“管理员”角色的用户也可以通过 [REST API](../admin/api.md) 配置密码过期时间。
+
+**示例**：
+
+```bash
+curl -X 'PUT' \
+  'http://admin:ppp@localhost:18083/api/v5/configs/dashboard' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"password_expired_time": "1d"}'
+```
+
+上述示例中，密码过期时间被设置为 1 天。
+
+### 账户锁定与解锁
+
+为了增强安全性，EMQX Dashboard 实现了“账户锁定与解锁”机制。当用户在 5 分钟内连续输入错误密码 5 次时，账户将被锁定 10 分钟。
+
+具有“管理员”角色的用户可以通过 CLI 重置密码手动解锁账户。10 分钟后，账户将自动解锁，用户可以正常登录。
+
+管理员还可以通过后台设置配置锁定持续时间和触发锁定所需的失败尝试次数。有关设置的详细信息，请参阅 [Dashboard 配置](../configuration/dashboard.md)。
 
 ## 配置 Dashboard
 

@@ -49,14 +49,14 @@ Manage and configure user accounts, audit logs, API keys, license settings, and 
 EMQX Dashboard is a web application that listens to port `18083` by default. After installing EMQX successfully, you can access and use the EMQX Dashboard by opening <http://localhost:18083/> (replace localhost with the actual IP address if deployed on a non-local machine) through your browser.
 
 ::: tip
-EMQX can still be used normally without Dashboard enabled, Dashboard just provides the option for users to use it visually.
+EMQX can still be used normally without the Dashboard enabled. The Dashboard just provides the option for users to use it visually.
 :::
 
 ### First Login
 
 For users who have installed EMQX for the first time, you can use the default username `admin` and default password `public` to log in web page after opening the Dashboard in your browser.
 
-After logging in for the first time, the system will automatically detect that you are logging in with the default username and password, and will force you to change the default password, which is good for the security of accessing Dashboard, note that the changed password cannot be the same as the original password, and it is not recommended to use `public` as the login password again.
+After logging in for the first time, the system will automatically detect that you are logging in with the default username and password. It will force you to change the default password, which is good for the security of accessing the Dashboard. Note that the changed password cannot be the same as the original password, and it is not recommended to use `public` as the login password again.
 
 ### Reset Password
 
@@ -65,6 +65,32 @@ You can reset your Dashboard login password via the `admins` command. For detail
 ```bash
 ./bin/emqx ctl admins passwd <Username> <Password>
 ```
+
+### Password Expiration
+
+If the duration of your current Dashboard login password exceeds the configured password expiration period (`password_expired_time`), you will be prompted to update your password upon login. For details about the `password_expired_time` setting, refer to the [Dashboard Configuration](../configuration/dashboard.md).
+
+Users with the "Administrator" role can also configure the password expiration time using the [REST API](../admin/api.md). 
+
+**Example**:
+
+```bash
+curl -X 'PUT' \
+  'http://admin:ppp@localhost:18083/api/v5/configs/dashboard' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"password_expired_time": "1d"}'
+```
+
+In this example, the password expiration time is set to 1 day.
+
+### Account Lockout and Unlock
+
+To enhance security, the EMQX Dashboard implements an "Account Lockout and Unlock" mechanism. When a user enters the wrong password 5 times within a 5-minute window, their account will be locked for 10 minutes.
+
+Users with the "Administrator" role can manually unlock the account via the CLI by resetting the user's password. After 10 minutes, the account will automatically be unlocked, and the user will be able to log in again normally.
+
+Administrators can also configure the lockout duration and the number of failed attempts required for lockout through the backend settings. For details of the settings, refer to the [Dashboard Configuration](../configuration/dashboard.md).
 
 ## Configure Dashboard
 

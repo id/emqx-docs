@@ -77,8 +77,8 @@ EMQX 允许创建多个认证器构成一条认证链，认证器将按照在链
 
 以密码认证为例，其执行流程如下：
 
-1. **评估前置条件（如已配置）：**
-    如果某个认证器配置了[前置条件](#认证器前置条件)，EMQX 会首先基于客户端信息（如 `listener`、`clientid`、`username` 等）评估该表达式。
+1. **评估调用条件（如已配置）：**
+    如果某个认证器配置了[调用条件](#认证器调用条件)，EMQX 会首先基于客户端属性信息（如 `listener`、`clientid`、`username` 等）评估该表达式。
    - 若表达式计算结果为 `true`，则执行该认证器；
    - 否则跳过此认证器。
 2. **执行认证器：**
@@ -92,15 +92,29 @@ EMQX 允许创建多个认证器构成一条认证链，认证器将按照在链
 
 ![EMQX 认证链](./assets/authn-chain.png)
 
-### 认证器前置条件
+### 认证器调用条件
 
-从 EMQX 5.9 开始，您可以为每个认证器配置一个前置条件，用于判断是否应触发该认证器来认证当前客户端。
+从 EMQX 5.9 开始，您可以为每个认证器配置一个调用条件，用于判断是否应触发该认证器来认证当前客户端。
 
-前置条件是一个 [Variform 表达式](../../configuration/configuration.md#variform-表达式)，可基于客户端信息（例如 `listener`, `username`, `clientid` 等）进行逻辑判断。如果表达式的计算结果不是 `true`，该认证器将被跳过。
+调用条件是一个 [Variform 表达式](../../configuration/configuration.md#variform-表达式)，可基于客户端属性信息（例如 `listener`, `username`, `clientid` 等）进行逻辑判断。如果表达式的计算结果不是 `true`，该认证器将被跳过。
 
-通过使用前置条件，您可以实现更灵活的认证逻辑，仅对符合特定条件的客户端调用对应的认证器，从而避免不必要的外部认证请求。
+此功能在认证链中实现更灵活的认证逻辑。它允许对认证逻辑进行细粒度控制，例如根据客户端连接的不同监听器或客户端属性应用不同的认证器。这样，EMQX 只在合适的情况下调用认证器，避免了对外部系统的无谓请求。
 
-#### 前置条件示例
+#### 调用条件中支持的客户端属性
+
+调用条件中支持的客户端属性包括：
+
+- `username`：客户端的用户名
+- `password`：客户端的密码
+- `clientid`：客户端的客户端 ID
+- `client_attrs.*`：客户端的自定义属性
+- `cert_common_name`：客户端 TLS 证书中的主体字段
+- `cert_subject`：客户端 TLS 证书中的公共名称（CN）
+- `peersni`：TLS 客户端发送的 SNI（服务器名称指示）
+- `listener`：监听器 ID（例如 `tcp:default`）
+- `zone`：关联的配置区
+
+#### 调用条件示例
 
 - 仅对通过 `tcp:default` 监听器连接的客户端启用 HTTP 认证器：
 
@@ -218,23 +232,25 @@ SELECT password_hash, salt FROM mqtt_user where username = 'emqx_u' LIMIT 1
 
 目前 EMQX 支持以下占位符：
 
-- `${clientid}`: 将在运行时被替换为客户端 ID。客户端 ID 一般由客户端在 `CONNECT` 报文中显式指定，如果启用了 `use_username_as_clientid` 或 `peer_cert_as_clientid`，则会在连接时被用户名、证书中的字段或证书内容所覆盖。
+- `${clientid}`：将在运行时被替换为客户端 ID。客户端 ID 一般由客户端在 `CONNECT` 报文中显式指定，如果启用了 `use_username_as_clientid` 或 `peer_cert_as_clientid`，则会在连接时被用户名、证书中的字段或证书内容所覆盖。
 
-- `${username}`: 将在运行时被替换为用户名。用户名来自 `CONNECT` 报文中的 `Username` 字段。如果启用了 `peer_cert_as_username`，则会在连接时被证书中的字段或证书内容所覆盖。
+- `${username}`：将在运行时被替换为用户名。用户名来自 `CONNECT` 报文中的 `Username` 字段。如果启用了 `peer_cert_as_username`，则会在连接时被证书中的字段或证书内容所覆盖。
 
-- `${password}`: 将在运行时被替换为密码。密码来自 `CONNECT` 报文中的 `Password` 字段。
+- `${password}`：将在运行时被替换为密码。密码来自 `CONNECT` 报文中的 `Password` 字段。
 
-- `${peerhost}`: 将在运行时被替换为客户端的 IP 地址。EMQX 支持 [Proxy Protocol](http://www.haproxy.org/download/1.8/doc/proxy-protocol.txt)，即使 EMQX 部署在某些 TCP 代理或负载均衡器之后，用户也可以使用此占位符获得真实 IP 地址。
+- `${peerhost}`：将在运行时被替换为客户端的 IP 地址。EMQX 支持 [Proxy Protocol](http://www.haproxy.org/download/1.8/doc/proxy-protocol.txt)，即使 EMQX 部署在某些 TCP 代理或负载均衡器之后，用户也可以使用此占位符获得真实 IP 地址。
 
-- `${peerport}`: 它将在运行时被客户端的 IP 端口替换。
+- `${peerport}`：将在运行时被客户端的 IP 端口替换。
 
-- `${cert_subject}`: 将在运行时被替换为客户端 TLS 证书的主题（Subject）。如果证书信息是从负载均衡器发送到 EMQX 的 TCP 端口，需要确保负载均衡器使用的是 Proxy Protocol v2。
+- `${peername}`：将在运行时被替换为客户端的 IP 地址和端口，格式为 `IP: PORT`。
 
-- `${cert_common_name}`: 将在运行时被替换为客户端 TLS 证书的通用名称（Common Name）。如果证书信息是从负载均衡器发送到 EMQX 的 TCP 端口，需要确保负载均衡器使用的是 Proxy Protocol v2。
+- `${cert_subject}`：将在运行时被替换为客户端 TLS 证书的主题（Subject）。如果证书信息是从负载均衡器发送到 EMQX 的 TCP 端口，需要确保负载均衡器使用的是 Proxy Protocol v2。
+
+- `${cert_common_name}`：将在运行时被替换为客户端 TLS 证书的通用名称（Common Name）。如果证书信息是从负载均衡器发送到 EMQX 的 TCP 端口，需要确保负载均衡器使用的是 Proxy Protocol v2。
 
 - `${client_attrs.NAME}`：某个客户端属性。`NAME` 将在运行时根据预定义配置替换为属性名称。有客户端属性的详细信息，请参见 [MQTT 客户端属性](../../client-attributes/client-attributes.md)。
 
-- `${zone}`: 在运行时将替换为客户端的 Zone。`${zone}` 占位符可以直接用于认证模板中，简化规则创建，并支持基于 Zone 的特定配置。有关 Zone 的详细配置信息，请参见 [Zone 覆盖](../../configuration/configuration.md#zone-覆盖)。
+- `${zone}`：在运行时将替换为客户端的 Zone。`${zone}` 占位符可以直接用于认证模板中，简化规则创建，并支持基于 Zone 的特定配置。有关 Zone 的详细配置信息，请参见 [Zone 覆盖](../../configuration/configuration.md#zone-覆盖)。
 
   例如，以下 ACL 规则使用 `${zone}` 根据客户端的指定 zone 动态应用权限：
 
