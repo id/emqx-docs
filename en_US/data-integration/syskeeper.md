@@ -116,9 +116,11 @@ This section demonstrates how to create a rule in EMQX to process messages from 
    - **QoS**: The QoS for the republished messages.
    - **Message Template**: The payload template for the republished messages. The placeholders are supported, for example, `${payload}`.
 
-10. Click **Create** to complete the Sink creation. Back on the **Create Rule** page, you will see the new Sink appear under the **Action Outputs** tab.
+10. **Fallback Actions (Optional)**: If you want to improve reliability in case of message delivery failure, you can define one or more fallback actions. These actions will be triggered if the primary Sink fails to process a message. See [Fallback Actions](./data-bridges.md#fallback-actions) for more details.
 
-11. On the **Create Rule** page, verify the configured information. Click the **Create** button to generate the rule.
+11. Click **Create** to complete the Sink creation. Back on the **Create Rule** page, you will see the new Sink appear under the **Action Outputs** tab.
+
+12. On the **Create Rule** page, verify the configured information. Click the **Create** button to generate the rule.
 
 Now you have successfully created the rule and you can see the new rule appear on the **Rule** page. Click the **Actions(Sink)** tab, you can see the new SysKeeper Forwarder.
 

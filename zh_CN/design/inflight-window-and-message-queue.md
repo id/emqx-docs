@@ -22,17 +22,12 @@ MQTT v5.0 协议为 CONNECT 报文新增了一个 `Receive Maximum` 的属性，
 
 不难看出，`Receive Maximum` 其实与 EMQX 中的飞行窗口机制如出一辙，只是在 MQTT v5.0 协议发布前，EMQX 就已经对接入的 MQTT 客户端提供了这一功能。现在，使用 MQTT v5.0 协议的客户端将按照 `Receive Maximum` 的规范来设置飞行窗口的最大长度，而更低版本 MQTT 协议的客户端则依然按照配置来设置。
 
+然而，EMQX 并不一定会授予 CONNECT 数据包中请求的 `Receive Maximum` 值。相反，在 CONNACK 数据包中授予的 `Receive Maximum` 受 `mqtt.max_inflight` 配置的限制。
+
 ## 配置项
 
-| 配置项             | 类型     | 可取值          | 默认值                                     | 说明                                                   |
-| ----------------- | ------- | ----------------- | ------------------------------------------ | ------------------------------------------------------ |
-| max_inflight      | integer | (0, 65536)      | 32 *(external)*,<br /> 128 *(internal)*    | 飞行窗口度限制，0 即无限制                    |
-| max_mqueue_len    | integer | [0, ∞)          | 1000 *(external)*,<br />10000 *(internal)* | 消息队列长度限制，0 即无限制                     |
-| mqueue_store_qos0 | enum    | `true`, `false` | true                                       | 客户端离线时 EMQX 是否存储 QoS 0 消息至消息队列 |
-
-
-
-
-
-
-
+| 配置项                 | 类型 | 可选值          | 默认值 | 描述                                                   |
+| ---------------------- | ---- | --------------- | ------ | ------------------------------------------------------ |
+| mqtt.max_inflight      | 整数 | (0, 65536)      | 32     | Inflight 窗口长度限制，0 表示无限制                    |
+| mqtt.max_mqueue_len    | 整数 | [0, ∞)          | 1000   | 消息队列长度限制，0 表示无限制                         |
+| mqtt.mqueue_store_qos0 | 枚举 | `true`, `false` | true   | 当客户端离线时，EMQX 是否将 QoS 0 消息存储到消息队列中 |

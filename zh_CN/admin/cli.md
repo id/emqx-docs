@@ -412,6 +412,7 @@ ok
 | ---------------------------------------- | ---------------------------------------- |
 | plugins list                             | 列出所有已安装的插件。                   |
 | plugins describe \<Name-Vsn\>            | 描述已安装插件的详细信息。               |
+| plugins allow \<Name-Vsn\>               | 授予通过 Dashboard 安装指定插件的权限。  |
 | plugins install \<Name-Vsn\>             | 安装一个已放置在插件安装目录下的插件包。 |
 | plugins uninstall \<Name-Vsn\>           | 卸载指定插件。                           |
 | plugins start \<Name-Vsn\>               | 启动指定插件。                           |
@@ -430,6 +431,12 @@ emqx ctl plugins list
 
 ```bash
 emqx ctl plugins describe emqx_auth_mnesia-3.0.1
+```
+
+### plugins allow \<Name-Vsn\>
+
+```bash
+emqx ctl plugins allow emqx_auth_mnesia-3.0.1
 ```
 
 ### plugins install \<Name-Vsn\>

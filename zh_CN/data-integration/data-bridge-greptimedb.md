@@ -54,17 +54,17 @@ GreptimeDB 数据集成是 EMQX 开箱即用的功能，它结合了 EMQX 的实
 
 1. 通过 Docker 安装并启动 GreptimeDB，详细步骤请参考[下载安装GreptimeDB](https://greptime.cn/download)。
 
-   ```bash
-   # 启动一个 GreptimeDB 容器
-   docker run -p 4000-4004:4000-4004 \
-   -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
-   --name greptime --rm \
-   greptime/greptimedb standalone start \
-   --http-addr 0.0.0.0:4000 \
-   --rpc-addr 0.0.0.0:4001 \
-   --mysql-addr 0.0.0.0:4002 \
-   --user-provider=static_user_provider:cmd:greptime_user=greptime_pwd
-   ```
+```bash
+# 启动一个 GreptimeDB 容器
+docker run -p 4000-4004:4000-4004 \
+-p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
+--name greptime --rm \
+greptime/greptimedb standalone start \
+--http-addr 0.0.0.0:4000 \
+--rpc-addr 0.0.0.0:4001 \
+--mysql-addr 0.0.0.0:4002 \
+--user-provider=static_user_provider:cmd:greptime_user=greptime_pwd
+```
 
 2. `user-provider` 参数指定了 GreptimeDB 的用户鉴权账户，你还可以通过文件的方式指定，参考[鉴权](https://docs.greptime.cn/user-guide/deployments/authentication/static)文档。
 
@@ -134,11 +134,13 @@ GreptimeDB 数据集成是 EMQX 开箱即用的功能，它结合了 EMQX 的实
 
 9. 选择**时间精度**：使用默认值`毫秒`。
 
-10. 高级配置（可选），根据情况配置同步/异步模式，队列等参数，详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
+10. **备选动作（可选）**：如果您希望在消息投递失败时提升系统的可靠性，可以为 Sink 配置一个或多个备选动作。当 Sink 无法成功处理消息时，这些备选动作将被触发。更多信息请参见：[备选动作](./data-bridges.md#备选动作)。
 
-11. 点击**添加**按钮完成 Sink 创建，新建的 Sink 将被添加到**动作输出**列表中。
+11. **高级配置（可选）**，根据情况配置同步/异步模式，队列等参数，详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
 
-12. 回到创建规则页面，对配置的信息进行确认，点击**创建**。一条规则应该出现在规则列表中。
+12. 点击**添加**按钮完成 Sink 创建，新建的 Sink 将被添加到**动作输出**列表中。
+
+13. 回到创建规则页面，对配置的信息进行确认，点击**创建**。一条规则应该出现在规则列表中。
 
 现在您已成功创建了通过 GreptimeDB Sink 将数据转发到 GreptimeDB 的规则，同时在**规则**页面的**动作(Sink)** 标签页看到新建的 GreptimeDB Sink。
 

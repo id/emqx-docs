@@ -227,11 +227,13 @@ This section demonstrates how to create a rule in EMQX to process messages from 
    - **Partition Strategy**: Select how the producer distributes messages to Kafka partitions.
    - **Compression**: Specify whether to use compression algorithms to compress/decompress records in Kafka messages.
 
-9. Advanced Settings (Optional): Refer to [Advanced Configuration](#advanced-configuration).
+9. **Fallback Actions (Optional)**: If you want to improve reliability in case of message delivery failure, you can define one or more fallback actions. These actions will be triggered if the primary Sink fails to process a message. See [Fallback Actions](./data-bridges.md#fallback-actions) for more details.
 
-10. Click the **Create** button to complete the creation of the Sink. Once created, the page will return to **Create Rule**, and the new Sink will be added to the rule actions.
+10. **Advanced Settings (Optional)**: Refer to [Advanced Configuration](#advanced-configuration).
 
-11. Click the **Create** button to complete the entire rule creation.
+11. Click the **Create** button to complete the creation of the Sink. Once created, the page will return to **Create Rule**, and the new Sink will be added to the rule actions.
+
+12. Click the **Create** button to complete the entire rule creation.
 
 Now you have successfully created the rule, and you can see the newly created rule on the **Integration** -> **Rules** page, as well as the newly created Confluent Producer Sink on the **Actions(Sink)** tab.
 
@@ -286,7 +288,7 @@ This section describes some advanced configuration options that can optimize the
 | Buffer Mode                      | Defines whether messages are stored in a buffer before being sent. Memory buffering can increase transmission speeds.<br />`memory`: Messages are buffered in memory. They will be lost in the event of an EMQX node restart.<br />`disk`: Messages are buffered on disk, ensuring they can survive an EMQX node restart.<br />`hybrid`: Messages are initially buffered in memory. When they reach a certain limit (refer to the `segment_bytes` configuration for more details), they are gradually offloaded to disk. Similar to the memory mode, messages will be lost if the EMQX node restarts. | `memory`           |
 | Per-partition Buffer Limit       | Maximum allowed buffer size, in bytes, for each Kafka partition. When this limit is reached, older messages will be discarded to make room for new ones by reclaiming buffer space. <br />This option helps to balance memory usage and performance. | `2` GB             |
 | Segment File Bytes               | This setting is applicable when the buffer mode is configured as `disk` or `hybrid`. It controls the size of segmented files used to store messages, influencing the optimization level of disk storage. | `100` MB           |
-| Memory Overload Protection       | This setting applies when the buffer mode is configured as `memory`. EMQX will automatically discard older buffered messages when it encounters high memory pressure. It helps prevent system instability due to excessive memory usage, ensuring system reliability. <br />**Note**: The threshold for high memory usage is defined in the configuration parameter `sysmon.os.sysmem_high_watermark`. This configuration is effective only on Linux systems. | Disabled           |
+| Memory Overload Protection       | This setting applies when the buffer mode is configured as `memory`. EMQX will automatically discard older buffered messages when it encounters high memory pressure. It helps prevent system instability due to excessive memory usage, ensuring system reliability. <br />**Note**: This configuration is effective only on Linux systems. | Disabled           |
 
 ### <!-- Confluent Consumer Source Configuration -->
 

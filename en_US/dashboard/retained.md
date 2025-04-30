@@ -46,4 +46,5 @@ Below are detailed descriptions of each field.
 | Max Payload Size        | Bytesize |                   | 1MB           | Retain the maximum payload value of the message. If the payload value exceeds the maximum value, the EMQX will treat the retained reserved message as a normal message. |
 | Message Expire Interval | Duration |                   | Never Expire  | The expiration time of the retained message, and 0 means never expire. If the message expiration interval is set in the PUBLISH packet, the message expiration interval in the PUBLISH packet shall prevail. |
 | Message Clear Interval  | Duration |                   | Disabled      | Interval to clean up expired messages.                       |
-| Deliver Rate            | Integer  | ≥ 0               | 1000          | The maximum rate of delivering retain messages.              |
+| Max Publish Rate        | Integer  | ≥ 0               | 2000          | The maximum rate of publishing retained messages. Messages published over the limit are delivered but not stored as retained. |
+| Deliver Rate            | Integer  | ≥ 0               | 1000          | The maximum rate of delivering retained messages.            |
