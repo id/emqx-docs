@@ -7,6 +7,7 @@ EMQX Dashboard configuration includes many configuration items. For example, you
 - `listeners`
 - `token_expired_time`
 - `password_expired_time`
+- `hwmark_expire_time`
 - `cors`
 - `default_password`
 - `unsuccessful_login_max_attempts`
@@ -111,6 +112,10 @@ Where,
 - `token_expired_time`
 
   JWT token expiration time. It is equivalent to "browser session expiration time". When a user logs in, EMQX generates a JWT token along with a refresh token. The session is automatically renewed before expiration. The default value is `60m`.
+
+- `hwmark_expire_time`
+
+  The time window for the highest watermark to expire. The default value is `7d`. After expiration, the dashboard will find the new highest watermark since the expiration time up to the current time.
 
 - `password_expired_time`
 

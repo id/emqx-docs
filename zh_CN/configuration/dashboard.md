@@ -7,6 +7,7 @@ EMQX Dashboard 配置包括很多配置项，例如，为 Dashboard 配置 `swag
 - `listeners`
 - `token_expired_time`
 - `password_expired_time`
+- `hwmark_expire_time`
 - `cors`
 - `default_password`
 - `unsuccessful_login_max_attempts`
@@ -110,6 +111,10 @@ dashboard {
 - `token_expired_time`
 
   JWT Token 的过期时间，等同于“浏览器会话过期时间”。用户登录后，EMQX 会生成一个 JWT Token 和一个刷新 Token。会话会在到期前自动续期。默认值为 `60m`。
+
+- `hwmark_expire_time`
+
+  最高水印过期时间。默认值为 `7d`。过期后，Dashboard 将找到自过期时间到当前时间为止的最高水印。
 
 - `password_expired_time`
 
