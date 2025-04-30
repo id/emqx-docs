@@ -163,6 +163,7 @@ log {
 - "connection_rejected_due_to_license_limit_reached"
 - "data_bridge_buffer_overflow"
 - "dropped_msg_due_to_mqueue_is_full"
+- "dropped_qos0_msg"
 - "external_broker_crashed"
 - "failed_to_fetch_crl"
 - "failed_to_retain_message"

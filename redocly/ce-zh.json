@@ -1,6 +1,6 @@
 {
   "info": {
-    "version": "5.8.5",
+    "version": "5.8.6",
     "title": "EMQX API"
   },
   "components": {
@@ -12080,6 +12080,10 @@
             "type": "integer",
             "description": "Messages saved to the durable storage per 10 seconds"
           },
+          "received_msg_rate": {
+            "type": "integer",
+            "description": "Dropped messages per 10 seconds"
+          },
           "transformation_failed_rate": {
             "type": "integer",
             "description": "Message transformations failed per 10 seconds"
@@ -12087,10 +12091,6 @@
           "validation_failed_rate": {
             "type": "integer",
             "description": "Schema validations failed per 10 seconds"
-          },
-          "received_msg_rate": {
-            "type": "integer",
-            "description": "Dropped messages per 10 seconds"
           },
           "transformation_succeeded_rate": {
             "type": "integer",
@@ -15381,6 +15381,10 @@
             "type": "integer",
             "description": "Messages saved to the durable storage per 10 seconds"
           },
+          "received_msg_rate": {
+            "type": "integer",
+            "description": "Dropped messages per 10 seconds"
+          },
           "transformation_failed_rate": {
             "type": "integer",
             "description": "Message transformations failed per 10 seconds"
@@ -15388,10 +15392,6 @@
           "validation_failed_rate": {
             "type": "integer",
             "description": "Schema validations failed per 10 seconds"
-          },
-          "received_msg_rate": {
-            "type": "integer",
-            "description": "Dropped messages per 10 seconds"
           },
           "transformation_succeeded_rate": {
             "type": "integer",
@@ -23672,6 +23672,7 @@
                         }
                       }
                     ],
+                    "acceptors": 16,
                     "dtls_options": {
                       "verify": "verify_none",
                       "versions": [
@@ -23687,8 +23688,7 @@
                     "access_rules": [
                       "allow all"
                     ],
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   {
                     "name": "ssl-def",
@@ -23726,12 +23726,12 @@
                         }
                       }
                     ],
+                    "acceptors": 16,
                     "max_connections": 1024000,
                     "access_rules": [
                       "allow all"
                     ],
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   {
                     "name": "tcp-def",
@@ -23765,9 +23765,9 @@
                         }
                       }
                     ],
+                    "acceptors": 16,
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   {
                     "name": "dtls-psk",
@@ -23788,6 +23788,7 @@
                         }
                       }
                     ],
+                    "acceptors": 16,
                     "dtls_options": {
                       "verify": "verify_none",
                       "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
@@ -23802,8 +23803,7 @@
                       "user_lookup_fun": "emqx_tls_psk:lookup"
                     },
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   {
                     "name": "tcp-with-authn",
@@ -23832,9 +23832,9 @@
                         }
                       }
                     ],
+                    "acceptors": 16,
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   {
                     "name": "ws-def",
@@ -23877,9 +23877,9 @@
                       "check_origin_enable": false,
                       "piggyback": "single"
                     },
+                    "acceptors": 16,
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   {
                     "name": "ws-ssl-def",
@@ -23935,9 +23935,9 @@
                       "check_origin_enable": false,
                       "piggyback": "single"
                     },
+                    "acceptors": 16,
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   }
                 ],
                 "schema": {
@@ -24072,6 +24072,7 @@
                         "backlog": 1024,
                         "active_n": 100
                       },
+                      "acceptors": 16,
                       "dtls_options": {
                         "verify": "verify_none",
                         "versions": [
@@ -24087,8 +24088,7 @@
                       "access_rules": [
                         "allow all"
                       ],
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple DTLS listener example"
                   },
@@ -24114,12 +24114,12 @@
                         "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
                         "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem"
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
                       "access_rules": [
                         "allow all"
                       ],
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple SSL listener example"
                   },
@@ -24141,9 +24141,9 @@
                         "backlog": 1024,
                         "active_n": 100
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple TCP listener example"
                   },
@@ -24152,6 +24152,7 @@
                       "name": "dtls-psk",
                       "type": "dtls",
                       "bind": "22214",
+                      "acceptors": 16,
                       "dtls_options": {
                         "verify": "verify_none",
                         "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
@@ -24166,8 +24167,7 @@
                         "user_lookup_fun": "emqx_tls_psk:lookup"
                       },
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A DTLS listener with PSK example"
                   },
@@ -24184,9 +24184,9 @@
                         },
                         "user_id_type": "username"
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A TCP listener with authentication example"
                   },
@@ -24217,9 +24217,9 @@
                         "check_origin_enable": false,
                         "piggyback": "single"
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple WebSocket listener example"
                   },
@@ -24263,9 +24263,9 @@
                         "check_origin_enable": false,
                         "piggyback": "single"
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple WebSocket/TLS listener example"
                   }
@@ -24369,6 +24369,7 @@
                       "backlog": 1024,
                       "active_n": 100
                     },
+                    "acceptors": 16,
                     "dtls_options": {
                       "verify": "verify_none",
                       "versions": [
@@ -24384,8 +24385,7 @@
                     "access_rules": [
                       "allow all"
                     ],
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple DTLS listener example"
                 },
@@ -24411,12 +24411,12 @@
                       "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
                       "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem"
                     },
+                    "acceptors": 16,
                     "max_connections": 1024000,
                     "access_rules": [
                       "allow all"
                     ],
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple SSL listener example"
                 },
@@ -24438,9 +24438,9 @@
                       "backlog": 1024,
                       "active_n": 100
                     },
+                    "acceptors": 16,
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple TCP listener example"
                 },
@@ -24449,6 +24449,7 @@
                     "name": "dtls-psk",
                     "type": "dtls",
                     "bind": "22214",
+                    "acceptors": 16,
                     "dtls_options": {
                       "verify": "verify_none",
                       "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
@@ -24463,8 +24464,7 @@
                       "user_lookup_fun": "emqx_tls_psk:lookup"
                     },
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A DTLS listener with PSK example"
                 },
@@ -24481,9 +24481,9 @@
                       },
                       "user_id_type": "username"
                     },
+                    "acceptors": 16,
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A TCP listener with authentication example"
                 },
@@ -24514,9 +24514,9 @@
                       "check_origin_enable": false,
                       "piggyback": "single"
                     },
+                    "acceptors": 16,
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple WebSocket listener example"
                 },
@@ -24560,9 +24560,9 @@
                       "check_origin_enable": false,
                       "piggyback": "single"
                     },
+                    "acceptors": 16,
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple WebSocket/TLS listener example"
                 }
@@ -24999,9 +24999,9 @@
                     "enable": true,
                     "proto_ver": "v5",
                     "resource_opts": {
+                      "health_check_interval": "45s",
                       "start_timeout": "5s",
-                      "start_after_created": true,
-                      "health_check_interval": "45s"
+                      "start_after_created": true
                     }
                   },
                   "summary": "MQTT Connector"
@@ -27127,83 +27127,83 @@
                 "examples": {
                   "lwm2m_client": {
                     "value": {
-                      "expiry_interval": 0,
-                      "mqueue_dropped": 0,
-                      "ip_address": "127.0.0.1",
-                      "clientid": "MzAyMzEzNTUwNzk1NDA1MzYyMzIwNzUxNjQwMTY1NzQ0NjE",
-                      "connected_at": "2021-12-07T10:44:02.721+08:00",
+                      "awaiting_rel_max": "infinity",
+                      "send_pkt": 1,
                       "mqueue_len": 0,
-                      "proto_name": "LwM2M",
-                      "endpoint_name": "urn:imei:154928475237123",
-                      "mailbox_len": 0,
+                      "recv_msg": 0,
+                      "connected_at": "2021-12-07T10:44:02.721+08:00",
+                      "username": "guest",
+                      "mqueue_dropped": 0,
                       "recv_pkt": 1,
-                      "inflight_max": "infinity",
-                      "lifetime": 86400,
+                      "endpoint_name": "urn:imei:154928475237123",
+                      "subscriptions_cnt": 0,
+                      "clean_start": true,
+                      "send_msg": 0,
                       "recv_cnt": 1,
                       "send_oct": 61,
                       "heap_size": 4185,
-                      "inflight_cnt": 0,
                       "reductions": 72022,
-                      "awaiting_rel_max": "infinity",
-                      "clean_start": true,
-                      "mqueue_max": "infinity",
-                      "node": "emqx@127.0.0.1",
-                      "send_cnt": 1,
                       "disconnected_at": null,
-                      "port": 50675,
-                      "subscriptions_cnt": 0,
-                      "is_bridge": false,
-                      "proto_ver": "1.0",
-                      "recv_oct": 56,
+                      "proto_name": "LwM2M",
+                      "ip_address": "127.0.0.1",
+                      "mailbox_len": 0,
+                      "node": "emqx@127.0.0.1",
+                      "inflight_max": "infinity",
+                      "expiry_interval": 0,
+                      "send_cnt": 1,
                       "created_at": "2021-12-07T10:44:02.721+08:00",
-                      "recv_msg": 0,
-                      "send_msg": 0,
-                      "send_pkt": 1,
-                      "username": "guest",
-                      "connected": true,
-                      "subscriptions_max": "infinity",
+                      "clientid": "MzAyMzEzNTUwNzk1NDA1MzYyMzIwNzUxNjQwMTY1NzQ0NjE",
                       "awaiting_rel_cnt": 0,
-                      "keepalive": 0
+                      "port": 50675,
+                      "recv_oct": 56,
+                      "is_bridge": false,
+                      "inflight_cnt": 0,
+                      "lifetime": 86400,
+                      "connected": true,
+                      "proto_ver": "1.0",
+                      "subscriptions_max": "infinity",
+                      "keepalive": 0,
+                      "mqueue_max": "infinity"
                     },
                     "summary": "LwM2M client info"
                   },
                   "general_client": {
                     "value": {
-                      "expiry_interval": 0,
-                      "mqueue_dropped": 0,
-                      "ip_address": "127.0.0.1",
-                      "clientid": "MzAyMzEzNTUwNzk1NDA1MzYyMzIwNzUxNjQwMTY1NzQ0NjE",
-                      "connected_at": "2021-12-07T10:44:02.721+08:00",
+                      "awaiting_rel_max": "infinity",
+                      "send_pkt": 1,
                       "mqueue_len": 0,
-                      "proto_name": "STOMP",
-                      "mailbox_len": 0,
+                      "recv_msg": 0,
+                      "connected_at": "2021-12-07T10:44:02.721+08:00",
+                      "username": "guest",
+                      "mqueue_dropped": 0,
                       "recv_pkt": 1,
-                      "inflight_max": "infinity",
+                      "subscriptions_cnt": 0,
+                      "clean_start": true,
+                      "send_msg": 0,
                       "recv_cnt": 1,
                       "send_oct": 61,
                       "heap_size": 4185,
-                      "inflight_cnt": 0,
                       "reductions": 72022,
-                      "awaiting_rel_max": "infinity",
-                      "clean_start": true,
-                      "mqueue_max": "infinity",
-                      "node": "emqx@127.0.0.1",
-                      "send_cnt": 1,
                       "disconnected_at": null,
-                      "port": 50675,
-                      "subscriptions_cnt": 0,
-                      "is_bridge": false,
-                      "proto_ver": "1.0",
-                      "recv_oct": 56,
+                      "proto_name": "STOMP",
+                      "ip_address": "127.0.0.1",
+                      "mailbox_len": 0,
+                      "node": "emqx@127.0.0.1",
+                      "inflight_max": "infinity",
+                      "expiry_interval": 0,
+                      "send_cnt": 1,
                       "created_at": "2021-12-07T10:44:02.721+08:00",
-                      "recv_msg": 0,
-                      "send_msg": 0,
-                      "send_pkt": 1,
-                      "username": "guest",
-                      "connected": true,
-                      "subscriptions_max": "infinity",
+                      "clientid": "MzAyMzEzNTUwNzk1NDA1MzYyMzIwNzUxNjQwMTY1NzQ0NjE",
                       "awaiting_rel_cnt": 0,
-                      "keepalive": 0
+                      "port": 50675,
+                      "recv_oct": 56,
+                      "is_bridge": false,
+                      "inflight_cnt": 0,
+                      "connected": true,
+                      "proto_ver": "1.0",
+                      "subscriptions_max": "infinity",
+                      "keepalive": 0,
+                      "mqueue_max": "infinity"
                     },
                     "summary": "General client info"
                   }
@@ -28160,9 +28160,9 @@
                       ],
                       "proto_ver": "v5",
                       "resource_opts": {
+                        "health_check_interval": "45s",
                         "start_timeout": "5s",
-                        "start_after_created": true,
-                        "health_check_interval": "45s"
+                        "start_after_created": true
                       }
                     },
                     "summary": "MQTT Connector"
@@ -28275,9 +28275,9 @@
                       ],
                       "proto_ver": "v5",
                       "resource_opts": {
+                        "health_check_interval": "45s",
                         "start_timeout": "5s",
-                        "start_after_created": true,
-                        "health_check_interval": "45s"
+                        "start_after_created": true
                       }
                     },
                     "summary": "MQTT Connector"
@@ -28367,9 +28367,9 @@
                     "enable": true,
                     "proto_ver": "v5",
                     "resource_opts": {
+                      "health_check_interval": "45s",
                       "start_timeout": "5s",
-                      "start_after_created": true,
-                      "health_check_interval": "45s"
+                      "start_after_created": true
                     }
                   },
                   "summary": "MQTT Connector"
@@ -28778,6 +28778,7 @@
                         "backlog": 1024,
                         "active_n": 100
                       },
+                      "acceptors": 16,
                       "dtls_options": {
                         "verify": "verify_none",
                         "versions": [
@@ -28793,8 +28794,7 @@
                       "access_rules": [
                         "allow all"
                       ],
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple DTLS listener example"
                   },
@@ -28820,12 +28820,12 @@
                         "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
                         "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem"
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
                       "access_rules": [
                         "allow all"
                       ],
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple SSL listener example"
                   },
@@ -28847,9 +28847,9 @@
                         "backlog": 1024,
                         "active_n": 100
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple TCP listener example"
                   },
@@ -28858,6 +28858,7 @@
                       "name": "dtls-psk",
                       "type": "dtls",
                       "bind": "22214",
+                      "acceptors": 16,
                       "dtls_options": {
                         "verify": "verify_none",
                         "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
@@ -28872,8 +28873,7 @@
                         "user_lookup_fun": "emqx_tls_psk:lookup"
                       },
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A DTLS listener with PSK example"
                   },
@@ -28890,9 +28890,9 @@
                         },
                         "user_id_type": "username"
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A TCP listener with authentication example"
                   },
@@ -28923,9 +28923,9 @@
                         "check_origin_enable": false,
                         "piggyback": "single"
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple WebSocket listener example"
                   },
@@ -28969,9 +28969,9 @@
                         "check_origin_enable": false,
                         "piggyback": "single"
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple WebSocket/TLS listener example"
                   }
@@ -29121,6 +29121,7 @@
                         "backlog": 1024,
                         "active_n": 100
                       },
+                      "acceptors": 16,
                       "dtls_options": {
                         "verify": "verify_none",
                         "versions": [
@@ -29136,8 +29137,7 @@
                       "access_rules": [
                         "allow all"
                       ],
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple DTLS listener example"
                   },
@@ -29163,12 +29163,12 @@
                         "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
                         "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem"
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
                       "access_rules": [
                         "allow all"
                       ],
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple SSL listener example"
                   },
@@ -29190,9 +29190,9 @@
                         "backlog": 1024,
                         "active_n": 100
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple TCP listener example"
                   },
@@ -29201,6 +29201,7 @@
                       "name": "dtls-psk",
                       "type": "dtls",
                       "bind": "22214",
+                      "acceptors": 16,
                       "dtls_options": {
                         "verify": "verify_none",
                         "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
@@ -29215,8 +29216,7 @@
                         "user_lookup_fun": "emqx_tls_psk:lookup"
                       },
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A DTLS listener with PSK example"
                   },
@@ -29233,9 +29233,9 @@
                         },
                         "user_id_type": "username"
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A TCP listener with authentication example"
                   },
@@ -29266,9 +29266,9 @@
                         "check_origin_enable": false,
                         "piggyback": "single"
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple WebSocket listener example"
                   },
@@ -29312,9 +29312,9 @@
                         "check_origin_enable": false,
                         "piggyback": "single"
                       },
+                      "acceptors": 16,
                       "max_connections": 1024000,
-                      "max_conn_rate": 1000,
-                      "acceptors": 16
+                      "max_conn_rate": 1000
                     },
                     "summary": "A simple WebSocket/TLS listener example"
                   }
@@ -29418,6 +29418,7 @@
                       "backlog": 1024,
                       "active_n": 100
                     },
+                    "acceptors": 16,
                     "dtls_options": {
                       "verify": "verify_none",
                       "versions": [
@@ -29433,8 +29434,7 @@
                     "access_rules": [
                       "allow all"
                     ],
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple DTLS listener example"
                 },
@@ -29460,12 +29460,12 @@
                       "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
                       "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem"
                     },
+                    "acceptors": 16,
                     "max_connections": 1024000,
                     "access_rules": [
                       "allow all"
                     ],
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple SSL listener example"
                 },
@@ -29487,9 +29487,9 @@
                       "backlog": 1024,
                       "active_n": 100
                     },
+                    "acceptors": 16,
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple TCP listener example"
                 },
@@ -29498,6 +29498,7 @@
                     "name": "dtls-psk",
                     "type": "dtls",
                     "bind": "22214",
+                    "acceptors": 16,
                     "dtls_options": {
                       "verify": "verify_none",
                       "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
@@ -29512,8 +29513,7 @@
                       "user_lookup_fun": "emqx_tls_psk:lookup"
                     },
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A DTLS listener with PSK example"
                 },
@@ -29530,9 +29530,9 @@
                       },
                       "user_id_type": "username"
                     },
+                    "acceptors": 16,
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A TCP listener with authentication example"
                 },
@@ -29563,9 +29563,9 @@
                       "check_origin_enable": false,
                       "piggyback": "single"
                     },
+                    "acceptors": 16,
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple WebSocket listener example"
                 },
@@ -29609,9 +29609,9 @@
                       "check_origin_enable": false,
                       "piggyback": "single"
                     },
+                    "acceptors": 16,
                     "max_connections": 1024000,
-                    "max_conn_rate": 1000,
-                    "acceptors": 16
+                    "max_conn_rate": 1000
                   },
                   "summary": "A simple WebSocket/TLS listener example"
                 }
@@ -30459,8 +30459,8 @@
                         "rate_max": 0.0
                       },
                       "resource_metrics": {
-                        "success": 0,
                         "matched": 0,
+                        "success": 0,
                         "failed": 0,
                         "rate": 0.0,
                         "rate_last5m": 0.0,
@@ -30485,8 +30485,8 @@
                         {
                           "node": "emqx@127.0.0.1",
                           "metrics": {
-                            "success": 0,
                             "matched": 0,
+                            "success": 0,
                             "failed": 0,
                             "rate": 0.0,
                             "rate_last5m": 0.0,
@@ -31000,11 +31000,11 @@
                     "request_timeout": "15s",
                     "pool_type": "random",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 1,
-                      "max_buffer_bytes": 104857600,
+                      "query_mode": "async",
                       "inflight_window": 100,
-                      "health_check_interval": 15000
+                      "health_check_interval": 15000,
+                      "max_buffer_bytes": 104857600
                     },
                     "enable_pipelining": 100,
                     "local_topic": "emqx_http/#"
@@ -31029,8 +31029,19 @@
                     "max_inflight": 100,
                     "resource_opts": {
                       "query_mode": "sync",
-                      "max_buffer_bytes": 104857600,
-                      "health_check_interval": "15s"
+                      "health_check_interval": "15s",
+                      "max_buffer_bytes": 104857600
+                    },
+                    "egress": {
+                      "local": {
+                        "topic": "emqx/#"
+                      },
+                      "remote": {
+                        "retain": false,
+                        "payload": "${payload}",
+                        "topic": "from_emqx/${topic}",
+                        "qos": "${qos}"
+                      }
                     },
                     "ingress": {
                       "local": {
@@ -31042,17 +31053,6 @@
                       "remote": {
                         "topic": "aws/#",
                         "qos": 1
-                      }
-                    },
-                    "egress": {
-                      "local": {
-                        "topic": "emqx/#"
-                      },
-                      "remote": {
-                        "retain": false,
-                        "payload": "${payload}",
-                        "topic": "from_emqx/${topic}",
-                        "qos": "${qos}"
                       }
                     }
                   },
@@ -32546,8 +32546,8 @@
                         "rate_max": 0.0
                       },
                       "resource_metrics": {
-                        "success": 0,
                         "matched": 0,
+                        "success": 0,
                         "failed": 0,
                         "rate": 0.0,
                         "rate_last5m": 0.0,
@@ -32571,8 +32571,8 @@
                         {
                           "node": "emqx@127.0.0.1",
                           "metrics": {
-                            "success": 0,
                             "matched": 0,
+                            "success": 0,
                             "failed": 0,
                             "rate": 0.0,
                             "rate_last5m": 0.0,
@@ -32863,13 +32863,13 @@
                     "backlog": 1024,
                     "active_n": 100
                   },
+                  "acceptors": 16,
+                  "proxy_protocol": false,
                   "max_connections": 204800,
                   "access_rules": [
                     "allow all"
                   ],
                   "proxy_protocol_timeout": "3s",
-                  "acceptors": 16,
-                  "proxy_protocol": false,
                   "zone": "default",
                   "mountpoint": "/",
                   "current_connections": 10240
@@ -32938,13 +32938,13 @@
                   "backlog": 1024,
                   "active_n": 100
                 },
+                "acceptors": 16,
+                "proxy_protocol": false,
                 "max_connections": 204800,
                 "access_rules": [
                   "allow all"
                 ],
                 "proxy_protocol_timeout": "3s",
-                "acceptors": 16,
-                "proxy_protocol": false,
                 "zone": "default",
                 "mountpoint": "/",
                 "current_connections": 10240
@@ -34914,8 +34914,8 @@
                       }
                     ],
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 16,
+                      "query_mode": "async",
                       "health_check_interval": "15s"
                     }
                   },
@@ -35002,8 +35002,8 @@
                         }
                       ],
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 16,
+                        "query_mode": "async",
                         "health_check_interval": "15s"
                       }
                     },
@@ -35089,8 +35089,8 @@
                     },
                     "connector": "my_http_connector",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 16,
+                      "query_mode": "async",
                       "health_check_interval": "15s"
                     }
                   },
@@ -35866,11 +35866,11 @@
                       "request_timeout": "15s",
                       "pool_type": "random",
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 1,
-                        "max_buffer_bytes": 104857600,
+                        "query_mode": "async",
                         "inflight_window": 100,
-                        "health_check_interval": 15000
+                        "health_check_interval": 15000,
+                        "max_buffer_bytes": 104857600
                       },
                       "enable_pipelining": 100,
                       "local_topic": "emqx_http/#"
@@ -35895,8 +35895,19 @@
                       "max_inflight": 100,
                       "resource_opts": {
                         "query_mode": "sync",
-                        "max_buffer_bytes": 104857600,
-                        "health_check_interval": "15s"
+                        "health_check_interval": "15s",
+                        "max_buffer_bytes": 104857600
+                      },
+                      "egress": {
+                        "local": {
+                          "topic": "emqx/#"
+                        },
+                        "remote": {
+                          "retain": false,
+                          "payload": "${payload}",
+                          "topic": "from_emqx/${topic}",
+                          "qos": "${qos}"
+                        }
                       },
                       "ingress": {
                         "local": {
@@ -35908,17 +35919,6 @@
                         "remote": {
                           "topic": "aws/#",
                           "qos": 1
-                        }
-                      },
-                      "egress": {
-                        "local": {
-                          "topic": "emqx/#"
-                        },
-                        "remote": {
-                          "retain": false,
-                          "payload": "${payload}",
-                          "topic": "from_emqx/${topic}",
-                          "qos": "${qos}"
                         }
                       }
                     },
@@ -36011,11 +36011,11 @@
                       "request_timeout": "15s",
                       "pool_type": "random",
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 1,
-                        "max_buffer_bytes": 104857600,
+                        "query_mode": "async",
                         "inflight_window": 100,
-                        "health_check_interval": 15000
+                        "health_check_interval": 15000,
+                        "max_buffer_bytes": 104857600
                       },
                       "enable_pipelining": 100,
                       "local_topic": "emqx_http/#"
@@ -36040,8 +36040,19 @@
                       "max_inflight": 100,
                       "resource_opts": {
                         "query_mode": "sync",
-                        "max_buffer_bytes": 104857600,
-                        "health_check_interval": "15s"
+                        "health_check_interval": "15s",
+                        "max_buffer_bytes": 104857600
+                      },
+                      "egress": {
+                        "local": {
+                          "topic": "emqx/#"
+                        },
+                        "remote": {
+                          "retain": false,
+                          "payload": "${payload}",
+                          "topic": "from_emqx/${topic}",
+                          "qos": "${qos}"
+                        }
                       },
                       "ingress": {
                         "local": {
@@ -36053,17 +36064,6 @@
                         "remote": {
                           "topic": "aws/#",
                           "qos": 1
-                        }
-                      },
-                      "egress": {
-                        "local": {
-                          "topic": "emqx/#"
-                        },
-                        "remote": {
-                          "retain": false,
-                          "payload": "${payload}",
-                          "topic": "from_emqx/${topic}",
-                          "qos": "${qos}"
                         }
                       }
                     },
@@ -36147,11 +36147,11 @@
                     "request_timeout": "15s",
                     "pool_type": "random",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 1,
-                      "max_buffer_bytes": 104857600,
+                      "query_mode": "async",
                       "inflight_window": 100,
-                      "health_check_interval": 15000
+                      "health_check_interval": 15000,
+                      "max_buffer_bytes": 104857600
                     },
                     "enable_pipelining": 100,
                     "local_topic": "emqx_http/#"
@@ -36174,8 +36174,19 @@
                     "max_inflight": 100,
                     "resource_opts": {
                       "query_mode": "sync",
-                      "max_buffer_bytes": 104857600,
-                      "health_check_interval": "15s"
+                      "health_check_interval": "15s",
+                      "max_buffer_bytes": 104857600
+                    },
+                    "egress": {
+                      "local": {
+                        "topic": "emqx/#"
+                      },
+                      "remote": {
+                        "retain": false,
+                        "payload": "${payload}",
+                        "topic": "from_emqx/${topic}",
+                        "qos": "${qos}"
+                      }
                     },
                     "ingress": {
                       "local": {
@@ -36187,17 +36198,6 @@
                       "remote": {
                         "topic": "aws/#",
                         "qos": 1
-                      }
-                    },
-                    "egress": {
-                      "local": {
-                        "topic": "emqx/#"
-                      },
-                      "remote": {
-                        "retain": false,
-                        "payload": "${payload}",
-                        "topic": "from_emqx/${topic}",
-                        "qos": "${qos}"
                       }
                     }
                   },
@@ -37870,17 +37870,17 @@
           "content": {
             "application/json": {
               "examples": {
-                "front": {
-                  "value": {
-                    "position": "front"
-                  },
-                  "summary": "front example"
-                },
                 "rear": {
                   "value": {
                     "position": "rear"
                   },
                   "summary": "rear example"
+                },
+                "front": {
+                  "value": {
+                    "position": "front"
+                  },
+                  "summary": "front example"
                 },
                 "relative_after": {
                   "value": {
@@ -39508,8 +39508,8 @@
                     },
                     "connector": "my_http_connector",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 16,
+                      "query_mode": "async",
                       "health_check_interval": "15s"
                     }
                   },
@@ -39815,17 +39815,17 @@
           "content": {
             "application/json": {
               "examples": {
-                "front": {
-                  "value": {
-                    "position": "front"
-                  },
-                  "summary": "absolute position 'front'"
-                },
                 "rear": {
                   "value": {
                     "position": "rear"
                   },
                   "summary": "absolute position 'rear'"
+                },
+                "front": {
+                  "value": {
+                    "position": "front"
+                  },
+                  "summary": "absolute position 'front'"
                 },
                 "related_after": {
                   "value": {
@@ -41764,8 +41764,8 @@
                         }
                       ],
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 16,
+                        "query_mode": "async",
                         "health_check_interval": "15s"
                       }
                     },
@@ -41887,8 +41887,8 @@
                         }
                       ],
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 16,
+                        "query_mode": "async",
                         "health_check_interval": "15s"
                       }
                     },
@@ -42016,8 +42016,8 @@
                     },
                     "connector": "my_http_connector",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 16,
+                      "query_mode": "async",
                       "health_check_interval": "15s"
                     }
                   },
@@ -43457,9 +43457,9 @@
                     ],
                     "proto_ver": "v5",
                     "resource_opts": {
+                      "health_check_interval": "45s",
                       "start_timeout": "5s",
-                      "start_after_created": true,
-                      "health_check_interval": "45s"
+                      "start_after_created": true
                     }
                   }
                 ],
@@ -43540,9 +43540,9 @@
                       ],
                       "proto_ver": "v5",
                       "resource_opts": {
+                        "health_check_interval": "45s",
                         "start_timeout": "5s",
-                        "start_after_created": true,
-                        "health_check_interval": "45s"
+                        "start_after_created": true
                       }
                     },
                     "summary": "MQTT Connector"
@@ -43614,9 +43614,9 @@
                     "enable": true,
                     "proto_ver": "v5",
                     "resource_opts": {
+                      "health_check_interval": "45s",
                       "start_timeout": "5s",
-                      "start_after_created": true,
-                      "health_check_interval": "45s"
+                      "start_after_created": true
                     }
                   },
                   "summary": "MQTT Connector"
@@ -44273,7 +44273,8 @@
                       "enum": [
                         "UNEXPECTED_ERROR",
                         "ALREADY_INSTALLED",
-                        "BAD_PLUGIN_INFO"
+                        "BAD_PLUGIN_INFO",
+                        "FORBIDDEN"
                       ]
                     },
                     "message": {
@@ -45985,13 +45986,13 @@
                     "backlog": 1024,
                     "active_n": 100
                   },
+                  "acceptors": 16,
+                  "proxy_protocol": false,
                   "max_connections": 204800,
                   "access_rules": [
                     "allow all"
                   ],
                   "proxy_protocol_timeout": "3s",
-                  "acceptors": 16,
-                  "proxy_protocol": false,
                   "zone": "default",
                   "mountpoint": "/",
                   "current_connections": 10240
@@ -46081,13 +46082,13 @@
                     "backlog": 1024,
                     "active_n": 100
                   },
+                  "acceptors": 16,
+                  "proxy_protocol": false,
                   "max_connections": 204800,
                   "access_rules": [
                     "allow all"
                   ],
                   "proxy_protocol_timeout": "3s",
-                  "acceptors": 16,
-                  "proxy_protocol": false,
                   "zone": "default",
                   "mountpoint": "/",
                   "current_connections": 10240
@@ -46178,13 +46179,13 @@
                   "backlog": 1024,
                   "active_n": 100
                 },
+                "acceptors": 16,
+                "proxy_protocol": false,
                 "max_connections": 204800,
                 "access_rules": [
                   "allow all"
                 ],
                 "proxy_protocol_timeout": "3s",
-                "acceptors": 16,
-                "proxy_protocol": false,
                 "zone": "default",
                 "mountpoint": "/",
                 "current_connections": 10240
@@ -48269,11 +48270,11 @@
                     "request_timeout": "15s",
                     "pool_type": "random",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 1,
-                      "max_buffer_bytes": 104857600,
+                      "query_mode": "async",
                       "inflight_window": 100,
-                      "health_check_interval": 15000
+                      "health_check_interval": 15000,
+                      "max_buffer_bytes": 104857600
                     },
                     "enable_pipelining": 100,
                     "local_topic": "emqx_http/#"
@@ -48295,8 +48296,19 @@
                     "max_inflight": 100,
                     "resource_opts": {
                       "query_mode": "sync",
-                      "max_buffer_bytes": 104857600,
-                      "health_check_interval": "15s"
+                      "health_check_interval": "15s",
+                      "max_buffer_bytes": 104857600
+                    },
+                    "egress": {
+                      "local": {
+                        "topic": "emqx/#"
+                      },
+                      "remote": {
+                        "retain": false,
+                        "payload": "${payload}",
+                        "topic": "from_emqx/${topic}",
+                        "qos": "${qos}"
+                      }
                     },
                     "ingress": {
                       "local": {
@@ -48308,17 +48320,6 @@
                       "remote": {
                         "topic": "aws/#",
                         "qos": 1
-                      }
-                    },
-                    "egress": {
-                      "local": {
-                        "topic": "emqx/#"
-                      },
-                      "remote": {
-                        "retain": false,
-                        "payload": "${payload}",
-                        "topic": "from_emqx/${topic}",
-                        "qos": "${qos}"
                       }
                     }
                   }
@@ -48379,11 +48380,11 @@
                       "request_timeout": "15s",
                       "pool_type": "random",
                       "resource_opts": {
-                        "query_mode": "async",
                         "worker_pool_size": 1,
-                        "max_buffer_bytes": 104857600,
+                        "query_mode": "async",
                         "inflight_window": 100,
-                        "health_check_interval": 15000
+                        "health_check_interval": 15000,
+                        "max_buffer_bytes": 104857600
                       },
                       "enable_pipelining": 100,
                       "local_topic": "emqx_http/#"
@@ -48408,8 +48409,19 @@
                       "max_inflight": 100,
                       "resource_opts": {
                         "query_mode": "sync",
-                        "max_buffer_bytes": 104857600,
-                        "health_check_interval": "15s"
+                        "health_check_interval": "15s",
+                        "max_buffer_bytes": 104857600
+                      },
+                      "egress": {
+                        "local": {
+                          "topic": "emqx/#"
+                        },
+                        "remote": {
+                          "retain": false,
+                          "payload": "${payload}",
+                          "topic": "from_emqx/${topic}",
+                          "qos": "${qos}"
+                        }
                       },
                       "ingress": {
                         "local": {
@@ -48421,17 +48433,6 @@
                         "remote": {
                           "topic": "aws/#",
                           "qos": 1
-                        }
-                      },
-                      "egress": {
-                        "local": {
-                          "topic": "emqx/#"
-                        },
-                        "remote": {
-                          "retain": false,
-                          "payload": "${payload}",
-                          "topic": "from_emqx/${topic}",
-                          "qos": "${qos}"
                         }
                       }
                     },
@@ -48495,11 +48496,11 @@
                     "request_timeout": "15s",
                     "pool_type": "random",
                     "resource_opts": {
-                      "query_mode": "async",
                       "worker_pool_size": 1,
-                      "max_buffer_bytes": 104857600,
+                      "query_mode": "async",
                       "inflight_window": 100,
-                      "health_check_interval": 15000
+                      "health_check_interval": 15000,
+                      "max_buffer_bytes": 104857600
                     },
                     "enable_pipelining": 100,
                     "local_topic": "emqx_http/#"
@@ -48524,8 +48525,19 @@
                     "max_inflight": 100,
                     "resource_opts": {
                       "query_mode": "sync",
-                      "max_buffer_bytes": 104857600,
-                      "health_check_interval": "15s"
+                      "health_check_interval": "15s",
+                      "max_buffer_bytes": 104857600
+                    },
+                    "egress": {
+                      "local": {
+                        "topic": "emqx/#"
+                      },
+                      "remote": {
+                        "retain": false,
+                        "payload": "${payload}",
+                        "topic": "from_emqx/${topic}",
+                        "qos": "${qos}"
+                      }
                     },
                     "ingress": {
                       "local": {
@@ -48537,17 +48549,6 @@
                       "remote": {
                         "topic": "aws/#",
                         "qos": 1
-                      }
-                    },
-                    "egress": {
-                      "local": {
-                        "topic": "emqx/#"
-                      },
-                      "remote": {
-                        "retain": false,
-                        "payload": "${payload}",
-                        "topic": "from_emqx/${topic}",
-                        "qos": "${qos}"
                       }
                     }
                   },

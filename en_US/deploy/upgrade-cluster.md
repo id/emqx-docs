@@ -31,29 +31,11 @@ If you are running a version earlier than 4.4.x, you must first upgrade through 
 
 You need to resolve all incompatibilities or conflicts with your current deployment before starting the upgrade. To identify the potential compatibility issues and breaking changes that may affect your applications and deployments, you can refer to [Incompatible Changes between EMQX 5.1 and EMQX 4.4](../changes/breaking-changes-5.1.0.md), and the following incompatible changes documents in later versions:
 
-:::: tabs type:card
-
-::: tab EMQX Enterprise
-
 - [Incompatible Changes in EMQX 5.4](../changes/breaking-changes-ee-5.4.md)
 - [Incompatible Changes in EMQX 5.5](../changes/breaking-changes-ee-5.5.md)
 - [Incompatible Changes in EMQX 5.6](../changes/breaking-changes-ee-5.6.md)
 - [Incompatible Changes in EMQX 5.7](../changes/breaking-changes-ee-5.7.md)
 - [Incompatible Changes in EMQX 5.8](../changes/breaking-changes-ee-5.8.md)
-
-:::
-
-::: tab EMQX Open Source
-
-- [Incompatible Changes in EMQX 5.4](../changes/breaking-changes-ce-5.4.md)
-- [Incompatible Changes in EMQX 5.5](../changes/breaking-changes-ce-5.5.md)
-- [Incompatible Changes in EMQX 5.6](../changes/breaking-changes-ce-5.6.md)
-- [Incompatible Changes in EMQX 5.7](../changes/breaking-changes-ce-5.7.md)
-- [Incompatible Changes in EMQX 5.8](../changes/breaking-changes-ce-5.8.md)
-
-:::
-
-::::
 
 It is also advisable to thoroughly test your application in a staging environment before deploying the upgrade to your production environment. This will help ensure a smooth transition and minimize any potential disruptions.
 
