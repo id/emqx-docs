@@ -20,7 +20,7 @@ This section will introduce how to use the Docker image to install the latest ve
 2. To start the Docker container, run:
 
    ```bash
-   docker run -d --name emqx -p 1883:1883 -p 8083:8083 -p 8084:8084 -p 8883:8883 -p 18083:18083  emqx:@CE_VERSION@
+   docker run -d --name emqx -p 1883:1883 -p 8083:8083 -p 8084:8084 -p 8883:8883 -p 18083:18083 emqx/emqx:@CE_VERSION@
    ```
 
 
@@ -70,7 +70,7 @@ Docker Compose is already included in Docker Desktop. If your Docker Compose sti
    
    services:
      emqx1:
-       image: emqx:@CE_VERSION@
+       image: emqx/emqx:@CE_VERSION@
        container_name: emqx1
        environment:
        - "EMQX_NODE_NAME=emqx@node1.emqx.io"
@@ -95,7 +95,7 @@ Docker Compose is already included in Docker Desktop. If your Docker Compose sti
        #   - $PWD/emqx1_data:/opt/emqx/data
    
      emqx2:
-       image: emqx:@CE_VERSION@
+       image: emqx/emqx:@CE_VERSION@
        container_name: emqx2
        environment:
        - "EMQX_NODE_NAME=emqx@node2.emqx.io"
