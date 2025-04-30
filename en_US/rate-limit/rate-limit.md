@@ -9,11 +9,11 @@ Limiters can operate at the listener level. EMQX uses the following types of lim
 | Type           | Dashboard UI                                      | Description                                                  | Post-Overload Behavior          |
 | :------------- | ------------------------------------------------- | :----------------------------------------------------------- | :------------------------------ |
 | bytes_rate     | Max Message Publishing Traffic (Per Client)       | The size of messages in bytes published per second by a single client | Pause receiving client messages |
-| bytes_burst    | Max Message Publishing Traffic Burst (Per Client) | Number of bytes that can be sent in a burst by a single client, based on the regular `Data Publishing Rate`. |                                 |
+| bytes_burst    | Max Message Publishing Traffic Burst (Per Client) | Number of bytes that can be sent in a burst by a single client, based on the regular `Data Publishing Rate`. | Pause receiving client messages |
 | messages_rate  | Max Message Publishing Rate (Per Client)          | The number of messages published per second by a single client | Pause receiving client messages |
-| messages_burst | Max Message Publishing Burst (Per Client)         | Number of messages that can be sent in a burst by a single client, on top of regular `Messages Publish Rate` |                                 |
+| messages_burst | Max Message Publishing Burst (Per Client)         | Number of messages that can be sent in a burst by a single client, on top of regular `Messages Publish Rate` | Pause receiving client messages |
 | max_conn_rate  | Max Connection Rate (Listener)                    | The number of connections per second for the current listener | Pause receiving new connections |
-| max_conn_rate  | Max Connection Burst (Listener)                   | The maximum number of connections that the listener can accept in bursts |                                 |
+| max_conn_rate  | Max Connection Burst (Listener)                   | The maximum number of connections that the listener can accept in bursts | Pause receiving new connections |
 
 ### Configure Listener-Level Limiters
 
@@ -49,9 +49,9 @@ Limiters can also operate at the node level, limiting the speed of individual cl
 | Type           | Dashboard UI             | Description                                                  | Post-Overload Behavior                                       |
 | -------------- | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | bytes_rate     | Data Publish Rate        | The amount of data (in bytes) sent by a single client to each EMQX node | When the limit is reached, EMQX will drop QoS 0 messages and reject QoS 1 and QoS 2 messages with a "Quota Exceeded" error (0x97). |
-| bytes_burst    | Data Publish Burst       | The burst amount of data allowed per client, based on the regular `data publish rate` |                                                              |
+| bytes_burst    | Data Publish Burst       | The burst amount of data allowed per client, based on the regular `data publish rate` | When the limit is reached, EMQX will drop QoS 0 messages and reject QoS 1 and QoS 2 messages with a "Quota Exceeded" error (0x97). |
 | messages_rate  | Message Publish Rate     | The rate at which a single client sends messages to each EMQX node | When the limit is reached, EMQX will drop QoS 0 messages and reject QoS 1 and QoS 2 messages with a "Quota Exceeded" error (0x97). |
-| messages_burst | Message Publish Burst    | The number of messages allowed to be sent per node in bursts, based on the regular `message publishing rate` |                                                              |
+| messages_burst | Message Publish Burst    | The number of messages allowed to be sent per node in bursts, based on the regular `message publishing rate` | When the limit is reached, EMQX will drop QoS 0 messages and reject QoS 1 and QoS 2 messages with a "Quota Exceeded" error (0x97). |
 | max_conn_rate  | Maximum Connection Rate  | The rate at which new connections are accepted per node      | When the limit is reached, EMQX will pause processing connections in the Accept queue, delaying or rejecting new connections. |
 | max_conn_burst | Maximum Connection Burst | The maximum number of connections that a node can accept in bursts | Pause receiving new connections                              |
 
@@ -62,8 +62,7 @@ You can configure rate limits for each listener on the **Management** -> **MQTT 
 Alternatively, you can configure them through the configuration file. For example, you can configure the following in `emqx.conf`:
 
 ```bash
-mqtt {
-  bind = "0.0.0.0:1883"
+limiter {
   max_conn_rate = "1000/s"
   max_conn_burst = "10000/60m"
   messages_rate = "500/10s"
