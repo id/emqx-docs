@@ -159,7 +159,7 @@ Each resource connection (not MQTT connection) has a buffer queue length (by cap
 
 #### Buffer File Location
 
-For Kafka Sink, disk cache files are located in `data/kafka`, while for other Sinks, disk cache files are in `data/resource_worker`.
+For Kafka Sink, disk cache files are located in `data/kafka`, while for other Sinks, disk cache files are in `data/bufs`.
 
 In actual use, the `data` directory can be mounted on a high-performance disk to improve throughput.
 
