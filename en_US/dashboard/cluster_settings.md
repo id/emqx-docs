@@ -6,6 +6,7 @@ The Cluster Settings module provides the following submodules:
 
 - MQTT Settings
 - Cluster
+- Namespace
 - Listeners
 - Logging
 - Monitoring
@@ -60,6 +61,10 @@ To remove a node, click **Remove**. A confirmation dialog will appear before the
 ![cluster-node](./assets/cluster-node.png)
 
 EMQX also supports creating and managing clusters using Command Line Interface (CLI). For detailed information, see [Create and Manage Cluster](../deploy/cluster/create-cluster.md)
+
+## Namespace
+
+The Namespace feature in EMQX provides logical isolation for different client groups within a single cluster. You can manage namespaces on the **Namespace** page. For more detailed guidance on how to manage and configure namespaces, refer to the [Namespace](../multi-tenancy/namespace.md).
 
 ## Listeners
 

@@ -6,8 +6,6 @@ For the authentication data stored in the built-in database, you can use EMQX Da
 - [MQTT 5.0 enhanced authentication](./scram.md)
 
 
-
-
 ## API Endpoints
 
 The endpoint for the users of the global MQTT chain is `/api/v5/authentication/{id}/users`.
@@ -15,7 +13,7 @@ Endpoint for the uses of a concrete MQTT listener chain is `/api/v5/listeners/{l
 Endpoint for the users of a global `gateway` protocol chain is `/api/v5/gateway/{protocol}/authentication`.
 Endpoint for the uses of a `gateway` protocol listener chain is `/api/v5/gateway/{protocol}/listeners/{listener_id}/authentication`.
 
-See [authentication API documentation](./authn.md#http-api) for identifier conventions.
+See the [authentication API documentation](./authn.md#http-api) for identifier conventions.
 
 ## Importing Users
 

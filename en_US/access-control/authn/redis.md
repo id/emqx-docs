@@ -45,44 +45,43 @@ So, we can also configure `cmd` as `HMGET mqtt:${username} password salt is_supe
 
 You can use EMQX Dashboard to configure how to use Redis for password authentication. 
 
-In the EMQX Dashboard, click **Access Control** -> **Authentication** from the left navigation menu. On the **Authentication** page, click **Create** at the top right corner. Click to select **Password-Based** as **Mechanism**, and **Redis** as **Backend** to go to the **Configuration** tab, as shown below. 
+1. In the EMQX Dashboard, click **Access Control** -> **Authentication** from the left navigation menu.
+2. On the **Authentication** page, click **Create** in the top right corner.
+3. Click to select **Password-Based** as **Mechanism**, and **Redis** as **Backend** to go to the **Configuration** tab, as shown below. 
 
 <img src="./assets/authn-redis.png" alt="Authentication with redis" style="zoom:67%;" />
 
-Follow the instructions below on how to configure the authentication:
+4. Follow the instructions below to configure the authentication backend:
 
-**Connect**: Enter the information for connecting to Redis.
+   - Enter the information for connecting to Redis.
 
-- **Redis Mode**: Select how Redis is deployed, including `Single`, `Sentinel` and `Cluster`. 
-- **Server(s)**: Specify the Redis server address that EMQX is to connect, if **Redis Mode** is set to `Sentinel` or `Cluster`, you will need to input all Redis servers (separated with a `,`) that EMQX is to connect.
-- **Sentinel Name**: Specify the name to use; type: strings; only needed if you set **Redis Mode** to `Sentinel`.
-- **Database**: Redis database name; Data type: strings.
-- **Password** (optional): Specify Redis user password. 
+     - **Redis Mode**: Select how Redis is deployed, including `Single`, `Sentinel` and `Cluster`. 
+     - **Server(s)**: Specify the Redis server address that EMQX is to connect, if **Redis Mode** is set to `Sentinel` or `Cluster`, you will need to input all Redis servers (separated with a `,`) that EMQX is to connect.
+     - **Sentinel Name**: Specify the name to use; type: strings; only needed if you set **Redis Mode** to `Sentinel`.
+     - **Database**: Redis database name; Data type: strings.
+     - **Password** (optional): Specify Redis user password. 
+   - Configure settings related to authentication:
 
-**TLS Configuration**: Turn on the toggle switch if you want to enable TLS. For more information on enabling TLS, see [Network and TLS](../../network/overview.md).
+     - **Password Hash**: Select the password hashing algorithm applied to plain-text passwords before results are stored in the database. Available options are `plain`, `md5`, `sha`, `sha256`, `sha512`, `bcrypt`, and `pbkdf2`. Additional configurations depend on the selected algorithm:
+       - For `md5`, `sha`, `sha256` or `sha512`:
+         - **Salt Position**: Determines how salt (random data) is mixed with the password. Options are `suffix`, `prefix`, or `disable`.  You can keep the default value unless you migrate user credentials from external storage into the EMQX built-in database.
+         - Resulting hash is represented as a string of hexadecimal characters, and compared case-insensitively with the stored credential.
+       - For `plain`:
+         - **Salt Position**: should be `disable`.
+       - For `bcrypt`:
+         - **Salt Rounds**: Defines the number of times the hash function is applied, expressed as _2<sup>Salt Rounds</sup>_, also known as the "cost factor". The default value is `10`, with a permissible range of `5` to `10`. A higher value is recommended for enhanced security. Note: Increasing the cost factor by 1 doubles the necessary time for authentication.
+       - For `pbkdf2`:
+         - **Pseudorandom Function**: Selects the hash function that generates the key, such as `sha256`.
+         - **Iteration Count**: Sets the number of times the hash function is executed. The default is `4096`.
+         - **Derived Key Length** (optional): Specifies the length in bytes of the generated key. If left blank, the length will default to that determined by the selected pseudorandom function.
+         - Resulting hash is represented as a string of hexadecimal characters, and compared case-insensitively with the stored credential.
+   - **Precondition**: A [Variform expression](../../configuration/configuration.md#variform-expressions) used to control whether this Redis authenticator should be applied to a client connection. The expression is evaluated against attributes from the client (such as `username`, `clientid`, `listener`, etc.). The authenticator will only be invoked if the expression evaluates to the string `"true"`. Otherwise, it will be skipped. For more information about the precondition, see [Authentication Preconditions](./authn.md#authentication-preconditions).
+   - **Enable TLS**: Turn on the toggle switch if you want to enable TLS. For more information on enabling TLS, see [Network and TLS](../../network/overview.md).
+   - **CMD**: Redis query command. 
+   - **Advanced Settings**: 
+     - **Pool size** (optional): Specify the number of concurrent connections from an EMQX node to a Redis server. Default: `8`. 
 
-**Connection Configuration**: Set the concurrent connections.
-
-- **Pool size** (optional): Specify the number of concurrent connections from an EMQX node to a Redis server. Default: `8`. 
-
-**Authentication configuration**: Configure settings related to authentication:
-
-- **Password Hash**: Select the password hashing algorithm applied to plain-text passwords before results are stored in the database. Available options are `plain`, `md5`, `sha`, `sha256`, `sha512`, `bcrypt`, and `pbkdf2`. Additional configurations depend on the selected algorithm:
-  - For `md5`, `sha`, `sha256` or `sha512`:
-    - **Salt Position**: Determines how salt (random data) is mixed with the password. Options are `suffix`, `prefix`, or `disable`.  You can keep the default value unless you migrate user credentials from external storage into the EMQX built-in database.
-    - Resulting hash is represented as a string of hexadecimal characters, and compared case-insensitively with the stored credential.
-  - For `plain`:
-    - **Salt Position**: should be `disable`.
-  - For `bcrypt`:
-    - **Salt Rounds**: Defines the number of times the hash function is applied, expressed as _2<sup>Salt Rounds</sup>_, also known as the "cost factor". The default value is `10`, with a permissible range of `5` to `10`. A higher value is recommended for enhanced security. Note: Increasing the cost factor by 1 doubles the necessary time for authentication.
-  - For `pbkdf2`:
-    - **Pseudorandom Function**: Selects the hash function that generates the key, such as `sha256`.
-    - **Iteration Count**: Sets the number of times the hash function is executed. The default is `4096`.
-    - **Derived Key Length** (optional): Specifies the length in bytes of the generated key. If left blank, the length will default to that determined by the selected pseudorandom function.
-    - Resulting hash is represented as a string of hexadecimal characters, and compared case-insensitively with the stored credential.
-- **CMD**: Redis query command. 
-
-After you finish the settings, click **Create**.
+5. After you finish the settings, click **Create**.
 
 ## Configure with Configuration Items
 

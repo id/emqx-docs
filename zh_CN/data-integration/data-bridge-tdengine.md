@@ -136,7 +136,7 @@ CREATE TABLE emqx_client_events (
    以下配置示例假定您在本地机器上同时运行 EMQX 和 TDengine。如果您在远程运行 TDengine 和 EMQX，请相应地调整设置。
 
    - **连接器名称**：应为大写和小写字母及数字的组合，例如：`my_tdenginedb`。
-   - **主机列表**：填写 `127.0.0.1:6041`。
+   - **服务器地址**：填写 `127.0.0.1:6041`。
    - **数据库**：填写 `mqtt`。
    - **用户名**：填写 `root`。
    - **密码**：填写 `taosdata`。
@@ -154,7 +154,7 @@ CREATE TABLE emqx_client_events (
    3. 填写以下连接器配置信息：
 
       - **连接器名称**：应为大写和小写字母及数字的组合，例如：`my_tdenginedb`。
-      - **主机列表**：填写 TDengine Cloud 给出的 `TDENGINE_CLOUD_URL` 的值。即：`https://gw.***.cloud.tdengine.com`。
+      - **服务器地址**：填写 TDengine Cloud 给出的 `TDENGINE_CLOUD_URL` 的值。即：`https://gw.***.cloud.tdengine.com`。
       - **数据库**：填写 `mqtt`。
       - **用户名**：保持为空。
       - **密码**：保持为空。
@@ -226,13 +226,15 @@ CREATE TABLE emqx_client_events (
 
      :::
 
-9. 高级配置（可选），根据情况配置同步/异步模式，队列与批量等参数，详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
+9. **备选动作（可选）**：如果您希望在消息投递失败时提升系统的可靠性，可以为 Sink 配置一个或多个备选动作。当 Sink 无法成功处理消息时，这些备选动作将被触发。更多信息请参见：[备选动作](./data-bridges.md#备选动作)。
 
-10. 在完成 Sink 创建之前，您可以使用**测试连接**来测试当前 Sink 到 TDengine 的连接是否成功。
+10. **高级配置（可选）**：根据情况配置同步/异步模式，队列与批量等参数，详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
 
-11. 点击**创建**按钮完成 Sink 创建，新建的 Sink 将被添加到**动作输出**列表中。
+11. 在完成 Sink 创建之前，您可以使用**测试连接**来测试当前 Sink 到 TDengine 的连接是否成功。
 
-12. 回到创建规则页面，对配置的信息进行确认，点击**创建**。一条规则应该出现在规则列表中。
+12. 点击**创建**按钮完成 Sink 创建，新建的 Sink 将被添加到**动作输出**列表中。
+
+13. 回到创建规则页面，对配置的信息进行确认，点击**创建**。一条规则应该出现在规则列表中。
 
 现在您已成功创建了通过 TDengine Sink 将数据转发到 TDengine 的规则，同时在**规则**页面的**动作(Sink)** 标签页看到新建的 TDengine Sink。
 

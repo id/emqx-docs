@@ -24,7 +24,7 @@ The authentication mechanisms supported in EMQX include:
 
 ### X.509 Certificate Authentication
 
-EMQX supports [X.509 certificate authentication](./x509.md) for client authentication. Using X.509 certificate authentication in EMQX, clients and servers can establish trusted connections through TLS/SSL, ensuring the authenticity of communication parties and the integrity of the data transmitted. EMQX allows for both one-way and two-way authentication: one-way authentication where only the server is authenticated by the client, and two-way authentication where both client and server mutually verify each other's certificates. This flexibility caters to various levels of security requirements and deployment scenarios.
+EMQX supports [X.509 certificate authentication](./x509.md) for client authentication. Using X.509 certificate authentication in EMQX, clients and servers can establish trusted connections through TLS/SSL, ensuring the authenticity of communication parties and the integrity of the data transmitted. EMQX allows for both one-way and two-way authentication: one-way authentication, where only the server is authenticated by the client, and two-way authentication, where both client and server mutually verify each other's certificates. This flexibility caters to various levels of security requirements and deployment scenarios.
 
 ### JWT Authentication
 
@@ -72,45 +72,77 @@ EMQX supports below authentication methods (referred to as authenticator hereaft
 
 ## Authentication Chain
 
-EMQX allows the creation of authentication chain using multiple authenticators and follows the authenticator's position in the chain to perform the authentication. The authenticators for creating the authentication chain should be of different types.
+EMQX supports the creation of an authentication chain, which allows multiple authenticators to be evaluated in a defined sequence. Each authenticator in the chain must be of a different type (e.g., one HTTP, one LDAP, one built-in database).
 
 ::: tip
 
-Currently, EMQX only supports creating an authentication chain for MQTT clients. For gateways, it is recommended to use its own authenticator, and the authentication chain is also not supported. 
+Currently, EMQX only supports creating an authentication chain for MQTT clients. Gateways do not support authentication chains and should use a single authenticator instead.
 
 :::
 
-When the X.509 certificate authentication is applied, it will be executed before performing the authentication chain.
+When the X.509 certificate-based authentication is applied, it is always executed before performing the authentication chain.
 
-### Workflow
+### How the Authentication Chain Works
 
-With authentication chain configured, EMQX first tries to retrieve the matching authentication information from the first authenticator, if fails, it switches to the next authenticator to continue the process. 
+When an authentication chain is configured, EMQX processes authenticators in the order defined until a match is found or all options are exhausted.
 
-Taking the password-based authentication as an example, EMQX tries to retrieve the possible authentication information from the configured authenticators:
+Here’s how it works, using password-based authentication as an example:
 
-1. If authentication credentials exist, and:
-   - the authentication information matches (e.g. password is correct, JWT is valid), the client will be allowed to connect.
-   - the authentication information does not match, and the client will be denied to connect.
-2. When multiple authenticators are configured, EMQX will look for credentials in order. Once the match is successful it will allow the client to connect.
-   If no credentials are found in the current authenticator, it will:
-   - continue to retrieve the information from other authenticators.
-   - refuse the connection if this is already the last authenticator.
+1. **Evaluate Preconditions (if configured):**
+   If the authenticator has a [precondition](#authenticator-preconditions), EMQX first evaluates the expression based on client attributes information (e.g., `listener`, `clientid`, `username`).
+   - If the expression evaluates to `true`, the authenticator is invoked.
+   - If not, the authenticator is skipped.
+2. **Execute the Authenticator:**
+   - If credentials are found and valid (e.g., the password is correct), the client is authenticated successfully and allowed to connect.
+   - If credentials are found but invalid, the client is denied access.
+   - If no credentials are found, EMQX moves to the next authenticator in the chain.
 
-::: tip 
-
-The current authenticator will also be skipped when the authenticator is in a disabled state or there are errors in the process of authentication, for example, the database is not available.
-
-:::
+3. **Skip on Error or Disabled:**
+   An authenticator will also be skipped if it is disabled, or if there is an internal error during execution, for example, if the database is unavailable.
+4. **Fallback Behavior:**
+   If all authenticators are skipped or none can authenticate the client, EMQX denies the connection by default.
 
 ![](./assets/authn-chain.png)
 
-### Use Case
+### Authenticator Preconditions
 
-Users have a large number of clients and a high connection rate, thus users can create an authentication chain with the Redis authenticator and the MySQL or PostgreSQL authenticator. With Redis as a caching layer, the query performance can be greatly improved.
+Starting from EMQX 5.9, you can assign a precondition to each authenticator to control whether it should be invoked for a given client. A precondition is a [Variform expression](../../configuration/configuration.md#variform-expressions) that evaluates client attributes (such as `listener`, `username`, `clientid`, etc.). If the expression does not evaluate to `true`, the authenticator is skipped.
+
+This feature enables conditional logic in the authentication chain. It allows for fine-grained control over authentication logic, such as applying different authenticators for clients connecting through different listeners or based on client attributes. EMQX can then invoke authenticators only when appropriate and avoid unnecessary requests to external systems.
+
+#### Supported Client Attributes in Precondition
+
+Supported client attributes in a precondition include:
+
+- `username`: The username of the client
+- `password`: The password of the client
+- `clientid`: The client ID of the client
+- `client_attrs.*`: The client attributes of the client
+- `cert_common_name`: The subject field from the client's TLS certificate
+- `cert_subject`: The Common Name (CN) from the client's TLS certificate
+- `peersni`: The SNI (Server Name Indication) sent by the TLS client
+- `listener`: The listener ID (e.g. `tcp:default`)
+- `zone`: The associated config zone
+
+#### Precondition Examples
+
+To authenticate clients connected via different listeners using different authenticators:
+
+- HTTP authenticator for clients on `tcp:default`:
+
+  ```
+  str_eq(listener, 'tcp:default')
+  ```
+
+- PostgreSQL authenticator for clients on `ssl:default`:
+
+  ```
+  str_eq(listener, 'ssl:default')
+  ```
 
 ## Super User
 
-Usually, authentication only verifies the client's identity credentials, and whether the client has the right to publish and subscribe to certain topics is determined by the authorization system. But EMQX also provides a super user role and a permission preset feature to facilitate the follow-up publish/subscribe authorization steps. 
+Usually, authentication only verifies the client's identity credentials, and whether the client has the right to publish and subscribe to certain topics is determined by the authorization system. But EMQX also provides a super user role and a permission preset feature to facilitate the follow-up publish/subscribe authorization steps.
 
 ::: tip
 
@@ -189,7 +221,9 @@ EMQX currently supports the following placeholders:
 
 - `${peerhost}`: It will be replaced with the client's IP address at runtime. EMQX supports [Proxy Protocol](http://www.haproxy.org/download/1.8/doc/proxy-protocol.txt), that is, even if EMQX is deployed behind some TCP proxy or load balancer, users can still use this placeholder to get the real IP address.
 
-- `${peerport}`: It will be replaced with the client's IP port in runtime.
+- `${peerport}`: It will be replaced with the client's IP port at runtime.
+
+- `${peername}`:  It will be replaced with the client's IP address and port at runtime, and the format is `IP: PORT`.
 
 - `${cert_subject}`: It will be replaced by the subject of the client's TLS certificate at runtime. If the load balancer sends client certificate information to the TCP listener, ensure that Proxy Protocol v2 is in use.
 
