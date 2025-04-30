@@ -73,7 +73,7 @@ The project also includes an example module demonstrating how to add custom `emq
 
 ### Test Your Development Environment
 
-If you are using the EMQX Open Source edition, ensure your development environment is correctly set up. You can refer to the information in [Install from Source Code](../deploy/install-source.md).
+Ensure your development environment is correctly set up. You can refer to the information in [Build From Source](https://github.com/emqx/emqx/tree/release-59?tab=readme-ov-file#build-from-source).
 
 Execute the following command to verify if your plugin compiles and packages successfully:
 
@@ -188,7 +188,7 @@ Configuration updates made at runtime will be written in HOCON format to `data/p
 Check out the example files in your project directory: `priv/config.hocon.example`, `priv/config_schema.avsc.example`, `priv/config_schema.avsc.enterprise.example` and `priv/config_i18n.json.example`.
 Plugins that support configuration and configuration validation can be written based on these files.
 
-Note that `priv/config_schema.avsc.enterprise.example` and `priv/config_i18n.json.example` contain the UI declarations and their internationalization configurations. Using UI declarations to render plugin configuration form pages is an EMQX Enterprise edition feature.
+Note that `priv/config_schema.avsc.enterprise.example` and `priv/config_i18n.json.example` contain the UI declarations and their internationalization configurations. UI declarations can be used to render plugin configuration form pages.
 
 :::
 
@@ -199,12 +199,6 @@ Additionally, it also includes descriptive declarations about the UI. Specifical
 
 
 #### Declarative UI Usage Reference (Optional)
-
-::: tip
-
-Using the declarative UI components is an EMQX Enterprise edition feature.
-
-:::
 
 Declarative UI components enable dynamic form rendering within the Dashboard, accommodating a variety of field types and custom components. Below is a description of the available components and their configurations.
 

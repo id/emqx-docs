@@ -71,7 +71,7 @@ my_emqx_plugin
 ### 测试您的开发环境
 
 ::: tip 提示
-要使用可工作的开发环境，请参阅[从源代码安装](../deploy/install-source.md)。
+要使用可工作的开发环境，请参阅 [Build From Source](https://github.com/emqx/emqx/tree/release-59?tab=readme-ov-file#build-from-source)。
 :::
 
 运行 `make rel` 以测试插件是否可以成功编译和打包，此时无需编写代码。
@@ -188,10 +188,6 @@ make rel
 此外它也同时也包含了关于 UI 的描述声明。即可以使用 Avro Schema 的 metadata 配置一个 `$ui` 字段，EMQX Dashborad 将根据 `$ui` 字段中提供的信息来生成一份配置表单页。
 
 #### 声明式 UI 使用参考 （可选）
-
-::: tip **提示**
-声明式 UI 仅在 EMQX 企业版中使用。
-:::
 
 UI 声明被用于动态渲染表单，从而使 EMQX Dashboard 能够动态生成配置表单，方便插件的配置和管理。
 支持各种字段类型和自定义组件。以下是可用组件及其配置说明。

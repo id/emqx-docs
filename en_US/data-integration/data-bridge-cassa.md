@@ -1,12 +1,6 @@
 # Ingest MQTT Data into Cassandra
 
 <!-- 提供一段简介，描述支 Sink 的基本工作方式、关键特性和价值，如果有局限性也应当在此处说明（如必须说明的版本限制、当前未解决的问题）。 -->
-::: tip
-
-The Cassandra data integration is an EMQX Enterprise edition feature.
-
-:::
-
 
 [Apache Cassandra](https://cassandra.apache.org/_/index.html) is a popular open-source, distributed NoSQL database management system designed to handle large datasets and build high-throughput applications. EMQX's integration with Apache Cassandra provides the ability to store messages and events in the Cassandra database, enabling functionalities such as time-series data storage, device registration and management, as well as real-time data analysis.
 

@@ -1,11 +1,5 @@
 # Ingest MQTT Data into GreptimeDB
 
-::: tip
-
-The GreptimeDB data integration is an EMQX Enterprise edition feature.
-
-:::
-
 [GreptimeDB](https://github.com/GreptimeTeam/greptimedb) is an open-source time-series database with a special focus on scalability, analytical capabilities and efficiency. It's designed to work on the infrastructure of the cloud era, and users benefit from its elasticity and commodity storage. EMQX now supports connection to mainstream versions of GreptimeDB, GreptimeCloud or GreptimeDB Enterprise.
 
 This page provides a comprehensive introduction to the data integration between EMQX and GreptimeDB with practical instructions on creating and validating the data integration.

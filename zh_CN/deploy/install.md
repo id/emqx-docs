@@ -6,8 +6,6 @@
 
 EMQX 每个版本会发布各个操作系统与平台程序包以及 Docker 镜像，并在 EMQX 官网提供下载，您可以点击以下链接下载：
 
-EMQX 开源版：<https://www.emqx.com/zh/downloads-and-install/broker>
-
 EMQX 企业版：<https://www.emqx.com/zh/downloads-and-install/enterprise>
 
 此外，您还可在我们的 [GitHub Release 页面](https://github.com/emqx/emqx/releases) 下载 alpha、beta、rc 等版本的安装包。

@@ -84,7 +84,7 @@ When the X.509 certificate-based authentication is applied, it is always execute
 
 ### How the Authentication Chain Works
 
-When an authentication chain is configured, EMQX processes authenticators in the order defined until a match is found or all options are exhausted.
+With the authentication chain configured, EMQX first tries to retrieve the matching authentication information from the first authenticator, if fails, it switches to the next authenticator to continue the process. 
 
 Here’s how it works, using password-based authentication as an example:
 
@@ -139,6 +139,37 @@ To authenticate clients connected via different listeners using different authen
   ```
   str_eq(listener, 'ssl:default')
   ```
+
+## External Resource Cache
+
+EMQX provides a node-level caching mechanism for authentication results retrieved from external backends, such as MySQL, MongoDB, or Redis. This cache is designed to improve the performance of authentication result lookups and reduce repeated access to external resources, especially in high-throughput environments.
+
+::: tip Note
+
+The external resource cache applies only to external data sources. For local sources such as the built-in database authenticators, EMQX does not use this cache.
+
+:::
+
+### How External Resource Cache Works
+
+The external resource cache stores authentication results at the node level. These results are shared across all client sessions on the same node and help avoid redundant queries to external authentication backends.
+
+1. A client connects and triggers authentication.
+2. EMQX checks the cache for a previously stored result:
+   - If a valid result is found, it counts as a **Cache Hit**, and no call to the external backend is made.
+   - If no result is found, it counts as a **Cache Miss**, and EMQX queries the external backend.
+
+3. The result returned from the backend is stored in the cache for future use, incrementing the **Cache Insert** metric.
+
+This mechanism helps reduce latency, minimize backend usage, and maintain system responsiveness under load.
+
+### Enable and Configure External Resource Cache
+
+<!--@include: ../config-external-resource-cache.md-->
+
+### Monitor External Resource Cache Status
+
+<!--@include: ../monitor-cache-status.md-->
 
 ## Super User
 
@@ -239,17 +270,17 @@ EMQX currently supports the following placeholders:
   {allow, all, all, ["${zone}/${username}/#"]}
   ```
 
-## Configure Authenticators
+## Configure Authentication
 
-EMQX provides 3 ways to use authentication, namely: Dashboard, Configuration file and HTTP API.
+EMQX provides three ways to configure the authentication: Dashboard, Configuration file and HTTP API.
 
-### Configure with Dashboard
+### Configure Authentication via Dashboard
 
 EMQX Dashboard is an intuitive way to configure EMQX authenticators, where you can check their status or customize the settings. For example, as shown in the screenshot below, you have configured 2 authenticators: password authentication based on built-in database and JWT authentication. 
 
 ![](./assets/authn-dashboard-2.png)
 
-### Configure with Configuration File
+### Configure Authentication via Configuration File
 
 You can also configure EMQX authenticators with our configuration file. 
 
@@ -283,7 +314,7 @@ gateway.stomp {
 
 Different types of authenticators have different configuration item requirements. For more information, you may refer to the Configuration chapter.<!--后续插入到对应章节的超链接-->
 
-### Configure with HTTP API
+### Configure Authentication via HTTP API
 
 Compared with the configuration file, the HTTP API is more convenient to use and supports runtime updates, which can automatically synchronize configuration changes to the entire cluster.
 

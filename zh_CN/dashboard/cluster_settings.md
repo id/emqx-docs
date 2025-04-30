@@ -94,7 +94,7 @@ EMQX 中的命名空间功能为单个集群内的不同客户端组提供逻辑
 
 更多关于速率限制的详细配置文档，请参考[速率限制](../rate-limit/rate-limit.md)。
 
-更多关于监听器配置的详情，请参考[开源版配置手册](https://docs.emqx.com/zh/emqx/v@CE_VERSION@/hocon/)和[企业版配置手册](https://docs.emqx.com/zh/enterprise/v@EE_VERSION@/hocon/)。
+更多关于监听器配置的详情，请参考[企业版配置手册](https://docs.emqx.com/zh/enterprise/v@EE_VERSION@/hocon/)。
 
 ### 管理监听器
 
@@ -120,13 +120,7 @@ EMQX 支持两种不同的日志输出方式：控制台输出日志和文件输
 
 ## 监控
 
-::: tip 注意
-
-监控功能仅适用于 EMQX 企业版。
-
-:::
-
-**管理** -> **监控**为监控集成的配置页面。该页面下包含有两个标签页：
+点击左侧配置中的**管理** -> **监控**进入监控集成的配置页面。该页面下包含有两个标签页：
 
 - **系统**：根据用户需要，针对[告警](./diagnose.md#告警)功能进行一定程度的设置调整，如告警阈值、检查间隔等。
 - **监控集成**：提供了与第三方监控平台的集成配置。
@@ -154,11 +148,5 @@ EMQX 支持两种不同的日志输出方式：控制台输出日志和文件输
 关于 OpenTelemetry 和 Datadog 集成的配置详情，参考[集成 OpenTelemetry](../observability/opentelemetry/opentelemetry.md) 和 [集成 Datadog](../observability/datadog.md)。
 
 ## 集群连接
-
-::: tip 注意
-
-集群连接功能仅适用于 EMQX 企业版。
-
-:::
 
 集群连接功能可以将多个独立的 EMQX 集群连接在一起，因此通常地理位置分散的不同集群之间的客户端能够相互通信。用户可以在该页面中创建和配置集群连接。具体的创建和配置指导，参考 [EMQX 集群连接](../cluster-linking/introduction.md)。

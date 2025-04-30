@@ -1,11 +1,5 @@
 # Alarm
 
-::: tip Note
-
-Alarm is an EMQX Enterprise feature.
-
-:::
-
 EMQX offers a built-in monitoring and alarm functionality for monitoring the internal state changes, such as CPU occupancy, system, and process memory occupancy, number of processes, rule engine resource status, and cluster partition and healing. EMQX triggers and records these changes when they exceed a threshold or deviate from expectations, and removes them from the list once they are restored.
 
 This page introduces the alarm information EMQX provides, how to obtain and check the detailed alarm information, and how to configure the alarm settings and thresholds in EMQX. The monitoring and alarm function keeps you notified of potential problems during operation. By configuring alarms and setting appropriate thresholds, you can make sure that EMQX remains secure, stable, and reliable.
@@ -27,22 +21,6 @@ Depending on the severance and impacts on the system, alarms can have 3 levels:
 The levels are defined from development perspectives and are only for recommendation. You can define your own alarm levels according to the business needs.
 
 :::
-
-**Alarm list for EMQX Open Source edition:**
-
-| **Alarm**                           | Level    | Description                                                                        | **Details**                              | **Threshold**                                                              |
-|:------------------------------------|----------|:-----------------------------------------------------------------------------------|:-----------------------------------------|:---------------------------------------------------------------------------|
-| high_system_memory_usage            | Warning  | System memory usage is too high                                                    | "System memory usage is higher than ~p%" | `os_mon.sysmem_high_watermark = 70%`                                       |
-| high_process_memory_usage           | Warning  | Single Erlang process memory usage is too high (percentage of system memory usage) | Process memory usage is higher than ~p%  | `os_mon.procmem_high_watermark = 5%`                                       |
-| high_cpu_usage                      | Warning  | CPU usage is too high                                                              | ~p% cpu usage                            | `os_mon.cpu_high_watermark = 80%` `os_mon.cpu_low_watermark = 60%`         |
-| too_many_processes                  | Warning  | Too many processes                                                                 | ~p% process usage                        | `vm_mon.process_high_watermark = 80%` `vm_mon.process_low_watermark = 60%` |
-| mnesia_transaction_manager_overload | Warning  | mnesia overloaded; mailbox size: N                                                 | mailbox size = N                         | `sysmon.mnesia_tm_mailbox_threshold = 500`                                 |
-| broker_pool_overload                | Warning  | broker pool overloaded; mailbox size: N                                            | mailbox size = N                         | `sysmon.broker_pool_mailbox_threshold = 500`                               |
-| partition                           | Critical | Partition occurs at node                                                           | Partition occurs at node ~s              | -                                                                          |
-| resource                            | Critical | Resource is disconnected                                                           | Resource ~s(~s) is down                  | -                                                                          |
-| conn_congestion                     | Critical | Connection process congestion                                                      | connection congested                     | -                                                                          |
-
-**Alarm list for EMQX Enterprise edition:**
 
 | **Alarm**                 | Level    | Description                                                  | **Details**                                  | **Threshold**                                                |
 | :------------------------ | -------- | :----------------------------------------------------------- | :------------------------------------------- | :----------------------------------------------------------- |

@@ -64,10 +64,6 @@
 
 :::
 
-:::: tabs type:card
-
-::: tab EMQX 企业版
-
 1. 下载 EMQX `@EE_VERSION@` 软件包。
 
    - **使用软件包管理器：** 检查您的操作系统的软件包管理器是否提供 EMQX `@EE_VERSION@` 二进制文件。如果可用，使用软件包管理器下载并安装这些二进制文件。
@@ -88,36 +84,6 @@
      EMQX 提供了一个[迁移工具](https://github.com/emqx/emqx-data-converter/releases)可以帮助将现有的 EMQX 4.4 集群的配置迁移到新的 EMQX `@EE_VERSION@` 集群中。该工具能够自动化迁移过程，确保平稳过渡。迁移后，请务必检查生成的配置，确保它们符合预期。
 
      :::
-
-:::
-
-::: tab EMQX 开源版
-
-1. 下载 EMQX `@CE_VERSION@` 软件包。
-
-   - **使用软件包管理器：** 检查您的操作系统的软件包管理器是否提供 EMQX `@CE_VERSION@` 二进制文件。如果可用，使用软件包管理器下载并安装这些二进制文件。
-   - **手动下载二进制文件：** 如果软件包管理器未提供 EMQX `@CE_VERSION@` 二进制文件，或者服务器网络受限，您可以从 [EMQX 官方网站](https://www.emqx.com/zh/downloads-and-install/broker)手动下载。
-
-2. 使用二进制文件部署一个新的 EMQX 集群。有关详细的安装步骤，请参阅 [安装指南](../deploy/install.md)。这确保了最新版本的全新安装。
-
-3. 迁移 EMQX 集群。
-
-   - 使用 API 或 Dashboard 备份您的 EMQX 4.4 集群的配置和数据。
-
-   - 将 4.4 版本的配置文件格式转换为与 EMQX `@CE_VERSION@` 兼容的新格式。
-
-   - 使用以下命令将迁移后的配置文件恢复到 EMQX `@CE_VERSION@` 集群中：`emqx ctl data import <文件>`。
-
-     ::: tip
-
-     EMQX 提供了一个[迁移工具](https://github.com/emqx/emqx-data-converter/releases)可以帮助将现有的 EMQX 4.4 集群的配置迁移到新的 EMQX `@CE_VERSION@` 集群中。该工具能够自动化迁移过程，确保平稳过渡。迁移后，请务必检查生成的配置，确保它们符合预期。
-
-     :::
-
-
-:::
-
-::::
 
 4. 彻底验证新的 EMQX 集群，以确保其按预期运行。测试其连接性、消息传递功能以及其他相关功能，以确认升级成功。
 

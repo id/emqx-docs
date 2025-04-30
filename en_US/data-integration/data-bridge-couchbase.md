@@ -1,11 +1,5 @@
 # Ingest MQTT Data into Couchbase
 
-::: tip
-
-The Couchbase data integration is an EMQX Enterprise edition feature.
-
-:::
-
 [Couchbase](https://couchbase.com/) is a multipurpose, distributed database that combines the strengths of relational databases, including SQL and ACID transactions, with the versatility of JSON. Built on a foundation that is both highly performant and scalable, Couchbase is widely used across various industries for applications such as user profiles, dynamic product catalogs, generative AI applications, vector search, high-speed caching, and more.
 
 ## How It Works
