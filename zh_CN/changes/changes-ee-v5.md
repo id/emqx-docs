@@ -203,6 +203,28 @@
 
 - [#14264](https://github.com/emqx/emqx/pull/14264) 为 crash_dump 文件添加时间戳，以防止它在下一次崩溃时被覆盖。
 
+- [#15119](https://github.com/emqx/emqx/pull/15119) 新增会话注册表大小的高水位指标，用于反映系统中曾经同时存在的最大会话数量。该指标已集成到 Dashboard 的 Overview 页面，帮助用户监控会话资源的使用情况。
+
+- [#15117](https://github.com/emqx/emqx/pull/15117) 优化了 cinfo 认证表达式评估失败的警告日志，使其更简洁，且不易被误认为崩溃。
+
+  优化前的日志示例:
+
+  ```
+  2025-04-25T13:15:59.993395+00:00 [warning] tag: AUTHN, clientid: mqttx_a50058aa, msg: authenticator_error, peername: 127.0.0.1:60842, 
+  reason: {case_clause,{error,#{error => #{reason => var_unbound,var_name => <<"cert_common_name">>},
+  cause => "clientinfo_auth_expression_evaluation_error"}}}, 
+  stacktrace: [{emqx_authn_cinfo,do_check,2,[{file,"emqx_authn_cinfo.erl"},{line,94}]},{emqx_authn_cinfo,check,2,[{file,"emqx_authn_cinfo.erl"},{line,82}]},{emqx_authn_chains,authenticate_with_provider,2,...
+  ```
+
+  优化后的日志示例:
+
+  ```
+  2025-04-25T15:46:50.748732+02:00 [warning] clientid: client1, 
+  msg: clientinfo_auth_expression_evaluation_error, 
+  peername: 127.0.0.1:53919, 
+  reason: #{reason => var_unbound,var_name => <<"cert_common_name">>}
+  ```
+
 #### CLI
 
 - [#14691](https://github.com/emqx/emqx/pull/14691) 为 CLI 命令 `emqx ctl data export` 添加了数据筛选功能。现在可以指定从 `cluster.hocon` 文件中导出哪些根键（root keys），以及导出哪些数据表集，行为与 `POST /data/export` 接口一致。
@@ -331,6 +353,7 @@
 
 - [#14767](https://github.com/emqx/emqx/pull/14767) Kafka 生产者现在能更顺利地处理 Kafka 主题重新创建并减少分区数量的问题。之前，丢失分区的生产者可能会滞后并重试，导致大量错误日志的产生。
 - [#14121](https://github.com/emqx/emqx/pull/14121) 废弃了 Kafka 消费者连接器的 `health_check_topic` 配置，以避免进一步的混淆。该参数实际上从未被该连接器类型使用过。
+- [#15116](https://github.com/emqx/emqx/pull/15116) Kafka 连接器的健康检查机制现在接受 `topic_authorization_failed` 作为可接受的返回码，解决了在启用 ACL 的 Kafka 部署中，默认 probe topic 无访问权限导致健康检查失败的问题。
 
 #### 运维管理
 
@@ -348,6 +371,9 @@
 - [#14774](https://github.com/emqx/emqx/pull/14774) 修复插件相关问题：启动插件时若集群节点上未存在插件配置文件，导致配置拉取失败的问题已解决。
 - [#14826](https://github.com/emqx/emqx/pull/14826) 修复 Exhook 服务返回 "IGNORE" 不生效的问题。
 - [#15018](https://github.com/emqx/emqx/pull/15018) 修复了 Exhook 的一个错误，该错误导致通过 CLI 尝试导入无效的 `exhook` 配置时发生崩溃，并显示 `badarg` 错误。
+- [#15108]() ExHook 现已内置 gRPC 健康检查机制，确保连接状态能够准确反映外部 Hook 服务端的实际可用性。
+
+  该修复解决了在服务端长时间停止后，状态仍显示为“已连接”的问题。如果在配置中启用了自动重连，系统还将支持自动尝试重新连接。
 
 #### MQTT over QUIC
 

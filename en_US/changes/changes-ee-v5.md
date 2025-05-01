@@ -118,7 +118,7 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 - [#14892](https://github.com/emqx/emqx/pull/14892) Enhanced cluster load rebalancing:
   
      - Fixed load imbalance in core/replicant cluster. Previously, under certain conditions, all transactions from the replicants could be sent to a single core node.
-    
+      
   - Add CLI commands for rebalancing replicant nodes in relation to core nodes:
     - `emqx_ctl cluster core rebalance plan`
   
@@ -226,6 +226,28 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 - [#14540](https://github.com/emqx/emqx/pull/14540) Introduced configurable latency measurement for authentication and authorization. Metrics are exposed as Prometheus histograms.
 
 - [#14264](https://github.com/emqx/emqx/pull/14264) Added a timestamp to the crash_dump file to ensure that it is not overwritten by the next crash dump.
+
+- [#15119](https://github.com/emqx/emqx/pull/15119) Added a high-watermark metric for the session registry table size, showing the peak number of active sessions. This metric is displayed on the Dashboard Overview page to help monitor session resource usage.
+
+- [#15117](https://github.com/emqx/emqx/pull/15117) Refined the warning log for cinfo authentication expression evaluation failures, making it more concise, and less likely to be mistaken for a crash.
+
+  Old log example:
+
+  ```
+  2025-04-25T13:15:59.993395+00:00 [warning] tag: AUTHN, clientid: mqttx_a50058aa, msg: authenticator_error, peername: 127.0.0.1:60842, 
+  reason: {case_clause,{error,#{error => #{reason => var_unbound,var_name => <<"cert_common_name">>},
+  cause => "clientinfo_auth_expression_evaluation_error"}}}, 
+  stacktrace: [{emqx_authn_cinfo,do_check,2,[{file,"emqx_authn_cinfo.erl"},{line,94}]},{emqx_authn_cinfo,check,2,[{file,"emqx_authn_cinfo.erl"},{line,82}]},{emqx_authn_chains,authenticate_with_provider,2,...
+  ```
+
+  New log example:
+
+  ```
+  2025-04-25T15:46:50.748732+02:00 [warning] clientid: client1, 
+  msg: clientinfo_auth_expression_evaluation_error, 
+  peername: 127.0.0.1:53919, 
+  reason: #{reason => var_unbound,var_name => <<"cert_common_name">>}
+  ```
 
 
 #### CLI
@@ -359,10 +381,15 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 
 - [#14992](https://github.com/emqx/emqx/pull/14992) Fixed a potential resource leak due to rare race conditions when testing connectivity of Connectors.
+
 - [#15000](https://github.com/emqx/emqx/pull/15000) Fixed an issue where loading a configuration via CLI or HTTP API could cause instabilities in Connectors, Actions and/or Sources.
+
 - [#15010](https://github.com/emqx/emqx/pull/15010) Previously, disabling any Connector could take about 5 to 10 s, even when it was healthy.  This has been fixed.  Note that some Connectors still naturally require time to disable, especially when they have Actions and when they are unhealthy.
+
 - [#15051](https://github.com/emqx/emqx/pull/15051) Enhance the TDengine connector by adding parameter validation and updating the driver version to provide clearer error messages.
+
 - [#15012](https://github.com/emqx/emqx/pull/15012) Fixed an issue where the `publish_confirmation_timeout` parameter of RabbitMQ Actions were being multiplied by 1000.
+
 - [#14989](https://github.com/emqx/emqx/pull/14989) Reduced the number of API calls that Kinesis Connection and Action do when (re)starting and during health checks.
 
   Previously, upon (re)starting the Connector, it would perform one `ListStreams` request for each worker in its connection pool.  Additionally, each periodic health check would do `ListStreams` for each worker.  The Action health check would do `DescribeStream` for each connection worker in the pool.
@@ -371,7 +398,10 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#14767](https://github.com/emqx/emqx/pull/14767) Kafka producer now smoothly handles Kafka topic re-creation with fewer partitions.
   Previously, the lost partition producers may linger behind to retry and write large amount of error logs.
+  
 - [#14121](https://github.com/emqx/emqx/pull/14121) Deprecated the `health_check_topic` configuration for Kafka Consumer Connector to avoid further confusion.  This parameter was never actually used for this connector type.
+
+- [#15116](https://github.com/emqx/emqx/pull/15116) The Kafka connector now allows `topic_authorization_failed` as a valid response during health check probing. This change improved compatibility with Kafka services that enforce ACLs, where access to the default health-check topic may be restricted.
 
 #### Administration
 
@@ -387,9 +417,16 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 #### Plugin and Extention
 
 - [#15073](https://github.com/emqx/emqx/pull/15073) Added a validator for the server URL in the `exhook` configuration. This ensures that only valid URLs can be saved. Invalid URLs will now trigger an error and prevent being saved, which helps avoid issues during the import process, where previously invalid URLs could be accepted.
+
 - [#14774](https://github.com/emqx/emqx/pull/14774) Resolved plugin related issues. Fixed a retrieval issue with the plugin configuration file from cluster nodes when initiating the plugin without an existing configuration file.
+
 - [#14826](https://github.com/emqx/emqx/pull/14826) Fixed the issue where the Exhook server's return of "IGNORE" was not taking effect.
+
 - [#15018](https://github.com/emqx/emqx/pull/15018) Fixed a bug with Exhook in which attemtping to import an invalid `exhook` configuration via the CLI would result in a crash with a `badarg` error.
+
+- [#15108]() ExHook now includes a built-in gRPC health check mechanism, ensuring that the connection status accurately reflects the actual availability of the external hook server.
+
+  This fix addresses issues where the status could remain stale after the server was stopped for an extended time. Automatic reconnection is supported if enabled in the configuration.
 
 #### MQTT over QUIC
 
