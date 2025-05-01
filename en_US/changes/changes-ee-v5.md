@@ -424,7 +424,7 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 
 - [#15018](https://github.com/emqx/emqx/pull/15018) Fixed a bug with Exhook in which attemtping to import an invalid `exhook` configuration via the CLI would result in a crash with a `badarg` error.
 
-- [#15108]() ExHook now includes a built-in gRPC health check mechanism, ensuring that the connection status accurately reflects the actual availability of the external hook server.
+- [#15108](https://github.com/emqx/emqx/pull/15108) ExHook now includes a built-in gRPC health check mechanism, ensuring that the connection status accurately reflects the actual availability of the external hook server.
 
   This fix addresses issues where the status could remain stale after the server was stopped for an extended time. Automatic reconnection is supported if enabled in the configuration.
 

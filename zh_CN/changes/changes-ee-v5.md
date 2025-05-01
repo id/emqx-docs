@@ -371,7 +371,7 @@
 - [#14774](https://github.com/emqx/emqx/pull/14774) 修复插件相关问题：启动插件时若集群节点上未存在插件配置文件，导致配置拉取失败的问题已解决。
 - [#14826](https://github.com/emqx/emqx/pull/14826) 修复 Exhook 服务返回 "IGNORE" 不生效的问题。
 - [#15018](https://github.com/emqx/emqx/pull/15018) 修复了 Exhook 的一个错误，该错误导致通过 CLI 尝试导入无效的 `exhook` 配置时发生崩溃，并显示 `badarg` 错误。
-- [#15108]() ExHook 现已内置 gRPC 健康检查机制，确保连接状态能够准确反映外部 Hook 服务端的实际可用性。
+- [#15108](https://github.com/emqx/emqx/pull/15108) ExHook 现已内置 gRPC 健康检查机制，确保连接状态能够准确反映外部 Hook 服务端的实际可用性。
 
   该修复解决了在服务端长时间停止后，状态仍显示为“已连接”的问题。如果在配置中启用了自动重连，系统还将支持自动尝试重新连接。
 
