@@ -105,8 +105,6 @@ my_emqx_plugin
 - `LICENSE`: Sample license file for the plugin.
 - Review the `rebar.config` file and adjust it as necessary for your plugin's requirements.
 
-The project also includes an example module demonstrating how to add custom `emqx ctl` commands (`emqx_cli_demo.erl`).
-
 **Note:** As the template depends on `emqx`, it requires a custom version of `rebar3`, which you can install using the included `./scripts/ensure-rebar3.sh` script.
 
 #### `rebar.config`
@@ -283,271 +281,97 @@ The tarball includes the compiled applications (as specified in the `relx` secti
 }
 ```
 
-### Test Your Development Environment
+## Plugin Lifecycle
 
-If you are using the EMQX Open Source edition, ensure your development environment is correctly set up. You can refer to the information in [Install from Source Code](../deploy/install-source.md).
+A plugin has three main states in EMQX:
 
-Execute the following command to verify if your plugin compiles and packages successfully:
+- `installed`: The plugin is installed, its configuration and code are loaded, but the plugin's application is not started.
+- `started`: The plugin is installed and its application is started.
+- `uninstalled`: The plugin is uninstalled.
 
-```shell
-$ make rel
-```
+### Installation Process
 
-At this stage, no additional coding is required.
+The installation process is as follows:
 
-Since the example plugin depends on the EMQX core application, you must download and compile it along with its dependencies. This step integrates the plugin into the main EMQX project. Be aware that this compilation process can be time-intensive.
-
-### Customize the Example Project
-
-After verifying that your setup works correctly, you can start tailoring the example project to meet your specific requirements. The initial template provides a core module at `src/my_emqx_plugin.erl`, which includes registration for all [currently known hooks](./hooks.md). Begin by removing any hooks that are not needed and implement your own logic in the callbacks for the ones you retain.
-
-#### Example Customization for Authentication and Access Control
-
-For instance, if you need hooks for authentication and access control, modify the `my_emqx_plugin:load/1` function as shown:
-
-```erlang
-load(Env) ->
-  emqx_hooks:add('client.authenticate', {?MODULE, on_client_authenticate, [Env]}, ?HP_HIGHEST),
-  emqx_hooks:add('client.authorize', {?MODULE, on_client_authorize, [Env]}, ?HP_HIGHEST),
-  ok.
-```
-
-Here, `on_client_authenticate/3` handles client authentication, while `on_client_authorize/5` manages access control.
-
-As one hook function may be mounted by both EMQX and customized plugins, you need to specify the execution order when mounting it to the plugin.  `HP_HIGHEST` specifies that the current hook function has the highest priority and is executed first.
-
-#### Customize Access Control Code
-
-Consider the following access control implementations:
-
-```erlang
-%% Only allow connections with client IDs that match any of the characters: A-Z, a-z, 0-9, and underscore.
-on_client_authenticate(_ClientInfo = #{clientid := ClientId}, Result, _Env) ->
-  case re:run(ClientId, "^[A-Za-z0-9_]+$", [{capture, none}]) of
-    match -> {ok, Result};
-    nomatch -> {stop, {error, banned}}
-  end.
-%% Clients can only subscribe to topics formatted as /room/{clientid}, but can send messages to any topics.
-on_client_authorize(_ClientInfo = #{clientid := ClientId}, subscribe, Topic, Result, _Env) ->
-  case emqx_topic:match(Topic, <<"/room/", ClientId/binary>>) of
-    true -> {ok, Result};
-    false -> stop
-  end;
-on_client_authorize(_ClientInfo, _Pub, _Topic, Result, _Env) -> {ok, Result}.
-```
-
-In the provided code example, only clients with a client ID matching the specified pattern can log in. These clients are restricted to subscribing only to the topic `/room/{clientid}`, effectively creating a simple chat room setup. While clients can send messages to any topic, they are limited to subscribing to topics that directly pertain to their own client ID.
+1. The plugin package (the tarball created by the `make rel` command) is uploaded via the Dashboard, API or CLI.
+2. The plugin package is transferred to each node of the EMQX cluster.
+3. On each node:
+   - The plugin package saved in the `plugins` subdirectory in the EMQX root directory (this may be overridden by the `plugins.install_dir` option): `$EMQX_ROOT/plugins/my_emqx_plugin-1.0.0.tar.gz`.
+   - The plugin package is unpacked into the same directory: `$EMQX_ROOT/plugins/my_emqx_plugin-1.0.0/`.
+   - The plugin's initial configuration (`config.hocon` from the main plugin's app) is copied into the `$EMQX_DATA_DIR/plugins/my_emqx_plugin/config.hocon` file.
+   - The plugin config's avro schema is loaded (if present).
+   - The plugin's code is loaded into the node, but not started.
+   - The plugin is registered as `disabled` in the EMQX config (`plugins.states`).
 
 ::: tip
 
-1. Ensure `authorization.no_match` is set to `deny` in your configuration to prevent unauthorized connections.
-2. This example details customizing an access control plugin. Similar authorization rules can be based on files as detailed in the [File-Based Authorization documentation](../access-control/authz/file.md).
+For plugins, only plugin states (`true` or `false` for the `enable` flag) reside in the EMQX config. The plugin's configuration is stored in the `$EMQX_DATA_DIR/plugins/my_emqx_plugin/config.hocon` file on the nodes.
 
 :::
 
-#### Pack the Customized Plugin
+### Configuration
 
-Modify the version information of the plugin via `rebar.config`:
+After the plugin is installed, it may be configured via the Dashboard or API. On configuration change,
 
-```erlang
-{relx, [ {release, {my_emqx_plugin, "1.0.0"}, %% This is the release version, different from app vsn in .app file
-            [ my_emqx_plugin
-            , map_sets
-            ]}
-       , {dev_mode, false}
-       , {include_erts, false}
-       ]}.
-
-  %% Additional info about the plugin
-  {emqx_plugrel,
-    [ {authors, ["Your Name"]}
-    , {builder,
-        [ {name, "Your Name"}
-        , {contact, "your_email@example.cpm"}
-        , {website, "http://example.com"}
-        ]}
-    , {repo, "https://github.com/emqx/emqx-plugin-template"}
-    , {functionality, ["Demo"]}
-    , {compatibility,
-        [ {emqx, "~> 5.0"}
-        ]}
-    , {description, "Another amazing EMQX plugin"}
-    ]
-}..
-```
-
-After updating the configuration, re-run the release command:
-
-```shell
-make rel
-...
-===> Release successfully assembled: _build/default/rel/my_emqx_plugin
-===> [emqx_plugrel] creating _build/default/emqx_plugrel/my_emqx_plugin-1.0.0.tar.gz
-```
-
-This generates a new tarball, `my_emqx_plugin-1.0.0.tar.gz`, which you can upload and deploy to your EMQX cluster.
-
-#### Write Configuration Schema for the Plugin (Optional)
-
-EMQX version 5.7.0 introduced REST API for plugin configuration management and Avro Schema for configuration validation, enhancing the ability to update plugin configurations dynamically during runtime.
-In addition, if you write an Avro Schema to validate the plugin's configuration, you are required to provide a default configuration file that matches the Avro Schema rules. This file should be located at `priv/config.hocon`.
-
-Configuration updates made at runtime will be written in HOCON format to `data/plugins/<PLUGIN_NAME>/config.hocon`, and the old configuration file will be backed up each time the configuration is updated.
-
+- The configuration is validated against the avro schema (if present).
+- The new configuration is sent to the nodes of the EMQX cluster.
+- The plugin's `on_config_changed/2` callback function is called. If the plugin accepts the new configuration, it is persisted in the `$EMQX_DATA_DIR/plugins/my_emqx_plugin/config.hocon` file.
 
 ::: tip
 
-Check out the example files in your project directory: `priv/config.hocon.example`, `priv/config_schema.avsc.example`, `priv/config_schema.avsc.enterprise.example` and `priv/config_i18n.json.example`.
-Plugins that support configuration and configuration validation can be written based on these files.
-
-Note that `priv/config_schema.avsc.enterprise.example` and `priv/config_i18n.json.example` contain the UI declarations and their internationalization configurations. Using UI declarations to render plugin configuration form pages is an EMQX Enterprise edition feature.
+`on_config_changed/2` callback function is called even if the application is not started.
 
 :::
-
-
-Your plugin package needs to include an Avro Schema configuration file, located at the relative path `priv/config_schema.avsc`. This file must adhere to the [Apache Avro specification](https://avro.apache.org/docs/1.11.1/specification/).
-
-Additionally, it also includes descriptive declarations about the UI. Specifically, an `$ui` field can be configured using the metadata of the Avro Schema. The EMQX Dashboard will generate a configuration form page based on the information provided in the `$ui` field.
-
-
-#### Declarative UI Usage Reference (Optional)
 
 ::: tip
 
-Using the declarative UI components is an EMQX Enterprise edition feature.
+`on_config_changed/2` callback function is called on each node of the EMQX cluster. So avoid implementing checks that may succeed or fail depending on the environment, e.g. do not check if some network resource is available. This may result to a situation when some nodes receive new configuration while others don't. Instead, use the `on_health_check/1` callback function for such checks and report unhealthy status if some resource is not available.
 
 :::
 
-Declarative UI components enable dynamic form rendering within the Dashboard, accommodating a variety of field types and custom components. Below is a description of the available components and their configurations.
+### Start Plugins
 
-UI declarations are used for dynamic form rendering, allowing the EMQX Dashboard to dynamically generate configuration forms, making it easier to configure and manage plugins. Various field types and custom components are supported. Below are the available components and their configuration descriptions.
+The plugin is started manually via the Dashboard, API, or CLI. Upon starting:
 
-There is also an **optional** internationalization (i18n) config file, located at `priv/config_i18n.json`. This file is structured as key-value pairs, for example: `{ "$msgid": { "zh": "消息", "en": "Message" } }`.
-To support multiple languages in field names, descriptions, validation rule messages, and other UI elements in the `$ui` configuration, use `$msgid` prefixed with `$` in the relevant UI configurations.
+- The plugin's applications is started.
+- The plugin is registered as `enabled` in the EMQX config (`plugins.states`).
 
-**Configuration Item Descriptions**
+When the plugin is started and its information is requested, the `on_health_check/1` callback function is called to retreive the plugin's status.
 
-- `component`<br />
-  Required. Specifies the component type for displaying and configuring data of different values and types. Supported components include:
+### Stop Plugins
 
-  | Component Name     | Description                                                  |
-  | :----------------- | :----------------------------------------------------------- |
-  | `input`            | Text input box for short texts or strings                    |
-  | `input-password`   | Password input box that conceals input                       |
-  | `input-number`     | Numeric input box allowing only numeric input                |
-  | `input-textarea`   | Text area for longer text entries                            |
-  | `input-array`      | Array input box for comma-separated values, supporting string and numeric arrays |
-  | `switch`           | Toggle switch for boolean values                             |
-  | `select`           | Dropdown selection box for enumerated types                  |
-  | `code-editor`      | Code editor for specific formats (e.g., SQL, JSON)           |
-  | `key-value-editor` | Editor for editing key-value pairs in Avro maps              |
-  | `maps-editor`      | Editor for editing object arrays in Avro objects             |
-- `label`<br />
-  Required. Defines the field's label or name, supports `$msgid` for internationalization. If i18n is not configured, the original text will be displayed directly.
-- `description`<br />
-  Optional. Provides a detailed description of the field, supports `$msgid` for internationalization. If i18n is not configured, the original text will be displayed directly.
-- `flex`<br />
-  Required. Defines the proportion of the field in the grid layout; a full grid (24) spans an entire row, while a half grid (12) covers half a row.
-- `required`<br />
-  Optional. Indicates whether the field is mandatory.
-- `format` (Applicable only for `code-editor` component)<br />
-  Optional. Specifies the supported data formats, such as `sql` or `json`.
-- `options` (Applicable only for `select` component)<br />
-  Optional. Lists the selectable options, aligned with the symbols in the Avro Schema. Example:
+When the plugin is stopped:
 
-  ```json
-  [
-    {
-      "label": "$mysql",
-      "value": "MySQL"
-    },
-    {
-      "label": "$pgsql",
-      "value": "postgreSQL"
-    }
-  ]
-  ```
-- `items` (Applicable only for maps-editor component)<br />
-  Optional. When using the maps-editor component, specify the field name and description of the items in the form. For example:
+- The plugin's applications are stopped.
+- The plugin is registered as `disabled` in the EMQX config (`plugins.states`).
 
-  ```json
-  {
-    "items": {
-      "optionName": {
-        "label": "$optionNameLabel",
-        "description": "$optionDesc",
-        "type": "string"
-      },
-      "optionValue": {
-        "label": "$optionValueLabel",
-        "description": "$optionValueDesc",
-        "type": "string"
-      }
-    }
-  }
-  ```
-- `rules`<br />
-  Optional. Defines validation rules for the field, where multiple rules can be configured. Supported types include:
+Although the plugin’s application is stopped, its code remains loaded on the node, as a stopped plugin can still be configured.
 
-  - `pattern`: Requires a regular expression for validation.
-  - `range`: Validates numeric input within a specified range. This validation can be configured with both a minimum value (`min`) and a maximum value (`max`), which can be set either together or independently.
-  - `length`: Validates the character count of input, ensuring it falls within a specified range. This validation rule allows for the configuration of both a minimum length (`minLength`) and a maximum length (`maxLength`), which can be set either together or individually.
-  - `message`: Specifies an error message to display when validation fails. This supports internationalization using `$msgid` to accommodate multiple languages.
+### Uninstallation Process
 
-**Example Validation Rules**:
+The uninstallation process is the following:
 
-The following are several example snippets. For more detailed examples, refer to `priv/config_schema.avsc.example`:
+1. The plugin is stopped (if it is running).
+2. The plugin's code is unloaded from the node.
+3. The plugin's package files are removed from the nodes (the config file is preserved).
+4. The plugin is unregistered in the EMQX config (`plugins.states`).
 
-```json
-{
-    "rules": [
-    {
-      "type": "pattern",
-      "pattern": "^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])(\\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9]))*$",
-      "message": "$hostname_validate"
-    }
-  ]
-}
-```
+### Join the cluster
 
-```json
-{
-    "rules": [
-    {
-      "type": "range",
-      "min": 1,
-      "max": 65535,
-      "message": "$port_range_validate"
-    }
-  ]
-}
-```
+When an EMQX node joins the cluster it may not have the actual plugins installed and configured since the plugins and their configs reside in the local file systems of the nodes.
 
-```json
-{
-    "rules": [
-    {
-      "type": "length",
-      "minLength": 8,
-      "maxLength": 128,
-      "message": "$password_length_validate"
-    },
-    {
-      "type": "pattern",
-      "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]*$",
-      "message": "$password_validate"
-    }
-  ]
-}
-```
+The new node does the following:
 
-Including Avro Schema and i18n files in your plugin package ensures they are incorporated during plugin compilation and packaging. You can use the `emqx_plugins:get_config/1,2,3,4` function in your plugin code to retrieve configuration settings.
+- When a node joins the cluster, it obtains the global EMQX config (as a part of the cluster join process).
+- From the EMQX config, it knows plugin statuses (which plugins are installed and which are enabled).
+- The new node requests the plugins and their actual configs from other nodes.
+- The new node installs plugins and starts the enabled ones.
 
-## Install Plugins
+## Install Plugin Packages
 
-EMQX supports plugin installation via the Dashboard and CLI. However, due to security enhancements, plugin installation via the Dashboard now requires explicit permission before proceeding.
+EMQX supports plugin package installation via the Dashboard and CLI. However, due to security enhancements, plugin installation via the Dashboard now requires explicit permission before proceeding.
 
-### Install Plugins via Dashboard
+### Install Packages via Dashboard
 
 ::: tip Important Security Update
 
@@ -586,7 +410,7 @@ To revoke permission for a previously allowed plugin, either:
 emqx ctl plugins disallow $NAME-$VSN
 ```
 
-### Install Plugins via CLI
+### Install Packages via CLI
 
 To install a compiled plugin package directly via the CLI, use the following command:
 
@@ -594,7 +418,7 @@ To install a compiled plugin package directly via the CLI, use the following com
 ./bin/emqx ctl plugins install {pluginName}
 ```
 
-### Install Plugins via API
+### Install Packages via API
 
 To install a plugin using the API, follow these steps:
 
@@ -623,11 +447,11 @@ $ curl -s -u $KEY:$SECRET -X PUT "http://$EMQX_HOST:18083/api/v5/plugins/{plugin
 $ curl -s -u $KEY:$SECRET -X PUT "http://$EMQX_HOST:18083/api/v5/plugins/{pluginName}/stop"
 ```
 
-## Uninstall Plugins
+## Uninstall Plugin Packages
 
-If a plugin is no longer needed, you can uninstall it either via Dashboard or CLI.
+If a plugin is no longer needed, you can uninstall the package either via Dashboard or CLI.
 
-To uninstall a plugin via Dashboard, click the **Uninstall** button under the **More** menu in the **Actions** column on the plugin list page.
+To uninstall a plugin package via Dashboard, click the **Uninstall** button under the **More** menu in the **Actions** column on the plugin list page.
 
 To uninstall a plugin via CLI, you can use the following command:
 
@@ -637,27 +461,9 @@ To uninstall a plugin via CLI, you can use the following command:
 
 <!-- **Note**: (EMQX enterprise) Plugins need to be reinstalled after hot upgrades. -->
 
-## Manage Plugins
+## Maintain Plugins
 
-Once a plugin is installed, it can be managed through the Dashboard, API, or CLI. This section explains the various operations you can perform to start, stop, and maintain plugins.
-
-### Start Plugins
-
-The plugin is started manually via the Dashboard, API, or CLI. Upon starting:
-
-- The plugin's applications is started.
-- The plugin is registered as `enabled` in the EMQX config (`plugins.states`).
-
-When the plugin is started and its information is requested, the `on_health_check/1` callback function is called to retreive the plugin's status.
-
-### Stop Plugins
-
-When the plugin is stopped:
-
-- The plugin's applications are stopped.
-- The plugin is registered as `disabled` in the EMQX config (`plugins.states`).
-
-Although the plugin’s application is stopped, its code remains loaded on the node, as a stopped plugin can still be configured.
+Once a plugin is installed, it can be managed through the Dashboard, API, or CLI. This section explains the various operations you can perform to maintain plugins.
 
 ### Implement Plugins
 
