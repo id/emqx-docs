@@ -1,4 +1,4 @@
-# Known Issues in EMQX 5.8
+# Known Issues in EMQX 5.9
 
 ## e5.9.0
 
