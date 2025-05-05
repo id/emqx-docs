@@ -27,7 +27,8 @@ When using Docker, you can upgrade EMQX by simply pulling the newer version imag
 If you are running an Open Source version of EMQX and would like to upgrade to the Enterprise Edition,
 the process is the same as upgrading to a newer version of the Open Source Edition.
 
-There is no difference in installation and upgrade between the Open Source and Enterprise Editions of EMQX. The only notice is that you need to manually [configure your License](./license.md) in `emqx.conf` for the Enterprise edition nodes after each upgrade. You cannot apply the License key to the whole cluster before all nodes are upgraded.
+There is no difference in installation and upgrade between the Open Source and Enterprise Editions of EMQX. The only notice is that you need to manually [configure your License](./license.md) for the Enterprise edition nodes after each upgrade.
+You cannot apply the License key to the whole cluster before all nodes are upgraded.
 
 For example, add the following line to `etc/base.hocon` (`etc/emqx.conf` if upgrade target version is before `e5.8.5`):
 ```
