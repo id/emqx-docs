@@ -18,12 +18,6 @@ Exclusive subscriptions must be prefixed with `$exclusive/`, in the above exampl
 
 ## Configure Exclusive Subscription via Configuration File
 
-::: tip 
-
-Exclusive subscription can be configurated via the configuration file only. Configuration using the Dashboard is currently not supported.
-
-:::
-
 The exclusive subscription is disabled by default. You can enable this feature in `etc/emqx.conf`.
 
 ```bash
