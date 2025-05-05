@@ -195,6 +195,8 @@ Make sure to check the breaking changes and known issues before upgrading to EMQ
 - [#15014](https://github.com/emqx/emqx/pull/15014) Dashboard security improved.
   The ability to log into the dashboard is blocked for a period after several unsuccessful attempts.
   The number of attempts and lock duration can be configured.
+- [#15132](https://github.com/emqx/emqx/pull/15132) Fix incorrect response content-type in SAML SSO integration
+  When using EMQX Dashboard with SAML-based Single Sign-On, the response from the Assertion Consumer Service (ACS) incorrectly used `application/xml` as the content-type. This caused compatibility issues with some Identity Providers. The content-type has now been corrected to `application/x-www-form-urlencoded` for proper SAML response handling.
 
 #### Observability
 

@@ -173,6 +173,9 @@
 - [#14255](https://github.com/emqx/emqx/pull/14255) 为 Dashboard 用户引入密码过期机制。
 - [#15014](https://github.com/emqx/emqx/pull/15014) 提升 Dashboard 安全性。在多次登录失败后，将暂时禁止登录。失败次数与锁定时长均可配置。
 
+- [#15132](https://github.com/emqx/emqx/pull/15132) 修复 SAML 单点登录集成中的响应内容类型错误。
+  当 EMQX Dashboard 配置为使用基于 SAML 的单点登录时，Assertion Consumer Service（ACS）的响应内容类型错误地设置为 `application/xml`，导致部分身份提供商（IdP）无法正常处理。此问题已修复，响应的内容类型现已更正为 `application/x-www-form-urlencoded`，以确保与 SAML 协议兼容。
+
 #### 可观测性
 
 - [#14794](https://github.com/emqx/emqx/pull/14794) 为 HTTP API 接口的日志追踪添加了 `payload_limit` 参数。之前，如果 payload 大小超过 1024 字节，payload 内容会被截断。现在，这个限制可以配置。
