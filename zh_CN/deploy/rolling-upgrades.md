@@ -25,7 +25,7 @@
 
 在安装和升级方面，EMQX 的开源版和企业版没有区别。唯一的注意点是，在每次升级后，您需要手动在 `emqx.conf` 中为企业版节点[配置您的 License](./license.md)，但是在所有节点升级之前，不能将 License 应用于整个集群。
 
-例如，在 `emqx.conf` 中添加以下行：
+例如，在 `etc/base.hocon` （如果升级到 `e5.8.5` 之前的版本，则在 `etc/emqx.conf`) 中添加以下行：
 ```
 license.key = "你的 license"
 ```
