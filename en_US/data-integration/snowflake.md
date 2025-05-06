@@ -1,11 +1,5 @@
 # Ingest MQTT Data into Snowflake
 
-::: tip
-
-The Snowflake data integration is an EMQX Enterprise edition feature.
-
-:::
-
 [Snowflake](https://www.snowflake.com/en/) is a cloud-based data platform that provides a highly scalable and flexible solution for data warehousing, analytics, and secure data sharing. Known for its ability to handle structured and semi-structured data, Snowflake is designed to store vast amounts of data while providing fast query performance and seamless integration with various tools and services.
 
 This page provides a detailed introduction to the data integration between EMQX and Snowflake, and offers practical guidance on the rule and Sink creation.

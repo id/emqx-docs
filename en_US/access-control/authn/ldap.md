@@ -1,11 +1,5 @@
 # Integrate with LDAP
 
-::: tip Note
-
-LDAP integration for authentication is only available in the EMQX Enterprise edition.
-
-:::
-
 [Lightweight Directory Access Protocol (LDAP)](https://ldap.com/) is a protocol used to access and manage directory information. EMQX supports integrating with an LDAP server for password authentication. This integration enables users to use their LDAP credentials for authentication in EMQX.
 
 ::: tip Prerequisite
@@ -137,45 +131,45 @@ directory       /usr/local/etc/openldap/data
 
 You can configure how to use LDAP for password authentication in the EMQX Dashboard.
 
-Go to EMQX Dashboard, and click **Access Control** -> **Authentication** on the left navigation menu to enter the **Authentication** page. Click **Create** at the top right corner, then click to select **Password-Based** as **Mechanism**, and **LDAP** as **Backend**, this will lead us to the **Configuration** tab, as shown below.
+1. In the EMQX Dashboard, click **Access Control** -> **Authentication** from the left navigation menu.
+2. On the **Authentication** page, click **Create** in the top right corner.
+3. Click to select **Password-Based** as **Mechanism**, and **LDAP** as **Backend** to go to the **Configuration** tab, as shown below. 
 
 <img src="./assets/authn-ldap.png" alt="authn-ldap"  />
 
-Follow the instructions below for the configuration:
+4. Follow the instructions below for the configuration:
 
-**Connect**: Fill in the information needed to connect to the LDAP server.
+   - Enter the information needed to connect to the LDAP server.
 
-- **Server**: Specify the server address that EMQX is to connect (`host:port`).
-- **Username**: Specify the LDAP root user name.
-- **Password**: Specify the LDAP root user password.
+     - **Server**: Specify the server address that EMQX is to connect (`host:port`).
+     - **Username**: Specify the LDAP root user name.
+     - **Password**: Specify the LDAP root user password.
 
-**TLS Configuration**: Turn on the toggle switch if you want to enable TLS. For more information on enabling TLS, see [Network and TLS](../../network/overview.md).
+   - **Authentication configuration**: Fill in the authentication-related settings.
 
-**Connection Configuration**: Set the concurrent connections and waiting time before a connection is timed out.
+     - **Password Authentication Method**: Select the authentication method: `LDAP Bind Authentication` (default) or `Local Password Comparison`.
 
-- **Connection Pool size** (optional): Input an integer value to define the number of concurrent connections from an EMQX node to LDAP. Default: `8`.
-- **Query Timeout** (optional): Specify the waiting period before EMQX assumes the query is timed out. Units supported include milliseconds, second, minute, and hour.
+     - **Bind Password**: Specifies the password that EMQX uses to authenticate itself to the LDAP server before it can perform any operations or queries. It is referenced through a placeholder `${password}` that will be resolved at runtime with the actual password defined in the configuration option **Password**.
 
-**Authentication configuration**: Fill in the authentication-related settings.
+     - **Base DN**: The name of the base object entry (or possibly the root) relative to which the search is to be performed. For more information, see [RFC 4511 Search Request](https://datatracker.ietf.org/doc/html/rfc4511#section-4.5.1), the placeholders are supported.
 
-- **Base DN**: The name of the base object entry (or possibly the root) relative to which the search is to be performed. For more information, see [RFC 4511 Search Request](https://datatracker.ietf.org/doc/html/rfc4511#section-4.5.1), the placeholders are supported.
+       ::: tip
 
-  ::: tip
+       DN refers to Distinguished Name. This is a unique identifier of each object entry and it also describes the location of the entry within the information tree.
 
-  DN refers to Distinguished Name. This is a unique identifier of each object entry and it also describes the location of the entry within the information tree.
+       :::
 
-  :::
+     - **Password Hash Attribute**: Specifies the attribute representing the user's password, applicable when `Local Password Comparison` is selected as the authentication method. The value of this attribute should follow [RFC 3112](#https://datatracker.ietf.org/doc/html/rfc3112), the supported algorithm is `md5` `sha` `sha256` `sha384` `sha512` and `ssha`.
 
-- **Password Authentication Method**: Select the authentication method: `LDAP Bind Authentication` (default) or `Local Password Comparison`.
+     - **Is Superuser Attribute**: Identifies the attribute that indicates whether a user is a superuser, applicable when `Local Password Comparison` is selected as the authentication method.  The value of this attribute should be in boolean, if absent is equal to `false`.
 
-- **Bind Password**: Specifies the password that EMQX uses to authenticate itself to the LDAP server before it can perform any operations or queries. It is referenced through a placeholder `${password}` that will be resolved at runtime with the actual password defined in the configuration option **Password**.
-
-- **Password Hash Attribute**: Specifies the attribute representing the user's password, applicable when `Local Password Comparison` is selected as the authentication method. The value of this attribute should follow [RFC 3112](#https://datatracker.ietf.org/doc/html/rfc3112), the supported algorithm is `md5` `sha` `sha256` `sha384` `sha512` and `ssha`.
-
-- **Is Superuser Attribute**: Identifies the attribute that indicates whether a user is a superuser, applicable when `Local Password Comparison` is selected as the authentication method.  The value of this attribute should be in boolean, if absent is equal to `false`.
-
+- **Precondition**: A [Variform expression](../../configuration/configuration.md#variform-expressions) used to control whether this LDAP authenticator should be applied to a client connection. The expression is evaluated against attributes from the client (such as `username`, `clientid`, `listener`, etc.). The authenticator will only be invoked if the expression evaluates to the string `"true"`. Otherwise, it will be skipped. For more information about the precondition, see [Authentication Preconditions](./authn.md#authentication-preconditions).
+- **Enable TLS**: Turn on the toggle switch if you want to enable TLS. For more information on enabling TLS, see [Network and TLS](../../network/overview.md).
 - **Filter**: Defines the criteria for the LDAP query. The filter sets conditions that an entry must meet to be considered a match.
   The syntax of the filter follows [RFC 4515](#https://www.rfc-editor.org/rfc/rfc4515) and also supports placeholders.
+- **Advanced Settings**: Set the concurrent connections and waiting time before a connection is timed out.
+  - **Connection Pool size** (optional): Input an integer value to define the number of concurrent connections from an EMQX node to LDAP. Default: `8`.
+  - **Query Timeout** (optional): Specify the waiting period before EMQX assumes the query is timed out. Units supported include milliseconds, second, minute, and hour.
 
 After you finish the settings, click **Create**.
 

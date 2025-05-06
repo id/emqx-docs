@@ -32,7 +32,7 @@ After each command is published, command execution results can be obtained throu
 :::tip
 
 1. All file transfer commands are processed by the EMQX broker and are not sent to other MQTT clients.
-2. The asynchronous transfer mode is available in EMQX Enterprise version v5.3.2 and later.
+2. The asynchronous transfer mode is available in EMQX v5.3.2 and later.
 3. For MQTT v3.1/v3.1.1 clients, as PUBACK Reason Code is not available, it is recommended to use the asynchronous transfer mode.
 
 :::

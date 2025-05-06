@@ -1,11 +1,5 @@
 # Ingest MQTT Data into Microsoft SQL Server
 
-::: tip
-
-The Microsoft SQL Server data integration is an EMQX Enterprise edition feature.
-
-:::
-
 [SQL Server](https://www.microsoft.com/en-us/sql-server/) is one of the leading relational commercial database solutions, widely used in enterprises and organizations of various sizes and types. EMQX supports integration with SQL Server, enabling you to save MQTT messages and client events to SQL Server. This facilitates the construction of complex data pipelines and analytical processes for data management and analysis, or for managing device connections and integrating with other enterprise systems such as ERP, CRM, and BI.
 
 This page provides a detailed overview of the data integration between EMQX and Microsoft SQL Server with practical instructions on creating and validating the data integration.

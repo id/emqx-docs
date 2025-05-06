@@ -1,11 +1,5 @@
 # 将 MQTT 数据写入到 GreptimeDB
 
-::: tip
-
-GreptimeDB 数据集成是 EMQX 企业版功能。
-
-:::
-
 [GreptimeDB](https://github.com/GreptimeTeam/greptimedb) 是一个开源、分布式、云原生时序数据库，融合时序数据处理和分析能力。GreptimeDB 专为云而生，充分利用云的优势，如弹性、可扩展性和高可用性。EMQX 目前支持与不同版本的 GreptimeDB, GreptimeCloud 以及 GreptimeDB 企业版的数据集成。
 
 本页详细介绍了 EMQX 与 GreptimeDB 的数据集成并提供了实用的规则和 Sink 创建指导。

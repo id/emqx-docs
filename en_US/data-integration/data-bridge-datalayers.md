@@ -1,11 +1,5 @@
 # Ingest MQTT Data to Datalayers
 
-::: tip
-
-The datalayers data integration is an EMQX Enterprise feature.
-
-:::
-
 Datalayers is a multi-modal, hyper-converged database designed for industries such as industrial IoT, IoV, energy, and more. With its powerful data throughput and stable performance, Datalayers is ideal for IoT applications. EMQX currently supports storing messages and data in Datalayers via Sink, facilitating data analysis and visualization.
 
 This page provides a detailed overview of EMQX’s data integration with Datalayers and offers practical guidance on creating rules and Sinks.

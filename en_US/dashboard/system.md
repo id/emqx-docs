@@ -2,20 +2,12 @@
 
 The EMQX Dashboard's **System** menu includes submenus for **Users**, **API Key**, **License**, and **SSO**. Each of these submenus allows you to efficiently manage and configure user accounts, API keys, license settings, and single sign-on (SSO) configurations on their respective pages.
 
-::: tip
-
-The License and SSO features are only available in the EMQX Enterprise edition.
-
-:::
-
 ## Users
 
 The **Users** page provides an overview of all active Dashboard users, including those generated via the [CLI](../admin/cli.md).
 
 To add new users, click the + Create button in the page's top-right corner. A pop-up dialog will appear, prompting you to input the necessary user details. Once entered, click the **Create** button to generate the user account. You can easily access these options through the Actions column for further user management, such as editing users, updating passwords, or deleting users' information.
 
-> The EMQX Open Source edition does not provide role-based access control (RBAC). All users have administrator permissions and can delete other users, but they cannot delete the currently logged-in user from the Dashboard.
->
 > For security reasons, starting with EMQX 5.0.0, Dashboard users cannot be used for REST API authentication.
 
 <img src="./assets/ee-users.png" alt="image" style="zoom:67%;" />
@@ -42,7 +34,7 @@ On the API Keys page, you can generate an API key and secret key for accessing t
 2. On the Create API Key dialog, configure the detailed information for the API key. 
 
    - The API key will never expire if the Expire At box is left empty.
-   - Select a role for API key (optional), applicable only in the Enterprise edition. For more information about roles, see [Roles and Permissions](../admin/api.md#roles-and-permissions).
+   - Select a role for API key (optional). For more information about roles, see [Roles and Permissions](../admin/api.md#roles-and-permissions).
 
 3. Click the **Confirm** button, and the API key and secret Key are created and displayed in the **Created Successfully** dialog. 
 
@@ -62,15 +54,9 @@ You can view the details of the API key by clicking the name in the **Name** col
 
 ## License
 
-::: tip
+Click on **License** under the **System** menu on the left to access the License page. On this page, you can view the basic information of your current License, including the License connection quota usage, EMQX version, customer, and issue information. 
 
-This section applies to the EMQX Enterprise only.
-
-:::
-
-Click on **License** under the **System** menu on the left to access the License page. On this page, you can view the basic information of your current License, including the License connection quota usage, EMQX version, customer, and issue information. Click **Update License** to upload your License Key. In the **License Settings** section, you can set the high and low watermark limits for the license connection quota usage.
-
-<img src="./assets/license.png" alt="license" style="zoom:35%;" />
+Click **Update License** to upload your License Key. In the **License Settings** section, you can set the high and low watermark limits for the license connection quota usage. For more information about the license, see [Work with EMQX Enterprise License](../deploy/license.md).
 
 ## Settings
 
@@ -78,17 +64,7 @@ The Settings can be accessed by clicking the setting icon on the top right corne
 
 <img src="./assets/settings_ee.png" alt="settings_ee" style="zoom:67%;" />
 
-For EMQX Open Source users, you can enable the telemetry to share usage information with EMQX to help the EMQX development team understand how users are using EMQX for continuous improvement.
-
-![image](./assets/settings.png)
-
 ## SSO
-
-::: tip
-
-The Single Sign-On (SSO) is an EMQX Enterprise feature.
-
-:::
 
 The SSO page provides settings for the administrators to configure the SSO feature for user login management. For more information about the SSO feature, see [Single Sign-On (SSO)](./sso.md).
 

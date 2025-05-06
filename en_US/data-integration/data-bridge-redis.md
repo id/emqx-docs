@@ -1,11 +1,5 @@
 # Ingest MQTT Data into Redis
 
-::: tip
-
-The Redis data integration is an EMQX Enterprise edition feature.
-
-:::
-
 [Redis](https://redis.io/) is an open-source, in-memory data store used by millions of developers as a database, cache, streaming engine, and message broker. EMQX supports integration with Redis so you can save MQTT messages and client events to Redis. With Redis data integration, you can use Redis for message caching and statistics of client events.
 
 This page provides a detailed overview of the data integration between EMQX and Redis with practical instructions on creating and validating the data integration.

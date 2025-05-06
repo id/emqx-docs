@@ -1,11 +1,5 @@
 # 将 MQTT 数据传输到 Amazon Kinesis
 
-::: tip
-
-Amazon Kinesis 数据集成是 EMQX 企业版功能。
-
-:::
-
 [AWS Kinesis](https://aws.amazon.com/cn/kinesis/) 是 AWS 上完全托管的实时流数据处理服务，可以轻松地进行流数据的收集、处理和分析。它可以经济高效地处理任意规模的实时流数据，并具有高度的灵活性，能够低时延的处理来自数十万个来源的任意数量的流数据。EMQX 支持与 [Amazon Kinesis Data Streams](https://aws.amazon.com/kinesis/data-streams/) 无缝集成，从而能够实现海量 IoT 设备连接，进行实时消息进行采集、传输，并通过 Sink 连接到 Amazon Kinesis Data Streams，进行实时数据分析与复杂的流处理。
 
 本页详细介绍了 EMQX 与 Amazon Kinesis 的数据集成并提供了实用的规则和 Sink 创建指导。

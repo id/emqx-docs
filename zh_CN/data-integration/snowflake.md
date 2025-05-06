@@ -1,11 +1,5 @@
 # 将 MQTT 数据导入 Snowflake
 
-::: tip
-
-Snowflake 数据集成是 EMQX 企业版功能。 
-
-:::
-
 [Snowflake](https://www.snowflake.com/en/) 是一个基于云的数据平台，提供高度可扩展且灵活的数据仓库、分析和安全数据共享解决方案。Snowflake 以其处理结构化和半结构化数据的能力而闻名，专为存储海量数据并提供快速查询性能设计，能够无缝集成各种工具和服务。
 
 本页面详细介绍了 EMQX 与 Snowflake 之间的数据集成，并为规则和 Sink 的创建提供了实用指南。

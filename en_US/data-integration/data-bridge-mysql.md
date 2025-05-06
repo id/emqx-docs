@@ -1,11 +1,5 @@
 # Ingest MQTT Data into MySQL
 
-::: tip
-
-The MySQL data integration is an EMQX Enterprise edition feature.
-
-:::
-
 [MySQL](https://www.mysql.com/) is a widely used relational database with high reliability and stability, and can be quickly installed, configured and used. MySQL data integration can efficiently store MQTT messages in the MySQL database, and also supports real-time updating or deletion of data in MySQL through event triggering. With the help of MySQL data integration, you can easily implement functions such as message storage, device online/offline status update, and device behavior recording to achieve flexible IoT data storage and device management functions.
 
 This page introduces the data integration between EMQX and MySQL with practical instructions on creating and validating the data integration.
