@@ -21,18 +21,10 @@
 
 ## 通过配置文件配置排它订阅
 
-:::tip 
-
-目前只能在配置文件中配置排它订阅，不支持通过 Dashboard 配置。
-
-:::
-
-排它订阅默认未开启，可在 `etc/emqx.conf` 中配置：
+排它订阅默认未开启，可在配置文件中加入：
 
 ```bash
-mqtt.exclusive_subscription {
-    enable = true
-}
+mqtt.exclusive_subscription.enable = true
 ```
 
 ## 使用 MQTTX Desktop 尝试排它订阅
