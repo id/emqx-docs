@@ -18,8 +18,8 @@ To apply for a Commercial License with a valid License Key, contact your EMQ sal
 
 Suppose you prefer to try EMQX Enterprise before purchasing. In that case, you can apply for a Trial License on our [Trial License application page,](https://www.emqx.com/en/apply-licenses/emqx) and the license file will be sent to your email box immediately:
 
-- The Trial License is valid for 15 days;
-- The Trial License supports 10,000 concurrent connection lines.
+- The Trial License is valid for 15 days.
+- The Trial License supports 10,000 concurrent connections.
 
 ::: tip Note
 
