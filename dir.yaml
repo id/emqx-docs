@@ -544,8 +544,8 @@
         - dashboard/sso-ldap
         - dashboard/sso-saml
         - dashboard/sso-oidc
-    - title_en: Multi-factor Authentication
-      title_cn: 多因素认证
+    - title_en: Multi-Factor Authentication (MFA)
+      title_cn: 多因素认证 (MFA)
       path: multi-factor-authn/multi-factor-authentication
     - dashboard/audit-log
     - title_en: Rate Limit
@@ -772,6 +772,7 @@
     - title_en: Known Issues
       title_cn: 已知问题
       children:
+        - changes/known-issues-5.9
         - changes/known-issues-5.8
         - changes/known-issues-5.3
         - changes/known-issues-5.1

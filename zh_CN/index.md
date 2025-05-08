@@ -4,7 +4,7 @@ EMQX 是一款「无限连接，任意集成，随处运行」的大规模分布
 
 作为一款商业版的自托管 MQTT 消息平台，[EMQX 企业版](https://www.emqx.com/zh/products/emqx)单集群支持最高 1 亿 MQTT 并发连接，单服务器的传输与处理吞吐量可达每秒百万级 MQTT 消息，同时保证毫秒级的低时延。通过强大的内置规则引擎和数据集成功能，EMQX 企业版可以对海量 IoT 数据进行实时数据处理、数据转换和路由，还可以将 IoT 数据无缝集成到各种后端数据库和分析工具中，助力企业快速构建关键业务的 IoT 平台与应用。
 
-<img src="./assets/emqx_platform.jpg" alt="emqx_platform" style="zoom:70%;" />
+<img src="./assets/emqx_platform.png" alt="emqx_platform" style="zoom:70%;" />
 
 ## 产品优势
 
@@ -94,8 +94,6 @@ EMQX 有三种部署模式，包括两种云服务模式（EMQX Serverless 和 E
   </tr>
 </tbody>
 </table>
-
-
 
 
 ## 典型用例
