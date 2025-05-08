@@ -22,14 +22,14 @@ The authentication process is similar to an HTTP API call where EMQX, as the req
 
 Example response:
 
-```json
+```js
 HTTP/1.1 200 OK
 Headers: Content-Type: application/json
 ...
 Body:
 {
     "result": "allow", // "allow" | "deny" | "ignore"
-    "is_superuser": true, // options: true | false, default value: false
+    "is_superuser": false, // options: true | false, default value: false
     "client_attrs": { // optional (since v5.7.0)
         "role": "admin",
         "sn": "10c61f1a1f47"

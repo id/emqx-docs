@@ -21,14 +21,14 @@ EMQX 支持通过外部 HTTP 服务进行密码认证。客户端连接时，EMQ
 
 响应示例：
 
-```json
+```js
 HTTP/1.1 200 OK
 Headers: Content-Type: application/json
 ...
 Body:
 {
     "result": "allow", // "allow" | "deny" | "ignore"
-    "is_superuser": true, // true | false，该项为空时默认为 false
+    "is_superuser": false, // true | false，该项为空时默认为 false
     "client_attrs": { // 可选 (自 v5.7.0 起)
         "role": "admin",
         "sn": "10c61f1a1f47"
