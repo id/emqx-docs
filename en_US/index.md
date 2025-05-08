@@ -3,7 +3,7 @@ EMQX is a large-scale distributed MQTT messaging platform that offers "unlimited
 
 As a commercial self-hosted MQTT messaging platform, [EMQX Enterprise](https://www.emqx.com/en/products/emqx) supports up to 100 million concurrent MQTT connections per cluster. A single server can handle and process millions of MQTT messages per second, all while maintaining millisecond-level latency. With its robust built-in rule engine and data integration capabilities, EMQX Enterprise can perform real-time data processing, transformation, and routing for massive IoT data. It seamlessly integrates IoT data with various backend databases and analytics tools, enabling enterprises to rapidly build IoT platforms and applications with leading competitiveness.
 
-<img src="./assets/emqx_platform.jpg" alt="emqx_platform" style="zoom:70%;" />
+<img src="./assets/emqx_platform.png" alt="emqx_platform" style="zoom:70%;" />
 
 ## Key Benefits
 
