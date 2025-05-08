@@ -121,7 +121,7 @@ In the plugin description section, you specify additional information about the 
   [ {authors, ["Your Name"]}
   , {builder,
       [ {name, "Your Name"}
-      , {contact, "your_email@example.cpm"}
+      , {contact, "your_email@example.com"}
       , {website, "http://example.com"}
       ]}
   , {repo, "https://github.com/emqx/emqx-plugin-template"}

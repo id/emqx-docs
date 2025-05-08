@@ -55,7 +55,7 @@ This logic ensures:
 
 Starting with EMQX 5.7.0, plugin configurations can be managed dynamically via REST APIs. To enable this functionality and ensure configuration validation, your plugin should include:
 
-- An Avro Schema configuration file, located at the relative path `priv/config_schema.avsc,` for validating the configuration structure. This file must adhere to the [Apache Avro specification](https://avro.apache.org/docs/1.11.1/specification/).
+- An Avro Schema configuration file, located at the relative path `priv/config_schema.avsc`, for validating the configuration structure. This file must adhere to the [Apache Avro specification](https://avro.apache.org/docs/1.11.1/specification/).
 - A default configuration file at `priv/config.hocon` that adheres to the Avro schema rules.
 
 At runtime, the updated configuration is saved to `data/plugins/<PLUGIN_NAME>/config.hocon`, and the old configuration file is backed up automatically.
