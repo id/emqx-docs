@@ -97,8 +97,6 @@ EMQ provides three deployment options for EMQX: two managed services (EMQX Serve
 
 
 
-
-
 ## Use Cases
 
 EMQX Enterprise is a comprehensive IoT messaging platform that plays a crucial role in different stages of IoT device connectivity and data transmission, providing powerful functionality and flexibility for various business needs.
