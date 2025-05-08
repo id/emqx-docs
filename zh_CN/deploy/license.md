@@ -13,7 +13,7 @@
 如果您想在购买前试用 EMQX 企业版，您可以在[此处](https://www.emqx.com/zh/apply-licenses/emqx)自助申请试用 License，License 文件将会立即发送至您的邮箱：
 
 - License 有效期为 15 天；
-- License 支持的并发连接数为 10,000。
+- License 支持的并发会话数为 10,000。
 
 ::: tip 注意
 
