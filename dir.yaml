@@ -594,7 +594,14 @@
       collapsed: true
       children:
         - extensions/hooks
-        - extensions/plugins
+        - title_en: Plugins
+          title_cn: 插件
+          collapsed: true
+          path: extensions/plugins
+          children:
+            - extensions/plugin-development
+            - extensions/plugin-example
+            - extensions/plugin-management
         # - extensions/lang-lua
         - extensions/exhook
     - title_en: Telemetry
