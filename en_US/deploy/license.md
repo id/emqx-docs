@@ -8,6 +8,12 @@ description: EMQX Enterprise already includes a single-node Community License wi
 
 Starting from EMQX 5.9, EMQX is released under the Business Source License (BSL) 1.1, a source-available license that allows open development while protecting EMQX’s commercial use.
 
+::: tip
+
+For detailed information about the licensing changes, see the [EMQX Licensing FAQ](https://www.emqx.com/en/content/license-faq).
+
+:::
+
 As part of the installation package, EMQX Enterprise already includes a single-node Community License with limited commercial use permission. However,  if you use EMQX Enterprise for full commercial usage and cluster deployment, you must obtain a Commercial License. 
 
 This page guides you through the process of obtaining a Commercial License and importing it into EMQX.

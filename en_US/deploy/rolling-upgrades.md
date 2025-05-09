@@ -6,6 +6,12 @@ In a clustered deployment, EMQX nodes can be upgraded one at a time without incu
 
 Starting from version 5.9.0, EMQX Enterprise is released under the Business Source License (BSL) 1.1, replacing the previous model that separated Open Source and Enterprise editions.
 
+::: tip
+
+For detailed information about the licensing changes, see the [EMQX Licensing FAQ](https://www.emqx.com/en/content/license-faq).
+
+:::
+
 While the technical steps for upgrading EMQX (like replacing binaries) are similar to previous version upgrades, version 5.9.0 introduces important licensing changes, especially for clustered deployments. If you are upgrading from an Open Source version earlier than 5.9 or upgrading a single-node deployment to clustering deployments, please note the following critical changes:
 
 1. **New Licensing Model**: EMQX 5.9.0+ includes a default EMQX Community License. This default license enables all features but restricts deployment to a single node.

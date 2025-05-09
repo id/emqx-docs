@@ -2,6 +2,12 @@
 
 从 EMQX 5.9 开始，EMQX 采用了商业源代码许可证（BSL）1.1，这是一种源代码可用的许可证，允许开放开发，同时保护 EMQX 的商业使用。
 
+::: tip
+
+关于 License 变更的详细信息，请参阅 [EMQX Licensing FAQ](https://www.emqx.com/zh/content/license-faq)。
+
+:::
+
 作为安装包的一部分，EMQX 企业版已包含一个单节点社区版 License，具有有限的商业使用权限。但是，如果您要将 EMQX 企业版用于全面的商业用途和集群部署，您必须获得商业 License。
 
 本页将指导您如何购买商业 License 并导入到 EMQX 中。
