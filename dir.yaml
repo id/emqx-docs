@@ -56,8 +56,8 @@
   path: deploy/install
   collapsed: true
   children:
-    - title_en: Install EMQX Enterprise
-      title_cn: 安装 EMQX 企业版
+    - title_en: Installation Guide
+      title_cn: 安装指南
       path: deploy/install-enterprise
       collapsed: true
       children:
