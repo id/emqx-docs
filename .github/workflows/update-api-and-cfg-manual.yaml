@@ -89,7 +89,7 @@ jobs:
           for pr in $(gh pr list --state open --base ${BASE_BRANCH} --label update-api-cfg --search "update api docs and configuration manual for ${VERSION} in:title" --repo ${{ github.repository }} --json number --jq '.[] | .number'); do
             gh pr close $pr --repo ${{ github.repository }} --delete-branch || true
           done
-          gh pr create --title ""update api docs and configuration manual for ${VERSION}" --body '' --base ${BASE_BRANCH} --head ${NEW_BRANCH} --label update-api-cfg --repo ${{ github.repository }}
+          gh pr create --title "update api docs and configuration manual for ${VERSION}" --body '' --base ${BASE_BRANCH} --head ${NEW_BRANCH} --label update-api-cfg --repo ${{ github.repository }}
 
       - uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
         with:
