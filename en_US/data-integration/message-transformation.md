@@ -50,7 +50,7 @@ This section demonstrates how to create and configure a message transformation i
        - `Protobuf`
        - `Custom (External HTTP)`
      
-       These decoders convert the binary input payload into a structured map. If you select `Avro` or `Protobuf`, their schemas must first be defined in the [Schema Registry](./schema-registry.md). 
+       These decoders convert the binary input payload into a structured map. If you select `Avro`, `Protobuf` or `Custom (External HTTP)`, make sure they have already been created in the [Schema Registry](./schema-registry.md). 
      
        In a pipeline with multiple transformations, decoding is not required at each step. For example, if transformation `T1` has already decoded the payload, subsequent transformation `T2` can skip decoding, relying on the payload already being in the correct format.
      

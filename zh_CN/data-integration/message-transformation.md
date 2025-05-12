@@ -50,7 +50,7 @@
        - `Protobuf`
        - `自定义（外部 HTTP）`
      
-       这些解码格式会将二进制输入 payload 转换为结构化映射。如果选择 `Avro` 或 `Protobuf`，则必须首先在 [Schema Registry ](./schema-registry.md)中定义其模式。
+       这些解码格式会将二进制输入 payload 转换为结构化映射。如果选择 `Avro`，`Protobuf` 或 `自定义（外部 HTTP）`，须确保该解码格式已经在 [Schema Registry ](./schema-registry.md)中创建。
      
        在具有多个转换的管道中，无需在每一步都进行解码。例如，如果转换 `T1` 已经解码了 payload，则后续的转换 `T2` 可以跳过解码，直接使用已正确格式化的 payload。
      
