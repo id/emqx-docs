@@ -85,8 +85,6 @@ jobs:
 
           VERSION=$(echo "${EMQX_VERSION}" | cut -d '-' -f 1)
           MINOR_VERSION=$(echo "${EMQX_VERSION}" | cut -d '.' -f 1-2)
-          sed -i "s/CE_VERSION=.*/CE_VERSION=${VERSION}/" ./current-version.env
-          sed -i "s/CE_MINOR_VERSION=.*/CE_MINOR_VERSION=${MINOR_VERSION}/" ./current-version.env
           sed -i "s/EE_VERSION=.*/EE_VERSION=${VERSION}/" ./current-version.env
           sed -i "s/EE_MINOR_VERSION=.*/EE_MINOR_VERSION=${MINOR_VERSION}/" ./current-version.env
           git add current-version.env
@@ -99,34 +97,25 @@ jobs:
           fi
 
           EMQX_API_PORT=18083
-          for edition in ce ee; do
-            case "${edition}" in
-              ce)
-                PROFILE=emqx
-                DOCKER_IMAGE=${EMQX_TAG}
-                ;;
-              ee)
-                PROFILE=emqx-enterprise
-                DOCKER_IMAGE=${EMQX_ENTERPRISE_TAG}
-                ;;
-            esac
-            for lang in en zh; do
-              CID=$(docker run -d -p $EMQX_API_PORT:18083 -e EMQX_dashboard__i18n_lang=${lang} "${DOCKER_IMAGE}")
-              SWAGGER_INPUT="/tmp/swagger-${edition}-${lang}.json"
-              TARGET_FILE="redocly/${edition}-${lang}.json"
-              # it takes some time for swagger to fully load
-              sleep 30
-              curl -o "${SWAGGER_INPUT}" http://127.0.0.1:$EMQX_API_PORT/api-docs/swagger.json
-              jq --indent 2 'del(.paths[] | .[] | select(.deprecated == true))' > "${TARGET_FILE}" < "${SWAGGER_INPUT}"
-              # replace docker ip 172.17.0.* with 127.0.0.1
-              sed -i 's/172\.17\.0\.\([0-9]\{1,3\}\)/127.0.0.1/g' "${TARGET_FILE}"
-              docker logs $CID
-              docker rm -f $CID
-              git add "${TARGET_FILE}"
-              cp "_build/docgen/${PROFILE}/schema-v2-${lang}.json" "hocon/hocon-${edition}-v${VERSION}-${lang}.json"
-              git add "hocon/hocon-${edition}-v${VERSION}-${lang}.json"
-              EMQX_API_PORT=$((EMQX_API_PORT + 1))
-            done
+          edition=ee
+          PROFILE=emqx-enterprise
+          DOCKER_IMAGE=${EMQX_ENTERPRISE_TAG}
+          for lang in en zh; do
+            CID=$(docker run -d -p $EMQX_API_PORT:18083 -e EMQX_dashboard__i18n_lang=${lang} "${DOCKER_IMAGE}")
+            SWAGGER_INPUT="/tmp/swagger-${edition}-${lang}.json"
+            TARGET_FILE="redocly/${edition}-${lang}.json"
+            # it takes some time for swagger to fully load
+            sleep 30
+            curl -o "${SWAGGER_INPUT}" http://127.0.0.1:$EMQX_API_PORT/api-docs/swagger.json
+            jq --indent 2 'del(.paths[] | .[] | select(.deprecated == true))' > "${TARGET_FILE}" < "${SWAGGER_INPUT}"
+            # replace docker ip 172.17.0.* with 127.0.0.1
+            sed -i 's/172\.17\.0\.\([0-9]\{1,3\}\)/127.0.0.1/g' "${TARGET_FILE}"
+            docker logs $CID
+            docker rm -f $CID
+            git add "${TARGET_FILE}"
+            cp "_build/docgen/${PROFILE}/schema-v2-${lang}.json" "hocon/hocon-${edition}-v${VERSION}-${lang}.json"
+            git add "hocon/hocon-${edition}-v${VERSION}-${lang}.json"
+            EMQX_API_PORT=$((EMQX_API_PORT + 1))
           done
 
           git commit -m "chore($VERSION): update api and cfg manual"
