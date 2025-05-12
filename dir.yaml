@@ -56,8 +56,8 @@
   path: deploy/install
   collapsed: true
   children:
-    - title_en: Install EMQX Enterprise
-      title_cn: 安装 EMQX 企业版
+    - title_en: Installation Guide
+      title_cn: 安装指南
       path: deploy/install-enterprise
       collapsed: true
       children:
@@ -594,7 +594,14 @@
       collapsed: true
       children:
         - extensions/hooks
-        - extensions/plugins
+        - title_en: Plugins
+          title_cn: 插件
+          collapsed: true
+          path: extensions/plugins
+          children:
+            - extensions/plugin-development
+            - extensions/plugin-example
+            - extensions/plugin-management
         # - extensions/lang-lua
         - extensions/exhook
     - title_en: Telemetry
