@@ -40,7 +40,7 @@ Opensource and Enterprise may have different content so they may release at diff
 ### Cut a New Release
 
 ```sh
-NEW_TAG="$(./cut-release.sh ee)"
+NEW_TAG="$(./cut-release.sh v5.9)"
 git push origin "${NEW_TAG}"
 ```
 
