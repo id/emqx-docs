@@ -15,7 +15,7 @@ Redis 认证器支持使用 [Redis hashes](https://redis.io/docs/manual/data-typ
 - `salt`: 可选，为空或不存在时视为空盐（`salt = ""`）
 - `is_superuser`: 可选，标记当前客户端是否为超级用户，默认为 `false`
 
-添加我们希望添加一位名用户名为 `emqx_u`、密码为 `public`、盐值为 `slat_foo123`、散列方式为 `sha256` 且超级用户标志为 `true` 的用户：
+例如，您希望添加一位名用户名为 `emqx_u`、密码为 `public`、盐值为 `salt_foo123`、散列方式为 `sha256` 且超级用户标志为 `true` 的用户：
 
 ```bash
 >redis-cli
@@ -32,7 +32,7 @@ Redis 认证器支持使用 [Redis hashes](https://redis.io/docs/manual/data-typ
 ::: tip
 `password_hash` 这一字段名称直观表明用户应当在数据库中存储散列密码。但鉴于 Redis 没有类似 MySQL 的 `as` 语法，我们保留了 4.x 对 `password` 的兼容。
 
-所以，我们也可以将 `cmd` 配置为 `HMGET mqtt_user:${username} password salt is_superuser`。
+所以，您也可以将 `cmd` 配置为 `HMGET mqtt_user:${username} password salt is_superuser`。
 :::
 
 ## 通过 Dashboard 配置
@@ -60,7 +60,7 @@ Redis 认证器支持使用 [Redis hashes](https://redis.io/docs/manual/data-typ
          - **加盐方式**：用于指定盐和密码的组合方式，可选值：`suffix`（在密码尾部加盐）、`prefix`（在密码头部加盐）、`disable`（不启用）。如果您不需要将用户凭据从外部存储迁移到 EMQX 内置数据库，可以保持默认值。
          - 生成的哈希值以十六进制字符串表示，并与存储的凭据进行不区分大小写的比对。
        - 选择 `plain`：
-         - **加盐值方式**：应设置为 `disable`。
+         - **加盐方式**：应设置为 `disable`。
        - 选择 `bcrypt` 算法，需配置:
          - **Salt Rounds**：指定散列需要的计算次数（2^Salt Rounds），也称成本因子。默认值：`10`，可选值：`5` 到 `10`；数值越高，加密的安全性越高，因此建议采用较大的值，但相应的用户验证的耗时也会增加，您可根据业务需求进行配置。
        - 选择 `pbkdf2` 算法，需配置：

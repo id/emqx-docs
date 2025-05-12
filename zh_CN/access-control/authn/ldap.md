@@ -24,13 +24,13 @@ EMQX 的 LDAP 集成包括两种不同的密码认证方式：
 
 ::: tip 注意
 
-本节内容仅适用于使用"本地密码比对"的认证方式。如果您使用的是 “LDAP 绑定验证“方式，请跳过。
+本节内容仅适用于使用"本地密码比对"的认证方式。如果您使用的是 “LDAP 绑定验证”方式，请跳过。
 
 :::
 
 本节介绍了如何配置 LDAP 数据结构、创建并存储认证数据以用于密码验证。
 
-LDAP 数据结构定义了在 LDAP 目录中组织和存储认证数据的结构和规则。LDAP 认证器支持几乎所任何 LDAP 数据结构。 以下是用于 [OpenLDAP](https://www.openldap.org/) 的数据结构示例：
+LDAP 数据结构定义了在 LDAP 目录中组织和存储认证数据的结构和规则。LDAP 认证器支持几乎任何 LDAP 数据结构。 以下是用于 [OpenLDAP](https://www.openldap.org/) 的数据结构示例：
 
 ```sql
 
@@ -99,7 +99,7 @@ isSuperuser: TRUE
 userPassword:: e01ENX15YnNQR29hSzNuRHlpUXZ2ZWlDT0l3PT0=
 ```
 
-编辑 LDAP 配置文件 `sladp.conf`，使其包含数据结构和 LDIF 文件。在启动 LDAP 服务器时将引用数据结构。下面是一个示例`sladp.conf` 文件：
+编辑 LDAP 配置文件 `slapd.conf`，使其包含数据结构和 LDIF 文件。在启动 LDAP 服务器时将引用数据结构。下面是一个示例`slapd.conf` 文件：
 
 ::: tip 提示
 
