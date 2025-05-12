@@ -63,12 +63,20 @@ jobs:
         echo "DOCS_BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
         echo "VERSION=${{ matrix.version }}" >> $GITHUB_ENV
 
+    - name: Generate GitHub App token
+      id: app-token
+      uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5 # v2.0.2
+      with:
+        app-id: ${{ vars.AUTH_APP_ID }}
+        private-key: ${{ secrets.AUTH_APP_PRIVATE_KEY }}
+        owner: ${{ github.repository_owner }}
+
     - name: clone frontend
       uses: actions/checkout@main
       with:
         repository: 'emqx/docs-emqx-com-frontend'
         ref: next
-        token: ${{ secrets.CI_GIT_TOKEN }}
+        token: ${{ steps.app-token.outputs.token }}
         path: frontend
 
     - name: use python
@@ -128,7 +136,7 @@ jobs:
       run: |
         echo "HOCON=true" >> $GITHUB_ENV
         cp -r docs-files/hocon/*.json frontend/docs/public/api/
-        hocon_products=(emqx enterprise)
+        hocon_products=(enterprise)
         for hocon_product in "${hocon_products[@]}"; do
           online_versions=$(curl -s https://docs.emqx.com/api/${hocon_product}_hocon_versions.json)
 
@@ -223,16 +231,6 @@ jobs:
 
     - name: update ee search index
       if: github.event_name == 'push' && matrix.docs_type == 'enterprise'
-      uses: Swilder-M/docsearch-scraper-simple@next
-      env:
-        APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID_CE }}
-        API_KEY: ${{ secrets.ALGOLIA_API_KEY_CE }}
-      with:
-        docs_type: ${{ env.DOCS_TYPE }}
-        docs_version: ${{ env.VERSION }}
-
-    - name: update ce search index
-      if: github.event_name == 'push' && matrix.docs_type == 'emqx'
       uses: Swilder-M/docsearch-scraper-simple@next
       env:
         APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID_CE }}
