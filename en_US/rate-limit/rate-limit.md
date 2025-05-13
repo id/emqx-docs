@@ -57,7 +57,7 @@ Limiters can also operate at the node level, limiting the speed of individual cl
 
 ### Configuring Node-Level Limiters
 
-You can configure rate limits for each listener on the **Management** -> **MQTT Configuration** page in the Dashboard.
+You can configure rate limits for each node on the **Management** -> **MQTT Configuration** page in the Dashboard.
 
 Alternatively, you can configure them through the configuration file. For example, you can configure the following in `emqx.conf`:
 
@@ -72,7 +72,7 @@ mqtt.limiter {
 }
 ```
 
-Zone level limiters can be embedded in the `zone` section as follows:
+Zone-level limiters can be embedded in the `zone` section as follows:
 
 ```bash
 zones.my_zone.mqtt {

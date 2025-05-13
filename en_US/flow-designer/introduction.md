@@ -49,7 +49,7 @@ Outputs the data sources and processing results to specific nodes and external d
 
 When a Flow is created, the system will randomly generate an ID for it. Click the edit icon next to the ID to modify the Flow's name and description.
 
-To delete a node in the Flow, hover over the node and click the delete icon in the upper right corner of the node. Click on a node to enter the editing mode, you can modify its configuration details and save the changes, then, click **Save** to save the entire Flow. Click the **Start Test** button to input simulated data or test the Flow with a real client to verify if it executes correctly.
+To delete a node in the Flow, hover over the node and click the delete icon in the upper right corner of the node. Click on a node to enter editing mode, you can modify its configuration details and save the changes, then click **Save** to save the entire Flow. Click the **Start Test** button to input simulated data or test the Flow with a real client to verify if it executes correctly.
 
 ## Advantages
 

@@ -1,6 +1,6 @@
 # Data Integration
 
-As an MQTT messaging platform, EMQX connects IoT devices through the MQTT protocol and transmits messages in real-time. Building on this, data integration in EMQX introduces connections to external data systems, thereby enabling seamless integration of devices with other business systems.
+EMQX is an MQTT messaging platform that connects IoT devices through the MQTT protocol and transmits messages in real-time. Building on this, data integration in EMQX introduces connections to external data systems, thereby enabling seamless integration of devices with other business systems.
 
 Data integration uses Sink and Source components to connect with external data systems. Sinks are used to send messages to external data systems, such as MySQL, Kafka, or HTTP services, while Sources are used for receiving messages from external data systems, including MQTT, Kafka, or GCP PubSub.
 
@@ -23,7 +23,7 @@ This page offers a comprehensive overview of Sinks and Sources, including their 
 
 ## How It Works
 
-EMQX data integration is an out-of-the-box feature. As an MQTT messaging platform, EMQX receives data from IoT devices via MQTT protocol. With the help of a built-in rule engine, the received data is processed by the rules configured in the rule engine. The rule will trigger an action of forwarding the processed data to the external data system through a configured Sink/Source. You can easily create a rule, attach an action to the rule, and create a Sink/Source using [Rules](./rule-get-started.md) or [Flow Designer](../flow-designer/introduction.md) on the Dashboard without any coding efforts.
+EMQX data integration is an out-of-the-box feature. As an MQTT messaging platform, EMQX receives data from IoT devices via the MQTT protocol. With the help of a built-in rule engine, the received data is processed by the rules configured in the rule engine. The rule will trigger an action of forwarding the processed data to the external data system through a configured Sink/Source. You can easily create a rule, attach an action to the rule, and create a Sink/Source using [Rules](./rule-get-started.md) or [Flow Designer](../flow-designer/introduction.md) on the Dashboard without any coding efforts.
 
 ### Built-in Rule Engine
 

@@ -4,7 +4,7 @@ This page provides a step-by-step guide to quickly get started with the File Tra
 
 ## Upload a File and Store It on Local Disk
 
-1. Start EMQX with file transfer feature enabled by setting the following configuration in the EMQX configuration file:
+1. Start EMQX with the file transfer feature enabled by setting the following configuration in the EMQX configuration file:
 
    ```bash
    file_transfer {

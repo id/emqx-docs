@@ -4,7 +4,7 @@ For an EMQX cluster, durable storage achieves high availability through multiple
 
 ## Initial Cluster Setup
 
-During the initial setup of the cluster, several configuration parameters influence how durable storage is established and data replication starts. These parameters cannot be changed in the runtime, and modifying them will not take any effect once the durable storage is initialized.
+During the initial setup of the cluster, several configuration parameters influence how durable storage is established and data replication starts. These parameters cannot be changed at runtime, and modifying them will not take any effect once the durable storage is initialized.
 
 ### Replication Factor
 

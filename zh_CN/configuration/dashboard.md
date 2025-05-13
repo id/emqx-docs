@@ -119,7 +119,7 @@ dashboard {
 
 - `password_expired_time`
 
-  设置用户用于登录 Dashboard 的密码的过期时间，比如 `1h`。超过此时间，用户在登录 Dashbaord 时必须修改密码。默认值 `0` 表示密码永不过期。
+  设置用户用于登录 Dashboard 的密码的过期时间，比如 `1h`。超过此时间，用户在登录 Dashboard 时必须修改密码。默认值 `0` 表示密码永不过期。
 
 - `cors`
 
@@ -152,6 +152,6 @@ dashboard {
 
 ::: tip
 
-EMQX 提供了更多配置项以更好地满足定制化需求。详情请参见 [EMQX 开源版配置手册](https://docs.emqx.com/zh/emqx/v@CE_VERSION@/hocon/)和 [EMQX 企业版配置手册](https://docs.emqx.com/zh/enterprise/v@EE_VERSION@/hocon/)。
+EMQX 提供了更多配置项以更好地满足定制化需求。详情请参见 [EMQX 企业版配置手册](https://docs.emqx.com/zh/enterprise/v@EE_VERSION@/hocon/)。
 
 :::

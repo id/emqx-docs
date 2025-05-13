@@ -18,7 +18,7 @@ EMQX Dashboard 的**系统**菜单包括**用户**、**API 密钥**、**License*
 目前，可以为用户设置以下两种预定义角色之一。您可以在创建用户时从**角色**下拉菜单中选择角色。
 + 管理员 
 
-    管理严拥有对 EMQX 所有功能和资源的完全管理访问权限，包括客户端管理、系统配置、API 密钥以及用户管理。
+    管理员拥有对 EMQX 所有功能和资源的完全管理访问权限，包括客户端管理、系统配置、API 密钥以及用户管理。
 
 + 查看者
 
@@ -57,7 +57,7 @@ EMQX Dashboard 的**系统**菜单包括**用户**、**API 密钥**、**License*
 
 点击左侧**系统设置**菜单下的 **License** 可以来到 License 页面。在该页面上可以查看当前 License 的基础信息，包括**签发对象**、 **License 使用情况**、**EMQX 版本信息**、**签发邮箱**、**签发时间**和**到期时间**。
 
-点击**更新 License** 可以上传 License Key。在 **License 设置**区域可以设置 License 连接配额使用量的高低水位线。更多关于 License 的内容，参考[EMQX 企业版 License](../deploy/license.md)。
+点击**更新 License** 可以上传 License Key。在 **License 设置**区域可以设置 License 连接配额使用量的高水位线和低水位线。更多关于 License 的内容，参考[EMQX 企业版 License](../deploy/license.md)。
 
 ## 单点登录
 

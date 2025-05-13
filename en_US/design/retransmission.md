@@ -74,7 +74,7 @@ QoS 2 requires the message to be delivered only once; so when it is implemented,
 #2 Sender  <---------------  Receiver
                PUBREL
 #3 Sender  --------------->  Receiver       (*)
-               PUBCOM
+               PUBCOMP
 #4 Sender  <---------------  Receiver
 ```
 

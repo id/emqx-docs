@@ -2,7 +2,7 @@
 
 EMQX 提供了基于 [Salted Challenge Response Authentication Mechanism（SCRAM）](https://doubleoctopus.com/security-wiki/protocol/salted-challenge-response-authentication-mechanism/)的增强认证功能，此认证器使用 EMQX 内置数据库来存储客户端凭证（*用户*）。
 
-SCRAM 认证是一种比密码认证更复杂的机制，它依赖与 MQTT 5.0 提供的增强认证机制，需要在连接期间交换额外的 MQTT 报文。同时由于 SCRAM 认证不依赖外部数据源，因此使用更加简单轻量。
+SCRAM 认证是一种比密码认证更复杂的机制，它依赖于 MQTT 5.0 提供的增强认证机制，需要在连接期间交换额外的 MQTT 报文。同时由于 SCRAM 认证不依赖外部数据源，因此使用更加简单轻量。
 
 ::: tip
 SCRAM 认证仅支持使用 MQTT v5.0 的连接。
@@ -14,7 +14,7 @@ SCRAM 认证仅支持使用 MQTT v5.0 的连接。
 
 2. 在**认证**页面，点击**创建**。
 
-3. 依次选择**认证方式**为 **SCRAM**，**数据源**为 **Built-in Database**，点击**下一步**进入**配置参数**步骤：
+3. 依次选择**认证方式**为 **SCRAM**，**数据源**为**内置数据库**，点击**下一步**进入**配置参数**步骤：
 
    <img src="./assets/authn-scram.png" alt="SCRAM" style="zoom:67%;" />
 

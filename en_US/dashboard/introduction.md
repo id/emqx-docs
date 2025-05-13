@@ -34,7 +34,7 @@ Manage and configure topic rewriting, automatic subscription, delayed publishing
 
 #### Extensions
 
-Custom plugin integration to extend connection protocols through built-in gateway management and configuration. Also, use Hooks to modify or extend system functionality by intercepting function calls, message passing and event passing between modules.
+Custom plugin integration to extend connection protocols through built-in gateway management and configuration. Also, use Hooks to modify or extend system functionality by intercepting function calls, message passing, and event passing between modules.
 
 ### Problem Analysis and Diagnostics
 

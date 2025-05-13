@@ -57,7 +57,7 @@ listeners.tcp.default {
 
 ### 配置节点级别限制器
 
-您可以在 Dashboard 的**管理** -> **MQTT 配置**页面中，为每个监听器设置速率限制。
+您可以在 Dashboard 的**管理** -> **MQTT 配置**页面中，为一个 EMQX 节点设置速率限制。
 
 也可以通过配置文件设置，例如，可以在 emqx.conf 中按以下进行配置：
 

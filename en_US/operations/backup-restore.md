@@ -2,7 +2,7 @@
 
 EMQX adopts a distributed storage schema and also introduces a cluster transfer feature to ensure the system's high availability.
 
-This page discusses how to backup your operating data and configuration files to prevent data losses in case of system malfunctions.
+This page discusses how to back up your operating data and configuration files to prevent data loss in case of system malfunctions.
 
 ## Function Description
 
@@ -28,11 +28,11 @@ The data that EMQX supports for import and export includes:
   - Blacklist data
   - Retained messages
 - SSL/TLS certificates stored in the EMQX data directory (`node.data_dir`)
-- Authorization acl.conf file stored in the EMQX data directory
+- Authorization `acl.conf` file stored in the EMQX data directory
 
 ::: tip Special Note
 
-1. The exported file only includes SSL/TLS certificates and acl.conf file stored in the EMQX data directory. If there are any certificates or acl.conf files located outside the data directory, manually copy them to the appropriate locations before importing data to ensure completeness and correctness.
+1. The exported file only includes SSL/TLS certificates and the `acl.conf` file stored in the EMQX data directory. If there are any certificates or acl.conf files located outside the data directory, manually copy them to the appropriate locations before importing data to ensure completeness and correctness.
 2. The exported file name format is `emqx-export-YYYY-MM-DD-HH-mm-ss.sss.tar.gz`, and the export directory is `<EMQX data directory>/backup`.
 3. Starting from EMQX v5.7.1, even if the storage method of retained messages is configured as ram (memory), it will also be backed up.
 
@@ -89,7 +89,7 @@ This section explains how to perform data import and export operations on the Da
 
 ## CLI Example
 
-This section shows how to import and export data using the command Line Interface.
+This section shows how to import and export data using the command-line interface.
 
 1. Export data. The file name format of the exported file is `emqx-export-YYYY-MM-DD-HH-mm-ss.sss.tar.gz`, and the export directory is `<EMQX data directory>/backup`:
 

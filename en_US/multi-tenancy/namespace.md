@@ -43,7 +43,7 @@ There are two methods for creating namespaces: explicit creation and automatic c
 2. **Automatic Namespace Creation via EMQX Extracting `client_attrs.tns`**
    When clients connect, EMQX can automatically create namespaces based on the client’s `client_attrs.tns` attribute. This method is usually used in scenarios where manual namespace creation is not necessary and is suitable for large-scale automated deployments.
 
-   **Use Case**: This approach works best for environments where clients connect are trusted, and each tenant or client requires an automatically generated, independent namespace.
+   **Use Case**: This approach works best for environments where client connections are trusted, and each tenant or client requires an automatically generated, independent namespace.
 
    ::: tip Note
 

@@ -87,12 +87,12 @@ curl -X 'POST' \
       {
         "action": "publish",
         "permission": "allow",
-        "topic": "test/toopic/1"
+        "topic": "test/topic/1"
       },
       {
         "action": "subscribe",
         "permission": "allow",
-        "topic": "test/toopic/2"
+        "topic": "test/topic/2"
       },
       {
         "action": "all",
@@ -110,5 +110,4 @@ Each rule contains:
 * `topic`: Configure the corresponding to this rule, supporting [topic placeholders](./authz.md#topic-placeholders).
 * `qos`: (Optional) A number array used to specify the QoS levels that the rule applies to, e.g. `[0, 1]`, `[1, 2]`. The default is all QoS levels.
 * `retain`: (Optional) Used to specify whether the current rule supports retained messages. Value options are `true`, `false`. Default is to allow retained messages.
-
 

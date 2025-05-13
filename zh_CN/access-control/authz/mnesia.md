@@ -8,7 +8,7 @@ EMQX 通过内置数据库为用户提供了一种低成本、开箱即用的授
 
 ## 通过 Dashboard 配置
 
-在 [EMQX Dashboard](http://127.0.0.1:18083/#/authentication) 页面，点击左侧导航栏的 **访问控制** -> **授权**，在 **授权** 页面，添加 **Built-in Database** 作为 **数据源**， 点击**下一步**进入**配置参数**页签。由于无需配置其他参数，可直接点击 **创建** 完成配置。
+在 [EMQX Dashboard](http://127.0.0.1:18083/#/authentication) 页面，点击左侧导航栏的 **访问控制** -> **授权**，在 **授权** 页面，添加 **内置数据库** 作为 **数据源**， 点击**下一步**进入**配置参数**页签。由于无需配置其他参数，可直接点击 **创建** 完成配置。
 
 ## 通过配置文件配置
 
@@ -36,7 +36,7 @@ EMQX 通过内置数据库为用户提供了一种低成本、开箱即用的授
 
 ### 通过 Dashboard 配置
 
-在 Dashboard 的 **授权** 页面，点击 **Built-in Database** 数据源对应的 **操作 **栏下的 **权限管理**，即可进行授权检查规则的配置。
+在 Dashboard 的 **授权** 页面，点击 **内置数据库** 数据源对应的 **操作** 栏下的 **权限管理**，即可进行授权检查规则的配置。
 
 您可根据需要从客户端 ID、用户名或直接从主题角度设置授权检查。
 
@@ -54,7 +54,7 @@ EMQX 支持针对单个客户端或用户配置多条授权检查规则，您可
 
 ### 通过 API 配置
 
-您可通过 API 传入以及管理授权规则：
+您可通过 API 创建以及管理授权规则：
 
 - 指定适用此条规则的客户端：
   - `/api/v5/authorization/sources/built_in_database/clientid`
@@ -78,12 +78,12 @@ curl -X 'POST' \
       {
         "action": "publish",
         "permission": "allow",
-        "topic": "test/toopic/1"
+        "topic": "test/topic/1"
       },
       {
         "action": "subscribe",
         "permission": "allow",
-        "topic": "test/toopic/2"
+        "topic": "test/topic/2"
       },
       {
         "action": "all",

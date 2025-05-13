@@ -81,7 +81,7 @@
     ],
     "sub": [
       "testsub1/${username}",
-      "testsub2/${clientid}"
+      "testsub2/${clientid}",
       "testsub2/#"
     ],
     "all": [

@@ -98,7 +98,7 @@ In addition to the default settings, EMQX provides a variety of configuration op
 
 - **Notification Message Type**: Set the type of CoAP messages to be delivered, default: `qos`; optional values: 
 
-  - **qos**: Whether the CoAP notification needs to be acknowledged depends on the QoS level of the received message, 
+  - **qos**: Whether the CoAP notification needs to be acknowledged depends on the QoS level of the received message. 
     - QoS 0, no acknowledgment is required from the client, 
     - QoS 1/2, acknowledgment is required from the client. 
   - **con**: The CoAP notification should be acknowledged by the client. 
@@ -174,7 +174,7 @@ Click **Create Authentication**, choose **Password-Based** or **JWT** as the **M
 
 For a detailed explanation of how to configure the authenticators, you may refer to the pages listed at the beginning of this section. 
 
-Besides the Dashboard, you can also use HTTP API to configure the authenticator, for example, to create a built-in database authentication for CoAP gateway, you can use the code below:
+Besides the Dashboard, you can also use HTTP API to configure the authenticator. For example, to create a built-in database authentication for CoAP gateway, you can use the code below:
 
 ```bash
 curl -X 'POST' \
@@ -219,6 +219,7 @@ verify the `clientid`, `username`, and `password` provided by this request to pr
 - Payload: empty
 
 **Response:**
+
 - Return Code:
   - `2.01`: Connection created successfully. The token string for this connection will be returned in the message body.
   - `4.00`: Bad request. Detailed error information will be returned in the message body.
@@ -242,7 +243,7 @@ After the connection is successfully created, you can use Dashboard, HTTP API or
 :::
 
 
-### Close Connnection
+### Close Connection
 
 Only available in `Connection Mode`.
 
@@ -252,7 +253,7 @@ This interface is used to close the CoAP connection.
 - Method: `DELETE`
 - URI: `mqtt/connection{?QueryString*}`, the `QueryString` is:
   - `clientid`: required parameter, UTF-8 string. The gateway uses this string as a unique identifier for the connection
-  - `token`: required parameter, Using the token string returned by Create Connection request
+  - `token`: required parameter, using the token string returned by the "Create Connection" request
 - Payload: empty
 
 **Response:**
@@ -279,7 +280,7 @@ This interface is used to maintain the connection between the CoAP client and th
 - Method: `PUT`
 - URI: `mqtt/connection{?QueryString*}`, the `QueryString` is:
   - `clientid`: required parameter, UTF-8 string. The gateway uses this string as a unique identifier for the connection
-  - `token`: required parameter, Using the token string returned by Create Connection request
+  - `token`: required parameter, using the token string returned by the "Create Connection" request
 - Payload: empty
 
 **Response:**
@@ -319,6 +320,7 @@ This interface is used by the CoAP client to send messages to the specified topi
 - Payload: Message payload
 
 **Response:**
+
 - Return Code:
   - `2.04`: Publish successfully
   - `4.00`: Bad request. Detailed error information will be returned in the message body.

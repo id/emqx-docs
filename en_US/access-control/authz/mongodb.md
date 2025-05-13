@@ -12,7 +12,7 @@ Knowledge about [basic EMQX authorization concepts](./authz.md)
 
 MongoDB authorizer supports storing authorization rules as MongoDB documents. Users need to provide a query template to make sure that the result contains the following fields:
 
-* `permission` value specifies the applied action if the rule matches. Should be one of `deny` or `allow`.
+* `permission` value specifies the applied action if the rule matches. It should be one of `deny` or `allow`.
 * `action` value specifies the request for which the rule is relevant. Should be one of `publish`, `subscribe`, or `all`.
 * `topic` value specifies the topic filter for topics relevant to the rule. Should be a string that supports wildcards and [topic placeholders](./authz.md#topic-placeholders).
 * `qos` (Optional) value specifies the QoS levels that the current rule applies to. Value options are `0`, `1`, `2`. It can also be a number array to specify multiple QoS levels. The default is all QoS levels.

@@ -10,7 +10,7 @@ The following table lists the alarms that can be triggered to indicate potential
 
 ::: tip
 
-Depending on the severance and impacts on the system, alarms can have 3 levels:
+Depending on the severity and impacts on the system, alarms can have 3 levels:
 
 - **Error**: Errors caused by user presets. The client can perceive the error and retry.
 
@@ -65,7 +65,7 @@ Taking the alarm of high system memory usage as an example, you will receive an 
 
 <img src="./assets/alarm_activate_msg.png" alt="alarm massage" style="zoom:50%;" />
 
-One system multifunction will be repeatedly reported. That is, if one alarm on high CPU usage is activated, the system will not generate another alarm of the same type. The generated alarm will be automatically deactivated when the monitored metric returns to normal, or you can manually deactivate the alarm.
+Alarms will not be repeatedly reported. That is, if one alarm on high CPU usage is activated, the system will not generate another alarm of the same type. The generated alarm will be automatically deactivated when the monitored metric returns to normal, or you can manually deactivate the alarm.
 
 ### Get Alarms from Log
 
