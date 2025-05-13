@@ -776,9 +776,9 @@ Observe 命令的消息体格式应该为：
 
 ## 用户层接口
 
-- 详细配置说明参考：[网关配置 - LwM2M 网关（企业版）](https://docs.emqx.com/zh/enterprise/v@EE_VERSION@/hocon/)
+- 详细配置说明参考：[网关配置 - LwM2M 网关](https://docs.emqx.com/zh/enterprise/v@EE_VERSION@/hocon/)
 
-- 详细 HTTP API 接口参考：[HTTP API - 网关（企业版）](https://docs.emqx.com/zh/enterprise/v@EE_MINOR_VERSION@/admin/api-docs)
+- 详细 HTTP API 接口参考：[HTTP API - 网关](https://docs.emqx.com/zh/enterprise/v@EE_MINOR_VERSION@/admin/api-docs)
 
 ## 客户端库
 

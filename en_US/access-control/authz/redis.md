@@ -104,7 +104,6 @@ Sample configuration:
     cmd = "HGETALL mqtt_user:${username}"
     database = 1
     password = public
-    server = "127.0.0.1:6379"
 
 }
 ```

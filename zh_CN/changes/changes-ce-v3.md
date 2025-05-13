@@ -94,7 +94,7 @@ Github Commit: [emqx/emqx-web-hook#3dd041](https://github.com/emqx/emqx-web-hook
 
 *发布日期: 2019-10-28*
 
-EMQX 3.2.4 版本发布。此版本主要为 Dashbaord 和 REST API 添加了 IPv6 支持，并修复了一些错误。
+EMQX 3.2.4 版本发布。此版本主要为 Dashboard 和 REST API 添加了 IPv6 支持，并修复了一些错误。
 
 错误修复:
 
@@ -118,7 +118,7 @@ Github Issue: [emqx/emqx#2937](https://github.com/emqx/emqx/issues/2937)
 
 功能增强:
 
-- 支持使用 IPv6 访问 Dashbaord
+- 支持使用 IPv6 访问 Dashboard
 
 Github PR: [emqx/emqx-dashboard#161](https://github.com/emqx/emqx-dashboard/pull/161)
 

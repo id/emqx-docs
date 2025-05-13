@@ -3,10 +3,10 @@
 The Diagnose module provides some debugging tools to help users debug and locate errors and issues in usage.
 
 - **Alarms**: View current and historical alarms for the system.
-- **WebSocket Client**: Use the WebSocket client on the page for quick connection, and publish subscription debugging.
-- **Topic Monitoring**: Monitor and view message incoming, outgoing and dropped data based on topics.
+- **WebSocket Client**: Use the WebSocket client on the page for quick connection and publish-subscribe debugging.
+- **Topic Monitoring**: Monitor and view message incoming, outgoing, and dropped data based on topics.
 - **Slow Subscriptions**: Enable slow subscription statistics to view subscriptions on the page that consume more than a set threshold of time for the entire flow of message transmission based on client ID.
-- **Log Trace**: Real-time filtering of logs for a specific client, Topic or IP, which can be viewed or downloaded on the page.
+- **Log Trace**: Real-time filtering of logs for a specific client, Topic, or IP, which can be viewed or downloaded on the page.
 
 ## Alarms
 
@@ -20,7 +20,7 @@ Information on currently supported alarms and more details can be found in [alar
 
 ## WebSocket Client
 
-Click on **WebSocket Client** under the **Diagnose** menu on the left to go to the WebSocket Client page. The WebSocket Client page provides a simple but effective MQTT testing tool that includes connect, subscribe and publish functionality for quick debugging of the client's connect, publish and subscribe functionality, as well as the ability to view your own sent and received message data. Multiple WebSocket connections can be added by clicking the `+` button at the top of the page; the connection status and sent and received data for all connections will be cleared when the page is refreshed.
+Click on **WebSocket Client** under the **Diagnose** menu on the left to go to the WebSocket Client page. The WebSocket Client page provides a simple but effective MQTT testing tool that includes connect, subscribe, and publish functionality for quick debugging of the client's connect, publish, and subscribe functionality, as well as the ability to view your own sent and received message data. Multiple WebSocket connections can be added by clicking the `+` button at the top of the page; the connection status and sent and received data for all connections will be cleared when the page is refreshed.
 
 <img src="./assets/web-socket.png" alt="image" style="zoom:67%;" />
 

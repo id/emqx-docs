@@ -29,12 +29,12 @@ Currently, either of the following two predefined roles can be set for a user. Y
 
 On the API Keys page, you can generate an API key and secret key for accessing the [HTTP API](../admin/api.md) by following the steps below.
 
-1. Click the **+ Create** button on the top right corner of the page to bring up the Create API Key pop-up dialog. 
+1. Click the **+ Create** button in the top right corner of the page to bring up the Create API Key pop-up dialog. 
 
 2. On the Create API Key dialog, configure the detailed information for the API key. 
 
    - The API key will never expire if the Expire At box is left empty.
-   - Select a role for API key (optional). For more information about roles, see [Roles and Permissions](../admin/api.md#roles-and-permissions).
+   - Select a role for the API key (optional). For more information about roles, see [Roles and Permissions](../admin/api.md#roles-and-permissions).
 
 3. Click the **Confirm** button, and the API key and secret Key are created and displayed in the **Created Successfully** dialog. 
 
@@ -60,7 +60,7 @@ Click **Update License** to upload your License Key. In the **License Settings**
 
 ## Settings
 
-The Settings can be accessed by clicking the setting icon on the top right corner of the page. You can change the language and theme color of the Dashboard, the theme color can be selected if you want to synchronize the OS theme, if this is enabled, the Dashboard theme will be automatically synchronized with the user's OS theme and cannot be selected manually. 
+The Settings can be accessed by clicking the settings icon in the top right corner of the page. You can change the language and theme color of the Dashboard. The theme color can be selected if you want to synchronize the OS theme. If this is enabled, the Dashboard theme will be automatically synchronized with the user's OS theme and cannot be selected manually. 
 
 <img src="./assets/settings_ee.png" alt="settings_ee" style="zoom:67%;" />
 

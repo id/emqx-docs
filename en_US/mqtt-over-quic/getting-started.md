@@ -27,7 +27,7 @@ For more information on running EMQX via Docker container, see [Deploy with Dock
 
 ## Enable MQTT over QUIC
 
-MQTT over QUIC is disabled by default, you need to enable this listener with the following steps manually:
+MQTT over QUIC is disabled by default, you need to manually enable this listener with the following steps:
 
 1. Open the configuration file `etc/base.hocon`, add the following configuration:
 
@@ -75,13 +75,13 @@ Besides the client library, EMQ provides MQTT over QUIC bridging with the edge c
 
 As QUIC is based on the UDP protocol, many operators still have special routing strategies for UDP packets, often leading to QUIC connection failures or packet losses.
 
-Therefore, MQTT over QUIC clients are designed with the fallback feature: the API layer can use unified operations to write services, and the transport layer can switch in real time according to network conditions. When QUIC is unavailable, it automatically switches to TCP/TLS 1.2 to ensure services under various network environments.
+Therefore, MQTT over QUIC clients are designed with a fallback feature: the API layer can use unified operations to write services, and the transport layer can switch in real time according to network conditions. When QUIC is unavailable, it automatically switches to TCP/TLS 1.2 to ensure services under various network environments.
 
 ## Example 1: MQTT over QUIC Through NanoSDK
 
-[NanoSDK](https://github.com/nanomq/NanoSDK/) is based on MsQuic, and it is the first Software Development Kit (SDK) to implement MQTT over QUIC in C language, which is seamlessly compatible with EMQX 5.0. It adopts a fully asynchronous IO design, binds the QUIC Stream and MQTT connection mapping, realizes the built-in function of 0 RTT fast handshake reconnection, and supports multi-core task parallelism.
+[NanoSDK](https://github.com/nanomq/NanoSDK/) is based on MsQuic, and it is the first Software Development Kit (SDK) to implement MQTT over QUIC in the C language, which is seamlessly compatible with EMQX 5.0. It adopts a fully asynchronous IO design, binds the QUIC Stream and MQTT connection mapping, realizes the built-in function of 0 RTT fast handshake reconnection, and supports multi-core task parallelism.
 
-NanoSDK API works similarly to MQTT over TCP, you can create the MQTT client based on QUIC with one command line:
+NanoSDK API works similarly to MQTT over TCP. You can create the MQTT client based on QUIC with one command line:
 
 ```bash
 ## Create MQTT over Quic client with NanoSDK

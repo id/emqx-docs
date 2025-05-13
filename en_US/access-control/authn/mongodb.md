@@ -16,7 +16,7 @@ EMQX MongoDB authenticator supports storing authentication data as MongoDB docum
 - `salt`: optional; `salt = ""` or just remove this field to indicate no salt value will be added; this field supports renaming;
 - `is_superuser`: optional; flag if the current client is a superuser; default: `false`; this field supports renaming.
 
-For example, if we want to add a document for a superuser (`is_superuser`: `true`) with username `user123`, password `secret`, suffixed salt `slat_foo123`, and password hash `sha256`, the query statement should be:
+For example, if we want to add a document for a superuser (`is_superuser`: `true`) with username `user123`, password `secret`, suffixed salt `salt_foo123`, and password hash `sha256`, the query statement should be:
 
 ```
 > db.mqtt_user.insertOne(

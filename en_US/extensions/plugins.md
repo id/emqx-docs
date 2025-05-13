@@ -2,7 +2,7 @@
 
 EMQX plugins allow users to extend core functionality or integrate custom logic into the broker using Erlang. This system is ideal for implementing features such as custom authentication, authorization, logging, metrics, or protocol translation.
 
-This section introduces what plugins are, and how they are developed, customized, and managed.
+This section introduces what plugins are and how they are developed, customized, and managed.
 
 ## What is a Plugin?
 
@@ -27,7 +27,7 @@ Upon startup, a plugin typically registers some of its functions as EMQX *callba
 1. Develop the plugin using the official [plugin template](https://github.com/emqx/emqx-plugin-template).
 2. Customize its logic to suit your use case (e.g., implement authentication).
 3. Build and package the plugin into a `.tar.gz` file using `make rel`.
-4. Install and start the plugin in EMQX using Dashboard, CLI or API.
+4. Install and start the plugin in EMQX using Dashboard, CLI, or API.
 5. Update configuration or stop/uninstall as needed.
 
 ## Learn More

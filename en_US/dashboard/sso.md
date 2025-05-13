@@ -8,7 +8,7 @@ EMQX implements SSO functionality based on Lightweight Directory Access Protocol
 
 EMQX Dashboard allows you to integrate LDAP for SSO. LDAP is an application-layer protocol to access and maintain distributed directory information services. It is a common authentication and authorization protocol for SSO solutions in enterprise environments.
 
-EMQX sends user LDAP credentials to the directory server for validation when using LDAP SSO. Upon successful validation, it creates user session information and logs the user into the Dashboard.
+EMQX sends the user's LDAP credentials to the directory server for validation when using LDAP SSO. Upon successful validation, it creates user session information and logs the user into the Dashboard.
 
 ## SAML-Based SSO
 
@@ -21,7 +21,7 @@ With SAML SSO, users only need to authenticate themselves once with the Identity
 1. Administrators configure and enable SSO in the Dashboard. Once configured, the EMQX Dashboard displays an SSO entry point on the login page.
 2. User information is configured on the Identity Provider (IdP) side.
 3. Users are guided to choose different Single Sign-On methods on the Dashboard login page.
-4. After successful login, EMQX Dashboard creates a session based on user information, allowing users to access the Dashboard.
+4. After a successful login, EMQX Dashboard creates a session based on user information, allowing users to access the Dashboard.
 5. Administrators assign roles and permissions to different users. Users can access corresponding resources after refreshing their login.
 
 ## Configuration Examples

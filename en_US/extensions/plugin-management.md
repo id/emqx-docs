@@ -14,7 +14,7 @@ An EMQX plugin goes through three main lifecycle states:
 
 The installation process is as follows:
 
-1. The plugin package (the tarball created by the `make rel` command) is uploaded via the Dashboard, API or CLI. For detailed installation steps, see [Install and Manage Plugins](#install-and-manage-plugins).
+1. The plugin package (the tarball created by the `make rel` command) is uploaded via the Dashboard, API, or CLI. For detailed installation steps, see [Install and Manage Plugins](#install-and-manage-plugins).
 2. The plugin package is transferred to each node of the EMQX cluster.
 3. On each node:
    - The tarball is saved in the `plugins` subdirectory in the EMQX root directory (this may be overridden by the `plugins.install_dir` option): `$EMQX_ROOT/plugins/my_emqx_plugin-1.0.0.tar.gz`.
@@ -195,7 +195,7 @@ Suppose your plugin is already built and the tarball `my_emqx_plugin-1.0.0.tar.g
    $ curl -u $KEY:$SECRET -X POST http://$EMQX_HOST:18083/api/v5/plugins/install -H "Content-Type: multipart/form-data" -F "plugin=@my_emqx_plugin-1.0.0.tar.gz"
    ```
 
-3. Check plugin list. To verify if the plugin has been installed successfully, run:
+3. Check the plugin list. To verify if the plugin has been installed successfully, run:
 
    ```
    $ curl -u $KEY:$SECRET http://$EMQX_HOST:18083/api/v5/plugins | jq

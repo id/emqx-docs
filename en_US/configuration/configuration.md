@@ -43,8 +43,7 @@ While the [Schema](#schema) section provides a detailed reference, configuration
 
 Starting from EMQX 5.8.4, there is a base configuration file named `base.hocon` in the `etc` directory. This file contains default settings that can be overridden by higher-level configuration files at runtime.
 
-For example, you may want to start the deployment with a basic authentication configuration,
-and then override it with a more complex configuration at runtime from the Dashboard UI.
+For example, you may want to start the deployment with a basic authentication configuration, and then override it with a more complex configuration at runtime from the Dashboard UI.
 
 For immutable configurations such as `node` and `cluster` configs, it is **NOT** recommended to set them in the `base.hocon` file. See the [Immutable Configurations File](#immutable-configuration-file) for more details.
 
@@ -55,7 +54,7 @@ The `base.hocon` file is not synchronized across the cluster and only applies to
 ## Configuration Rewrite File
 
 In `data/configs` directory, the `cluster.hocon` file contains configuration items for the entire cluster.
-Configuration changes made from Dashboard, REST API, and CLI will be persisted to this file.
+Configuration changes made from the Dashboard, REST API, and CLI will be persisted to this file.
 
 If a node in the cluster is restarted or if new nodes are added, the node will automatically copy and apply the `cluster.hocon` file from another node in the cluster. For this reason, it is not recommended to modify the file manually.
 
@@ -65,7 +64,7 @@ Since EMQX version 5.1, any changes to the cluster configuration will trigger a 
 
 ## Immutable Configuration File
 
-For backward compatibility, the `emqx.conf` file remains the primary configuration file for critical system settings, including `node` and `cluster` configurations. This file has a higher priority than both `base.hocon` and `cluster.hocon`, but a lower priority than environment variables.
+For backward compatibility, the `emqx.conf` file remains the primary configuration file for critical system settings, including `node` and `cluster` configurations. This file has a higher priority than both `base.hocon` and `cluster.hocon`, but with a lower priority than environment variables.
 
 For more details on configuration overrides, refer to the [Config Override Rules](#config-override-rules) section.
 
@@ -111,7 +110,7 @@ node.cluster_call.retry_interval = "1m"
 
 This cuttlefish-like flattening format is backward compatible with the previous EMQX versions, but it is used differently:
 
-HOCON recommends adding quotes at both ends of the string. Strings without special characters can also be unquoted, for example `foo`, `foo_bar`, while cuttlefish regards all characters to the right of `=` as values.
+HOCON recommends adding quotes at both ends of the string. Strings without special characters can also be unquoted, for example, `foo`, `foo_bar`, while cuttlefish regards all characters to the right of `=` as values.
 
 For more information about HOCON syntax, please refer to [HOCON Documentation](https://github.com/lightbend/config/blob/main/HOCON.md).
 
@@ -130,9 +129,9 @@ node {
 
 Configuration items and environment variables can be converted by the following rules:
 
-1. Since the `.` separator in the configuration file cannot be used in environment variables, EMQX uses double underscores `__` as the configuration separator;
-2. To distinguish the converted configuration items from other environment variables, EMQX also adds a prefix `EMQX_` to the environment variable;
-3. The value of the environment variable is parsed according to the HOCON value, making it possible to use the environment variable to pass the value of complex data types, but please note that special characters such as `：` and `=` need to be wrapped in double quotes `"`.
+1. Since the `.` separator in the configuration file cannot be used in environment variables. EMQX uses double underscores `__` as the configuration separator.
+2. To distinguish the converted configuration items from other environment variables, EMQX also adds a prefix `EMQX_` to the environment variable.
+3. The value of the environment variable is parsed according to the HOCON value, making it possible to use the environment variable to pass the value of complex data types, but please note that special characters such as `:` and `=` need to be wrapped in double quotes `"`.
 
 Conversion example:
 
@@ -161,7 +160,7 @@ listeners.ssl.default {
 
 EMQX will ignore undefined root paths, for example, `EMQX_UNKNOWN_ROOT__FOOBAR` , because `UNKNOWN_ROOT` is not a pre-defined root path.
 
-When a known root path is set with an unknown field name, EMQX will output a `warning` log at startup, for example, when `enable` is incorrectly configured as `enabled`, it will output:
+When a known root path is set with an unknown field name, EMQX will output a `warning` log at startup. For example, when `enable` is incorrectly configured as `enabled`, it will output:
 
 ```bash
 [warning] unknown_env_vars: ["EMQX_AUTHENTICATION__ENABLED"]

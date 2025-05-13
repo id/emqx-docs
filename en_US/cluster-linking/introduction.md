@@ -41,7 +41,7 @@ Cluster Linking shares some functionalities with MQTT Bridge. Below is a compari
 
 This section describes the Cluster Linking workflow in two different scenarios.
 
-### Replicate Messages from Remote cluster to Local Cluster
+### Replicate Messages from Remote Cluster to Local Cluster
 
 In this scenario, Cluster A acts as the local cluster and Cluster B as the remote cluster. Cluster A needs to replicate topics `t/#` and `c/1` from Cluster B.
 
@@ -67,7 +67,7 @@ In this scenario, Cluster A acts as the local cluster and Cluster B as the remot
    - Messages are pushed from Cluster B to Cluster A.
 7. **Unsubscription:**
    - Clients in Cluster A unsubscribe from topics.
-   - Delete route information push from Cluster A to Cluster B.
+   - Delete the route information push from Cluster A to Cluster B.
 8. **Completion:** The configuration process is complete.
 
 ### Migrate Old Cluster to New Cluster

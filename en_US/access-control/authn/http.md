@@ -1,6 +1,6 @@
 # Use HTTP Service
 
-EMQX supports using external HTTP service for password authentication. After enabling, when a client initiates a connect request, EMQX will use the received information to construct an HTTP request and determine whether to accept the request based on the query result, achieving a complex authentication logic.
+EMQX supports using an external HTTP service for password authentication. After enabling, when a client initiates a connect request, EMQX will use the received information to construct an HTTP request and determine whether to accept the request based on the query result, achieving a complex authentication logic.
 
 ::: tip Prerequisite
 
@@ -13,7 +13,7 @@ Knowledge about [basic EMQX authentication concepts](../authn/authn.md)
 The authentication process is similar to an HTTP API call where EMQX, as the requesting client, constructs and initiates a request to the HTTP service in the format required by the "API", and the HTTP service returns the result as required by the "client".
 
 - The response encoding format `content-type` must be `application/json`.
-- The authentication result is marked by `result` in the body, option value: `allow`, `deny`, `ignore`.
+- The authentication result is marked by `result` in the body, with option value: `allow`, `deny`, `ignore`.
 - Superuser is marked by `is_superuser` in the body, option value: `true`, `false`.
 - Starting from EMQX v5.7.0, you can set [client attributes](../../client-attributes/client-attributes.md) using the optional `client_attrs` field. Note that both keys and values must be strings.
 - Starting from EMQX v5.8.0, you can set an optional `acl` field in the response body to specify the client's permissions. See [Access Control List (ACL)](./acl.md) for more information.
