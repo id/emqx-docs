@@ -135,11 +135,11 @@ node.max_ports = 2097152
 
 ## EMQX Tuning
 
-- Listener acceptor
+### Listener Acceptor
 
-Tune the acceptor pool size and `max_connections` limit in `etc/emqx.conf`.
+To optimize connection handling, you can adjust the acceptor pool size and the `max_connections` limit in the `etc/emqx.conf` configuration file.
 
-For example, for TCP listeners:
+For example, to configure TCP listeners:
 
 ```bash
 ## TCP Listener
@@ -147,18 +147,22 @@ listeners.tcp.$name.acceptors = 64
 listeners.tcp.$name.max_connections = 1024000
 ```
 
-- Distribution port buffer size
+`acceptors`: The number of acceptor processes handling incoming connections.
 
-For a large cluster which has many replicant nodes, it is suggested to tune `node.dist_buffer_size` on the core nodes.
+`max_connections`: The maximum number of concurrent connections allowed.
 
-```
-# size in KB, below is max 2GB 
+### Distribution Port Buffer Size
+
+In large clusters with many replicant nodes, it is suggested to tune the distribution port buffer size by setting the `node.dist_buffer_size` parameter on core nodes.
+
+```bash
+# Buffer size in KB. The following sets the maximum to approximately 2 GB.
 node.dist_buffer_size=2097151
 ```
 
-This could help core nodes to handle peak traffic of massive clients reconnects.
+This adjustment helps core nodes better handle traffic spikes caused by mass client reconnections.
 
-It also helps if you see warning log messages like:
+Additionally, if you observe warning log messages like the following, increasing this buffer size can mitigate the issue:
 
 ```
 [warning] msg: busy_dist_port ...
