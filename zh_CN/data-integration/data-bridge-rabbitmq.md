@@ -1,11 +1,5 @@
 # 将 MQTT 数据传输到 RabbitMQ
 
-::: tip
-
-RabbitMQ 数据集成是 EMQX 企业版功能。
-
-:::
-
 作为一款广泛使用的开源消息代理，[RabbitMQ](https://www.rabbitmq.com/) 应用了高级消息队列协议（AMQP），为分布式系统之间的消息传递提供了一个强大而可扩展的平台。EMQX 支持与 RabbitMQ 的数据集成，能够让您将 MQTT 消息和事件转发至 RabbitMQ，还能够实现从 RabbitMQ Server 中消费数据，并发布到 EMQX 特定主题中，实现 RabbitMQ 到 MQTT 的消息下发。
 
 本页面提供了 EMQX 与 RabbitMQ 数据集成的全面介绍，并提供了创建规则和 Sink/Source 的实用指导。
@@ -67,7 +61,7 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
    - **Password**: `guest`
 2. 点击顶部菜单栏中的 **Exchanges** 页签，展开 **Add a new exchange** 并输入以下信息：
    * **Name**: 输入 `test_exchange`
-   * **Type**: 从下拉列表中选择 `direct` 
+   * **Type**: 从下拉列表中选择 `direct`
    * **Durability**: 选择 `Durable` 使 exchange 持久化
    * **Auto delete**: `No`
    * **Internal**: `No`
@@ -81,7 +75,7 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
    * **Arguments**: 留空
 5. 点击 **Add queue** 按钮完成 queue 的创建。 新建的 `test_queue` 应出现在 **All queues** 区域。
 6. 点击 **Name** 列中的 **test_queue** 以打开详情页。展开 **Bindings**，在 **Add binding to this queue** 区域，输入以下信息：
-   * **From exchange**: 输入 `test_exchange` 
+   * **From exchange**: 输入 `test_exchange`
    * **Routing key**: 输入 `test_routing_key`
    * **Arguments**: 留空
 7. 点击 **Bind** 按钮将 `test_queue` 通过指定的 routing key 与 `test_exchange` 绑定。
@@ -132,8 +126,8 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
 4. 在 SQL 编辑器中输入规则，例如我们希望将 `t/#` 主题的 MQTT 消息转发至 RabbitMQ，可通过如下规则 SQL 实现：
 
    ```sql
-   SELECT 
-     payload as data,
+   SELECT
+     payload,
      now_timestamp() as timestamp
    FROM
      "t/#"
@@ -157,9 +151,23 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
 
    * **交换机**: 输入之前创建的 `test_exchange`， 消息将被发送到该交换机。
 
+     ::: tip 注意
+
+     请确保交换机已在 RabbitMQ 中创建，否则该动作将暂时失败，并周期性地尝试重新创建连接。
+
+     :::
+
    * **路由键**: 输入之前创建的 `test_routing_key`，用于将消息路由到 RabbitMQ 交换中的正确队列。
 
-   * 在 **消息传递模式**下拉框中选择 `non_persistent` 或 `persistent`：
+     ::: tip
+
+     交换机和路由健支持配置为模板值，可以使用占位符从接收到的 MQTT 消息 payload 中提取值，从而实现动态路由。例如，可以根据 payload 中的某个字段动态设置路由健，将其配置为 `${payload.akey}`，从 payload 中提取 `akey` 字段的值并作为路由键。
+
+     **注意**：在批量模式下，交换机和路由健的模板值必须在批次中的所有消息中保持一致，以确保路由的统一性并避免批处理过程中出现冲突。
+
+     :::
+
+   * 在**消息传递模式**下拉框中选择 `non_persistent` 或 `persistent`：
 
      * `non_persistent` （默认选项）：消息不会持久化到磁盘，如果 RabbitMQ 重新启动或崩溃，消息可能会丢失。
 
@@ -189,16 +197,18 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
 
      :::
 
-10. 配置高级设置（可选）：
+10. **备选动作（可选）**：如果您希望在消息投递失败时提升系统的可靠性，可以为 Sink 配置一个或多个备选动作。当 Sink 无法成功处理消息时，这些备选动作将被触发。更多信息请参见：[备选动作](./data-bridges.md#备选动作)。
+
+11. 配置**高级设置（可选）**：
 
     - **发布确认超时时间**：默认为  `30` 秒。 发布确认超时确定了发布者等待代理确认的持续时间，超过该时间发布操作将被视为失败。
     - 根据情况配置同步/异步模式，队列与批量等参数，详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
 
-11. 点击**创建**前，您可点击**测试连接**按钮确保 Sink 能连接到 RabbitMQ 服务器。
+12. 点击**创建**前，您可点击**测试连接**按钮确保 Sink 能连接到 RabbitMQ 服务器。
 
-12. 点击**创建**按钮完成 Sink 创建，新建的 Sink 将被添加到**动作输出**列表中。
+13. 点击**创建**按钮完成 Sink 创建，新建的 Sink 将被添加到**动作输出**列表中。
 
-13. 回到创建规则页面，对配置的信息进行确认，点击**创建**。一条规则应该出现在规则列表中。
+14. 回到创建规则页面，对配置的信息进行确认，点击**创建**。一条规则应该出现在规则列表中。
 
 现在您已成功创建了通过 RabbitMQ Sink 将数据转发到 RabbitMQ 的规则，同时在**规则**页面的**动作(Sink)** 标签页看到新建的 RabbitMQ Sink。
 
@@ -210,7 +220,7 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
 
 1. 在 Dashboard 页面，点击左侧导航目录中的**问题分析** -> **WebSocket 客户端**。
 
-2. 填写当前 EMQX 的连接信息。 
+2. 填写当前 EMQX 的连接信息。
 
    - 如果 EMQX 在本地运行，可直接使用默认配置。
    - 如果您修改过 EMQX 的默认配置，如修改过访问规则的配置，则需要输入用户名和密码。
@@ -253,7 +263,7 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
 
 5. 在**添加输入**弹出框中，**输入类型**下拉选择 `RabbitMQ`。保持 **Source** 下拉框为默认的`创建 Source`选项，此示例将创建一个全新的 Source 并添加到规则中。
 
-6. 为 Source 输入 **名称** 和 **描述**（可选）。名称应该是大小写字母和数字的组合，例如 `my-rabbitmq-source`。
+6. 为 Source 输入**名称**和**描述**（可选）。名称应该是大小写字母和数字的组合，例如 `my-rabbitmq-source`。
 
 7. 在**连接器**下拉框中选择之前创建的 `my-rabbitmq` 连接器。您也可以点击下拉框旁边的创建按钮，在弹出框中快捷创建新的连接器，所需的配置参数按照参照[创建连接器](#创建连接器)。
 
@@ -276,13 +286,16 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
 
     规则 SQL 可以从 RabbitMQ Source 中获取以下字段，您可以调整 SQL 进行数据处理操作。此处使用默认 SQL 即可。
 
-    | 字段名称  | 描述                                               |
-    | :-------- | :------------------------------------------------- |
-    | payload   | RabbitMQ 消息内容                                  |
-    | event     | 事件主题，格式为 `$bridges/rabbitmq:<source 名称>` |
-    | metadata  | 规则 ID 信息                                       |
-    | timestamp | 消息到达 EMQX 的时间戳                             |
-    | node      | 消息到达 EMQX 的节点名称                           |
+    | 字段名称    | 描述                                               |
+    | :---------- | :------------------------------------------------- |
+    | payload     | RabbitMQ 消息内容                                  |
+    | event       | 事件主题，格式为 `$bridges/rabbitmq:<source 名称>` |
+    | metadata    | 规则 ID 信息                                       |
+    | timestamp   | 消息到达 EMQX 的时间戳                             |
+    | node        | 消息到达 EMQX 的节点名称                           |
+    | queue       | 从中消费消息的队列名称                             |
+    | exchange    | 消息被路由的交换机名称                             |
+    | routing_key | 用于将消息从交换机路由到队列的路由键               |
 
 至此，您已经完成了 RabbitMQ Source 的创建，但订阅到的数据并不会直接发布到 EMQX 本地。接下来将继续创建一个消息重发布动作，通过它将 Source 的消息转发到 EMQX 本地。
 
@@ -330,8 +343,8 @@ docker run -it --rm --name rabbitmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15
 
    ```bash
    rabbitmqadmin --username=guest --password=guest \
-   	publish routing_key=message-send \
-   	payload="{ \"msg\": \"Hello EMQX\"}"
+        publish routing_key=message-send \
+        payload="{ \"msg\": \"Hello EMQX\"}"
    ```
 
    - `publish` 是用来发布一个消息的命令。

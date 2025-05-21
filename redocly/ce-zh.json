@@ -1,6 +1,6 @@
 {
   "info": {
-    "version": "5.8.1",
+    "version": "5.8.6",
     "title": "EMQX API"
   },
   "components": {
@@ -544,6 +544,34 @@
         },
         "type": "object"
       },
+      "rule_engine.ctx_alarm_activated": {
+        "required": [
+          "event_type"
+        ],
+        "properties": {
+          "event_type": {
+            "type": "string",
+            "enum": [
+              "alarm_activated"
+            ],
+            "description": "事件类型"
+          },
+          "name": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "example": {}
+          },
+          "activated_at": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
       "emqx.mqtt": {
         "properties": {
           "idle_timeout": {
@@ -627,7 +655,7 @@
               "hash_topic",
               "hash_clientid"
             ],
-            "description": "The strategy to use for the initial subscriber pick when shared_subscription_strategy is `sticky`.<br/> - `random`: Randomly select the subscriber;<br/> - `local`: Randomly select a subscriber on the current node, if there are no subscribers on the current node, then randomly select within the cluster;<br/> - `hash_clientid`: Hash the publisher's client ID to select a subscriber;<br/> - `hash_topic`: Hash the publishing topic to select a subscriber."
+            "description": "当 shared_subscription_strategy 为 `sticky` 时，初始订阅者选择的策略。<br/> - `random`: 随机选择订阅者；<br/> - `local`: 随机选择当前节点上的订阅者，如果当前节点上没有订阅者，则在集群中随机选择；<br/> - `hash_clientid`: 根据发布者的客户端 ID 进行哈希，选择订阅者；<br/> - `hash_topic`: 根据发布的主题进行哈希，选择订阅者。"
           },
           "exclusive_subscription": {
             "default": false,
@@ -726,10 +754,25 @@
           "client_attrs_init": {
             "default": [],
             "type": "array",
-            "description": "指定如何初始化客户端属性。每个属性可被初始化为 `client_attrs.{NAME}` ，其中 `{NAME}` 是在配置字段 `set_as_attr` 中指定的属性名称。初始化的客户端属性将以指定的名称存储在 `client_attrs` 属性中。然后，它们可以在身份验证和授权过程的模板中用作占位符。例如，当 `set_as_attr = alias` 时，使用 `${client_attrs.alias}` 来渲染 HTTP POST 请求体，或者渲染监听器配置 `moutpoint = devices/${client_attrs.alias}/` 来初始化每个客户端独有的主题命名空间。",
+            "description": "指定如何初始化客户端属性。每个属性可被初始化为 `client_attrs.{NAME}` ，其中 `{NAME}` 是在配置字段 `set_as_attr` 中指定的属性名称。初始化的客户端属性将以指定的名称存储在 `client_attrs` 属性中，并使用指定的名称，可以作为变量来渲染挂载点、身份认证和授权请求的模板。例如，当 `set_as_attr = alias` 时，使用 `${client_attrs.alias}` 来渲染 HTTP POST 请求体，或者为主题命名空间渲染监听器配置 `moutpoint = devices/${client_attrs.alias}/`。",
             "items": {
               "$ref": "#/components/schemas/emqx.client_attrs_init"
             }
+          },
+          "clientid_override": {
+            "default": "disabled",
+            "description": "单行表达式，用于解析一组预定义的字符串函数（类似于规则引擎 SQL 语句）。<br/>该表达式可以是一个函数调用，并且可以使用嵌套调用作为其参数，或者是直接的变量引用。<br/>目前，它不支持用户自定义变量绑定（如 var a=1）或用户自定义函数。<br/><br/>例如，提取以点（.）分隔的用户名前缀的表达式：nth(1, tokens(username, '.'))。<br/><br/>预绑定的变量包括：<br/>- `clientid`：原始 MQTT 客户端 ID。<br/>- `username`：MQTT 客户端的用户名。<br/>- `client_attrs.{NAME}`：通过 client_attrs_init 配置初始化的客户端属性。<br/><br/>对于通过 TLS 直接连接或通过启用了 proxy-protocol (v2) 的负载均衡器连接的客户端，还可以使用以下额外变量：<br/>- `cn`：客户端 TLS 证书的通用名称（Common Name）。<br/>- `dn`：客户端 TLS 证书的可分辨名称（Distinguished Name，即主题）。<br/>- `peersni`：客户端发送的 TLS 服务器名称指示（Server Name Indication, SNI）。<br/><br/>您可以在 EMQX 文档中阅读更多关于 variform 表达式的内容。",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "disabled"
+                ]
+              }
+            ]
           },
           "session_expiry_interval": {
             "default": "2h",
@@ -1269,7 +1312,7 @@
           "pool_size": {
             "default": 8,
             "type": "integer",
-            "description": "将发布消息到远程代理的 MQTT 客户端池的大小。<br/><br/>每个 MQTT 客户端都将分配'clientid'，格式为'${clientid_prefix}:${bridge_name}:egress:${node}:${n}'<br/>其中'n'是池中客户端的编号。",
+            "description": "将发布消息到远程代理的 MQTT 客户端池的大小。<br/><br/>每个 MQTT 客户端都将分配'clientid'，格式为'${clientid_prefix}:${bridge_name}:egress:${node}:${n}'<br/>其中'n'是池中客户端的编号。<br/><br/>如果 `static_clientids` 不为空，则此选项无效。当使用静态客户端 ID 时，池的大小始终根据每个节点分配的 ID 数量来确定。",
             "minimum": 1
           },
           "resource_opts": {
@@ -1293,6 +1336,14 @@
           "clientid_prefix": {
             "type": "string",
             "description": "附加到 egress 动作使用的 clientid 前缀（可选）。"
+          },
+          "static_clientids": {
+            "default": [],
+            "type": "array",
+            "description": "Entries mapping EMQX node names to static client IDs.<br/><br/>If any entries are defined, then only EMQX nodes matching those entries will start MQTT clients with the corresponding clientids.",
+            "items": {
+              "$ref": "#/components/schemas/connector_mqtt.static_clientid_entry"
+            }
           },
           "reconnect_interval": {
             "type": "string",
@@ -1332,6 +1383,12 @@
             "default": "160s",
             "type": "string",
             "description": "MQTT Keepalive. Time interval is a string that contains a number followed by time unit:<br/>- `ms` for milliseconds,<br/>- `s` for seconds,<br/>- `m` for minutes,<br/>- `h` for hours;<br/><br/>or combination of whereof: `1h5m0s`"
+          },
+          "connect_timeout": {
+            "default": "10s",
+            "type": "string",
+            "description": "连接远程代理服务器的超时时间。在尝试建立初始连接时，连接的工作进程会暂停，直到达到设定的超时时间为止。",
+            "example": "1h"
           },
           "retry_interval": {
             "default": "15s",
@@ -2291,7 +2348,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -2968,7 +3025,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -3842,7 +3899,7 @@
           "pool_size": {
             "default": 8,
             "type": "integer",
-            "description": "将发布消息到远程代理的 MQTT 客户端池的大小。<br/><br/>每个 MQTT 客户端都将分配'clientid'，格式为'${clientid_prefix}:${bridge_name}:egress:${node}:${n}'<br/>其中'n'是池中客户端的编号。",
+            "description": "将发布消息到远程代理的 MQTT 客户端池的大小。<br/><br/>每个 MQTT 客户端都将分配'clientid'，格式为'${clientid_prefix}:${bridge_name}:egress:${node}:${n}'<br/>其中'n'是池中客户端的编号。<br/><br/>如果 `static_clientids` 不为空，则此选项无效。当使用静态客户端 ID 时，池的大小始终根据每个节点分配的 ID 数量来确定。",
             "minimum": 1
           },
           "resource_opts": {
@@ -3866,6 +3923,14 @@
           "clientid_prefix": {
             "type": "string",
             "description": "附加到 egress 动作使用的 clientid 前缀（可选）。"
+          },
+          "static_clientids": {
+            "default": [],
+            "type": "array",
+            "description": "Entries mapping EMQX node names to static client IDs.<br/><br/>If any entries are defined, then only EMQX nodes matching those entries will start MQTT clients with the corresponding clientids.",
+            "items": {
+              "$ref": "#/components/schemas/connector_mqtt.static_clientid_entry"
+            }
           },
           "reconnect_interval": {
             "type": "string",
@@ -3905,6 +3970,12 @@
             "default": "160s",
             "type": "string",
             "description": "MQTT Keepalive. Time interval is a string that contains a number followed by time unit:<br/>- `ms` for milliseconds,<br/>- `s` for seconds,<br/>- `m` for minutes,<br/>- `h` for hours;<br/><br/>or combination of whereof: `1h5m0s`"
+          },
+          "connect_timeout": {
+            "default": "10s",
+            "type": "string",
+            "description": "连接远程代理服务器的超时时间。在尝试建立初始连接时，连接的工作进程会暂停，直到达到设定的超时时间为止。",
+            "example": "1h"
           },
           "retry_interval": {
             "default": "15s",
@@ -4400,6 +4471,18 @@
             "description": "定义查询中过滤条件的条件表达式。<br/>过滤器支持以下占位符<br/><br/> - <code>${username}</code>：在连接时将用客户端使用的 <code>用户名</code> 替换<br/><br/> - <code>${clientid}</code>：在连接时将用客户端使用的 <code>客户端 ID</code> 替换",
             "example": {}
           },
+          "limit": {
+            "default": 1000,
+            "type": "integer",
+            "description": "限制获取的记录数量。",
+            "minimum": 1
+          },
+          "skip": {
+            "default": 0,
+            "type": "integer",
+            "description": "跳过的授权记录数量。",
+            "minimum": 0
+          },
           "mongo_type": {
             "default": "single",
             "type": "string",
@@ -4477,7 +4560,7 @@
         "properties": {
           "expression": {
             "type": "string",
-            "description": "单行表达式，用于求值一组预定义的字符串函数（类似规则引擎 SQL 语句中的函数）。<br/>表达式可以是带有嵌套调用的函数调用，或直接变量引用。<br/>目前，它不提供用户定义的变量绑定（如 `var a=1`）或用户定义的函数。<br/>例如，提取以点分隔的客户端 ID 的前缀：`nth(1, tokens(clientid, '.'))`。<br/><br/>预绑定的变量包括：<br/>- `cn`: 客户端 TLS 证书的常用名称。<br/>- `dn`: 客户端 TLS 证书的专有名称（主题）。<br/>- `clientid`: MQTT 客户端 ID。<br/>- `username`: MQTT 客户端的用户名。<br/>- `user_property.{NAME}`: CONNECT 包中的用户属性。<br/><br/>您可以在 EMQX 文档中了解更多关于各种表达式的信息。"
+            "description": "单行表达式，用于解析一组预定义的字符串函数（类似规则引擎 SQL 语句中的函数）。<br/>表达式可以是带有嵌套调用的函数调用，或直接变量引用。<br/>目前，它不提供用户定义的变量绑定（如 `var a=1`）或用户定义的函数。<br/>例如，提取以点分隔的客户端 ID 的前缀：`nth(1, tokens(clientid, '.'))`。<br/><br/>预绑定的变量包括：<br/>- `clientid`：MQTT 客户端 ID。<br/>- `username`：MQTT 客户端的用户名。<br/>- `user_property.{NAME}`：连接包中的用户属性。<br/>对于 TLS 客户端，直接连接或通过启用代理协议（v2）负载均衡器连接时，<br/>还可以使用一些额外的变量：<br/>- `cn`：客户端的 TLS 证书公共名称。<br/>- `dn`：客户端的 TLS 证书区分名称（主体）。<br/>- `peersni`：客户端发送的 TLS 服务器名称指示。<br/><br/>您可以在 EMQX 文档中阅读更多关于变量表达式的信息。"
           },
           "set_as_attr": {
             "type": "string",
@@ -5009,6 +5092,12 @@
             "format": "password",
             "description": "包含用户密码的字符串。仅在私钥文件受密码保护时使用。",
             "example": ""
+          },
+          "hibernate_after": {
+            "default": "5s",
+            "type": "string",
+            "description": "指定 SSL 进程在空闲后休眠的时间，从而减少其内存占用。<br/><br/>当有新消息到达时，休眠的进程将被唤醒。<br/>过于频繁地休眠和唤醒可能会导致 CPU 使用率增加，因为这两个操作都会对进程进行垃圾回收。",
+            "example": "12m"
           }
         },
         "type": "object"
@@ -5285,6 +5374,26 @@
               "stopped"
             ],
             "description": "Install plugin status at runtime<br/>1. running: plugin is running.<br/>2. stopped: plugin is stopped.<br/>"
+          }
+        },
+        "type": "object"
+      },
+      "connector_mqtt.static_clientid_entry": {
+        "required": [
+          "ids",
+          "node"
+        ],
+        "properties": {
+          "node": {
+            "type": "string",
+            "description": "Node name (e.g.: `emqx@10.0.0.1`)."
+          },
+          "ids": {
+            "type": "array",
+            "description": "Array of static client IDs assigned to this node.",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "type": "object"
@@ -5597,6 +5706,11 @@
           "topic"
         ],
         "properties": {
+          "no_local": {
+            "default": false,
+            "type": "boolean",
+            "description": "在订阅远程主题时是否设置 no-local 标志。如果设置为 true，并且你使用相同的连接器向你也订阅的主题发布消息，则此设置可防止服务器将你自己发布的消息转发回你。仅在使用 MQTT 协议版本 5 时生效。请注意，如果你使用的工作线程池大小大于 1，你仍然会收到重复的消息。"
+          },
           "topic": {
             "type": "string",
             "description": "从远程代理接收消息的主题"
@@ -6503,7 +6617,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -6638,7 +6752,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -7002,7 +7116,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -7315,7 +7429,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -8084,7 +8198,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -8215,7 +8329,7 @@
           },
           "actions.discarded": {
             "type": "integer",
-            "description": "The number of discarded actions due to action being disabled or race condition while action is being deleted.",
+            "description": "由于动作被停用或在动作被删除时发生竞态条件而导致丢弃的动作次数。",
             "minimum": 0
           }
         },
@@ -8462,7 +8576,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -8640,7 +8754,7 @@
           "pool_size": {
             "default": 8,
             "type": "integer",
-            "description": "将从远程代理接收消息的 MQTT 客户端池的大小。<br/><br/>仅当'remote.topic'是共享订阅主题或主题过滤器时才会尊重此值，<br/>（例如$share/name1/topic1或$share/name2/topic2/#），否则只会使用一个 MQTT 客户端。<br/>每个 MQTT 客户端都将分配'clientid'，格式为'${clientid_prefix}:${bridge_name}:ingress:${node}:${n}'<br/>其中'n'是池中客户端的编号。<br/>注意：当 EMQX 进行集群化时，非共享订阅将无法正常工作。",
+            "description": "将从远程代理接收消息的 MQTT 客户端池的大小。<br/><br/>仅当'remote.topic'是共享订阅主题或主题过滤器时才会尊重此值，<br/>（例如$share/name1/topic1或$share/name2/topic2/#），否则只会使用一个 MQTT 客户端。<br/>每个 MQTT 客户端都将分配'clientid'，格式为'${clientid_prefix}:${bridge_name}:ingress:${node}:${n}'<br/>其中'n'是池中客户端的编号。<br/>注意：当 EMQX 进行集群化时，非共享订阅将无法正常工作。<br/><br/>如果 `static_clientids` 不为空，则此选项无效。当使用静态客户端 ID 时，池的大小始终根据每个节点分配的 ID 数量来确定。",
             "minimum": 1
           },
           "remote": {
@@ -9502,7 +9616,7 @@
             "enum": [
               "pbkdf2"
             ],
-            "description": "PBKDF2 password hashing."
+            "description": "PBKDF2 password hashing. Hashes are computed according to the PKCS #5 standard, and represented as hexadecimal strings."
           },
           "mac_fun": {
             "type": "string",
@@ -9516,49 +9630,17 @@
               "sha384",
               "sha512"
             ],
-            "description": "Specifies mac_fun for PBKDF2 hashing algorithm."
+            "description": "Specifies which HMAC function to use in PBKDF2 algorithm. Note that `md4`, `md5`, `ripemd160` are no longer supported since 5.8.3."
           },
           "iterations": {
             "type": "integer",
-            "description": "Iteration count for PBKDF2 hashing algorithm.",
+            "description": "Number of iterations of PBKDF2 algorithm.",
             "minimum": 1
           },
           "dk_length": {
             "type": "integer",
-            "description": "Derived length for PBKDF2 hashing algorithm. If not specified, calculated automatically based on `mac_fun`.",
+            "description": "Derived key length for PBKDF2 hashing algorithm, in bytes. If not specified, calculated automatically based on `mac_fun`.",
             "minimum": 1
-          }
-        },
-        "type": "object"
-      },
-      "opentelemetry.otel_logs": {
-        "properties": {
-          "level": {
-            "default": "warning",
-            "type": "string",
-            "enum": [
-              "debug",
-              "info",
-              "notice",
-              "warning",
-              "error",
-              "critical",
-              "alert",
-              "emergency",
-              "all"
-            ],
-            "description": "Open Telemetry 日志处理器的日志级别。"
-          },
-          "enable": {
-            "default": false,
-            "type": "boolean",
-            "description": "启用或禁用 open telemetry 指标"
-          },
-          "scheduled_delay": {
-            "default": "1s",
-            "type": "string",
-            "description": "两次连续导出 Open Telemetry 信号之间的延迟间隔。",
-            "example": "32s"
           }
         },
         "type": "object"
@@ -10222,7 +10304,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -10375,12 +10457,33 @@
         },
         "type": "object"
       },
-      "opentelemetry.trace_filter": {
+      "rule_engine.ctx_alarm_deactivated": {
+        "required": [
+          "event_type"
+        ],
         "properties": {
-          "trace_all": {
-            "default": false,
-            "type": "boolean",
-            "description": "如果启用，将追踪所有发布的消息，如果无法从消息中提取追踪 ID，则生成新的追踪 ID。<br/>否则，只追踪带有追踪上下文的消息。默认禁用。"
+          "event_type": {
+            "type": "string",
+            "enum": [
+              "alarm_deactivated"
+            ],
+            "description": "事件类型"
+          },
+          "name": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "example": {}
+          },
+          "activated_at": {
+            "type": "integer"
+          },
+          "deactivated_at": {
+            "type": "integer"
           }
         },
         "type": "object"
@@ -10741,6 +10844,27 @@
             "description": "消息保留时间。0 代表永久保留",
             "example": "32s"
           },
+          "msg_expiry_interval_override": {
+            "default": "disabled",
+            "description": "如果设置了此值，它将优先于任何在保留的 MQTT 消息中指定的 `Message-Expiry-Interval` 属性，从而允许消息在必要时更早过期。此覆盖设置仅适用于垃圾回收过程：它不会影响正在写入的消息的过期时间，也不会影响在迭代过程中已经写入的消息的过期时间。因此，当覆盖时，可能会被垃圾回收的消息在订阅保留主题时仍然可见。",
+            "oneOf": [
+              {
+                "type": "string",
+                "example": "32s"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "disabled"
+                ]
+              }
+            ]
+          },
+          "allow_never_expire": {
+            "default": true,
+            "type": "boolean",
+            "description": "如果为 true，设置为永不过期的保留消息（即 `Message-Expiry-Interval = 0`）将不会受到过期时间覆盖的影响。此配置仅在 `msg_expiry_interval_override` 设置时生效。"
+          },
           "msg_clear_interval": {
             "default": "0s",
             "type": "string",
@@ -10762,6 +10886,12 @@
             "default": "1000/s",
             "type": "string",
             "description": "发送保留消息的最大速率",
+            "example": "1000/s"
+          },
+          "max_publish_rate": {
+            "default": "1000/s",
+            "type": "string",
+            "description": "发布保留消息的最大速率。超过该限制发布的消息会被传递，但不会作为保留消息存储。",
             "example": "1000/s"
           },
           "backend": {
@@ -10800,6 +10930,18 @@
           },
           "os": {
             "$ref": "#/components/schemas/emqx.sysmon_os"
+          },
+          "mnesia_tm_mailbox_size_alarm_threshold": {
+            "default": 500,
+            "type": "integer",
+            "description": "当 mnesia 事务管理器的邮箱大小超过该阈值时，会触发告警。该进程负责处理 EMQX 内部数据库 mnesia 中的所有事务。<br/><br/>可能导致此告警触发的原因有多种。以下是一些需要检查或考虑的事项：<br/>- 降低 `max_conn_rate`，以便客户端以较慢的速度加入；<br/>- 增加 EMQX 的 CPU / RAM 资源；<br/>- 降低客户端侧的保留消息速率；<br/>- 检查集群内部网络带宽是否已达到最大值。",
+            "minimum": 1
+          },
+          "broker_pool_mailbox_size_alarm_threshold": {
+            "default": 500,
+            "type": "integer",
+            "description": "当代理服务器线程池的最大邮箱大小超过该阈值时，会触发告警。代理服务器线程池负责处理添加和移除订阅，以及路由信息的复制。<br/><br/>可能导致此告警触发的原因有多种。以下是一些需要检查或考虑的事项：<br/>- 增加 EMQX 的 CPU / RAM 资源；<br/>- 审查客户端的订阅情况，例如，尝试压缩主题过滤器；<br/>- 检查集群内部网络带宽是否已达到最大值。",
+            "minimum": 1
           }
         },
         "type": "object"
@@ -10930,7 +11072,7 @@
           "pool_size": {
             "default": 8,
             "type": "integer",
-            "description": "将发布消息到远程代理的 MQTT 客户端池的大小。<br/><br/>每个 MQTT 客户端都将分配'clientid'，格式为'${clientid_prefix}:${bridge_name}:egress:${node}:${n}'<br/>其中'n'是池中客户端的编号。",
+            "description": "将发布消息到远程代理的 MQTT 客户端池的大小。<br/><br/>每个 MQTT 客户端都将分配'clientid'，格式为'${clientid_prefix}:${bridge_name}:egress:${node}:${n}'<br/>其中'n'是池中客户端的编号。<br/><br/>如果 `static_clientids` 不为空，则此选项无效。当使用静态客户端 ID 时，池的大小始终根据每个节点分配的 ID 数量来确定。",
             "minimum": 1
           },
           "local": {
@@ -10953,6 +11095,47 @@
           "metrics": {
             "description": "指标信息",
             "$ref": "#/components/schemas/exhook.metrics"
+          }
+        },
+        "type": "object"
+      },
+      "actions_and_sources.response_summary": {
+        "properties": {
+          "enable": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "integer"
+          },
+          "last_modified_at": {
+            "type": "integer"
+          },
+          "node_status": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/actions_and_sources.response_node_status"
+            }
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_reason": {
+            "type": "string"
           }
         },
         "type": "object"
@@ -11096,7 +11279,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -11155,6 +11338,20 @@
           },
           "websocket": {
             "$ref": "#/components/schemas/emqx.ws_opts"
+          }
+        },
+        "type": "object"
+      },
+      "actions_and_sources.response_node_status": {
+        "properties": {
+          "node": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_reason": {
+            "type": "string"
           }
         },
         "type": "object"
@@ -11891,13 +12088,13 @@
             "type": "integer",
             "description": "Message transformations failed per 10 seconds"
           },
-          "transformation_succeeded_rate": {
-            "type": "integer",
-            "description": "Message transformations succeeded per 10 seconds"
-          },
           "validation_failed_rate": {
             "type": "integer",
             "description": "Schema validations failed per 10 seconds"
+          },
+          "transformation_succeeded_rate": {
+            "type": "integer",
+            "description": "Message transformations succeeded per 10 seconds"
           },
           "validation_succeeded_rate": {
             "type": "integer",
@@ -12741,6 +12938,25 @@
         },
         "type": "object"
       },
+      "emqx_mgmt_api_data_backup.export_request_body": {
+        "properties": {
+          "table_sets": {
+            "type": "array",
+            "description": "Sets of tables to export. Exports all if omitted. Valid values:<br/><br/>- api_keys<br/>- banned<br/>- builtin_authn<br/>- builtin_authz<br/>- builtin_retainer<br/>- dashboard_users<br/>- psk<br/>",
+            "items": {
+              "type": "string"
+            }
+          },
+          "root_keys": {
+            "type": "array",
+            "description": "Sets of root configuration keys to export. Exports all if omitted.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "type": "object"
+      },
       "emqx_authn_api.response_user": {
         "required": [
           "user_id"
@@ -12766,25 +12982,31 @@
             "description": "测试事件的上下文",
             "oneOf": [
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_message_transformation_failed"
+                "$ref": "#/components/schemas/rule_engine.ctx_unsub"
+              },
+              {
+                "$ref": "#/components/schemas/rule_engine.ctx_sub"
               },
               {
                 "$ref": "#/components/schemas/rule_engine.ctx_schema_validation_failed"
               },
               {
+                "$ref": "#/components/schemas/rule_engine.ctx_message_transformation_failed"
+              },
+              {
+                "$ref": "#/components/schemas/rule_engine.ctx_pub"
+              },
+              {
+                "$ref": "#/components/schemas/rule_engine.ctx_dropped"
+              },
+              {
+                "$ref": "#/components/schemas/rule_engine.ctx_delivered"
+              },
+              {
+                "$ref": "#/components/schemas/rule_engine.ctx_acked"
+              },
+              {
                 "$ref": "#/components/schemas/rule_engine.ctx_delivery_dropped"
-              },
-              {
-                "$ref": "#/components/schemas/rule_engine.ctx_bridge_mqtt"
-              },
-              {
-                "$ref": "#/components/schemas/rule_engine.ctx_check_authn_complete"
-              },
-              {
-                "$ref": "#/components/schemas/rule_engine.ctx_check_authz_complete"
-              },
-              {
-                "$ref": "#/components/schemas/rule_engine.ctx_connack"
               },
               {
                 "$ref": "#/components/schemas/rule_engine.ctx_disconnected"
@@ -12793,22 +13015,22 @@
                 "$ref": "#/components/schemas/rule_engine.ctx_connected"
               },
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_dropped"
+                "$ref": "#/components/schemas/rule_engine.ctx_connack"
               },
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_acked"
+                "$ref": "#/components/schemas/rule_engine.ctx_check_authz_complete"
               },
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_delivered"
+                "$ref": "#/components/schemas/rule_engine.ctx_check_authn_complete"
               },
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_unsub"
+                "$ref": "#/components/schemas/rule_engine.ctx_alarm_deactivated"
               },
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_sub"
+                "$ref": "#/components/schemas/rule_engine.ctx_alarm_activated"
               },
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_pub"
+                "$ref": "#/components/schemas/rule_engine.ctx_bridge_mqtt"
               }
             ]
           },
@@ -12966,7 +13188,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -13068,25 +13290,31 @@
             "description": "测试事件的上下文",
             "oneOf": [
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_message_transformation_failed"
+                "$ref": "#/components/schemas/rule_engine.ctx_unsub"
+              },
+              {
+                "$ref": "#/components/schemas/rule_engine.ctx_sub"
               },
               {
                 "$ref": "#/components/schemas/rule_engine.ctx_schema_validation_failed"
               },
               {
+                "$ref": "#/components/schemas/rule_engine.ctx_message_transformation_failed"
+              },
+              {
+                "$ref": "#/components/schemas/rule_engine.ctx_pub"
+              },
+              {
+                "$ref": "#/components/schemas/rule_engine.ctx_dropped"
+              },
+              {
+                "$ref": "#/components/schemas/rule_engine.ctx_delivered"
+              },
+              {
+                "$ref": "#/components/schemas/rule_engine.ctx_acked"
+              },
+              {
                 "$ref": "#/components/schemas/rule_engine.ctx_delivery_dropped"
-              },
-              {
-                "$ref": "#/components/schemas/rule_engine.ctx_bridge_mqtt"
-              },
-              {
-                "$ref": "#/components/schemas/rule_engine.ctx_check_authn_complete"
-              },
-              {
-                "$ref": "#/components/schemas/rule_engine.ctx_check_authz_complete"
-              },
-              {
-                "$ref": "#/components/schemas/rule_engine.ctx_connack"
               },
               {
                 "$ref": "#/components/schemas/rule_engine.ctx_disconnected"
@@ -13095,22 +13323,22 @@
                 "$ref": "#/components/schemas/rule_engine.ctx_connected"
               },
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_dropped"
+                "$ref": "#/components/schemas/rule_engine.ctx_connack"
               },
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_acked"
+                "$ref": "#/components/schemas/rule_engine.ctx_check_authz_complete"
               },
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_delivered"
+                "$ref": "#/components/schemas/rule_engine.ctx_check_authn_complete"
               },
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_unsub"
+                "$ref": "#/components/schemas/rule_engine.ctx_alarm_deactivated"
               },
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_sub"
+                "$ref": "#/components/schemas/rule_engine.ctx_alarm_activated"
               },
               {
-                "$ref": "#/components/schemas/rule_engine.ctx_pub"
+                "$ref": "#/components/schemas/rule_engine.ctx_bridge_mqtt"
               }
             ]
           },
@@ -13212,7 +13440,12 @@
           "nodelay": {
             "default": true,
             "type": "boolean",
-            "description": "连接的 TCP_NODELAY 标识"
+            "description": "连接的 `TCP_NODELAY` 标志。<br/>当设置为 `true` 时，无论数据大小，都会立即发送数据。"
+          },
+          "nolinger": {
+            "default": false,
+            "type": "boolean",
+            "description": "启用时，`SO_LINGER` 标志设置为 `(onoff=1, linger=0)`，这意味着 TCP socket 将立即关闭，发送 TCP-RST 包，丢弃任何未发送的数据，并跳过正常关闭步骤，包括 CLOSE_WAIT、FIN_WAIT 和 TIME_WAIT。"
           },
           "reuseaddr": {
             "default": true,
@@ -13306,7 +13539,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -13372,6 +13605,18 @@
             "type": "object",
             "description": "定义查询中过滤条件的条件表达式。<br/>过滤器支持以下占位符<br/><br/> - <code>${username}</code>：在连接时将用客户端使用的 <code>用户名</code> 替换<br/><br/> - <code>${clientid}</code>：在连接时将用客户端使用的 <code>客户端 ID</code> 替换",
             "example": {}
+          },
+          "limit": {
+            "default": 1000,
+            "type": "integer",
+            "description": "限制获取的记录数量。",
+            "minimum": 1
+          },
+          "skip": {
+            "default": 0,
+            "type": "integer",
+            "description": "跳过的授权记录数量。",
+            "minimum": 0
           },
           "mongo_type": {
             "default": "sharded",
@@ -13631,13 +13876,23 @@
       },
       "prometheus.push_gateway": {
         "required": [
-          "enable"
+          "enable",
+          "method"
         ],
         "properties": {
           "enable": {
             "default": false,
             "type": "boolean",
             "description": "启用或禁用 Pushgateway。"
+          },
+          "method": {
+            "default": "put",
+            "type": "string",
+            "enum": [
+              "put",
+              "post"
+            ],
+            "description": "推送指标到 Pushgateway 的 HTTP 方法。可选项如下：<br/><br/> - <code>put</code>: 所有在 URL 中指定分组键的指标会被通过 PUT 推送的指标替换。<br/><br/> - <code>post</code>: POST 方法与 PUT 方法完全相同，但仅替换与新推送的指标同名的指标。<br/><br/>默认值为 <code>put</code>。"
           },
           "url": {
             "default": "http://127.0.0.1:9091",
@@ -13659,7 +13914,7 @@
           "job_name": {
             "default": "${name}/instance/${name}~${host}",
             "type": "string",
-            "description": "推送到 Push Gateway 的 Job 名称。可用变量为：<br/><br/>- ${name}: EMQX 节点的名称。<br/>- ${host}: EMQX 节点主机名。<br/>例如，当 EMQX 节点名为 <code>emqx@127.0.0.1</code> 则 name 变量的值为 <code>emqx</code>，host 变量的值为 <code>127.0.0.1</code>。<br/><br/>默认值为: <code>${name}/instance/${name}~${host}</code>"
+            "description": "推送到 Push Gateway 的 Job 名称。可用变量为：<br/><br/>- ${cluster_name}: EMQX 集群的名称。<br/><br/>- ${name}: EMQX 节点的名称。<br/><br/>- ${host}: EMQX 节点主机名。<br/>例如，当 EMQX 节点名为 <code>emqx@127.0.0.1</code> 则 name 变量的值为 <code>emqx</code>，host 变量的值为 <code>127.0.0.1</code>。<br/><br/>默认值为: <code>${name}/instance/${name}~${host}</code>"
           }
         },
         "type": "object"
@@ -13815,6 +14070,11 @@
             "type": "string",
             "description": "规则创建时间",
             "example": "2021-12-01T15:00:43.153+08:00"
+          },
+          "last_modified_at": {
+            "type": "string",
+            "description": "规则最后被修改的时间。",
+            "example": "2021-12-24T15:00:44.153+08:00"
           },
           "name": {
             "default": "",
@@ -14297,6 +14557,14 @@
             "type": "string",
             "description": "附加到 egress 动作使用的 clientid 前缀（可选）。"
           },
+          "static_clientids": {
+            "default": [],
+            "type": "array",
+            "description": "Entries mapping EMQX node names to static client IDs.<br/><br/>If any entries are defined, then only EMQX nodes matching those entries will start MQTT clients with the corresponding clientids.",
+            "items": {
+              "$ref": "#/components/schemas/connector_mqtt.static_clientid_entry"
+            }
+          },
           "reconnect_interval": {
             "type": "string",
             "deprecated": true
@@ -14335,6 +14603,12 @@
             "default": "160s",
             "type": "string",
             "description": "MQTT Keepalive. Time interval is a string that contains a number followed by time unit:<br/>- `ms` for milliseconds,<br/>- `s` for seconds,<br/>- `m` for minutes,<br/>- `h` for hours;<br/><br/>or combination of whereof: `1h5m0s`"
+          },
+          "connect_timeout": {
+            "default": "10s",
+            "type": "string",
+            "description": "连接远程代理服务器的超时时间。在尝试建立初始连接时，连接的工作进程会暂停，直到达到设定的超时时间为止。",
+            "example": "1h"
           },
           "retry_interval": {
             "default": "15s",
@@ -14716,7 +14990,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -14880,24 +15154,6 @@
           },
           "throttling": {
             "$ref": "#/components/schemas/emqx.log_throttling"
-          }
-        },
-        "type": "object"
-      },
-      "opentelemetry.otel_exporter": {
-        "properties": {
-          "endpoint": {
-            "default": "http://localhost:4317",
-            "type": "string",
-            "description": "导出器将要发送 Open Telemetry 信号数据的目标 URL。",
-            "example": "http://127.0.0.1"
-          },
-          "ssl_options": {
-            "default": {
-              "enable": false
-            },
-            "description": "Open Telemetry 导出器的 SSL 配置",
-            "$ref": "#/components/schemas/emqx.ssl_client_opts"
           }
         },
         "type": "object"
@@ -15133,13 +15389,13 @@
             "type": "integer",
             "description": "Message transformations failed per 10 seconds"
           },
-          "transformation_succeeded_rate": {
-            "type": "integer",
-            "description": "Message transformations succeeded per 10 seconds"
-          },
           "validation_failed_rate": {
             "type": "integer",
             "description": "Schema validations failed per 10 seconds"
+          },
+          "transformation_succeeded_rate": {
+            "type": "integer",
+            "description": "Message transformations succeeded per 10 seconds"
           },
           "validation_succeeded_rate": {
             "type": "integer",
@@ -15407,7 +15663,7 @@
           "pool_size": {
             "default": 8,
             "type": "integer",
-            "description": "将发布消息到远程代理的 MQTT 客户端池的大小。<br/><br/>每个 MQTT 客户端都将分配'clientid'，格式为'${clientid_prefix}:${bridge_name}:egress:${node}:${n}'<br/>其中'n'是池中客户端的编号。",
+            "description": "将发布消息到远程代理的 MQTT 客户端池的大小。<br/><br/>每个 MQTT 客户端都将分配'clientid'，格式为'${clientid_prefix}:${bridge_name}:egress:${node}:${n}'<br/>其中'n'是池中客户端的编号。<br/><br/>如果 `static_clientids` 不为空，则此选项无效。当使用静态客户端 ID 时，池的大小始终根据每个节点分配的 ID 数量来确定。",
             "minimum": 1
           },
           "resource_opts": {
@@ -15431,6 +15687,14 @@
           "clientid_prefix": {
             "type": "string",
             "description": "附加到 egress 动作使用的 clientid 前缀（可选）。"
+          },
+          "static_clientids": {
+            "default": [],
+            "type": "array",
+            "description": "Entries mapping EMQX node names to static client IDs.<br/><br/>If any entries are defined, then only EMQX nodes matching those entries will start MQTT clients with the corresponding clientids.",
+            "items": {
+              "$ref": "#/components/schemas/connector_mqtt.static_clientid_entry"
+            }
           },
           "reconnect_interval": {
             "type": "string",
@@ -15470,6 +15734,12 @@
             "default": "160s",
             "type": "string",
             "description": "MQTT Keepalive. Time interval is a string that contains a number followed by time unit:<br/>- `ms` for milliseconds,<br/>- `s` for seconds,<br/>- `m` for minutes,<br/>- `h` for hours;<br/><br/>or combination of whereof: `1h5m0s`"
+          },
+          "connect_timeout": {
+            "default": "10s",
+            "type": "string",
+            "description": "连接远程代理服务器的超时时间。在尝试建立初始连接时，连接的工作进程会暂停，直到达到设定的超时时间为止。",
+            "example": "1h"
           },
           "retry_interval": {
             "default": "15s",
@@ -15590,26 +15860,6 @@
             "type": "integer",
             "description": "一个正整数。是否连续发送 HTTP 请求，当设置为1时，意味着在发送每个 HTTP 请求后，需要等待服务器返回，然后继续发送下一个请求。",
             "minimum": 1
-          }
-        },
-        "type": "object"
-      },
-      "opentelemetry.otel_traces": {
-        "properties": {
-          "enable": {
-            "default": false,
-            "type": "boolean",
-            "description": "启用或禁用 open telemetry 指标"
-          },
-          "scheduled_delay": {
-            "default": "5s",
-            "type": "string",
-            "description": "两次连续导出 Open Telemetry 信号之间的延迟间隔。",
-            "example": "32s"
-          },
-          "filter": {
-            "description": "Open Telemetry 追踪过滤器配置",
-            "$ref": "#/components/schemas/opentelemetry.trace_filter"
           }
         },
         "type": "object"
@@ -16187,25 +16437,6 @@
         },
         "type": "object"
       },
-      "opentelemetry.otel_metrics": {
-        "required": [
-          "enable"
-        ],
-        "properties": {
-          "enable": {
-            "default": false,
-            "type": "boolean",
-            "description": "启用或禁用 open telemetry 指标"
-          },
-          "interval": {
-            "default": "10s",
-            "type": "string",
-            "description": "两次连续导出 Open Telemetry 信号之间的延迟间隔。",
-            "example": "32s"
-          }
-        },
-        "type": "object"
-      },
       "bridge_mqtt.get": {
         "required": [
           "server"
@@ -16272,6 +16503,14 @@
             "type": "string",
             "description": "附加到 egress 动作使用的 clientid 前缀（可选）。"
           },
+          "static_clientids": {
+            "default": [],
+            "type": "array",
+            "description": "Entries mapping EMQX node names to static client IDs.<br/><br/>If any entries are defined, then only EMQX nodes matching those entries will start MQTT clients with the corresponding clientids.",
+            "items": {
+              "$ref": "#/components/schemas/connector_mqtt.static_clientid_entry"
+            }
+          },
           "reconnect_interval": {
             "type": "string",
             "deprecated": true
@@ -16310,6 +16549,12 @@
             "default": "160s",
             "type": "string",
             "description": "MQTT Keepalive. Time interval is a string that contains a number followed by time unit:<br/>- `ms` for milliseconds,<br/>- `s` for seconds,<br/>- `m` for minutes,<br/>- `h` for hours;<br/><br/>or combination of whereof: `1h5m0s`"
+          },
+          "connect_timeout": {
+            "default": "10s",
+            "type": "string",
+            "description": "连接远程代理服务器的超时时间。在尝试建立初始连接时，连接的工作进程会暂停，直到达到设定的超时时间为止。",
+            "example": "1h"
           },
           "retry_interval": {
             "default": "15s",
@@ -16624,7 +16869,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -16834,6 +17079,14 @@
             "type": "string",
             "description": "附加到 egress 动作使用的 clientid 前缀（可选）。"
           },
+          "static_clientids": {
+            "default": [],
+            "type": "array",
+            "description": "Entries mapping EMQX node names to static client IDs.<br/><br/>If any entries are defined, then only EMQX nodes matching those entries will start MQTT clients with the corresponding clientids.",
+            "items": {
+              "$ref": "#/components/schemas/connector_mqtt.static_clientid_entry"
+            }
+          },
           "reconnect_interval": {
             "type": "string",
             "deprecated": true
@@ -16872,6 +17125,12 @@
             "default": "160s",
             "type": "string",
             "description": "MQTT Keepalive. Time interval is a string that contains a number followed by time unit:<br/>- `ms` for milliseconds,<br/>- `s` for seconds,<br/>- `m` for minutes,<br/>- `h` for hours;<br/><br/>or combination of whereof: `1h5m0s`"
+          },
+          "connect_timeout": {
+            "default": "10s",
+            "type": "string",
+            "description": "连接远程代理服务器的超时时间。在尝试建立初始连接时，连接的工作进程会暂停，直到达到设定的超时时间为止。",
+            "example": "1h"
           },
           "retry_interval": {
             "default": "15s",
@@ -16968,7 +17227,7 @@
           },
           "actions.discarded": {
             "type": "integer",
-            "description": "The number of discarded actions due to action being disabled or race condition while action is being deleted.",
+            "description": "由于动作被停用或在动作被删除时发生竞态条件而导致丢弃的动作次数。",
             "minimum": 0
           }
         },
@@ -18527,7 +18786,7 @@
           "enable": {
             "default": false,
             "type": "boolean",
-            "description": "使用持久存储来持久化客户端会话。<br/>如果启用，会话和相应的消息将被持久存储，并在服务器停机时保留。"
+            "description": "使用持久存储来持久化客户端会话。<br/>如果启用，会话和相应的消息将被持久存储，并在服务器停机时保留。<br/><br/>:::warning<br/>发送到持久会话的消息会被存储在磁盘上。<br/>这不可避免地限制了系统的总体吞吐量。<br/>:::"
           },
           "batch_size": {
             "default": 100,
@@ -18538,11 +18797,13 @@
           "idle_poll_interval": {
             "default": "10s",
             "type": "string",
+            "description": "持久会话向存储发送轮询请求的过期间隔时间。",
             "example": "12m"
           },
           "heartbeat_interval": {
             "default": "5000ms",
             "type": "string",
+            "description": "持久会话每个心跳间隔将其状态备份到磁盘上。<br/><br/>在对过期会话进行垃圾回收时，系统也会考虑心跳间隔的时间。<br/>当会话终止的精确时间不确定时，心跳间隔会作为安全边际添加到会话过期时间中。",
             "example": "12m"
           },
           "session_gc_interval": {
@@ -18560,6 +18821,7 @@
           "message_retention_period": {
             "default": "1d",
             "type": "string",
+            "description": "消息服务器会在此时间段内保留发送到持久会话的消息。",
             "example": "12m"
           }
         },
@@ -18833,6 +19095,18 @@
             "description": "定义查询中过滤条件的条件表达式。<br/>过滤器支持以下占位符<br/><br/> - <code>${username}</code>：在连接时将用客户端使用的 <code>用户名</code> 替换<br/><br/> - <code>${clientid}</code>：在连接时将用客户端使用的 <code>客户端 ID</code> 替换",
             "example": {}
           },
+          "limit": {
+            "default": 1000,
+            "type": "integer",
+            "description": "限制获取的记录数量。",
+            "minimum": 1
+          },
+          "skip": {
+            "default": 0,
+            "type": "integer",
+            "description": "跳过的授权记录数量。",
+            "minimum": 0
+          },
           "mongo_type": {
             "default": "rs",
             "type": "string",
@@ -18929,27 +19203,6 @@
           "error": {
             "type": "string",
             "description": "节点上的错误信息。"
-          }
-        },
-        "type": "object"
-      },
-      "opentelemetry.opentelemetry": {
-        "properties": {
-          "metrics": {
-            "description": "Open Telemetry 指标配置。",
-            "$ref": "#/components/schemas/opentelemetry.otel_metrics"
-          },
-          "logs": {
-            "description": "Open Telemetry 日志配置。如果启用，EMQX 将安装一个日志处理器，根据 Open Telemetry 日志数据模型格式化事件，并将它们导出到配置的 Open Telemetry 收集器或后端。",
-            "$ref": "#/components/schemas/opentelemetry.otel_logs"
-          },
-          "traces": {
-            "description": "Open Telemetry 追踪配置。",
-            "$ref": "#/components/schemas/opentelemetry.otel_traces"
-          },
-          "exporter": {
-            "description": "Open Telemetry 导出器",
-            "$ref": "#/components/schemas/opentelemetry.otel_exporter"
           }
         },
         "type": "object"
@@ -19634,6 +19887,8 @@
           "event": {
             "type": "string",
             "enum": [
+              "$events/sys/alarm_activated",
+              "$events/sys/alarm_deactivated",
               "$events/client_connected",
               "$events/client_disconnected",
               "$events/client_connack",
@@ -19773,7 +20028,7 @@
           "mountpoint": {
             "default": "",
             "type": "string",
-            "description": "发布或订阅时，请在所有主题前面加上 mountpoint 字符串。<br/><br/>将消息传递给订阅者时，将从主题名称中删除带前缀的字符串。挂载点是一种用户可以用来实现不同侦听器之间消息路由隔离的方法。<br/><br/>例如，如果客户机 A 使用 <code>listeners.tcp.\\<name>.mountpoint</code> 设置为'some_tenant'，那么客户端实际上订阅了主题'some_tenant/t'。<br/><br/>类似地，如果另一个客户端 B（与客户端 A 连接到同一个侦听器）向主题 't' 发送消息，该消息将路由到所有订阅了'some_租户/t'的客户端，因此客户端 A 将接收主题名为't'的消息<br/><br/><br/>设置为<code>\"\"</code> 以禁用该功能<br/><br/><br/>mountpoint 字符串中的变量：<br/>- <code>${clientid}</code>: clientid<br/>- <code>${username}</code>: username"
+            "description": "在客户端的 SUBSCRIBE 和 UNSUBSCRIBE 请求、`PUBLISH` 消息以及遗嘱消息（如果在 `CONNECT` 数据包中提供）中，为主题添加静态或模板化的前缀（例如，`n1/` 或 `${username}/`）。<br/>- 从发布到相应订阅的消息的主题中移除此前缀。<br/><br/>支持的占位符有：<br/>- `${username}`<br/>- `${clientid}`<br/>- `${zone}`<br/>- `${client_attrs.NAME}`<br/><br/>例如，使用 `mountpoint=\"${username}/\"` 配置时，使用 `u1` 作为用户名的客户端将具有：<br/>- 客户端 `SUBSCRIBE sensors/#` 在服务器内部为 `u1/sensors/#`。<br/>- 服务器发布 `PUBLISH u1/sensors/data` -> 发送给客户端的主题为 `sensors/data`。<br/><br/>前缀挂载/卸载适用于：<br/>- `CONNECT` 中的遗嘱消息<br/>- `PUBLISH`<br/>- `SUBSCRIBE`<br/>- `UNSUBSCRIBE`<br/><br/>注意：挂载操作发生在**授权/ACL 检查之后**。"
           },
           "zone": {
             "default": "default",
@@ -20012,7 +20267,7 @@
         "properties": {
           "path": {
             "type": "string",
-            "description": "此动作的 URL 路径。<br/><br/>此路径将附加到连接器的 <code>url</code> 配置，以形成完整的 URL 地址。<br/>此选项允许使用带有变量的模板。例如，<code>/room/{$room_no}</code>。"
+            "description": "此动作的 URL 路径。<br/><br/>此路径将附加到连接器的 <code>url</code> 配置，以形成完整的 URL 地址。<br/>此选项允许使用带有变量的模板。例如，<code>/room/${room_no}</code>。"
           },
           "method": {
             "default": "post",
@@ -20338,10 +20593,19 @@
           {
             "in": "query",
             "name": "aggregate",
-            "description": "Whether to aggregate all nodes Metrics",
+            "description": "Whether to aggregate all nodes Metrics. Default value is 'true'.",
             "required": false,
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "node",
+            "description": "Specify which specific node to fetch data from. If not provided, return values for all nodes. This parameter only works when 'aggregate' is 'false'.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -20684,8 +20948,36 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Users imported"
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "description": "文件中包含的用户总数。"
+                    },
+                    "success": {
+                      "type": "integer"
+                    },
+                    "override": {
+                      "type": "integer",
+                      "description": "以覆盖方式成功导入用户数据的用户总数。"
+                    },
+                    "skipped": {
+                      "type": "integer",
+                      "description": "因导入用户数据与现有用户数据相同而被跳过的用户总数。"
+                    },
+                    "failed": {
+                      "type": "integer",
+                      "description": "用户数据导入失败的用户总数。"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
           },
           "400": {
             "description": "",
@@ -21973,11 +22265,11 @@
                 "example": {
                   "collectors": {
                     "mnesia": "disabled",
-                    "vm_dist": "disabled",
-                    "vm_memory": "disabled",
                     "vm_msacc": "disabled",
+                    "vm_memory": "disabled",
+                    "vm_system_info": "disabled",
                     "vm_statistics": "disabled",
-                    "vm_system_info": "disabled"
+                    "vm_dist": "disabled"
                   },
                   "enable_basic_auth": false,
                   "push_gateway": {
@@ -21986,6 +22278,7 @@
                       "Authorization": "Basic YWRtaW46Y2JraG55eWd5QDE="
                     },
                     "url": "http://127.0.0.1:9091",
+                    "method": "put",
                     "job_name": "${name}/instance/${name}~${host}"
                   }
                 },
@@ -22019,11 +22312,11 @@
                 "example": {
                   "collectors": {
                     "mnesia": "disabled",
-                    "vm_dist": "disabled",
-                    "vm_memory": "disabled",
                     "vm_msacc": "disabled",
+                    "vm_memory": "disabled",
+                    "vm_system_info": "disabled",
                     "vm_statistics": "disabled",
-                    "vm_system_info": "disabled"
+                    "vm_dist": "disabled"
                   },
                   "enable_basic_auth": false,
                   "push_gateway": {
@@ -22032,6 +22325,7 @@
                       "Authorization": "Basic YWRtaW46Y2JraG55eWd5QDE="
                     },
                     "url": "http://127.0.0.1:9091",
+                    "method": "put",
                     "job_name": "${name}/instance/${name}~${host}"
                   }
                 },
@@ -22050,11 +22344,11 @@
                   "value": {
                     "collectors": {
                       "mnesia": "disabled",
-                      "vm_dist": "disabled",
-                      "vm_memory": "disabled",
                       "vm_msacc": "disabled",
+                      "vm_memory": "disabled",
+                      "vm_system_info": "disabled",
                       "vm_statistics": "disabled",
-                      "vm_system_info": "disabled"
+                      "vm_dist": "disabled"
                     },
                     "enable_basic_auth": false,
                     "push_gateway": {
@@ -22063,6 +22357,7 @@
                         "Authorization": "Basic YWRtaW46Y2JraG55eWd5QDE="
                       },
                       "url": "http://127.0.0.1:9091",
+                      "method": "put",
                       "job_name": "${name}/instance/${name}~${host}"
                     }
                   },
@@ -22077,12 +22372,12 @@
                     },
                     "push_gateway_server": "http://127.0.0.1:9091",
                     "job_name": "${name}/instance/${name}~${host}",
-                    "mnesia_collector": "disabled",
-                    "vm_dist_collector": "disabled",
-                    "vm_memory_collector": "disabled",
                     "vm_msacc_collector": "disabled",
+                    "vm_memory_collector": "disabled",
+                    "vm_system_info_collector": "disabled",
                     "vm_statistics_collector": "disabled",
-                    "vm_system_info_collector": "disabled"
+                    "mnesia_collector": "disabled",
+                    "vm_dist_collector": "disabled"
                   },
                   "summary": "legacy_deprecated_setting"
                 }
@@ -22318,8 +22613,8 @@
                   "password_based:redis": {
                     "value": {
                       "mechanism": "password_based",
-                      "server": "127.0.0.1:6379",
                       "cmd": "HMGET ${username} password_hash salt",
+                      "server": "127.0.0.1:6379",
                       "database": 0,
                       "backend": "redis",
                       "password_hash_algorithm": {
@@ -22556,8 +22851,8 @@
                   "password_based:redis": {
                     "value": {
                       "mechanism": "password_based",
-                      "server": "127.0.0.1:6379",
                       "cmd": "HMGET ${username} password_hash salt",
+                      "server": "127.0.0.1:6379",
                       "database": 0,
                       "backend": "redis",
                       "password_hash_algorithm": {
@@ -22670,7 +22965,6 @@
             }
           }
         },
-        "summary": "Update config of authenticator for listener",
         "requestBody": {
           "content": {
             "application/json": {
@@ -22746,8 +23040,8 @@
                 "password_based:redis": {
                   "value": {
                     "mechanism": "password_based",
-                    "server": "127.0.0.1:6379",
                     "cmd": "HMGET ${username} password_hash salt",
+                    "server": "127.0.0.1:6379",
                     "database": 0,
                     "backend": "redis",
                     "password_hash_algorithm": {
@@ -22814,6 +23108,7 @@
             }
           }
         },
+        "summary": "Update config of authenticator for listener",
         "security": [
           {
             "basicAuth": []
@@ -23028,8 +23323,8 @@
                   "password_based:redis": {
                     "value": {
                       "mechanism": "password_based",
-                      "server": "127.0.0.1:6379",
                       "cmd": "HMGET ${username} password_hash salt",
+                      "server": "127.0.0.1:6379",
                       "database": 0,
                       "backend": "redis",
                       "password_hash_algorithm": {
@@ -23142,7 +23437,6 @@
             }
           }
         },
-        "summary": "Create authenticator for listener",
         "requestBody": {
           "content": {
             "application/json": {
@@ -23218,8 +23512,8 @@
                 "password_based:redis": {
                   "value": {
                     "mechanism": "password_based",
-                    "server": "127.0.0.1:6379",
                     "cmd": "HMGET ${username} password_hash salt",
+                    "server": "127.0.0.1:6379",
                     "database": 0,
                     "backend": "redis",
                     "password_hash_algorithm": {
@@ -23286,6 +23580,7 @@
             }
           }
         },
+        "summary": "Create authenticator for listener",
         "security": [
           {
             "basicAuth": []
@@ -23475,6 +23770,73 @@
                     "max_conn_rate": 1000
                   },
                   {
+                    "name": "dtls-psk",
+                    "status": {
+                      "running": true,
+                      "max_connections": 1024000,
+                      "current_connections": 10
+                    },
+                    "type": "dtls",
+                    "bind": "22214",
+                    "node_status": [
+                      {
+                        "node": "emqx@127.0.0.1",
+                        "status": {
+                          "running": true,
+                          "max_connections": 1024000,
+                          "current_connections": 10
+                        }
+                      }
+                    ],
+                    "acceptors": 16,
+                    "dtls_options": {
+                      "verify": "verify_none",
+                      "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
+                      "versions": [
+                        "dtlsv1.2",
+                        "dtlsv1"
+                      ],
+                      "fail_if_no_peer_cert": false,
+                      "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
+                      "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
+                      "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
+                      "user_lookup_fun": "emqx_tls_psk:lookup"
+                    },
+                    "max_connections": 1024000,
+                    "max_conn_rate": 1000
+                  },
+                  {
+                    "name": "tcp-with-authn",
+                    "status": {
+                      "running": true,
+                      "max_connections": 1024000,
+                      "current_connections": 10
+                    },
+                    "type": "tcp",
+                    "bind": "22215",
+                    "authentication": {
+                      "mechanism": "password_based",
+                      "backend": "built_in_database",
+                      "password_hash_algorithm": {
+                        "name": "sha256"
+                      },
+                      "user_id_type": "username"
+                    },
+                    "node_status": [
+                      {
+                        "node": "emqx@127.0.0.1",
+                        "status": {
+                          "running": true,
+                          "max_connections": 1024000,
+                          "current_connections": 10
+                        }
+                      }
+                    ],
+                    "acceptors": 16,
+                    "max_connections": 1024000,
+                    "max_conn_rate": 1000
+                  },
+                  {
                     "name": "ws-def",
                     "status": {
                       "running": true,
@@ -23573,73 +23935,6 @@
                       "check_origin_enable": false,
                       "piggyback": "single"
                     },
-                    "acceptors": 16,
-                    "max_connections": 1024000,
-                    "max_conn_rate": 1000
-                  },
-                  {
-                    "name": "dtls-psk",
-                    "status": {
-                      "running": true,
-                      "max_connections": 1024000,
-                      "current_connections": 10
-                    },
-                    "type": "dtls",
-                    "bind": "22214",
-                    "node_status": [
-                      {
-                        "node": "emqx@127.0.0.1",
-                        "status": {
-                          "running": true,
-                          "max_connections": 1024000,
-                          "current_connections": 10
-                        }
-                      }
-                    ],
-                    "acceptors": 16,
-                    "dtls_options": {
-                      "verify": "verify_none",
-                      "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
-                      "versions": [
-                        "dtlsv1.2",
-                        "dtlsv1"
-                      ],
-                      "fail_if_no_peer_cert": false,
-                      "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
-                      "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
-                      "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
-                      "user_lookup_fun": "emqx_tls_psk:lookup"
-                    },
-                    "max_connections": 1024000,
-                    "max_conn_rate": 1000
-                  },
-                  {
-                    "name": "tcp-with-authn",
-                    "status": {
-                      "running": true,
-                      "max_connections": 1024000,
-                      "current_connections": 10
-                    },
-                    "type": "tcp",
-                    "bind": "22215",
-                    "authentication": {
-                      "mechanism": "password_based",
-                      "backend": "built_in_database",
-                      "password_hash_algorithm": {
-                        "name": "sha256"
-                      },
-                      "user_id_type": "username"
-                    },
-                    "node_status": [
-                      {
-                        "node": "emqx@127.0.0.1",
-                        "status": {
-                          "running": true,
-                          "max_connections": 1024000,
-                          "current_connections": 10
-                        }
-                      }
-                    ],
                     "acceptors": 16,
                     "max_connections": 1024000,
                     "max_conn_rate": 1000
@@ -23852,6 +24147,49 @@
                     },
                     "summary": "A simple TCP listener example"
                   },
+                  "dtls_listener_with_psk_ciphers": {
+                    "value": {
+                      "name": "dtls-psk",
+                      "type": "dtls",
+                      "bind": "22214",
+                      "acceptors": 16,
+                      "dtls_options": {
+                        "verify": "verify_none",
+                        "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
+                        "versions": [
+                          "dtlsv1.2",
+                          "dtlsv1"
+                        ],
+                        "fail_if_no_peer_cert": false,
+                        "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
+                        "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
+                        "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
+                        "user_lookup_fun": "emqx_tls_psk:lookup"
+                      },
+                      "max_connections": 1024000,
+                      "max_conn_rate": 1000
+                    },
+                    "summary": "A DTLS listener with PSK example"
+                  },
+                  "lisetner_with_authn": {
+                    "value": {
+                      "name": "tcp-with-authn",
+                      "type": "tcp",
+                      "bind": "22215",
+                      "authentication": {
+                        "mechanism": "password_based",
+                        "backend": "built_in_database",
+                        "password_hash_algorithm": {
+                          "name": "sha256"
+                        },
+                        "user_id_type": "username"
+                      },
+                      "acceptors": 16,
+                      "max_connections": 1024000,
+                      "max_conn_rate": 1000
+                    },
+                    "summary": "A TCP listener with authentication example"
+                  },
                   "ws_listener": {
                     "value": {
                       "name": "ws-def",
@@ -23930,49 +24268,6 @@
                       "max_conn_rate": 1000
                     },
                     "summary": "A simple WebSocket/TLS listener example"
-                  },
-                  "dtls_listener_with_psk_ciphers": {
-                    "value": {
-                      "name": "dtls-psk",
-                      "type": "dtls",
-                      "bind": "22214",
-                      "acceptors": 16,
-                      "dtls_options": {
-                        "verify": "verify_none",
-                        "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
-                        "versions": [
-                          "dtlsv1.2",
-                          "dtlsv1"
-                        ],
-                        "fail_if_no_peer_cert": false,
-                        "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
-                        "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
-                        "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
-                        "user_lookup_fun": "emqx_tls_psk:lookup"
-                      },
-                      "max_connections": 1024000,
-                      "max_conn_rate": 1000
-                    },
-                    "summary": "A DTLS listener with PSK example"
-                  },
-                  "lisetner_with_authn": {
-                    "value": {
-                      "name": "tcp-with-authn",
-                      "type": "tcp",
-                      "bind": "22215",
-                      "authentication": {
-                        "mechanism": "password_based",
-                        "backend": "built_in_database",
-                        "password_hash_algorithm": {
-                          "name": "sha256"
-                        },
-                        "user_id_type": "username"
-                      },
-                      "acceptors": 16,
-                      "max_connections": 1024000,
-                      "max_conn_rate": 1000
-                    },
-                    "summary": "A TCP listener with authentication example"
                   }
                 },
                 "schema": {
@@ -24046,7 +24341,6 @@
             }
           }
         },
-        "summary": "Add listener",
         "requestBody": {
           "content": {
             "application/json": {
@@ -24150,6 +24444,49 @@
                   },
                   "summary": "A simple TCP listener example"
                 },
+                "dtls_listener_with_psk_ciphers": {
+                  "value": {
+                    "name": "dtls-psk",
+                    "type": "dtls",
+                    "bind": "22214",
+                    "acceptors": 16,
+                    "dtls_options": {
+                      "verify": "verify_none",
+                      "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
+                      "versions": [
+                        "dtlsv1.2",
+                        "dtlsv1"
+                      ],
+                      "fail_if_no_peer_cert": false,
+                      "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
+                      "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
+                      "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
+                      "user_lookup_fun": "emqx_tls_psk:lookup"
+                    },
+                    "max_connections": 1024000,
+                    "max_conn_rate": 1000
+                  },
+                  "summary": "A DTLS listener with PSK example"
+                },
+                "lisetner_with_authn": {
+                  "value": {
+                    "name": "tcp-with-authn",
+                    "type": "tcp",
+                    "bind": "22215",
+                    "authentication": {
+                      "mechanism": "password_based",
+                      "backend": "built_in_database",
+                      "password_hash_algorithm": {
+                        "name": "sha256"
+                      },
+                      "user_id_type": "username"
+                    },
+                    "acceptors": 16,
+                    "max_connections": 1024000,
+                    "max_conn_rate": 1000
+                  },
+                  "summary": "A TCP listener with authentication example"
+                },
                 "ws_listener": {
                   "value": {
                     "name": "ws-def",
@@ -24228,49 +24565,6 @@
                     "max_conn_rate": 1000
                   },
                   "summary": "A simple WebSocket/TLS listener example"
-                },
-                "dtls_listener_with_psk_ciphers": {
-                  "value": {
-                    "name": "dtls-psk",
-                    "type": "dtls",
-                    "bind": "22214",
-                    "acceptors": 16,
-                    "dtls_options": {
-                      "verify": "verify_none",
-                      "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
-                      "versions": [
-                        "dtlsv1.2",
-                        "dtlsv1"
-                      ],
-                      "fail_if_no_peer_cert": false,
-                      "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
-                      "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
-                      "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
-                      "user_lookup_fun": "emqx_tls_psk:lookup"
-                    },
-                    "max_connections": 1024000,
-                    "max_conn_rate": 1000
-                  },
-                  "summary": "A DTLS listener with PSK example"
-                },
-                "lisetner_with_authn": {
-                  "value": {
-                    "name": "tcp-with-authn",
-                    "type": "tcp",
-                    "bind": "22215",
-                    "authentication": {
-                      "mechanism": "password_based",
-                      "backend": "built_in_database",
-                      "password_hash_algorithm": {
-                        "name": "sha256"
-                      },
-                      "user_id_type": "username"
-                    },
-                    "acceptors": 16,
-                    "max_connections": 1024000,
-                    "max_conn_rate": 1000
-                  },
-                  "summary": "A TCP listener with authentication example"
                 }
               },
               "schema": {
@@ -24298,6 +24592,7 @@
             }
           }
         },
+        "summary": "Add listener",
         "security": [
           {
             "basicAuth": []
@@ -24445,7 +24740,6 @@
             }
           }
         },
-        "summary": "Update plugin config",
         "requestBody": {
           "content": {
             "application/json": {
@@ -24455,6 +24749,7 @@
             }
           }
         },
+        "summary": "Update plugin config",
         "security": [
           {
             "basicAuth": []
@@ -24579,7 +24874,6 @@
             }
           }
         },
-        "summary": "Update the sub-configurations under *sys_topics*",
         "requestBody": {
           "content": {
             "application/json": {
@@ -24589,6 +24883,7 @@
             }
           }
         },
+        "summary": "Update the sub-configurations under *sys_topics*",
         "security": [
           {
             "basicAuth": []
@@ -24674,7 +24969,6 @@
             }
           }
         },
-        "summary": "Test creating connector",
         "requestBody": {
           "content": {
             "application/json": {
@@ -24694,6 +24988,23 @@
                     "enable_pipelining": 100
                   },
                   "summary": "HTTP Connector"
+                },
+                "mqtt": {
+                  "value": {
+                    "name": "my_connector",
+                    "type": "mqtt",
+                    "description": "My connector",
+                    "pool_size": 3,
+                    "server": "127.0.0.1:1883",
+                    "enable": true,
+                    "proto_ver": "v5",
+                    "resource_opts": {
+                      "health_check_interval": "45s",
+                      "start_timeout": "5s",
+                      "start_after_created": true
+                    }
+                  },
+                  "summary": "MQTT Connector"
                 }
               },
               "schema": {
@@ -24709,6 +25020,7 @@
             }
           }
         },
+        "summary": "Test creating connector",
         "security": [
           {
             "basicAuth": []
@@ -25806,7 +26118,6 @@
             }
           }
         },
-        "summary": "Create source",
         "requestBody": {
           "content": {
             "application/json": {
@@ -25839,6 +26150,7 @@
             }
           }
         },
+        "summary": "Create source",
         "security": [
           {
             "basicAuth": []
@@ -26447,9 +26759,30 @@
                 }
               }
             }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "SERVICE_UNAVAILABLE"
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Service unavailable"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
           }
         },
-        "summary": "Update source",
         "requestBody": {
           "content": {
             "application/json": {
@@ -26480,6 +26813,7 @@
             }
           }
         },
+        "summary": "Update source",
         "security": [
           {
             "basicAuth": []
@@ -26629,6 +26963,73 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "BAD_REQUEST"
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Invalid table sets: bar, foo"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "BAD_REQUEST"
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Error processing export: ..."
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "root_keys": [
+                  "connectors",
+                  "actions",
+                  "sources",
+                  "rule_engine",
+                  "schema_registry"
+                ],
+                "table_sets": [
+                  "banned",
+                  "builtin_authn",
+                  "builtin_authz"
+                ]
+              },
+              "schema": {
+                "$ref": "#/components/schemas/emqx_mgmt_api_data_backup.export_request_body"
+              }
+            }
           }
         },
         "security": [
@@ -26726,83 +27127,83 @@
                 "examples": {
                   "lwm2m_client": {
                     "value": {
-                      "recv_oct": 56,
-                      "subscriptions_max": "infinity",
-                      "mqueue_max": "infinity",
-                      "mailbox_len": 0,
-                      "send_msg": 0,
-                      "keepalive": 0,
-                      "send_pkt": 1,
-                      "node": "emqx@127.0.0.1",
-                      "send_cnt": 1,
-                      "ip_address": "127.0.0.1",
-                      "proto_ver": "1.0",
-                      "mqueue_dropped": 0,
-                      "expiry_interval": 0,
-                      "lifetime": 86400,
-                      "send_oct": 61,
-                      "username": "guest",
-                      "created_at": "2021-12-07T10:44:02.721+08:00",
-                      "heap_size": 4185,
-                      "proto_name": "LwM2M",
-                      "mqueue_len": 0,
-                      "port": 50675,
                       "awaiting_rel_max": "infinity",
-                      "clientid": "MzAyMzEzNTUwNzk1NDA1MzYyMzIwNzUxNjQwMTY1NzQ0NjE",
-                      "inflight_max": "infinity",
-                      "is_bridge": false,
-                      "clean_start": true,
-                      "endpoint_name": "urn:imei:154928475237123",
-                      "disconnected_at": null,
+                      "send_pkt": 1,
+                      "mqueue_len": 0,
                       "recv_msg": 0,
-                      "awaiting_rel_cnt": 0,
-                      "subscriptions_cnt": 0,
                       "connected_at": "2021-12-07T10:44:02.721+08:00",
-                      "connected": true,
-                      "reductions": 72022,
+                      "username": "guest",
+                      "mqueue_dropped": 0,
                       "recv_pkt": 1,
+                      "endpoint_name": "urn:imei:154928475237123",
+                      "subscriptions_cnt": 0,
+                      "clean_start": true,
+                      "send_msg": 0,
+                      "recv_cnt": 1,
+                      "send_oct": 61,
+                      "heap_size": 4185,
+                      "reductions": 72022,
+                      "disconnected_at": null,
+                      "proto_name": "LwM2M",
+                      "ip_address": "127.0.0.1",
+                      "mailbox_len": 0,
+                      "node": "emqx@127.0.0.1",
+                      "inflight_max": "infinity",
+                      "expiry_interval": 0,
+                      "send_cnt": 1,
+                      "created_at": "2021-12-07T10:44:02.721+08:00",
+                      "clientid": "MzAyMzEzNTUwNzk1NDA1MzYyMzIwNzUxNjQwMTY1NzQ0NjE",
+                      "awaiting_rel_cnt": 0,
+                      "port": 50675,
+                      "recv_oct": 56,
+                      "is_bridge": false,
                       "inflight_cnt": 0,
-                      "recv_cnt": 1
+                      "lifetime": 86400,
+                      "connected": true,
+                      "proto_ver": "1.0",
+                      "subscriptions_max": "infinity",
+                      "keepalive": 0,
+                      "mqueue_max": "infinity"
                     },
                     "summary": "LwM2M client info"
                   },
                   "general_client": {
                     "value": {
-                      "recv_oct": 56,
-                      "subscriptions_max": "infinity",
-                      "mqueue_max": "infinity",
-                      "mailbox_len": 0,
-                      "send_msg": 0,
-                      "keepalive": 0,
-                      "send_pkt": 1,
-                      "node": "emqx@127.0.0.1",
-                      "send_cnt": 1,
-                      "ip_address": "127.0.0.1",
-                      "proto_ver": "1.0",
-                      "mqueue_dropped": 0,
-                      "expiry_interval": 0,
-                      "send_oct": 61,
-                      "username": "guest",
-                      "created_at": "2021-12-07T10:44:02.721+08:00",
-                      "heap_size": 4185,
-                      "proto_name": "STOMP",
-                      "mqueue_len": 0,
-                      "port": 50675,
                       "awaiting_rel_max": "infinity",
-                      "clientid": "MzAyMzEzNTUwNzk1NDA1MzYyMzIwNzUxNjQwMTY1NzQ0NjE",
-                      "inflight_max": "infinity",
-                      "is_bridge": false,
-                      "clean_start": true,
-                      "disconnected_at": null,
+                      "send_pkt": 1,
+                      "mqueue_len": 0,
                       "recv_msg": 0,
-                      "awaiting_rel_cnt": 0,
-                      "subscriptions_cnt": 0,
                       "connected_at": "2021-12-07T10:44:02.721+08:00",
-                      "connected": true,
-                      "reductions": 72022,
+                      "username": "guest",
+                      "mqueue_dropped": 0,
                       "recv_pkt": 1,
+                      "subscriptions_cnt": 0,
+                      "clean_start": true,
+                      "send_msg": 0,
+                      "recv_cnt": 1,
+                      "send_oct": 61,
+                      "heap_size": 4185,
+                      "reductions": 72022,
+                      "disconnected_at": null,
+                      "proto_name": "STOMP",
+                      "ip_address": "127.0.0.1",
+                      "mailbox_len": 0,
+                      "node": "emqx@127.0.0.1",
+                      "inflight_max": "infinity",
+                      "expiry_interval": 0,
+                      "send_cnt": 1,
+                      "created_at": "2021-12-07T10:44:02.721+08:00",
+                      "clientid": "MzAyMzEzNTUwNzk1NDA1MzYyMzIwNzUxNjQwMTY1NzQ0NjE",
+                      "awaiting_rel_cnt": 0,
+                      "port": 50675,
+                      "recv_oct": 56,
+                      "is_bridge": false,
                       "inflight_cnt": 0,
-                      "recv_cnt": 1
+                      "connected": true,
+                      "proto_ver": "1.0",
+                      "subscriptions_max": "infinity",
+                      "keepalive": 0,
+                      "mqueue_max": "infinity"
                     },
                     "summary": "General client info"
                   }
@@ -27046,7 +27447,6 @@
             }
           }
         },
-        "summary": "Publish a batch of messages",
         "requestBody": {
           "content": {
             "application/json": {
@@ -27059,6 +27459,7 @@
             }
           }
         },
+        "summary": "Publish a batch of messages",
         "security": [
           {
             "basicAuth": []
@@ -27275,7 +27676,6 @@
             }
           }
         },
-        "summary": "Test a rule",
         "requestBody": {
           "content": {
             "application/json": {
@@ -27285,6 +27685,7 @@
             }
           }
         },
+        "summary": "Test a rule",
         "security": [
           {
             "basicAuth": []
@@ -27677,7 +28078,6 @@
             }
           }
         },
-        "summary": "Update the sub-configurations under *sysmon*",
         "requestBody": {
           "content": {
             "application/json": {
@@ -27687,6 +28087,7 @@
             }
           }
         },
+        "summary": "Update the sub-configurations under *sysmon*",
         "security": [
           {
             "basicAuth": []
@@ -27743,6 +28144,28 @@
                       "enable_pipelining": 100
                     },
                     "summary": "HTTP Connector"
+                  },
+                  "mqtt": {
+                    "value": {
+                      "status": "connected",
+                      "description": "My connector",
+                      "pool_size": 3,
+                      "server": "127.0.0.1:1883",
+                      "enable": true,
+                      "node_status": [
+                        {
+                          "node": "emqx@localhost",
+                          "status": "connected"
+                        }
+                      ],
+                      "proto_ver": "v5",
+                      "resource_opts": {
+                        "health_check_interval": "45s",
+                        "start_timeout": "5s",
+                        "start_after_created": true
+                      }
+                    },
+                    "summary": "MQTT Connector"
                   }
                 },
                 "schema": {
@@ -27836,6 +28259,28 @@
                       "enable_pipelining": 100
                     },
                     "summary": "HTTP Connector"
+                  },
+                  "mqtt": {
+                    "value": {
+                      "status": "connected",
+                      "description": "My connector",
+                      "pool_size": 3,
+                      "server": "127.0.0.1:1883",
+                      "enable": true,
+                      "node_status": [
+                        {
+                          "node": "emqx@localhost",
+                          "status": "connected"
+                        }
+                      ],
+                      "proto_ver": "v5",
+                      "resource_opts": {
+                        "health_check_interval": "45s",
+                        "start_timeout": "5s",
+                        "start_after_created": true
+                      }
+                    },
+                    "summary": "MQTT Connector"
                   }
                 },
                 "schema": {
@@ -27896,7 +28341,6 @@
             }
           }
         },
-        "summary": "Update connector",
         "requestBody": {
           "content": {
             "application/json": {
@@ -27914,6 +28358,21 @@
                     "enable_pipelining": 100
                   },
                   "summary": "HTTP Connector"
+                },
+                "mqtt": {
+                  "value": {
+                    "description": "My connector",
+                    "pool_size": 3,
+                    "server": "127.0.0.1:1883",
+                    "enable": true,
+                    "proto_ver": "v5",
+                    "resource_opts": {
+                      "health_check_interval": "45s",
+                      "start_timeout": "5s",
+                      "start_after_created": true
+                    }
+                  },
+                  "summary": "MQTT Connector"
                 }
               },
               "schema": {
@@ -27929,6 +28388,7 @@
             }
           }
         },
+        "summary": "Update connector",
         "security": [
           {
             "basicAuth": []
@@ -28393,6 +28853,49 @@
                     },
                     "summary": "A simple TCP listener example"
                   },
+                  "dtls_listener_with_psk_ciphers": {
+                    "value": {
+                      "name": "dtls-psk",
+                      "type": "dtls",
+                      "bind": "22214",
+                      "acceptors": 16,
+                      "dtls_options": {
+                        "verify": "verify_none",
+                        "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
+                        "versions": [
+                          "dtlsv1.2",
+                          "dtlsv1"
+                        ],
+                        "fail_if_no_peer_cert": false,
+                        "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
+                        "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
+                        "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
+                        "user_lookup_fun": "emqx_tls_psk:lookup"
+                      },
+                      "max_connections": 1024000,
+                      "max_conn_rate": 1000
+                    },
+                    "summary": "A DTLS listener with PSK example"
+                  },
+                  "lisetner_with_authn": {
+                    "value": {
+                      "name": "tcp-with-authn",
+                      "type": "tcp",
+                      "bind": "22215",
+                      "authentication": {
+                        "mechanism": "password_based",
+                        "backend": "built_in_database",
+                        "password_hash_algorithm": {
+                          "name": "sha256"
+                        },
+                        "user_id_type": "username"
+                      },
+                      "acceptors": 16,
+                      "max_connections": 1024000,
+                      "max_conn_rate": 1000
+                    },
+                    "summary": "A TCP listener with authentication example"
+                  },
                   "ws_listener": {
                     "value": {
                       "name": "ws-def",
@@ -28471,49 +28974,6 @@
                       "max_conn_rate": 1000
                     },
                     "summary": "A simple WebSocket/TLS listener example"
-                  },
-                  "dtls_listener_with_psk_ciphers": {
-                    "value": {
-                      "name": "dtls-psk",
-                      "type": "dtls",
-                      "bind": "22214",
-                      "acceptors": 16,
-                      "dtls_options": {
-                        "verify": "verify_none",
-                        "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
-                        "versions": [
-                          "dtlsv1.2",
-                          "dtlsv1"
-                        ],
-                        "fail_if_no_peer_cert": false,
-                        "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
-                        "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
-                        "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
-                        "user_lookup_fun": "emqx_tls_psk:lookup"
-                      },
-                      "max_connections": 1024000,
-                      "max_conn_rate": 1000
-                    },
-                    "summary": "A DTLS listener with PSK example"
-                  },
-                  "lisetner_with_authn": {
-                    "value": {
-                      "name": "tcp-with-authn",
-                      "type": "tcp",
-                      "bind": "22215",
-                      "authentication": {
-                        "mechanism": "password_based",
-                        "backend": "built_in_database",
-                        "password_hash_algorithm": {
-                          "name": "sha256"
-                        },
-                        "user_id_type": "username"
-                      },
-                      "acceptors": 16,
-                      "max_connections": 1024000,
-                      "max_conn_rate": 1000
-                    },
-                    "summary": "A TCP listener with authentication example"
                   }
                 },
                 "schema": {
@@ -28736,6 +29196,49 @@
                     },
                     "summary": "A simple TCP listener example"
                   },
+                  "dtls_listener_with_psk_ciphers": {
+                    "value": {
+                      "name": "dtls-psk",
+                      "type": "dtls",
+                      "bind": "22214",
+                      "acceptors": 16,
+                      "dtls_options": {
+                        "verify": "verify_none",
+                        "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
+                        "versions": [
+                          "dtlsv1.2",
+                          "dtlsv1"
+                        ],
+                        "fail_if_no_peer_cert": false,
+                        "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
+                        "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
+                        "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
+                        "user_lookup_fun": "emqx_tls_psk:lookup"
+                      },
+                      "max_connections": 1024000,
+                      "max_conn_rate": 1000
+                    },
+                    "summary": "A DTLS listener with PSK example"
+                  },
+                  "lisetner_with_authn": {
+                    "value": {
+                      "name": "tcp-with-authn",
+                      "type": "tcp",
+                      "bind": "22215",
+                      "authentication": {
+                        "mechanism": "password_based",
+                        "backend": "built_in_database",
+                        "password_hash_algorithm": {
+                          "name": "sha256"
+                        },
+                        "user_id_type": "username"
+                      },
+                      "acceptors": 16,
+                      "max_connections": 1024000,
+                      "max_conn_rate": 1000
+                    },
+                    "summary": "A TCP listener with authentication example"
+                  },
                   "ws_listener": {
                     "value": {
                       "name": "ws-def",
@@ -28814,49 +29317,6 @@
                       "max_conn_rate": 1000
                     },
                     "summary": "A simple WebSocket/TLS listener example"
-                  },
-                  "dtls_listener_with_psk_ciphers": {
-                    "value": {
-                      "name": "dtls-psk",
-                      "type": "dtls",
-                      "bind": "22214",
-                      "acceptors": 16,
-                      "dtls_options": {
-                        "verify": "verify_none",
-                        "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
-                        "versions": [
-                          "dtlsv1.2",
-                          "dtlsv1"
-                        ],
-                        "fail_if_no_peer_cert": false,
-                        "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
-                        "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
-                        "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
-                        "user_lookup_fun": "emqx_tls_psk:lookup"
-                      },
-                      "max_connections": 1024000,
-                      "max_conn_rate": 1000
-                    },
-                    "summary": "A DTLS listener with PSK example"
-                  },
-                  "lisetner_with_authn": {
-                    "value": {
-                      "name": "tcp-with-authn",
-                      "type": "tcp",
-                      "bind": "22215",
-                      "authentication": {
-                        "mechanism": "password_based",
-                        "backend": "built_in_database",
-                        "password_hash_algorithm": {
-                          "name": "sha256"
-                        },
-                        "user_id_type": "username"
-                      },
-                      "acceptors": 16,
-                      "max_connections": 1024000,
-                      "max_conn_rate": 1000
-                    },
-                    "summary": "A TCP listener with authentication example"
                   }
                 },
                 "schema": {
@@ -28930,7 +29390,6 @@
             }
           }
         },
-        "summary": "Update listener config",
         "requestBody": {
           "content": {
             "application/json": {
@@ -29034,6 +29493,49 @@
                   },
                   "summary": "A simple TCP listener example"
                 },
+                "dtls_listener_with_psk_ciphers": {
+                  "value": {
+                    "name": "dtls-psk",
+                    "type": "dtls",
+                    "bind": "22214",
+                    "acceptors": 16,
+                    "dtls_options": {
+                      "verify": "verify_none",
+                      "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
+                      "versions": [
+                        "dtlsv1.2",
+                        "dtlsv1"
+                      ],
+                      "fail_if_no_peer_cert": false,
+                      "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
+                      "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
+                      "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
+                      "user_lookup_fun": "emqx_tls_psk:lookup"
+                    },
+                    "max_connections": 1024000,
+                    "max_conn_rate": 1000
+                  },
+                  "summary": "A DTLS listener with PSK example"
+                },
+                "lisetner_with_authn": {
+                  "value": {
+                    "name": "tcp-with-authn",
+                    "type": "tcp",
+                    "bind": "22215",
+                    "authentication": {
+                      "mechanism": "password_based",
+                      "backend": "built_in_database",
+                      "password_hash_algorithm": {
+                        "name": "sha256"
+                      },
+                      "user_id_type": "username"
+                    },
+                    "acceptors": 16,
+                    "max_connections": 1024000,
+                    "max_conn_rate": 1000
+                  },
+                  "summary": "A TCP listener with authentication example"
+                },
                 "ws_listener": {
                   "value": {
                     "name": "ws-def",
@@ -29112,49 +29614,6 @@
                     "max_conn_rate": 1000
                   },
                   "summary": "A simple WebSocket/TLS listener example"
-                },
-                "dtls_listener_with_psk_ciphers": {
-                  "value": {
-                    "name": "dtls-psk",
-                    "type": "dtls",
-                    "bind": "22214",
-                    "acceptors": 16,
-                    "dtls_options": {
-                      "verify": "verify_none",
-                      "ciphers": "RSA-PSK-AES256-GCM-SHA384,RSA-PSK-AES256-CBC-SHA384,RSA-PSK-AES128-GCM-SHA256,RSA-PSK-AES128-CBC-SHA256,RSA-PSK-AES256-CBC-SHA,RSA-PSK-AES128-CBC-SHA",
-                      "versions": [
-                        "dtlsv1.2",
-                        "dtlsv1"
-                      ],
-                      "fail_if_no_peer_cert": false,
-                      "certfile": "${EMQX_ETC_DIR}/certs/cert.pem",
-                      "keyfile": "${EMQX_ETC_DIR}/certs/key.pem",
-                      "cacertfile": "${EMQX_ETC_DIR}/certs/cacert.pem",
-                      "user_lookup_fun": "emqx_tls_psk:lookup"
-                    },
-                    "max_connections": 1024000,
-                    "max_conn_rate": 1000
-                  },
-                  "summary": "A DTLS listener with PSK example"
-                },
-                "lisetner_with_authn": {
-                  "value": {
-                    "name": "tcp-with-authn",
-                    "type": "tcp",
-                    "bind": "22215",
-                    "authentication": {
-                      "mechanism": "password_based",
-                      "backend": "built_in_database",
-                      "password_hash_algorithm": {
-                        "name": "sha256"
-                      },
-                      "user_id_type": "username"
-                    },
-                    "acceptors": 16,
-                    "max_connections": 1024000,
-                    "max_conn_rate": 1000
-                  },
-                  "summary": "A TCP listener with authentication example"
                 }
               },
               "schema": {
@@ -29182,6 +29641,7 @@
             }
           }
         },
+        "summary": "Update listener config",
         "security": [
           {
             "basicAuth": []
@@ -29523,7 +29983,6 @@
             }
           }
         },
-        "summary": "Apply a rule for testing",
         "requestBody": {
           "content": {
             "application/json": {
@@ -29533,6 +29992,7 @@
             }
           }
         },
+        "summary": "Apply a rule for testing",
         "security": [
           {
             "basicAuth": []
@@ -29720,7 +30180,6 @@
             }
           }
         },
-        "summary": "Upload a hot upgrade package",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -29741,6 +30200,7 @@
             }
           }
         },
+        "summary": "Upload a hot upgrade package",
         "security": [
           {
             "basicAuth": []
@@ -29937,7 +30397,6 @@
             }
           }
         },
-        "summary": "Create a rule",
         "requestBody": {
           "content": {
             "application/json": {
@@ -29947,6 +30406,7 @@
             }
           }
         },
+        "summary": "Create a rule",
         "security": [
           {
             "basicAuth": []
@@ -29994,17 +30454,17 @@
                         "total": 0,
                         "success": 0,
                         "failed": 0,
-                        "rate": 0,
-                        "rate_last5m": 0,
-                        "rate_max": 0
+                        "rate": 0.0,
+                        "rate_last5m": 0.0,
+                        "rate_max": 0.0
                       },
                       "resource_metrics": {
-                        "success": 0,
                         "matched": 0,
+                        "success": 0,
                         "failed": 0,
-                        "rate": 0,
-                        "rate_last5m": 0,
-                        "rate_max": 0
+                        "rate": 0.0,
+                        "rate_last5m": 0.0,
+                        "rate_max": 0.0
                       },
                       "node_error": [],
                       "node_metrics": [
@@ -30015,9 +30475,9 @@
                             "total": 0,
                             "matched": 0,
                             "failed": 0,
-                            "rate": 0,
-                            "rate_last5m": 0,
-                            "rate_max": 0
+                            "rate": 0.0,
+                            "rate_last5m": 0.0,
+                            "rate_max": 0.0
                           }
                         }
                       ],
@@ -30025,12 +30485,12 @@
                         {
                           "node": "emqx@127.0.0.1",
                           "metrics": {
-                            "success": 0,
                             "matched": 0,
+                            "success": 0,
                             "failed": 0,
-                            "rate": 0,
-                            "rate_last5m": 0,
-                            "rate_max": 0
+                            "rate": 0.0,
+                            "rate_last5m": 0.0,
+                            "rate_max": 0.0
                           }
                         }
                       ]
@@ -30266,6 +30726,7 @@
                         "current_connections": 0
                       }
                     ],
+                    "max_connections": 1024000,
                     "listeners": [
                       {
                         "id": "lwm2m:udp:default",
@@ -30274,7 +30735,6 @@
                         "type": "udp"
                       }
                     ],
-                    "max_connections": 1024000,
                     "created_at": "2021-12-08T14:41:26.171+08:00",
                     "current_connections": 0
                   },
@@ -30289,6 +30749,7 @@
                         "current_connections": 0
                       }
                     ],
+                    "max_connections": 1024000,
                     "listeners": [
                       {
                         "id": "mqttsn:udp:default",
@@ -30297,7 +30758,6 @@
                         "type": "udp"
                       }
                     ],
-                    "max_connections": 1024000,
                     "created_at": "2021-12-08T14:41:45.071+08:00",
                     "current_connections": 0,
                     "stopped_at": "2021-12-08T14:56:35.576+08:00"
@@ -30314,6 +30774,7 @@
                         "current_connections": 0
                       }
                     ],
+                    "max_connections": 1024000,
                     "listeners": [
                       {
                         "id": "stomp:tcp:default",
@@ -30322,7 +30783,6 @@
                         "type": "tcp"
                       }
                     ],
-                    "max_connections": 1024000,
                     "created_at": "2021-12-08T14:42:15.272+08:00",
                     "current_connections": 0
                   }
@@ -30519,7 +30979,6 @@
             }
           }
         },
-        "summary": "Test creating bridge",
         "requestBody": {
           "content": {
             "application/json": {
@@ -30543,9 +31002,9 @@
                     "resource_opts": {
                       "worker_pool_size": 1,
                       "query_mode": "async",
-                      "max_buffer_bytes": 104857600,
                       "inflight_window": 100,
-                      "health_check_interval": 15000
+                      "health_check_interval": 15000,
+                      "max_buffer_bytes": 104857600
                     },
                     "enable_pipelining": 100,
                     "local_topic": "emqx_http/#"
@@ -30570,8 +31029,19 @@
                     "max_inflight": 100,
                     "resource_opts": {
                       "query_mode": "sync",
-                      "max_buffer_bytes": 104857600,
-                      "health_check_interval": "15s"
+                      "health_check_interval": "15s",
+                      "max_buffer_bytes": 104857600
+                    },
+                    "egress": {
+                      "local": {
+                        "topic": "emqx/#"
+                      },
+                      "remote": {
+                        "retain": false,
+                        "payload": "${payload}",
+                        "topic": "from_emqx/${topic}",
+                        "qos": "${qos}"
+                      }
                     },
                     "ingress": {
                       "local": {
@@ -30583,17 +31053,6 @@
                       "remote": {
                         "topic": "aws/#",
                         "qos": 1
-                      }
-                    },
-                    "egress": {
-                      "local": {
-                        "topic": "emqx/#"
-                      },
-                      "remote": {
-                        "retain": false,
-                        "payload": "${payload}",
-                        "topic": "from_emqx/${topic}",
-                        "qos": "${qos}"
                       }
                     }
                   },
@@ -30613,6 +31072,7 @@
             }
           }
         },
+        "summary": "Test creating bridge",
         "security": [
           {
             "basicAuth": []
@@ -30882,8 +31342,8 @@
                   "password_based:redis": {
                     "value": {
                       "mechanism": "password_based",
-                      "server": "127.0.0.1:6379",
                       "cmd": "HMGET ${username} password_hash salt",
+                      "server": "127.0.0.1:6379",
                       "database": 0,
                       "backend": "redis",
                       "password_hash_algorithm": {
@@ -31147,8 +31607,8 @@
                 "password_based:redis": {
                   "value": {
                     "mechanism": "password_based",
-                    "server": "127.0.0.1:6379",
                     "cmd": "HMGET ${username} password_hash salt",
+                    "server": "127.0.0.1:6379",
                     "database": 0,
                     "backend": "redis",
                     "password_hash_algorithm": {
@@ -31307,7 +31767,6 @@
             }
           }
         },
-        "summary": "Publish a message",
         "requestBody": {
           "content": {
             "application/json": {
@@ -31317,6 +31776,7 @@
             }
           }
         },
+        "summary": "Publish a message",
         "security": [
           {
             "basicAuth": []
@@ -31959,9 +32419,6 @@
         },
         "security": [
           {
-            "basicAuth": []
-          },
-          {
             "bearerAuth": []
           }
         ]
@@ -32032,9 +32489,6 @@
         },
         "security": [
           {
-            "basicAuth": []
-          },
-          {
             "bearerAuth": []
           }
         ]
@@ -32087,17 +32541,17 @@
                         "total": 0,
                         "allow": 0,
                         "deny": 0,
-                        "rate": 0,
-                        "rate_last5m": 0,
-                        "rate_max": 0
+                        "rate": 0.0,
+                        "rate_last5m": 0.0,
+                        "rate_max": 0.0
                       },
                       "resource_metrics": {
-                        "success": 0,
                         "matched": 0,
+                        "success": 0,
                         "failed": 0,
-                        "rate": 0,
-                        "rate_last5m": 0,
-                        "rate_max": 0
+                        "rate": 0.0,
+                        "rate_last5m": 0.0,
+                        "rate_max": 0.0
                       },
                       "node_metrics": [
                         {
@@ -32107,9 +32561,9 @@
                             "total": 0,
                             "allow": 0,
                             "deny": 0,
-                            "rate": 0,
-                            "rate_last5m": 0,
-                            "rate_max": 0
+                            "rate": 0.0,
+                            "rate_last5m": 0.0,
+                            "rate_max": 0.0
                           }
                         }
                       ],
@@ -32117,12 +32571,12 @@
                         {
                           "node": "emqx@127.0.0.1",
                           "metrics": {
-                            "success": 0,
                             "matched": 0,
+                            "success": 0,
                             "failed": 0,
-                            "rate": 0,
-                            "rate_last5m": 0,
-                            "rate_max": 0
+                            "rate": 0.0,
+                            "rate_last5m": 0.0,
+                            "rate_max": 0.0
                           }
                         }
                       ]
@@ -32225,7 +32679,6 @@
             }
           }
         },
-        "summary": "Test creating bridge",
         "requestBody": {
           "content": {
             "application/json": {
@@ -32258,6 +32711,7 @@
             }
           }
         },
+        "summary": "Test creating bridge",
         "security": [
           {
             "basicAuth": []
@@ -32930,8 +33384,8 @@
                   "password_based:redis": {
                     "value": {
                       "mechanism": "password_based",
-                      "server": "127.0.0.1:6379",
                       "cmd": "HMGET ${username} password_hash salt",
+                      "server": "127.0.0.1:6379",
                       "database": 0,
                       "backend": "redis",
                       "password_hash_algorithm": {
@@ -33158,8 +33612,8 @@
                   "password_based:redis": {
                     "value": {
                       "mechanism": "password_based",
-                      "server": "127.0.0.1:6379",
                       "cmd": "HMGET ${username} password_hash salt",
+                      "server": "127.0.0.1:6379",
                       "database": 0,
                       "backend": "redis",
                       "password_hash_algorithm": {
@@ -33272,7 +33726,6 @@
             }
           }
         },
-        "summary": "Update authenticator configuration",
         "requestBody": {
           "content": {
             "application/json": {
@@ -33348,8 +33801,8 @@
                 "password_based:redis": {
                   "value": {
                     "mechanism": "password_based",
-                    "server": "127.0.0.1:6379",
                     "cmd": "HMGET ${username} password_hash salt",
+                    "server": "127.0.0.1:6379",
                     "database": 0,
                     "backend": "redis",
                     "password_hash_algorithm": {
@@ -33416,6 +33869,7 @@
             }
           }
         },
+        "summary": "Update authenticator configuration",
         "security": [
           {
             "basicAuth": []
@@ -33610,8 +34064,8 @@
                   "password_based:redis": {
                     "value": {
                       "mechanism": "password_based",
-                      "server": "127.0.0.1:6379",
                       "cmd": "HMGET ${username} password_hash salt",
+                      "server": "127.0.0.1:6379",
                       "database": 0,
                       "backend": "redis",
                       "password_hash_algorithm": {
@@ -33724,7 +34178,6 @@
             }
           }
         },
-        "summary": "Create authenticator for gateway",
         "requestBody": {
           "content": {
             "application/json": {
@@ -33800,8 +34253,8 @@
                 "password_based:redis": {
                   "value": {
                     "mechanism": "password_based",
-                    "server": "127.0.0.1:6379",
                     "cmd": "HMGET ${username} password_hash salt",
+                    "server": "127.0.0.1:6379",
                     "database": 0,
                     "backend": "redis",
                     "password_hash_algorithm": {
@@ -33868,6 +34321,7 @@
             }
           }
         },
+        "summary": "Create authenticator for gateway",
         "security": [
           {
             "basicAuth": []
@@ -34408,7 +34862,6 @@
             }
           }
         },
-        "summary": "Update the sub-configurations under *alarm*",
         "requestBody": {
           "content": {
             "application/json": {
@@ -34418,6 +34871,7 @@
             }
           }
         },
+        "summary": "Update the sub-configurations under *alarm*",
         "security": [
           {
             "basicAuth": []
@@ -34618,7 +35072,6 @@
             }
           }
         },
-        "summary": "Create bridge",
         "requestBody": {
           "content": {
             "application/json": {
@@ -34676,6 +35129,7 @@
             }
           }
         },
+        "summary": "Create bridge",
         "security": [
           {
             "basicAuth": []
@@ -34907,7 +35361,6 @@
             }
           }
         },
-        "summary": "Send a Request to a Client",
         "requestBody": {
           "content": {
             "application/json": {
@@ -34951,6 +35404,7 @@
             }
           }
         },
+        "summary": "Send a Request to a Client",
         "security": [
           {
             "basicAuth": []
@@ -35344,7 +35798,6 @@
             }
           }
         },
-        "summary": "Dashboard authentication",
         "requestBody": {
           "content": {
             "application/json": {
@@ -35368,6 +35821,7 @@
             }
           }
         },
+        "summary": "Dashboard authentication",
         "security": []
       }
     },
@@ -35414,9 +35868,9 @@
                       "resource_opts": {
                         "worker_pool_size": 1,
                         "query_mode": "async",
-                        "max_buffer_bytes": 104857600,
                         "inflight_window": 100,
-                        "health_check_interval": 15000
+                        "health_check_interval": 15000,
+                        "max_buffer_bytes": 104857600
                       },
                       "enable_pipelining": 100,
                       "local_topic": "emqx_http/#"
@@ -35441,8 +35895,19 @@
                       "max_inflight": 100,
                       "resource_opts": {
                         "query_mode": "sync",
-                        "max_buffer_bytes": 104857600,
-                        "health_check_interval": "15s"
+                        "health_check_interval": "15s",
+                        "max_buffer_bytes": 104857600
+                      },
+                      "egress": {
+                        "local": {
+                          "topic": "emqx/#"
+                        },
+                        "remote": {
+                          "retain": false,
+                          "payload": "${payload}",
+                          "topic": "from_emqx/${topic}",
+                          "qos": "${qos}"
+                        }
                       },
                       "ingress": {
                         "local": {
@@ -35454,17 +35919,6 @@
                         "remote": {
                           "topic": "aws/#",
                           "qos": 1
-                        }
-                      },
-                      "egress": {
-                        "local": {
-                          "topic": "emqx/#"
-                        },
-                        "remote": {
-                          "retain": false,
-                          "payload": "${payload}",
-                          "topic": "from_emqx/${topic}",
-                          "qos": "${qos}"
                         }
                       }
                     },
@@ -35559,9 +36013,9 @@
                       "resource_opts": {
                         "worker_pool_size": 1,
                         "query_mode": "async",
-                        "max_buffer_bytes": 104857600,
                         "inflight_window": 100,
-                        "health_check_interval": 15000
+                        "health_check_interval": 15000,
+                        "max_buffer_bytes": 104857600
                       },
                       "enable_pipelining": 100,
                       "local_topic": "emqx_http/#"
@@ -35586,8 +36040,19 @@
                       "max_inflight": 100,
                       "resource_opts": {
                         "query_mode": "sync",
-                        "max_buffer_bytes": 104857600,
-                        "health_check_interval": "15s"
+                        "health_check_interval": "15s",
+                        "max_buffer_bytes": 104857600
+                      },
+                      "egress": {
+                        "local": {
+                          "topic": "emqx/#"
+                        },
+                        "remote": {
+                          "retain": false,
+                          "payload": "${payload}",
+                          "topic": "from_emqx/${topic}",
+                          "qos": "${qos}"
+                        }
                       },
                       "ingress": {
                         "local": {
@@ -35599,17 +36064,6 @@
                         "remote": {
                           "topic": "aws/#",
                           "qos": 1
-                        }
-                      },
-                      "egress": {
-                        "local": {
-                          "topic": "emqx/#"
-                        },
-                        "remote": {
-                          "retain": false,
-                          "payload": "${payload}",
-                          "topic": "from_emqx/${topic}",
-                          "qos": "${qos}"
                         }
                       }
                     },
@@ -35674,7 +36128,6 @@
             }
           }
         },
-        "summary": "Update bridge",
         "requestBody": {
           "content": {
             "application/json": {
@@ -35696,9 +36149,9 @@
                     "resource_opts": {
                       "worker_pool_size": 1,
                       "query_mode": "async",
-                      "max_buffer_bytes": 104857600,
                       "inflight_window": 100,
-                      "health_check_interval": 15000
+                      "health_check_interval": 15000,
+                      "max_buffer_bytes": 104857600
                     },
                     "enable_pipelining": 100,
                     "local_topic": "emqx_http/#"
@@ -35721,8 +36174,19 @@
                     "max_inflight": 100,
                     "resource_opts": {
                       "query_mode": "sync",
-                      "max_buffer_bytes": 104857600,
-                      "health_check_interval": "15s"
+                      "health_check_interval": "15s",
+                      "max_buffer_bytes": 104857600
+                    },
+                    "egress": {
+                      "local": {
+                        "topic": "emqx/#"
+                      },
+                      "remote": {
+                        "retain": false,
+                        "payload": "${payload}",
+                        "topic": "from_emqx/${topic}",
+                        "qos": "${qos}"
+                      }
                     },
                     "ingress": {
                       "local": {
@@ -35734,17 +36198,6 @@
                       "remote": {
                         "topic": "aws/#",
                         "qos": 1
-                      }
-                    },
-                    "egress": {
-                      "local": {
-                        "topic": "emqx/#"
-                      },
-                      "remote": {
-                        "retain": false,
-                        "payload": "${payload}",
-                        "topic": "from_emqx/${topic}",
-                        "qos": "${qos}"
                       }
                     }
                   },
@@ -35764,6 +36217,7 @@
             }
           }
         },
+        "summary": "Update bridge",
         "security": [
           {
             "basicAuth": []
@@ -35993,7 +36447,6 @@
             }
           }
         },
-        "summary": "Update the sub-configurations under *dashboard*",
         "requestBody": {
           "content": {
             "application/json": {
@@ -36003,6 +36456,7 @@
             }
           }
         },
+        "summary": "Update the sub-configurations under *dashboard*",
         "security": [
           {
             "basicAuth": []
@@ -36189,11 +36643,11 @@
                       "nl": 0,
                       "topic": "stomp/topic",
                       "qos": 1,
+                      "rap": 0,
+                      "rh": 0,
                       "sub_props": {
                         "subid": "10"
-                      },
-                      "rap": 0,
-                      "rh": 0
+                      }
                     },
                     "summary": "A STOMP subscription"
                   }
@@ -36250,7 +36704,6 @@
             }
           }
         },
-        "summary": "Add subscription for client",
         "requestBody": {
           "content": {
             "application/json": {
@@ -36270,11 +36723,11 @@
                     "nl": 0,
                     "topic": "stomp/topic",
                     "qos": 1,
+                    "rap": 0,
+                    "rh": 0,
                     "sub_props": {
                       "subid": "10"
-                    },
-                    "rap": 0,
-                    "rh": 0
+                    }
                   },
                   "summary": "A STOMP subscription"
                 }
@@ -36285,6 +36738,7 @@
             }
           }
         },
+        "summary": "Add subscription for client",
         "security": [
           {
             "basicAuth": []
@@ -36374,6 +36828,61 @@
             }
           }
         },
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sources_summary": {
+      "get": {
+        "description": "汇总动作。",
+        "tags": [
+          "Sources"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "name": "mySource",
+                    "status": "connected",
+                    "type": "source_type",
+                    "enable": true,
+                    "rules": [
+                      "rule1",
+                      "rule2"
+                    ],
+                    "node_status": [
+                      {
+                        "node": "emqx@127.0.0.1",
+                        "status": "connected",
+                        "status_reason": ""
+                      }
+                    ],
+                    "created_at": 1736512728666,
+                    "status_reason": "",
+                    "last_modified_at": 1736512728666
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/actions_and_sources.response_summary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Summarize sources",
         "security": [
           {
             "basicAuth": []
@@ -36538,7 +37047,6 @@
             }
           }
         },
-        "summary": "Move plugin within plugin hierarchy",
         "requestBody": {
           "content": {
             "application/json": {
@@ -36574,6 +37082,7 @@
             }
           }
         },
+        "summary": "Move plugin within plugin hierarchy",
         "security": [
           {
             "basicAuth": []
@@ -36698,7 +37207,6 @@
             }
           }
         },
-        "summary": "Update the sub-configurations under *broker*",
         "requestBody": {
           "content": {
             "application/json": {
@@ -36708,6 +37216,7 @@
             }
           }
         },
+        "summary": "Update the sub-configurations under *broker*",
         "security": [
           {
             "basicAuth": []
@@ -37361,17 +37870,17 @@
           "content": {
             "application/json": {
               "examples": {
-                "front": {
-                  "value": {
-                    "position": "front"
-                  },
-                  "summary": "front example"
-                },
                 "rear": {
                   "value": {
                     "position": "rear"
                   },
                   "summary": "rear example"
+                },
+                "front": {
+                  "value": {
+                    "position": "front"
+                  },
+                  "summary": "front example"
                 },
                 "relative_after": {
                   "value": {
@@ -37696,7 +38205,6 @@
             }
           }
         },
-        "summary": "Update user info",
         "requestBody": {
           "content": {
             "application/json": {
@@ -37721,6 +38229,7 @@
             }
           }
         },
+        "summary": "Update user info",
         "security": [
           {
             "basicAuth": []
@@ -37906,8 +38415,8 @@
                   },
                   {
                     "mechanism": "password_based",
-                    "server": "127.0.0.1:6379",
                     "cmd": "HMGET ${username} password_hash salt",
+                    "server": "127.0.0.1:6379",
                     "database": 0,
                     "backend": "redis",
                     "password_hash_algorithm": {
@@ -38071,8 +38580,8 @@
                   "password_based:redis": {
                     "value": {
                       "mechanism": "password_based",
-                      "server": "127.0.0.1:6379",
                       "cmd": "HMGET ${username} password_hash salt",
+                      "server": "127.0.0.1:6379",
                       "database": 0,
                       "backend": "redis",
                       "password_hash_algorithm": {
@@ -38262,8 +38771,8 @@
                 "password_based:redis": {
                   "value": {
                     "mechanism": "password_based",
-                    "server": "127.0.0.1:6379",
                     "cmd": "HMGET ${username} password_hash salt",
+                    "server": "127.0.0.1:6379",
                     "database": 0,
                     "backend": "redis",
                     "password_hash_algorithm": {
@@ -38982,7 +39491,6 @@
             }
           }
         },
-        "summary": "Test creating bridge",
         "requestBody": {
           "content": {
             "application/json": {
@@ -39040,6 +39548,7 @@
             }
           }
         },
+        "summary": "Test creating bridge",
         "security": [
           {
             "basicAuth": []
@@ -39306,17 +39815,17 @@
           "content": {
             "application/json": {
               "examples": {
-                "front": {
-                  "value": {
-                    "position": "front"
-                  },
-                  "summary": "absolute position 'front'"
-                },
                 "rear": {
                   "value": {
                     "position": "rear"
                   },
                   "summary": "absolute position 'rear'"
+                },
+                "front": {
+                  "value": {
+                    "position": "front"
+                  },
+                  "summary": "absolute position 'front'"
                 },
                 "related_after": {
                   "value": {
@@ -40213,6 +40722,61 @@
         ]
       }
     },
+    "/actions_summary": {
+      "get": {
+        "description": "汇总动作",
+        "tags": [
+          "Actions"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "name": "myAction",
+                    "status": "connected",
+                    "type": "action_type",
+                    "enable": true,
+                    "rules": [
+                      "rule1",
+                      "rule2"
+                    ],
+                    "node_status": [
+                      {
+                        "node": "emqx@127.0.0.1",
+                        "status": "connected",
+                        "status_reason": ""
+                      }
+                    ],
+                    "created_at": 1736512728666,
+                    "status_reason": "",
+                    "last_modified_at": 1736512728666
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/actions_and_sources.response_summary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Summarize actions",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/exhooks": {
       "get": {
         "description": "查看 ExHook 服务器列表",
@@ -40617,8 +41181,8 @@
                       ],
                       "idle_timeout": "30s",
                       "mountpoint": "coap/",
-                      "connection_required": false,
                       "enable_stats": true,
+                      "connection_required": false,
                       "notify_type": "qos",
                       "publish_qos": "coap",
                       "subscribe_qos": "coap"
@@ -40709,7 +41273,7 @@
                         }
                       },
                       "update_msg_publish_condition": "always",
-                      "xml_dir": "/etc/emqx/lwm2m_xml"
+                      "xml_dir": "etc/lwm2m_xml"
                     },
                     "summary": "A simple LwM2M gateway config"
                   },
@@ -40927,7 +41491,6 @@
             }
           }
         },
-        "summary": "Load or update the gateway confs",
         "requestBody": {
           "content": {
             "application/json": {
@@ -40938,8 +41501,8 @@
                     "heartbeat": "30s",
                     "idle_timeout": "30s",
                     "mountpoint": "coap2/",
-                    "connection_required": false,
                     "enable_stats": true,
+                    "connection_required": false,
                     "notify_type": "qos",
                     "publish_qos": "coap",
                     "subscribe_qos": "coap"
@@ -41000,7 +41563,7 @@
                       }
                     },
                     "update_msg_publish_condition": "always",
-                    "xml_dir": "/etc/emqx/lwm2m_xml"
+                    "xml_dir": "etc/lwm2m_xml"
                   },
                   "summary": "A simple LwM2M gateway config"
                 },
@@ -41053,6 +41616,28 @@
                     "enable_stats": true
                   },
                   "summary": "A simple STOMP gateway config"
+                },
+                "jt808_gateway": {
+                  "value": {
+                    "message_queue_len": 10,
+                    "proto": {
+                      "auth": {
+                        "allow_anonymous": true
+                      },
+                      "dn_topic": "jt808/dn/${clientid}/dn",
+                      "up_topic": "jt808/up/${clientid}/up"
+                    },
+                    "enable": true,
+                    "frame": {
+                      "max_length": 65535
+                    },
+                    "idle_timeout": "30s",
+                    "mountpoint": "",
+                    "retry_interval": "8s",
+                    "enable_stats": true,
+                    "max_retry_times": 3
+                  },
+                  "summary": "A simple JT808 gateway config"
                 }
               },
               "schema": {
@@ -41092,6 +41677,7 @@
             }
           }
         },
+        "summary": "Load or update the gateway confs",
         "security": [
           {
             "basicAuth": []
@@ -41391,9 +41977,30 @@
                 }
               }
             }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "SERVICE_UNAVAILABLE"
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Service unavailable"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
           }
         },
-        "summary": "Update bridge",
         "requestBody": {
           "content": {
             "application/json": {
@@ -41447,6 +42054,7 @@
             }
           }
         },
+        "summary": "Update bridge",
         "security": [
           {
             "basicAuth": []
@@ -41882,8 +42490,36 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Imported"
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "description": "文件中包含的用户总数。"
+                    },
+                    "success": {
+                      "type": "integer"
+                    },
+                    "override": {
+                      "type": "integer",
+                      "description": "以覆盖方式成功导入用户数据的用户总数。"
+                    },
+                    "skipped": {
+                      "type": "integer",
+                      "description": "因导入用户数据与现有用户数据相同而被跳过的用户总数。"
+                    },
+                    "failed": {
+                      "type": "integer",
+                      "description": "用户数据导入失败的用户总数。"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
           },
           "400": {
             "description": "",
@@ -41931,7 +42567,6 @@
             }
           }
         },
-        "summary": "Import users",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -41947,6 +42582,7 @@
             }
           }
         },
+        "summary": "Import users",
         "security": [
           {
             "basicAuth": []
@@ -42216,7 +42852,7 @@
           {
             "in": "query",
             "name": "clientid",
-            "description": "Query the banned objects with an exact client ID.",
+            "description": "使用精确的客户端 ID 查询封禁规则。",
             "required": false,
             "schema": {
               "type": "string"
@@ -42225,7 +42861,7 @@
           {
             "in": "query",
             "name": "username",
-            "description": "Query the banned objects with an exact username.",
+            "description": "使用精确的用户名查询封禁规则。",
             "required": false,
             "schema": {
               "type": "string"
@@ -42234,7 +42870,7 @@
           {
             "in": "query",
             "name": "peerhost",
-            "description": "Query the banned objects with an exact IP address.",
+            "description": "使用精确的 IP 地址查询封禁规则。",
             "required": false,
             "schema": {
               "type": "string"
@@ -42244,7 +42880,7 @@
           {
             "in": "query",
             "name": "like_clientid",
-            "description": "Fuzzy query banned objects with a regular expression for client ID.",
+            "description": "使用客户端 ID 正则表达式来匹配查询封禁规则。",
             "required": false,
             "schema": {
               "type": "string"
@@ -42253,7 +42889,7 @@
           {
             "in": "query",
             "name": "like_username",
-            "description": "Fuzzy query banned objects with a regular expression for username.",
+            "description": "使用用户名正则表达式来匹配查询封禁规则。",
             "required": false,
             "schema": {
               "type": "string"
@@ -42262,7 +42898,7 @@
           {
             "in": "query",
             "name": "like_peerhost",
-            "description": "Fuzzy query banned objects with a regular expression for IP address.",
+            "description": "使用 IP 地址正则表达式来匹配查询封禁规则。",
             "required": false,
             "schema": {
               "type": "string"
@@ -42272,7 +42908,7 @@
           {
             "in": "query",
             "name": "like_peerhost_net",
-            "description": "Fuzzy query banned objects with a regular expression for CIDR.",
+            "description": "使用 CIDR 正则表达式来匹配查询封禁规则。",
             "required": false,
             "schema": {
               "type": "string"
@@ -42806,6 +43442,25 @@
                     ],
                     "pool_type": "hash",
                     "enable_pipelining": 100
+                  },
+                  {
+                    "status": "connected",
+                    "description": "My connector",
+                    "pool_size": 3,
+                    "server": "127.0.0.1:1883",
+                    "enable": true,
+                    "node_status": [
+                      {
+                        "node": "emqx@localhost",
+                        "status": "connected"
+                      }
+                    ],
+                    "proto_ver": "v5",
+                    "resource_opts": {
+                      "health_check_interval": "45s",
+                      "start_timeout": "5s",
+                      "start_after_created": true
+                    }
                   }
                 ],
                 "schema": {
@@ -42869,6 +43524,28 @@
                       "enable_pipelining": 100
                     },
                     "summary": "HTTP Connector"
+                  },
+                  "mqtt": {
+                    "value": {
+                      "status": "connected",
+                      "description": "My connector",
+                      "pool_size": 3,
+                      "server": "127.0.0.1:1883",
+                      "enable": true,
+                      "node_status": [
+                        {
+                          "node": "emqx@localhost",
+                          "status": "connected"
+                        }
+                      ],
+                      "proto_ver": "v5",
+                      "resource_opts": {
+                        "health_check_interval": "45s",
+                        "start_timeout": "5s",
+                        "start_after_created": true
+                      }
+                    },
+                    "summary": "MQTT Connector"
                   }
                 },
                 "schema": {
@@ -42907,7 +43584,6 @@
             }
           }
         },
-        "summary": "Create connector",
         "requestBody": {
           "content": {
             "application/json": {
@@ -42927,6 +43603,23 @@
                     "enable_pipelining": 100
                   },
                   "summary": "HTTP Connector"
+                },
+                "mqtt": {
+                  "value": {
+                    "name": "my_connector",
+                    "type": "mqtt",
+                    "description": "My connector",
+                    "pool_size": 3,
+                    "server": "127.0.0.1:1883",
+                    "enable": true,
+                    "proto_ver": "v5",
+                    "resource_opts": {
+                      "health_check_interval": "45s",
+                      "start_timeout": "5s",
+                      "start_after_created": true
+                    }
+                  },
+                  "summary": "MQTT Connector"
                 }
               },
               "schema": {
@@ -42942,6 +43635,7 @@
             }
           }
         },
+        "summary": "Create connector",
         "security": [
           {
             "basicAuth": []
@@ -43242,150 +43936,6 @@
                   },
                   "type": "object"
                 }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          },
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/opentelemetry": {
-      "get": {
-        "description": "Get opentelmetry configuration",
-        "tags": [
-          "Monitor"
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "example": {
-                  "exporter": {
-                    "ssl_options": {},
-                    "endpoint": "http://localhost:4317"
-                  },
-                  "metrics": {
-                    "enable": true
-                  },
-                  "traces": {
-                    "filter": {
-                      "trace_all": false
-                    },
-                    "enable": true
-                  },
-                  "logs": {
-                    "level": "warning",
-                    "enable": true
-                  }
-                },
-                "schema": {
-                  "$ref": "#/components/schemas/opentelemetry.opentelemetry"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          },
-          {
-            "bearerAuth": []
-          }
-        ]
-      },
-      "put": {
-        "description": "Update opentelmetry configuration",
-        "tags": [
-          "Monitor"
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "example": {
-                  "exporter": {
-                    "ssl_options": {},
-                    "endpoint": "http://localhost:4317"
-                  },
-                  "metrics": {
-                    "enable": true
-                  },
-                  "traces": {
-                    "filter": {
-                      "trace_all": false
-                    },
-                    "enable": true
-                  },
-                  "logs": {
-                    "level": "warning",
-                    "enable": true
-                  }
-                },
-                "schema": {
-                  "$ref": "#/components/schemas/opentelemetry.opentelemetry"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "code": {
-                      "type": "string",
-                      "enum": [
-                        "BAD_REQUEST"
-                      ]
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Update Config Failed"
-                    }
-                  },
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "example": {
-                "exporter": {
-                  "ssl_options": {},
-                  "endpoint": "http://localhost:4317"
-                },
-                "metrics": {
-                  "enable": true
-                },
-                "traces": {
-                  "filter": {
-                    "trace_all": false
-                  },
-                  "enable": true
-                },
-                "logs": {
-                  "level": "warning",
-                  "enable": true
-                }
-              },
-              "schema": {
-                "$ref": "#/components/schemas/opentelemetry.opentelemetry"
               }
             }
           }
@@ -43723,7 +44273,8 @@
                       "enum": [
                         "UNEXPECTED_ERROR",
                         "ALREADY_INSTALLED",
-                        "BAD_PLUGIN_INFO"
+                        "BAD_PLUGIN_INFO",
+                        "FORBIDDEN"
                       ]
                     },
                     "message": {
@@ -43737,7 +44288,6 @@
             }
           }
         },
-        "summary": "Install a new plugin",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -43758,6 +44308,7 @@
             }
           }
         },
+        "summary": "Install a new plugin",
         "security": [
           {
             "basicAuth": []
@@ -44623,7 +45174,6 @@
                 "log",
                 "mqtt",
                 "node",
-                "opentelemetry",
                 "overload_protection",
                 "prometheus",
                 "psk_authentication",
@@ -45368,7 +45918,6 @@
             }
           }
         },
-        "summary": "Add user for gateway authenticator",
         "requestBody": {
           "content": {
             "application/json": {
@@ -45395,6 +45944,7 @@
             }
           }
         },
+        "summary": "Add user for gateway authenticator",
         "security": [
           {
             "basicAuth": []
@@ -46406,7 +46956,6 @@
             }
           }
         },
-        "summary": "Update user info for gateway authenticator",
         "requestBody": {
           "content": {
             "application/json": {
@@ -46431,6 +46980,7 @@
             }
           }
         },
+        "summary": "Update user info for gateway authenticator",
         "security": [
           {
             "basicAuth": []
@@ -46571,8 +47121,36 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Imported"
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "description": "文件中包含的用户总数。"
+                    },
+                    "success": {
+                      "type": "integer"
+                    },
+                    "override": {
+                      "type": "integer",
+                      "description": "以覆盖方式成功导入用户数据的用户总数。"
+                    },
+                    "skipped": {
+                      "type": "integer",
+                      "description": "因导入用户数据与现有用户数据相同而被跳过的用户总数。"
+                    },
+                    "failed": {
+                      "type": "integer",
+                      "description": "用户数据导入失败的用户总数。"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
           },
           "400": {
             "description": "",
@@ -46620,7 +47198,6 @@
             }
           }
         },
-        "summary": "Import users",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -46636,6 +47213,7 @@
             }
           }
         },
+        "summary": "Import users",
         "security": [
           {
             "basicAuth": []
@@ -46947,7 +47525,6 @@
             }
           }
         },
-        "summary": "Add user for an authenticator",
         "requestBody": {
           "content": {
             "application/json": {
@@ -46974,6 +47551,7 @@
             }
           }
         },
+        "summary": "Add user for an authenticator",
         "security": [
           {
             "basicAuth": []
@@ -47394,7 +47972,6 @@
             }
           }
         },
-        "summary": "Update the sub-configurations under *log*",
         "requestBody": {
           "content": {
             "application/json": {
@@ -47404,6 +47981,7 @@
             }
           }
         },
+        "summary": "Update the sub-configurations under *log*",
         "security": [
           {
             "basicAuth": []
@@ -47525,7 +48103,6 @@
             }
           }
         },
-        "summary": "Update rule",
         "requestBody": {
           "content": {
             "application/json": {
@@ -47535,6 +48112,7 @@
             }
           }
         },
+        "summary": "Update rule",
         "security": [
           {
             "basicAuth": []
@@ -47694,9 +48272,9 @@
                     "resource_opts": {
                       "worker_pool_size": 1,
                       "query_mode": "async",
-                      "max_buffer_bytes": 104857600,
                       "inflight_window": 100,
-                      "health_check_interval": 15000
+                      "health_check_interval": 15000,
+                      "max_buffer_bytes": 104857600
                     },
                     "enable_pipelining": 100,
                     "local_topic": "emqx_http/#"
@@ -47718,8 +48296,19 @@
                     "max_inflight": 100,
                     "resource_opts": {
                       "query_mode": "sync",
-                      "max_buffer_bytes": 104857600,
-                      "health_check_interval": "15s"
+                      "health_check_interval": "15s",
+                      "max_buffer_bytes": 104857600
+                    },
+                    "egress": {
+                      "local": {
+                        "topic": "emqx/#"
+                      },
+                      "remote": {
+                        "retain": false,
+                        "payload": "${payload}",
+                        "topic": "from_emqx/${topic}",
+                        "qos": "${qos}"
+                      }
                     },
                     "ingress": {
                       "local": {
@@ -47731,17 +48320,6 @@
                       "remote": {
                         "topic": "aws/#",
                         "qos": 1
-                      }
-                    },
-                    "egress": {
-                      "local": {
-                        "topic": "emqx/#"
-                      },
-                      "remote": {
-                        "retain": false,
-                        "payload": "${payload}",
-                        "topic": "from_emqx/${topic}",
-                        "qos": "${qos}"
                       }
                     }
                   }
@@ -47804,9 +48382,9 @@
                       "resource_opts": {
                         "worker_pool_size": 1,
                         "query_mode": "async",
-                        "max_buffer_bytes": 104857600,
                         "inflight_window": 100,
-                        "health_check_interval": 15000
+                        "health_check_interval": 15000,
+                        "max_buffer_bytes": 104857600
                       },
                       "enable_pipelining": 100,
                       "local_topic": "emqx_http/#"
@@ -47831,8 +48409,19 @@
                       "max_inflight": 100,
                       "resource_opts": {
                         "query_mode": "sync",
-                        "max_buffer_bytes": 104857600,
-                        "health_check_interval": "15s"
+                        "health_check_interval": "15s",
+                        "max_buffer_bytes": 104857600
+                      },
+                      "egress": {
+                        "local": {
+                          "topic": "emqx/#"
+                        },
+                        "remote": {
+                          "retain": false,
+                          "payload": "${payload}",
+                          "topic": "from_emqx/${topic}",
+                          "qos": "${qos}"
+                        }
                       },
                       "ingress": {
                         "local": {
@@ -47844,17 +48433,6 @@
                         "remote": {
                           "topic": "aws/#",
                           "qos": 1
-                        }
-                      },
-                      "egress": {
-                        "local": {
-                          "topic": "emqx/#"
-                        },
-                        "remote": {
-                          "retain": false,
-                          "payload": "${payload}",
-                          "topic": "from_emqx/${topic}",
-                          "qos": "${qos}"
                         }
                       }
                     },
@@ -47897,7 +48475,6 @@
             }
           }
         },
-        "summary": "Create bridge",
         "requestBody": {
           "content": {
             "application/json": {
@@ -47921,9 +48498,9 @@
                     "resource_opts": {
                       "worker_pool_size": 1,
                       "query_mode": "async",
-                      "max_buffer_bytes": 104857600,
                       "inflight_window": 100,
-                      "health_check_interval": 15000
+                      "health_check_interval": 15000,
+                      "max_buffer_bytes": 104857600
                     },
                     "enable_pipelining": 100,
                     "local_topic": "emqx_http/#"
@@ -47948,8 +48525,19 @@
                     "max_inflight": 100,
                     "resource_opts": {
                       "query_mode": "sync",
-                      "max_buffer_bytes": 104857600,
-                      "health_check_interval": "15s"
+                      "health_check_interval": "15s",
+                      "max_buffer_bytes": 104857600
+                    },
+                    "egress": {
+                      "local": {
+                        "topic": "emqx/#"
+                      },
+                      "remote": {
+                        "retain": false,
+                        "payload": "${payload}",
+                        "topic": "from_emqx/${topic}",
+                        "qos": "${qos}"
+                      }
                     },
                     "ingress": {
                       "local": {
@@ -47961,17 +48549,6 @@
                       "remote": {
                         "topic": "aws/#",
                         "qos": 1
-                      }
-                    },
-                    "egress": {
-                      "local": {
-                        "topic": "emqx/#"
-                      },
-                      "remote": {
-                        "retain": false,
-                        "payload": "${payload}",
-                        "topic": "from_emqx/${topic}",
-                        "qos": "${qos}"
                       }
                     }
                   },
@@ -47991,6 +48568,7 @@
             }
           }
         },
+        "summary": "Create bridge",
         "security": [
           {
             "basicAuth": []
@@ -48149,6 +48727,26 @@
                 }
               }
             }
+          }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "description": "清除整个集群的监控（统计）数据。",
+        "tags": [
+          "Metrics"
+        ],
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Metrics deleted"
           }
         },
         "security": [

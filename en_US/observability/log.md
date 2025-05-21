@@ -83,13 +83,9 @@ Configure the following settings for file log handler:
 
 - **Log Formatter**: Select the log format from the drop-down list. Optional values are `text` and `JSON`. The default value is `text`.
 
-  Note: If you select `JSON`, it is recommended to disable the toggle switch for **Single Log Max Length**, otherwise you will get incomplete JSON data.
-
-
 - **Timestamp Format**: Select the format of the timestamp in the log. Optional values are:
 
   - `auto`: Automatically determines the timestamp format based on the log formatter being used. Utilizes `rfc3339` format for text formatters, and `epoch` format for JSON formatters.
-
 
   - `epoch`: Represents timestamps in microseconds precision Unix epoch format.
 
@@ -106,7 +102,7 @@ When file logging is enabled (log.to = file or both), the following files will a
 
 ## Configure Logging via Configuration File
 
-You can also configure EMQX logging through configuration files. For example, if you want to export the warning-level logs to a file or output with a console, you can modify the configuration items under `log` in `emqx.conf` as shown below. The configuration takes effect after the node restarts. For more information on configuring logging with configuration files, see [Configuration - Logs](../configuration/logs.md).
+You can also configure EMQX logging through configuration files. For example, if you want to export the warning-level logs to a file or output with a console, you can modify the configuration items under `log` in `base.hocon` as shown below. The configuration takes effect after the node restarts. For more information on configuring logging with configuration files, see [Configuration - Logs](../configuration/logs.md).
 
 ```bash
 log {
@@ -178,13 +174,25 @@ Log throttling is enabled by default and applies to selected log events such as 
 
 Throttling is applied only to the following log events:
 
- - "authentication_failure"
- - "authorization_permission_denied"
- - "cannot_publish_to_topic_due_to_not_authorized"
- - "cannot_publish_to_topic_due_to_quota_exceeded"
- - "connection_rejected_due_to_license_limit_reached"
- - "dropped_msg_due_to_mqueue_is_full"
- - "socket_receive_paused_by_rate_limit"
+- "authentication_failure"
+- "authorization_permission_denied"
+- "cannot_publish_to_topic_due_to_not_authorized"
+- "cannot_publish_to_topic_due_to_quota_exceeded"
+- "connection_rejected_due_to_license_limit_reached"
+- "data_bridge_buffer_overflow"
+- "dropped_msg_due_to_mqueue_is_full"
+- "dropped_qos0_msg"
+- "external_broker_crashed"
+- "failed_to_fetch_crl"
+- "failed_to_retain_message"
+- "handle_resource_metrics_failed"
+- "retain_failed_for_payload_size_exceeded_limit"
+- "retain_failed_for_rate_exceeded_limit"
+- "retained_delete_failed_for_rate_exceeded_limit"
+- "socket_receive_paused_by_rate_limit"
+- "transformation_failed"
+- "unrecoverable_resource_error"
+- "validation_failed"
 
 ::: tip Note
 The list of throttled events is subject to updates.

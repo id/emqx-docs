@@ -1,11 +1,5 @@
 # Stream MQTT Data into Apache Kafka
 
-::: tip
-
-The Kafka data integration is an EMQX Enterprise edition feature. 
-
-:::
-
 [Apache Kafka](https://kafka.apache.org/) is a widely used open-source distributed event streaming platform that can handle the real-time transfer of data streams between applications and systems. However, Kafka is not built for edge IoT communication and Kafka clients require a stable network connection and more hardware resources. In the IoT realm, data generated from devices and applications are transmitted using the lightweight MQTT protocol. EMQX’s integration with Kafka/[Kafka](https://www.Kafka.io/) enables users to stream MQTT data seamlessly into or from Kafka. MQTT data streams are ingested into Kafka topics, ensuring real-time processing, storage, and analytics. Conversely, Kafka topics data can be consumed by MQTT devices, enabling timely actions.
 
 <img src="./assets/kafka_bridge.jpg" alt="kafka_bridge" style="zoom:67%;" />
@@ -14,7 +8,7 @@ This page provides a comprehensive introduction to the data integration between 
 
 ## How It Works
 
-Apache Kafka data integration is an out-of-the box feature in EMQX designed to bridge the gap between MQTT-based IoT data and Kafka's powerful data processing capabilities. With a built-in [rule engine](./rules.md) component, the integration simplifies the process of streaming and processing data between the two platforms, eliminating the need for complex coding. 
+Apache Kafka data integration is an out-of-the box feature in EMQX designed to bridge the gap between MQTT-based IoT data and Kafka's powerful data processing capabilities. With a built-in [rule engine](./rules.md) component, the integration simplifies the process of streaming and processing data between the two platforms, eliminating the need for complex coding.
 
 The diagram below illustrates a typical architecture of data integration between EMQX and Kafka used in automotive IoT.
 
@@ -97,7 +91,7 @@ Before adding a Kafka Sink action, you need to create a Kafka producer connector
 4. Configure the parameters required to connect to Kafka:
    - Enter `127.0.0.1:9092` for the **Bootstrap Hosts**. Note: The demonstration assumes that you run both EMQX and Kafka on the local machine. If you have Kafka and EMQX running remotely, please adjust the settings accordingly.
    - Leave other options as default or configure them according to your business needs.
-   - If you want to establish an encrypted connection, click the **Enable TLS** toggle switch. For more information about TLS connection, see [TLS for External Resource Access](../network/overview.md/#tls-for-external-resource-access).
+   - If you want to establish an encrypted connection, click the **Enable TLS** toggle switch. For more information about TLS connection, see [TLS for External Resource Access](../network/overview.md#tls-for-external-resource-access).
 5. Before clicking **Create**, you can click **Test Connection** to test that the connection to the Kafka server is successful.
 5. Click the **Create** button to complete the creation of the connector.
 
@@ -144,7 +138,7 @@ This section demonstrates how to create a rule in EMQX to process messages from 
 
 8. Configure the data-sending method for the Sink, including:
 
-   - **Kafka Topic**: Enter `testtopic-in`. Starting from EMQX v5.7.2, this field also supports dynamic topics configuration. Refer to [Use Variable Templates](#use-variable-templates) for details. 
+   - **Kafka Topic**: Enter `testtopic-in`. Starting from EMQX v5.7.2, this field also supports dynamic topics configuration. Refer to [Use Variable Templates](#use-variable-templates) for details.
 
    - **Kafka Headers**: Enter metadata or context information related to Kafka messages (optional). The value of the placeholder must be an object. You can choose the encoding type for the header value from the **Kafka Header Value Encod Type** dropdown list. You can also add more key-value pairs by clicking **Add**.
 
@@ -156,11 +150,13 @@ This section demonstrates how to create a rule in EMQX to process messages from 
 
    - **Compression**: Specify whether to use compression algorithms to compress/decompress records in Kafka messages.
 
-9. Advanced settings (optional): See [Advanced Configurations](#advanced-configurations).
+9. **Fallback Actions (Optional)**: If you want to improve reliability in case of message delivery failure, you can define one or more fallback actions. These actions will be triggered if the primary Sink fails to process a message. See [Fallback Actions](./data-bridges.md#fallback-actions) for more details.
 
-10. Click the **Create** button to complete the creation of the Sink. Once created, the page will return to **Create Rule**, and the new Sink will be added to the rule actions.
+10. **Advanced settings (optional)**: See [Advanced Configurations](#advanced-configurations).
 
-11. Click the **Create** button to complete the entire rule creation.
+11. Click the **Create** button to complete the creation of the Sink. Once created, the page will return to **Create Rule**, and the new Sink will be added to the rule actions.
+
+12. Click the **Create** button to complete the entire rule creation.
 
 Now you have successfully created the rule, and you can see the newly created rule on the **Integration** -> **Rules** page, as well as the newly created Kafka Producer Sink on the **Actions(Sink)** tab.
 
@@ -174,7 +170,7 @@ Starting from EMQX v5.7.2, you can dynamically configure the Kafka topics in the
 
 #### Use Environment Variables
 
-EMQX v5.7.2 introduces a new functionality of dynamically assigning the values retrieved from [environment variables](../configuration/configuration.md/#environment-variables) to a field within messages during the SQL processing phase. This functionality uses the [getenv](../data-integration/rule-sql-builtin-functions.md#system-function) function from the built-in SQL functions of the rule engine to retrieve environment variables from EMQX. The values of the variables are then set into SQL processing results. As an application of this feature, when configuring Kafka topics in Kafka Sink rule actions, you can reference fields from rule output results to set the Kafka topic. The following is a demonstration of this application:
+EMQX v5.7.2 introduces a new functionality of dynamically assigning the values retrieved from [environment variables](../configuration/configuration.md#environment-variables) to a field within messages during the SQL processing phase. This functionality uses the [getenv](../data-integration/rule-sql-builtin-functions.md#system-function) function from the built-in SQL functions of the rule engine to retrieve environment variables from EMQX. The values of the variables are then set into SQL processing results. As an application of this feature, when configuring Kafka topics in Kafka Sink rule actions, you can reference fields from rule output results to set the Kafka topic. The following is a demonstration of this application:
 
 ::: tip Note
 
@@ -196,7 +192,7 @@ To prevent leakage of other system environment variables, the names of environme
 
    ```sql
    SELECT
-     getenv(`EMQXVAR_KAFKA_TOPIC`) as kafka_topic,
+     getenv('KAFKA_TOPIC') as kafka_topic,
      payload
    FROM
      "t/#"
@@ -228,7 +224,7 @@ To prevent leakage of other system environment variables, the names of environme
    ```bash
    bin/kafka-console-consumer.sh --bootstrap-server 127.0.0.1:9092 \
      --topic testtopic-in
-   
+
    {"payload":"payload string","kafka_topic":"testtopic-in"}
    {"payload":"payload string","kafka_topic":"testtopic-in"}
    ```
@@ -252,7 +248,7 @@ For this specific example, ensure that the message payload sent to Kafka contain
 
 Failure to include this key will result in topic rendering failure, leading to message drops that cannot be recovered.
 
-You also need to pre-create all resolved topics in Kafka, such as `device-1`, `device-2`, and so on. If the template resolves to a topic name that does not exist in Kafka or if Kafka does not allow automatic topic creation, messages will also be dropped due to unrecoverable errors.
+You also need to pre-create all resolved topics in Kafka, such as `device-1`, `device-2`, and so on. If the template resolves to a topic name that does not exist in Kafka, messages will also be dropped due to unrecoverable errors.
 
 ## Test Kafka Producer Rule
 
@@ -303,7 +299,7 @@ This section demonstrates how to create a rule in EMQX to further process the me
 
 4. Enter the following statement in the **SQL Editor** if you want to forward the messages transformed from the Kafka source`$bridges/kafka_consumer:<sourceName>` to EMQX.
 
-   Note: If you want to specify your own SQL syntax, make sure that the `SELECT` part includes all fields required by the republishing action set in later steps.
+   Note: If you want to specify your own SQL syntax, make sure that the `SELECT` part includes all fields required by the republishing action set in later steps. The `SELECT` statement for the Kafka Source can use fields such as `ts_type`, `topic`, `ts`, `event`, `headers`, `key`, `metadata`, `value`, `timestamp`, `offset`, `node`, etc.
 
    ```sql
    SELECT
@@ -316,7 +312,7 @@ This section demonstrates how to create a rule in EMQX to further process the me
 
 ### Add Kafka Consumer Source as Data Input
 
-1. Select the **Data Inputs** tab on the right side of the Create Rule page and click **Add Input**. 
+1. Select the **Data Inputs** tab on the right side of the Create Rule page and click **Add Input**.
 2. Select **Kafka Consumer** from the **Input Type** dropdown list. keep the **Source** dropdown box to the default `Create Source` option, or choose a previously created Kafka Consumer source from the **Source** dropdown box. This demonstration creates a new consumer source and adds it to the rule.
 3. Enter the name and description of the Source in the corresponding text boxes below.
 4. In the **Connector** dropdown box, select the `my-kafka-consumer` connector you just created. You can also click the button next to the dropdown box to quickly create a new connector in the pop-up box, with the required configuration parameters referring to [Create a Kafka Consumer Connector](#create-a-kafka-consumer-connector).
@@ -335,11 +331,12 @@ This section demonstrates how to create a rule in EMQX to further process the me
 
 ### Add a Republish Action
 
-1. Select the **Action Outputs** tab and click the + **Add Action** button to define an action that will be triggered by the rule. 
+1. Select the **Action Outputs** tab and click the + **Add Action** button to define an action that will be triggered by the rule.
 2. Select **Republish** from the **Type of Action** drop-down list.
 3. In **Topic** and **Payload** fields, you can enter the topic and payload for the messages you want to republish. For example, enter `t/1` and `${.}` for this demonstration.
+   - You can also use `${}` in the **Topic** field to dynamically specify the MQTT topic, such as `t/${key}` (Note: The parameter provided inside `${}` must be included in the SQL `Select` statement).
 4. Click **Add** to include the action to the rule.
-8. Back on the **Create Rule** page, click **Save**.
+5. Back on the **Create Rule** page, click **Save**.
 
 ![Kafka_consumer_rule](./assets/Kafka_consumer_rule.png)
 
@@ -385,26 +382,27 @@ This section describes some advanced configuration options that can optimize the
 
 | Fields                                    | Descriptions                                                 | Recommended Values |
 | ----------------------------------------- | ------------------------------------------------------------ | ------------------ |
-| Min Metadata Refresh Interval             | The minimum time interval the client must wait before refreshing Kafka broker and topic metadata. Setting this value too small may increase the load on the Kafka server unnecessarily. | `3`                |
-| Metadata Request Timeout                  | The maximum duration to wait when the bridge requests metadata from Kafka. | `5`                |
-| Connect Timeout                           | The maximum time to wait for TCP connection establishment, which includes the authentication time if enabled. | `5`                |
-| Fetch Bytes (Source)                      | The byte size to pull from Kafka with each fetch request. Note that if the configured value is smaller than the message size in Kafka, it may negatively impact fetch performance. | `896`              |
-| Max Batch Bytes (Sink)                    | The maximum size, in bytes, for collecting messages within a Kafka batch. Typically, Kafka brokers have a default batch size limit of 1 MB. However, EMQX's default value is intentionally set slightly lower than 1 MB to account for Kafka message encoding overheads, particularly when individual messages are very small. If a single message exceeds this limit, it will still be sent as a separate batch. | `896`              |
-| Offset Commit Interval (Source)           | The time interval between two offset commit requests sent for each consumer group. | `5`                |
+| Min Metadata Refresh Interval             | The minimum time interval the client must wait before refreshing Kafka broker and topic metadata. Setting this value too small may increase the load on the Kafka server unnecessarily. | `3 `second         |
+| Metadata Request Timeout                  | The maximum duration to wait when the bridge requests metadata from Kafka. | `5` second         |
+| Connect Timeout                           | The maximum time to wait for TCP connection establishment, which includes the authentication time if enabled. | `5` second         |
+| Max Wait Time (Source)                    | The maximum duration to wait for a fetch response from the Kafka broker. | `1` second         |
+| Fetch Bytes (Source)                      | The byte size to pull from Kafka with each fetch request. Note that if the configured value is smaller than the message size in Kafka, it may negatively impact fetch performance. | `896` KB           |
+| Max Batch Bytes (Sink)                    | The maximum size, in bytes, for collecting messages within a Kafka batch. Typically, Kafka brokers have a default batch size limit of 1 MB. However, EMQX's default value is intentionally set slightly lower than 1 MB to account for Kafka message encoding overheads, particularly when individual messages are very small. If a single message exceeds this limit, it will still be sent as a separate batch. | `896` KB           |
+| Offset Commit Interval (Source)           | The time interval between two offset commit requests sent for each consumer group. | `5` second         |
 | Required Acks (Sink)                      | Required acknowledgments for the Kafka partition leader to await from its followers before sending an acknowledgment back to the EMQX Kafka producer: <br />`all_isr`: Requires acknowledgment from all in-sync replicas.<br />`leader_only`: Requires acknowledgment only from the partition leader.<br />`none`: No acknowledgment from Kafka is needed. | `all_isr`          |
-| Partition Count Refresh Interval (Source) | The time interval at which the Kafka producer detects an increased number of partitions. Once Kafka's partition count is augmented, EMQX will incorporate these newly discovered partitions into its message dispatching process, based on the specified `partition_strategy`. | `60`               |
+| Partition Count Refresh Interval (Source) | The time interval at which the Kafka producer detects an increased number of partitions. Once Kafka's partition count is augmented, EMQX will incorporate these newly discovered partitions into its message dispatching process, based on the specified `partition_strategy`. | `60` second        |
 | Max Inflight (Sink)                       | The maximum number of batches allowed for Kafka producer (per-partition) to send before receiving acknowledgment from Kafka. Greater value typically means better throughput. However, there can be a risk of message reordering when this value is greater than 1.<br />This option controls the number of unacknowledged messages in transit, effectively balancing the load to prevent overburdening the system. | `10`               |
 | Query Mode (Source)                       | Allows you to choose asynchronous or synchronous query modes to optimize message transmission based on different requirements. In asynchronous mode, writing to Kafka does not block the MQTT message publish process. However, this might result in clients receiving messages ahead of their arrival in Kafka. | `Async`            |
-| Synchronous Query Timeout (Sink)          | In synchronous query mode, establishes a maximum wait time for confirmation. This ensures timely message transmission completion to avoid prolonged waits.<br />It applies only when the bridge query mode is configured to `Sync`. | `5`                |
+| Synchronous Query Timeout (Sink)          | In synchronous query mode, establishes a maximum wait time for confirmation. This ensures timely message transmission completion to avoid prolonged waits.<br />It applies only when the bridge query mode is configured to `Sync`. | `5` second         |
 | Buffer Mode (Sink)                        | Defines whether messages are stored in a buffer before being sent. Memory buffering can increase transmission speeds.<br />`memory`: Messages are buffered in memory. They will be lost in the event of an EMQX node restart.<br />`disk`: Messages are buffered on disk, ensuring they can survive an EMQX node restart.<br />`hybrid`: Messages are initially buffered in memory. When they reach a certain limit (refer to the `segment_bytes` configuration for more details), they are gradually offloaded to disk. Similar to the memory mode, messages will be lost if the EMQX node restarts. | `memory`           |
-| Per-partition Buffer Limit (Sink)         | Maximum allowed buffer size, in bytes, for each Kafka partition. When this limit is reached, older messages will be discarded to make room for new ones by reclaiming buffer space. <br />This option helps to balance memory usage and performance. | `2`                |
-| Segment File Bytes (Sink)                 | This setting is applicable when the buffer mode is configured as `disk` or `hybrid`. It controls the size of segmented files used to store messages, influencing the optimization level of disk storage. | `100`              |
-| Memory Overload Protection (Sink)         | This setting applies when the buffer mode is configured as `memory`. EMQX will automatically discard older buffered messages when it encounters high memory pressure. It helps prevent system instability due to excessive memory usage, ensuring system reliability. <br />**Note**: The threshold for high memory usage is defined in the configuration parameter `sysmon.os.sysmem_high_watermark`. This configuration is effective only on Linux systems. | Disabled           |
-| Socket Send / Receive Buffer Size         | Manages the size of socket buffers to optimize network transmission performance. | `1024`             |
+| Per-partition Buffer Limit (Sink)         | Maximum allowed buffer size, in bytes, for each Kafka partition. When this limit is reached, older messages will be discarded to make room for new ones by reclaiming buffer space. <br />This option helps to balance memory usage and performance. | `2` GB             |
+| Segment File Bytes (Sink)                 | This setting is applicable when the buffer mode is configured as `disk` or `hybrid`. It controls the size of segmented files used to store messages, influencing the optimization level of disk storage. | `100` MB           |
+| Memory Overload Protection (Sink)         | This setting applies when the buffer mode is configured as `memory`. EMQX will automatically discard older buffered messages when it encounters high memory pressure. It helps prevent system instability due to excessive memory usage, ensuring system reliability. <br />This configuration is effective only on Linux systems. | `Enabled`          |
+| Socket Send / Receive Buffer Size         | Manages the size of socket buffers to optimize network transmission performance. | `1024` KB          |
 | TCP Keepalive                             | This configuration enables TCP keepalive mechanism for Kafka bridge connections to maintain ongoing connection validity, preventing connection disruptions caused by extended periods of inactivity. The value should be provided as a comma-separated list of three numbers in the format `Idle, Interval, Probes`:<br />Idle: This represents the number of seconds a connection must remain idle before the server initiates keep-alive probes. The default value on Linux is 7200 seconds.<br />Interval: The interval specifies the number of seconds between each TCP keep-alive probe. On Linux, the default is 75 seconds.<br />Probes: This parameter defines the maximum number of TCP keep-alive probes to send before considering the connection as closed if there's no response from the other end. The default on Linux is 9 probes.<br />For example, if you set the value to '240,30,5,' it means that TCP keepalive probes will be sent after 240 seconds of idle time, with subsequent probes sent every 30 seconds. If there are no responses for 5 consecutive probe attempts, the connection will be marked as closed. | `none`             |
-| Max Linger Time                           | Maximum duration for a per-partition producer to wait for messages in order to collect a batch to buffer. The default value `0` means no wait. For non-memory buffer mode, it's advised to configure at least `5ms` for less IOPS. | `0`                |
-| Max Linger Bytes                          | Maximum number of bytes for a per-partition producer to wait for messages in order to collect a batch to buffer. | `10`               |
-| Health Check Interval                     | The time interval for checking the running status of the connector. | `15`               |
+| Max Linger Time                           | Maximum duration for a per-partition producer to wait for messages in order to collect a batch to buffer. The default value `0` means no wait. For non-memory buffer mode, `5ms` will significantly reduce IOPS, though with the cost of increased latency. | `0` milliseconds   |
+| Max Linger Bytes                          | Maximum number of bytes for a per-partition producer to wait for messages in order to collect a batch to buffer. | `10` MB            |
+| Health Check Interval                     | The time interval for checking the running status of the connector. | `15` second        |
 
 ## More Information
 

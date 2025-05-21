@@ -1,11 +1,5 @@
 # 告警
 
-::: tip 注意
-
-告警是 EMQX 企业版功能。
-
-:::
-
 EMQX 提供内置的监控和告警功能，用于监视内部状态变化，如 CPU 占用率、系统和进程内存占用率、进程数量、规则引擎资源状态以及集群分区和治理。当这些状态超过阈值或偏离预期时，EMQX 会触发并记录这些变化，并在恢复正常后将其从列表中移除。
 
 本页面介绍了 EMQX 提供的告警信息、如何获取和查看详细的告警信息，以及如何在 EMQX 中配置告警设置和阈值。监控和告警功能可帮助您在运行过程中及时发现潜在问题。通过配置告警并设置适当的阈值，您可以确保EMQX 保持安全、稳定和可靠。
@@ -28,15 +22,17 @@ EMQX 提供内置的监控和告警功能，用于监视内部状态变化，如
 
 **EMQX 开源版告警列表：**
 
-| **告警**                  | 级别 | 描述                                               | **详情**                | **阈值**                                                     |
-| ------------------------- | ---- | -------------------------------------------------- | ----------------------- | ------------------------------------------------------------ |
-| high_system_memory_usage  | 警告 | 系统内存使用过高                                   | "系统内存使用高于 ~p%"  | `os_mon.sysmem_high_watermark = 70%`                         |
-| high_process_memory_usage | 警告 | 单个 Erlang 进程内存使用过高（占系统内存的百分比） | 进程内存使用高于 ~p%    | `os_mon.procmem_high_watermark = 5%`                         |
-| high_cpu_usage            | 警告 | CPU 使用率过高                                     | ~p% CPU 使用率          | `os_mon.cpu_high_watermark = 80%` `os_mon.cpu_low_watermark = 60%` |
-| too_many_processes        | 警告 | 进程过多                                           | ~p% 进程使用率          | `vm_mon.process_high_watermark = 80%` `vm_mon.process_low_watermark = 60%` |
-| partition                 | 严重 | 节点发生分区                                       | 节点发生分区 ~s         | -                                                            |
-| resource                  | 严重 | 资源断开连接                                       | 资源 ~s（~s）已断开连接 | -                                                            |
-| conn_congestion           | 严重 | 连接过程拥塞                                       | 连接拥塞                | -                                                            |
+| **告警**                            | 级别 | 描述                                               | **详情**                | **阈值**                                                     |
+| ----------------------------------- | ---- | -------------------------------------------------- | ----------------------- | ------------------------------------------------------------ |
+| high_system_memory_usage            | 警告 | 系统内存使用过高                                   | "系统内存使用高于 ~p%"  | `os_mon.sysmem_high_watermark = 70%`                         |
+| high_process_memory_usage           | 警告 | 单个 Erlang 进程内存使用过高（占系统内存的百分比） | 进程内存使用高于 ~p%    | `os_mon.procmem_high_watermark = 5%`                         |
+| high_cpu_usage                      | 警告 | CPU 使用率过高                                     | ~p% CPU 使用率          | `os_mon.cpu_high_watermark = 80%` `os_mon.cpu_low_watermark = 60%` |
+| too_many_processes                  | 警告 | 进程过多                                           | ~p% 进程使用率          | `vm_mon.process_high_watermark = 80%` `vm_mon.process_low_watermark = 60%` |
+| mnesia_transaction_manager_overload | 警告 | mnesia 事务管理器过载；邮箱消息数量：N             | mailbox size = N        | `sysmon.mnesia_tm_mailbox_threshold = 500`                   |
+| broker_pool_overload                | 警告 | broker 消息处理池过载；邮箱消息数量：N             | mailbox size = N        | `sysmon.broker_pool_mailbox_threshold = 500`                 |
+| partition                           | 严重 | 节点发生分区                                       | 节点发生分区 ~s         | -                                                            |
+| resource                            | 严重 | 资源断开连接                                       | 资源 ~s（~s）已断开连接 | -                                                            |
+| conn_congestion                     | 严重 | 连接过程拥塞                                       | 连接拥塞                | -                                                            |
 
 **EMQX 企业版告警列表：**
 
@@ -54,7 +50,9 @@ EMQX 提供内置的监控和告警功能，用于监视内部状态变化，如
 
 ## 获取告警信息
 
-EMQX 提供多种方式获取告警并查看详细信息。其中一种方式是通过 EMQX Dashboard 查看告警，您可以在此查看已触发的活动或历史告警列表，然而 Dashboard 仅作为一个便于查看告警概览信息的中心。另一种方式是通过 MQTT 订阅系统主题，实时接收带有详细告警信息的通知。告警也可以通过日志或 REST API 访问。
+EMQX 提供多种方式获取告警并查看详细信息。其中一种方式是通过 EMQX Dashboard 查看告警，您可以在此查看已触发的活动或历史告警列表，然而 Dashboard 仅作为一个便于查看告警概览信息的中心。
+
+此外，您还可以通过 MQTT 订阅系统主题，实时接收带有详细告警信息的通知。另一种方法是通过 Webhook 集成，将系统告警事件发送到外部 HTTP 服务进行进一步处理。告警也可以通过日志或 REST API 进行访问。
 
 ### 在 Dashboard 中查看告警
 
@@ -95,6 +93,21 @@ EMQX 提供多种方式获取告警并查看详细信息。其中一种方式是
 
 <img src="./assets/view-alarms-api.png" alt="view-alarms-api" style="zoom:45%;" />
 
+### 通过 Webhook 集成发送告警事件通知
+
+从 EMQX 版本 5.8.5 开始，规则引擎支持两个新的客户端事件：[系统告警激活事件](../data-integration/rule-sql-events-and-fields.md#alarm-activated-event-events-sys-alarm-activated)和[系统告警解除事件](../data-integration/rule-sql-events-and-fields.md#alarm-deactivated-event-events-sys-alarm-deactivated)。这些事件允许您通过 Webhook 集成，将告警活动的通知发送到外部 HTTP 服务。
+
+配置 Webhook 集成的步骤如下：
+
+1. 在 EMQX Dashboard 中，导航到**监控** -> **告警**。
+2. 点击右上角的**配置告警 Webhook** 按钮，打开 Webhook 集成设置页面。
+3. 为 Webhook 集成输入一个名称，并填写备注（可选）。在**触发器**字段中，`系统告警激活` 和 `系统告警解除` 已自动被选中。
+4. 输入您希望接收通知的 Webhook URL。
+5. 若需要更多配置选项，请参考[创建 Webhook](../data-integration/webhook.md)。
+6. 配置完成后，点击**保存**。
+
+![alarm_webhook_setup](./assets/alarm_webhook_setup.png)
+
 ## 告警配置
 
 告警配置包括配置告警设置和告警阈值。告警设置确定如何显示和存储告警消息，而告警阈值配置将设置当检测到潜在问题时触发告警的限制或值。告警配置功能允许您根据业务需求自定义告警设置和阈值。
@@ -125,7 +138,7 @@ EMQX 提供多种方式获取告警并查看详细信息。其中一种方式是
 - **进程限制检查时间**：指定周期性检查进程限制的时间间隔。默认值为 `30` 秒。
 - **进程数高水位线**：指定可以同时存在于本地节点的进程的阈值百分比。当超过指定数值时，会触发告警。默认值为 `80`%。
 - **进程数低水位线**：指定可以同时存在于本地节点的进程的阈值百分比。当降低到指定数值时，告警将被清除。默认值为 `60`%。
-- **启用长垃圾回收 监控**：默认禁用。启用后，当 Erlang 进程执行长时间垃圾回收时，将发出警告级别的日志 `long_gc`，并发布 MQTT 消息到系统主题 `$SYS/sysmon/long_gc`。
+- **启用长垃圾回收监控**：默认禁用。启用后，当 Erlang 进程执行长时间垃圾回收时，将发出警告级别的日志 `long_gc`，并发布 MQTT 消息到系统主题 `$SYS/sysmon/long_gc`。
 - **启用长调度监控**：默认启用，意味着当 Erlang VM 检测到任务调度时间过长时，会发出警告级别的日志 `long_schedule`。您可以在文本框中设置任务的适当调度时间。默认值为 `240` 毫秒。
 - **启用大 heap 监控**：默认启用，意味着当 Erlang 进程为其堆空间消耗大量内存时，会发出警告级别的日志 `large_heap`，并发布 MQTT 消息到系统主题 `$SYS/sysmon/large_heap`。您可以在文本框中设置空间字节大小的限制。默认值为 `32` MB。
 - **启用分布式端口过忙监控**：默认启用，意味着当用于与集群中其他节点通信的远程过程调用（RPC）连接过载时，会发出警告级别的日志 `busy_dis_port`，并发布 MQTT 消息到系统主题 `$SYS/sysmon/busy_dis_port`。

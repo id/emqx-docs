@@ -161,12 +161,24 @@ log {
 - "cannot_publish_to_topic_due_to_not_authorized"
 - "cannot_publish_to_topic_due_to_quota_exceeded"
 - "connection_rejected_due_to_license_limit_reached"
+- "data_bridge_buffer_overflow"
 - "dropped_msg_due_to_mqueue_is_full"
+- "dropped_qos0_msg"
+- "external_broker_crashed"
+- "failed_to_fetch_crl"
+- "failed_to_retain_message"
+- "handle_resource_metrics_failed"
+- "retain_failed_for_payload_size_exceeded_limit"
+- "retain_failed_for_rate_exceeded_limit"
+- "retained_delete_failed_for_rate_exceeded_limit"
 - "socket_receive_paused_by_rate_limit"
+- "transformation_failed"
+- "unrecoverable_resource_error"
+- "validation_failed"
 
-::: tip 注意 
+::: tip 注意
 
-受限事件列表可能会更新。 
+受限事件列表可能会更新。
 
 :::
 

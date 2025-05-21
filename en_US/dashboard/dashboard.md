@@ -12,61 +12,69 @@ This page provides an overview of the data for the entire EMQX cluster in operat
 
 ### Message Rate
 
-Messages are the key data in EMQX. Messages are the data content being transmitted by all MQTT clients or real devices connected to EMQX. Clients or devices send or receive messages through topics as a way to complete data communication between them.
+In EMQX, messages represent the key data transmitted by all connected MQTT clients or real devices. Clients or devices send and receive messages through topics, enabling data communication between them.
 
 The card in the upper left corner of this overview page provides a clearer and easier way to monitor the rate changes in the current volume of messages incoming and outgoing in the system (message rate is measured in how many messages per second) by visualizing the rate spectrum with real-time rate values.
 
-![image](./assets/overview-3.png)
+<img src="./assets/message_rate.png" alt="message_rate" style="zoom:70%;" />
 
 ### Connections and Subscriptions
 
 As an MQTT broker, the number of connections and topics subscribed to EMQX is one of the most important metrics to observe. The connections are the number of MQTT clients or real devices currently connected to EMQX, the number of subscriptions is the total number of topics currently subscribed to in each client, and topics are the unique subscriptions.
 
-In the tab on the top right of the overview page, we can quickly see the number of connections, subscriptions, and topics in the cluster. The statistics in the card will be updated in real-time when a connection or a subscription topic is updated.
+In the card on the top right of the overview page, you can quickly see the number of connections, subscriptions, and topics in the cluster. The statistics in the card will be updated in real-time when a connection or a subscription topic is updated.
 
-![image](./assets/overview-1.png)
+![image](./assets/connections_subscriptions.png)
 
 ::: tip
+
 Subscriptions are differentiated by client, while topics are unique subscriptions and the same topic may be included in different clients.
+
 :::
 
 In addition to providing real-time statistics, the bottom of the page also provides a visual chart that allows you to view historical and current changes in the number of connections and subscriptions by time (the time format: YYYY/MM/DD HH:mm), which allows you to monitor the trend of the number of connections and subscriptions within the entire EMQX cluster more clearly and intuitively. Hovering over the chart and clicking the icon in the top right corner allows you to enlarge the chart.
 
-![image](./assets/overview-2.png)
+![image](./assets/connection_chart.png)
 
 ### Messages
 
 The number of messages is the statistics of the number of data transferred between clients or devices, and on the page includes the incomming, outgoing and dropped messages.
 
-In the chart at the bottom of the page, you can see a visual chart of the number of messages, and view the historical and current number of messages by time change (the time format: YYYY/MM/DD HH:mm), which allows users to better monitor dynamically the real-time changes of all messages within the current EMQX cluster. Hovering over the chart and clicking the icon in the top right corner allows you to enlarge the chart.
+In the lower part of the overview page, you can see a visual chart of the number of messages, and view the historical and current number of messages by time change (the time format: YYYY/MM/DD HH:mm), which allows users to better monitor dynamically the real-time changes of all messages within the current EMQX cluster. Hovering over the chart and clicking the icon in the top right corner allows you to enlarge the chart.
 
-![image](./assets/overview-4.png)
+Clicking the "Reset Monitoring Data" button on the right side of the page will clear the chart data on the cluster overview page and start displaying new monitoring data from the current time.
+
+![image](./assets/messages_chart.png)
 
 ::: tip
-In the above, all charts over time are available in the top left corner: statistics for the last 1 hour, last 6 hours, last 12 hours, last 1 day, last 3 days and last 7 days
+
+All of the above time-varying charts can be viewed by selecting the time range in the upper left corner: statistics are available for data changes over the past 1 hour, past 6 hours, past 12 hours, past 1 day, past 3 days, and past 7 days.
+
 :::
 
 ## Nodes
 
-EMQX, the most scalable MQTT broker for IoT, cluster deployment is supported, and each EMQX in a cluster is a node.
+EMQX, the most scalable MQTT broker for IoT, supports cluster deployment, where each EMQX instance within the cluster functions as a node.
 
 ### Node Data
 
-You can monitor the whole EMQX cluster by the card in the middle of the overview page, including the topology diagram to visualize the association and distribution of all nodes in the cluster.
+You can monitor the whole EMQX cluster by the card in the middle of the overview page, including a topology diagram to visualize the association and distribution of all nodes in the cluster.
 
-Click on a single node in the topology diagram to view the basic information and operation status of the current node, including the node name and role, the number of connections, subscriptions and topics, the current EMQX version (click on the version number to view the change logs of the version, so as to quickly understand the content updates of the current version), and you can also view the CPU load and memory usage of the OS where the node is deployed (memory can only be showed in nodes deployed to Linux).
+Hover over a node in the topology diagram to view its basic information and operation status. This includes the node name, node role, number of connections, subscriptions, and topics, as well as the current EMQX version. Clicking on the version number opens the changelog for a quick overview of updates in the current version. Additionally, you can view the CPU load and memory usage of the operating system on which the node is deployed (memory metrics are only available for nodes deployed on Linux).
 
-![image](./assets/overview-5.png)
+![nodes](./assets/nodes.png)
 
 ::: tip
-When the green node in the topology diagram turns gray, it means that the node is currently stopped
+
+If a node in the topology diagram turns gray, it indicates that the node is currently stopped.
+
 :::
 
 ### Node List
 
-Clicking **View Nodes** in the Node Information section allows access to the Nodes page, or you can click the **Nodes** tab at the top to access it. The Nodes page lists all nodes currently in the EMQX cluster, providing a quick overview of each node's name, operational status, uptime, version information, Erlang process count, memory usage, CPU load, and other details. Clicking the **Refresh** button in the top right corner enables real-time updates of the latest information in the current node list.
+Clicking **View Nodes** at the upper right corner of the node card or selecting the **Nodes** tab at the top navigates to the Nodes page. This page lists all nodes currently in the EMQX cluster, offering a quick view of each node's name, status, uptime, version, connections, Erlang process count, memory usage, CPU load, and other key metrics. Clicking the **Refresh** button in the top right corner updates the list with the latest node information in real time.
 
-![image](./assets/nodes.png)
+![image](./assets/node_list.png)
 
 ### Node Details
 

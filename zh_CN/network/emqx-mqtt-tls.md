@@ -71,20 +71,20 @@ EMQX 默认在 `8883` 端口启用了 SSL/TLS 监听器并设置其为单向认�
 ```bash
 listeners.ssl.default {
   bind = "0.0.0.0:8883"
-    ssl_options {
-      # PEM 格式的文件，包含一个或多个用于验证客户端证书的根 CA 证书
-      # 单向认证时，该文件内容可以为空
-      cacertfile = "etc/certs/rootCAs.pem"
-      # PEM 格式的服务器证书，如果证书不是直接由根 CA 签发，那么中间 CA 的证书必须加在服务器证书的后面组成一个证书链
-      certfile = "etc/certs/server-cert.pem"
-      # PEM 格式的密钥文件
-      keyfile = "etc/certs/server-keyi.pem"
-      # 设置成 'verify_peer' 来验证客户端证书是否为 cacertfile 中某个根证书签发。双向认证时，必须设置成 'verify_peer'。
-      # 设置成 'verify_none' 则不验证客户端证书，即单向认证。
-      verify = verify_none
-      # 如果设置成 true，但是客户端在握手时候没有发送证书，服务端会终止握手。双向认证时，必须设置成 true。
-      # 如果设置成 false，那么服务端只有在客户端发送一个非法证书时才会终止握手
-      fail_if_no_peer_cert = false
+  ssl_options {
+    # PEM 格式的文件，包含一个或多个用于验证客户端证书的根 CA 证书
+    # 单向认证时，该文件内容可以为空
+    cacertfile = "etc/certs/rootCAs.pem"
+    # PEM 格式的服务器证书，如果证书不是直接由根 CA 签发，那么中间 CA 的证书必须加在服务器证书的后面组成一个证书链
+    certfile = "etc/certs/server-cert.pem"
+    # PEM 格式的密钥文件
+    keyfile = "etc/certs/server-keyi.pem"
+    # 设置成 'verify_peer' 来验证客户端证书是否为 cacertfile 中某个根证书签发。双向认证时，必须设置成 'verify_peer'。
+    # 设置成 'verify_none' 则不验证客户端证书，即单向认证。
+    verify = verify_none
+    # 如果设置成 true，但是客户端在握手时候没有发送证书，服务端会终止握手。双向认证时，必须设置成 true。
+    # 如果设置成 false，那么服务端只有在客户端发送一个非法证书时才会终止握手
+    fail_if_no_peer_cert = false
   }
 }
 ```
@@ -128,18 +128,18 @@ mqttx sub -t 't/1' -h localhost -p 8883 \
 
 您也可以在配置文件添加以下 2 项配置：
 
-   ```bash
-   listeners.ssl.default {
-     ...
-     ssl_options {
-       ...
-       # 双向认证，验证客户端证书
-       verify = verify_peer
-       # 如果客户端没有证书，SSL/TLS 连接将被拒绝
-       fail_if_no_peer_cert = true
-     }
-   }
-   ```
+```bash
+listeners.ssl.default {
+  ...
+  ssl_options {
+    ...
+    # 双向认证，验证客户端证书
+    verify = verify_peer
+    # 如果客户端没有证书，SSL/TLS 连接将被拒绝
+    fail_if_no_peer_cert = true
+  }
+}
+```
 
 ## 双向认证客户端测试
 

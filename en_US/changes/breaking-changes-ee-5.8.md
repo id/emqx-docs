@@ -1,5 +1,50 @@
 # Incompatible Changes in EMQX 5.8
 
+## e5.8.6
+
+- [#14802](https://github.com/emqx/emqx/pull/14802) Starting from this version, plugin installation via the REST API or Dashboard requires explicit permission. Users must obtain this permission using the following CLI command before installing.
+
+  ```bash
+  emqx ctl plugins allow NAME-VSN
+  ```
+
+  This change enhances security by preventing unauthorized plugin installations. Users managing plugins via the API or Dashboard must adjust their workflows accordingly.
+
+## e5.8.5
+
+- [#14703](https://github.com/emqx/emqx/pull/14703) Introduced a change to the maximum allowed value for `force_shutdown.max_heap_size`, which is now set to `128GB`. If the `max_heap_size` was previously set to a value exceeding 128GB, this could lead to issues after upgrading, such as during configuration reloading or updates.
+
+## e5.8.4
+
+- [#14360](https://github.com/emqx/emqx/pull/14360) When requesting Prometheus metrics in JSON format, the `client` top-level key will now always be an array of JSON objects, rather than a single JSON object. This change may affect how your monitoring tools process the data.
+
+- [#14370](https://github.com/emqx/emqx/pull/14370) IoTDB data integration configuration changes:
+  
+  - The self-describing template has been removed. EMQX now only processes messages using the configured data templates and no longer attempts to extract the template from the message payload.
+  
+  - Each MQTT message can now only carry a single `payload`. Arrays of payloads are no longer supported. As a result, an MQTT message is processed as a single atomic insert operation (either a single or batch insert) into IoTDB. Generating multiple IoTDB operations from a single MQTT message is no longer possible.
+  
+  - The `data type` is now treated as a plain value rather than a template value.
+  
+  - The REST API driver now only supports IoTDB 1.3.x and later versions.
+  
+  - The Thrift driver now supports "batch" mode. 
+  
+    **Important**: To prevent overlapping timestamps in batch mode, it’s recommended to use the MQTT message timestamp (`${timestamp}`) or include a time field in the payload (e.g., `${payload.time}`).
+
+## e5.8.3
+
+- [#14305](https://github.com/emqx/emqx/pull/14305) Removed support of hashing algorithms `MD4`, `MD5`, and `RIPEMD-160` from authentication as they are not compliant with [NIST Secure Hash Standard](https://www.nist.gov/publications/secure-hash-standard).
+
+## e5.8.2
+
+- [#14004](https://github.com/emqx/emqx/pull/14004) Fixed an issue in Cluster Linking where overlapping topic filters in the `topics` configuration caused inconsistent and incomplete cross-cluster message routing. Each topic filter is now handled individually. Therefore, redundant topic filters (e.g. `t/1` and `t/+`) in the `topics` configuration are now considered invalid. The link will fail to start if such a configuration is detected.
+  
+- [#14015](https://github.com/emqx/emqx/pull/14015) Kafka/Confluent/Azure Event Hub Producers with a dynamic topic (i.e., a topic that contains placeholders) no longer support disk buffering. Only memory and hybrid modes are now supported.
+
+- [#14106](https://github.com/emqx/emqx/pull/14106) Added a validation that forbids a single Kafka Consumer connector from containing sources with repeated Kafka topics. If you want to repeat topics, create a new connector and source(s).
+
+
 ## e5.8.1
 
 - [#13792](https://github.com/emqx/emqx/pull/13792) The default expiration time for a banned item that is created without an `until` value is now `infinity` (previsouly capped at 1 year limit).

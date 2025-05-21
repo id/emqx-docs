@@ -1,60 +1,78 @@
 # Configuration Files
 
-Users can configure EMQX with configuration files or environment variables. This section introduces the EMQX configuration files. It also provides the basic configuration instructions for the most commonly used functions in EMQX. For comprehensive configuration items with detailed explanations, see [EMQX Open Source Configuration Manual](https://docs.emqx.com/en/emqx/v@CE_VERSION@/hocon/) and [EMQX Enterprise Configuration Manual](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/).
+Users can configure EMQX with configuration files or environment variables. This section mainly introduces the EMQX configuration files and provides the basic configuration instructions for the most commonly used functions in EMQX. For comprehensive configuration items with detailed explanations, see [EMQX Enterprise Configuration Manual](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/).
 
-## Main Configuration File
+## Config Directories
 
-EMQX creates a group of directories after installation, among which, `etc` is the folder that keeps all the configuration files. This section will focus on the main configuration file: `emqx.conf`.
+After EMQX is installed, it creates a set of directories to manage its configuration and runtime data. These directories are separated into two main categories:
 
-Depending on your installation mode, `emqx.conf` is stored in:
+- **Static Configuration Directory (`etc`)**: Ready-only and contains immutable or static configuration files.
+- **Dynamic Configuration Directory (`data/configs`)**: Writable and stores runtime-generated or dynamically updated configuration files.
 
-| Installation                               | Path                      |
-| ------------------------------------------ | ------------------------- |
-| Installed with RPM or DEB package          | `/etc/emqx/emqx.conf`     |
-| Running in docker container                | `/opt/emqx/etc/emqx.conf` |
-| Extracted from portable compressed package | `./etc/emqx.conf`         |
+### Static Configuration Directory (`etc`)
 
-As the main configuration file, `emqx.conf` contains most of the commonly used configuration items.
-You can follow the examples provided in the `examples` directory (located within the same directory) to customize the settings.
-EMQX uses the default settings if a config item is not found in the config files.
+The `etc` directory holds the configuration files that define EMQX's initial setup. These files are typically modified during deployment or upgrades and are read-only at runtime to ensure stability. The location of the `etc` directory depends on the installation method:
+
+| Installation                               | Path            |
+| ------------------------------------------ | --------------- |
+| Installed with RPM or DEB package          | `/etc/emqx`     |
+| Running in docker container                | `/opt/emqx/etc` |
+| Extracted from portable compressed package | `./etc`         |
+
+### Dynamic Configuration Directory (`data/configs`)
+
+At runtime, EMQX allows dynamic reconfiguration through the Dashboard, REST API, or CLI. Changes made using these tools are stored in the `data/configs` directory to ensure persistence across sessions. The location of this directory also depends on the installation method:
+
+| Installation                               | Path                     |
+| ------------------------------------------ | ------------------------ |
+| Installed with RPM or DEB package          | `/var/lib/emqx/configs`  |
+| Running in docker container                | `/opt/emqx/data/configs` |
+| Extracted from portable compressed package | `./data/configs`         |
+
+::: tip
+It is possible to change the data directory by modifying the `node.data_dir` setting in the configuration or the `EMQX_NODE__DATA_DIR` environment variable. However, when running a cluster, all nodes must use the same directory path.
+:::
+
+Although not encouraged, the content of the configuration files can overlap. In case of overlapping, the conflict is resolved by a predefined override rule, see [Config Override Rules](#config-override-rules).
+
+## Config Examples
+
+While the [Schema](#schema) section provides a detailed reference, configuration examples can be helpful for understanding and applying settings in EMQX. You can find several example configurations in the `etc/examples` directory.
+
+## Base Configuration File
+
+Starting from EMQX 5.8.4, there is a base configuration file named `base.hocon` in the `etc` directory. This file contains default settings that can be overridden by higher-level configuration files at runtime.
+
+For example, you may want to start the deployment with a basic authentication configuration, and then override it with a more complex configuration at runtime from the Dashboard UI.
+
+For immutable configurations such as `node` and `cluster` configs, it is **NOT** recommended to set them in the `base.hocon` file. See the [Immutable Configurations File](#immutable-configuration-file) for more details.
+
+::: tip
+The `base.hocon` file is not synchronized across the cluster and only applies to the node where it is located.
+:::
 
 ## Configuration Rewrite File
 
-The `emqx.conf` file defines settings at a global level. In such cases as you need to customize the settings for a cluster or a node, EMQX also provides a configuration rewrite file **`cluster.hocon`** to extend but does not override `emqx.conf`.
+In `data/configs` directory, the `cluster.hocon` file contains configuration items for the entire cluster.
+Configuration changes made from the Dashboard, REST API, and CLI will be persisted to this file.
 
-The `cluster.hocon` file contains configuration items for the entire cluster. Configuration changes made from Dashboard, REST API, and CLI will be persisted to this file.
+If a node in the cluster is restarted or if new nodes are added, the node will automatically copy and apply the `cluster.hocon` file from another node in the cluster. For this reason, it is not recommended to modify the file manually.
 
-If a certain cluster node is restarted or some new nodes are added, the node will automatically copy and apply the configuration file from other nodes within the cluster, therefore there is no need nor recommended to configure it manually.
+Configurations in this file are applied on top of those in the `base.hocon` file. For details on the configuration override hierarchy, see [Config Override Rules](#config-override-rules).
 
-The configuration rewrite files are located in the `$data/configs/` directory, and the path of the `data` directory varies according to the installation method:
+Since EMQX version 5.1, any changes to the cluster configuration will trigger a backup of the `cluster.hocon` file before it is overwritten. These backups are timestamped with the node's local time, and up to 10 backup files can be retained.
 
-| Installation                               | Path                 |
-| ------------------------------------------ | -------------------- |
-| Installed with RPM or DEB package          | `/var/lib/emqx`      |
-| Running in docker container                | `/opt/emqx/data`     |
-| Extracted from portable compressed package | `./data`             |
+## Immutable Configuration File
 
-::: tip
-It is possible to change data directory from config `node.data_dir` or environment variable `EMQX_NODE__DATA_DIR`, however, when running a cluster, all nodes should have the same path.
-:::
+For backward compatibility, the `emqx.conf` file remains the primary configuration file for critical system settings, including `node` and `cluster` configurations. This file has a higher priority than both `base.hocon` and `cluster.hocon`, but with a lower priority than environment variables.
 
-By default, most global settings are defined in the `emqx.conf` file, if you perform certain operations on the cluster level from Dashboard, REST API or CLI, the changes will be stored in `cluster.hocon`. And this whole process is called hot reload.
-
-For override rules, see [Configure override rules](#configure-override-rules).
-
-::: tip
-Some configuration items cannot be overridden, for example, `node.name`.
-:::
-
-Since version 5.1, when cluster configuration changes, EMQX backups the `cluster.hocon` file before overwriting it. The backup files are suffixed with a timestamp of the node's local time. At most 10 backup files can be kept.
+For more details on configuration overrides, refer to the [Config Override Rules](#config-override-rules) section.
 
 ## Configuration Paths
 
-If we consider the whole EMQX config as a tree, to reference a primitive value, we can use dot-separated names from string for the path from the tree root (always a Struct) down to the primitive values at tree-leaves.
+In EMQX, configuration values can be referenced using dot-separated paths, similar to a tree structure. Starting from the root (always a Struct), each segment in the path refers to a field name or a Map key. For array elements, a 1-based index is used.
 
-Each segment of the dotted string is a Struct filed name or Map key. For Array elements, 1-based index is used.
-
-Below are some examples:
+Here are some examples of configuration paths:
 
 ```bash
 node.name = "emqx.127.0.0.1"
@@ -92,7 +110,7 @@ node.cluster_call.retry_interval = "1m"
 
 This cuttlefish-like flattening format is backward compatible with the previous EMQX versions, but it is used differently:
 
-HOCON recommends adding quotes at both ends of the string. Strings without special characters can also be unquoted, for example `foo`, `foo_bar`, while cuttlefish regards all characters to the right of `=` as values.
+HOCON recommends adding quotes at both ends of the string. Strings without special characters can also be unquoted, for example, `foo`, `foo_bar`, while cuttlefish regards all characters to the right of `=` as values.
 
 For more information about HOCON syntax, please refer to [HOCON Documentation](https://github.com/lightbend/config/blob/main/HOCON.md).
 
@@ -111,9 +129,9 @@ node {
 
 Configuration items and environment variables can be converted by the following rules:
 
-1. Since the `.` separator in the configuration file cannot be used in environment variables, EMQX uses double underscores `__` as the configuration separator;
-2. To distinguish the converted configuration items from other environment variables, EMQX also adds a prefix `EMQX_` to the environment variable;
-3. The value of the environment variable is parsed according to the HOCON value, making it possible to use the environment variable to pass the value of complex data types, but please note that special characters such as `：` and `=` need to be wrapped in double quotes `"`.
+1. Since the `.` separator in the configuration file cannot be used in environment variables. EMQX uses double underscores `__` as the configuration separator.
+2. To distinguish the converted configuration items from other environment variables, EMQX also adds a prefix `EMQX_` to the environment variable.
+3. The value of the environment variable is parsed according to the HOCON value, making it possible to use the environment variable to pass the value of complex data types, but please note that special characters such as `:` and `=` need to be wrapped in double quotes `"`.
 
 Conversion example:
 
@@ -142,7 +160,7 @@ listeners.ssl.default {
 
 EMQX will ignore undefined root paths, for example, `EMQX_UNKNOWN_ROOT__FOOBAR` , because `UNKNOWN_ROOT` is not a pre-defined root path.
 
-When a known root path is set with an unknown field name, EMQX will output a `warning` log at startup, for example, when `enable` is incorrectly configured as `enabled`, it will output:
+When a known root path is set with an unknown field name, EMQX will output a `warning` log at startup. For example, when `enable` is incorrectly configured as `enabled`, it will output:
 
 ```bash
 [warning] unknown_env_vars: ["EMQX_AUTHENTICATION__ENABLED"]
@@ -150,27 +168,32 @@ When a known root path is set with an unknown field name, EMQX will output a `wa
 
 :::
 
-## Configure Override Rules
+## Config Override Rules
 
-The value of HOCON will be overridden hierarchically, the rules are as follows:
+In EMQX, configuration values are applied hierarchically, with the following override rules:
 
-- In the same file, the value defined in the later section will override any previous key value.
-- A higher-level value will replace that of a lower-level.
+- Within the same file, values defined later will override earlier ones.
+- Higher-level configurations will replace lower-level ones.
 
-The EMQX configuration is prioritized (overlayed) in the following order: `cluster.hocon < emqx.conf < environment variables`.
+The order of configuration priority is as follows:
 
-Settings in environment variables that begin with 'EMQX_' have the highest priority and will override any settings in the `etc/emqx.conf` file.
+`base.hocon < cluster.hocon < emqx.conf < environment variables`.  
 
-Changes made through EMQX Dashboard UI, HTTP API, or CLI are persisted in `data/configs/cluster.hocon` at runtime and will take effect immediately. However, if the same configuration items are set differently in the `etc/emqx.conf` file, the runtime updates will be overridden by the settings in `etc/emqx.conf` after the node restarts.
-
-To avoid confusion, it is highly recommend NOT to have the same config keys in both `cluster.hocon` and `emqx.conf`.
+This means that the settings in `base.hocon` have the lowest priority and can be overridden by settings in higher-priority files. Environment variables that start with `EMQX_` have the highest priority.
 
 ::: tip
-1. If you're using an older version of EMQX, specifically version e5.0.2/v5.0.22 or earlier(i.e. the `cluster-override.conf` file still exists in EMQX's data directory), then the order of priority for configuring your settings is as follows: `emqx.conf < ENV < HTTP API(cluster-override.conf)`.
-2. If you're upgrading from e5.0.2/v5.0.22 or earlier to the latest version of EMQX,
-   the configuration overriding order will remain unchanged, `cluster.hocon` will not be created to keep compatibility.
-3. The `cluster-override.conf` mechanism is removed in version 5.1.
+Before version 5.8.4, the `base.hocon` file did not exist. The priority order remains the same, but without `base.hocon`.
 :::
+
+Changes made through EMQX Dashboard UI, HTTP API, or CLI are persisted in `cluster.hocon` at runtime and will take effect immediately. However, changes may get reverted after a node restart if the same configuration items are set differently in `emqx.conf` or environment variables.  
+
+To avoid confusion, **do not overlap configuration settings** between `emqx.conf` and `cluster.hocon`.
+
+::: tip
+1. If you're using an older version of EMQX (e.g., 5.0.2/v5.0.22 or earlier, where the `cluster-override.conf` file still exists), the priority order for configuration settings is: `emqx.conf < ENV < HTTP API (cluster-override.conf)`.
+2. When upgrading from version 5.0.2/v5.0.22 or earlier to the latest version, the priority order remains unchanged, and `cluster.hocon` will not be created to maintain compatibility.
+3. The `cluster-override.conf` mechanism is removed in version 5.1.
+   :::
 
 ### Override
 
@@ -266,7 +289,7 @@ The following configuration items can be overridden at the zone level:
 
 In EMQX version 5, the default configuration file does not include any zones, which differs from version 4, where there are two default zones: `internal` and `external`.
 
-To create a zone, you need to define it in `emqx.conf`, for example:
+To create a zone, you need to define it in the config file, for example:
 
 ```bash
 zones {
@@ -307,7 +330,7 @@ listeners.tcp.default {
 
 To make the HOCON objects type-safe, EMQX introduced a schema for it. This schema defines data types, field names, and metadata, allowing for configuration value validation and more.
 
-The [EMQX Open Source Configuration Manual](https://docs.emqx.com/en/emqx/v@CE_VERSION@/hocon/) and [EMQX Enterprise Configuration Manual](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/) are generated from the schema.
+The [EMQX Enterprise Configuration Manual](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/) are generated from the schema.
 
 ::: tip
 The zone configuration schema is not included in the configuration manual because it is identical for each group. For example, `zones.my_zone1.mqtt {...}` has the same schema as `mqtt {...}`.

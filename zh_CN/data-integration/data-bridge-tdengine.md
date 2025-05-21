@@ -1,11 +1,5 @@
 # 将 MQTT 数据写入到 TDengine
 
-::: tip
-
-TDengine 数据集成是 EMQX 企业版功能。
-
-:::
-
 [TDengine](https://tdengine.com/) 是一款专为物联网、工业互联网等场景设计并优化的大数据平台，其核心模块是高性能、集群开源、云原生、极简的时序数据库。EMQX 支持与 TDengine 集成，能够实现大量设备和数据采集器的海量数据传输、存储、分析和分发，对业务运行状态进行实时监测、预警，提供实时的商业洞察。
 
 本页详细介绍了 EMQX 与 TDengine 的数据集成并提供了实用的规则和 Sink 创建指导。
@@ -48,9 +42,13 @@ TDengine 数据集成为您的业务带来了以下功能和优势：
 - 了解[规则](./rules.md)。
 - 了解[数据集成](./data-bridges.md)。
 
-### 安装 TDengine
+### 启动 TDengine 并创建数据库
 
-通过 Docker 安装并启动 TDengine：
+您可以通过以下两种方式来启动 TDengine 或连接到一个 TDengine 服务，并创建数据库：
+
+:::: tabs
+
+::: tab Docker
 
 ```bash
 # 启动一个 TDengine 容器
@@ -69,7 +67,27 @@ CREATE DATABASE mqtt;
 use mqtt;
 ```
 
-我们将在 TDengine 中创建两张表：
+:::
+
+::: tab TDengine Cloud
+
+如果您使用的是 [TDengine Cloud](https://cloud.tdengine.com/)， 则只需要登录到控制台后选中您所使用的 Instance，点击左侧 Explorer 进入到 SQL 执行页面。执行以下语句创建数据库：
+
+```bash
+# 创建并选择数据库
+
+CREATE DATABASE mqtt;
+
+use mqtt;
+```
+
+![create database](./assets/tdengine_cloud_create_db.jpg)
+
+:::
+
+::::
+
+### 在 TDengine 中创建数据表
 
 数据表 `t_mqtt_msg`，用于存储每条消息的发布者客户端 ID、主题、Payload 以及发布时间：
 
@@ -96,17 +114,50 @@ CREATE TABLE emqx_client_events (
 
 ## 创建连接器
 
-在创建 TDengine Sink 之前，您需要创建一个 TDengine 连接器，以便 EMQX 与 TDengine 服务建立连接。以下示例假定您在本地机器上同时运行 EMQX 和 TDengine。如果您在远程运行 TDengine 和 EMQX，请相应地调整设置。
+在创建 TDengine Sink 之前，您需要创建一个 TDengine 连接器，以便 EMQX 与 TDengine 服务建立连接。
 
-1. 转到 Dashboard **集成** -> **连接器** 页面。点击页面右上角的**创建**。
-2. 在连接器类型中选择 **TDengine**，点击**下一步**。
-3. 在 **配置** 步骤，配置以下信息：
 
-   - **连接器名称**：应为大写和小写字母及数字的组合，例如：`my_opentsdb`。
-   - **主机列表**：填写 `127.0.0.1:6041`。
+1. 转到 Dashboard**集成** -> **连接器**页面。点击页面右上角的**创建**。
+
+2. 在连接器类型中选择 **TDengine**，点击**下一步**，进入到连接器配置页面。
+
+3. 根据您连接到 TDengine 或 TDengine Cloud 填写连接器配置信息：
+
+   :::: tabs
+
+   ::: tab 连接到 TDengine
+
+   以下配置示例假定您在本地机器上同时运行 EMQX 和 TDengine。如果您在远程运行 TDengine 和 EMQX，请相应地调整设置。
+
+   - **连接器名称**：应为大写和小写字母及数字的组合，例如：`my_tdenginedb`。
+   - **服务器地址**：填写 `127.0.0.1:6041`。
    - **数据库**：填写 `mqtt`。
    - **用户名**：填写 `root`。
    - **密码**：填写 `taosdata`。
+   - **Token**：保持为空，连接器将尝试使用**用户名**和**密码**进行身份验证。
+     :::
+
+     ::: tab 连接到 TDengine Cloud
+
+   1. 在 TDengine Cloud 的控制台页面中选中正确的 Instance。
+
+   2. 进入左侧的 Programming 选项页，选中 **REST API** 连接方式，如下图所示，可得到对应的连接地址和 Token:
+
+      ![url and token](./assets/tdengine_cloud_url_and_token.png)
+
+   3. 填写以下连接器配置信息：
+
+      - **连接器名称**：应为大写和小写字母及数字的组合，例如：`my_tdenginedb`。
+      - **服务器地址**：填写 TDengine Cloud 给出的 `TDENGINE_CLOUD_URL` 的值。即：`https://gw.***.cloud.tdengine.com`。
+      - **数据库**：填写 `mqtt`。
+      - **用户名**：保持为空。
+      - **密码**：保持为空。
+      - **Token**：填写 TDengine Cloud 给出的 `TDENGINE_CLOUD_TOKEN` 的值。即：`a2ba69cc6****f0c18cd`。
+
+      :::
+
+      ::::
+
 4. 高级配置（可选）：详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
 5. 在点击**创建**之前，您可以点击**测试连接**来测试连接器是否能连接到 TDengine 服务器。
 6. 点击**创建**按钮完成连接器创建。
@@ -165,17 +216,19 @@ CREATE TABLE emqx_client_events (
 
      ::: tip
 
-     如果您初次使用 SQL，可以点击 **SQL 示例** 和**启用调试**来学习和测试规则 SQL 的结果。
+     如果可能，应该始终启用此选项；禁用该选项仅用于确保向后兼容性。
 
      :::
 
-9. 高级配置（可选），根据情况配置同步/异步模式，队列与批量等参数，详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
+9. **备选动作（可选）**：如果您希望在消息投递失败时提升系统的可靠性，可以为 Sink 配置一个或多个备选动作。当 Sink 无法成功处理消息时，这些备选动作将被触发。更多信息请参见：[备选动作](./data-bridges.md#备选动作)。
 
-10. 在完成 Sink 创建之前，您可以使用**测试连接**来测试当前 Sink 到 TDengine 的连接是否成功。
+10. **高级配置（可选）**：根据情况配置同步/异步模式，队列与批量等参数，详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
 
-11. 点击**创建**按钮完成 Sink 创建，新建的 Sink 将被添加到**动作输出**列表中。
+11. 在完成 Sink 创建之前，您可以使用**测试连接**来测试当前 Sink 到 TDengine 的连接是否成功。
 
-12. 回到创建规则页面，对配置的信息进行确认，点击**创建**。一条规则应该出现在规则列表中。
+12. 点击**创建**按钮完成 Sink 创建，新建的 Sink 将被添加到**动作输出**列表中。
+
+13. 回到创建规则页面，对配置的信息进行确认，点击**创建**。一条规则应该出现在规则列表中。
 
 现在您已成功创建了通过 TDengine Sink 将数据转发到 TDengine 的规则，同时在**规则**页面的**动作(Sink)** 标签页看到新建的 TDengine Sink。
 

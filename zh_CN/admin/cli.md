@@ -412,6 +412,7 @@ ok
 | ---------------------------------------- | ---------------------------------------- |
 | plugins list                             | 列出所有已安装的插件。                   |
 | plugins describe \<Name-Vsn\>            | 描述已安装插件的详细信息。               |
+| plugins allow \<Name-Vsn\>               | 授予通过 Dashboard 安装指定插件的权限。  |
 | plugins install \<Name-Vsn\>             | 安装一个已放置在插件安装目录下的插件包。 |
 | plugins uninstall \<Name-Vsn\>           | 卸载指定插件。                           |
 | plugins start \<Name-Vsn\>               | 启动指定插件。                           |
@@ -430,6 +431,12 @@ emqx ctl plugins list
 
 ```bash
 emqx ctl plugins describe emqx_auth_mnesia-3.0.1
+```
+
+### plugins allow \<Name-Vsn\>
+
+```bash
+emqx ctl plugins allow emqx_auth_mnesia-3.0.1
 ```
 
 ### plugins install \<Name-Vsn\>
@@ -1003,29 +1010,24 @@ Actions:
 
 ## license
 
-::: tip
-
-本节内容仅适用于 EMQX 企业版。
-
-:::
-
-| 命令                   | 描述                |
-| ---------------------- | ------------------- |
-| license info           | 显示 License 信息。 |
-| license update License | 更新 License 信息。 |
+| 命令                   | 描述                     |
+| ---------------------- | ------------------------ |
+| license info           | 显示 License 信息。      |
+| license update License | 更新 License 信息。      |
+| license update default | 恢复为默认社区版 License |
 
 ### license info
 
 ```bash
 $ emqx ctl license info
-customer        : Evaluation
+customer        : Developer
 email           : contact@emqx.io
-deployment      : default
-max_connections : 100
-start_at        : 2023-01-09
-expiry_at       : 2028-01-08
-type            : trial
-customer_type   : 10
+deployment      : Development
+max_sessions    : 10000000
+start_at        : 2025-03-02
+expiry_at       : 2029-03-01
+type            : community
+customer_type   : 11
 expiry          : false
 ```
 
@@ -1036,3 +1038,9 @@ emqx ctl license update <YOUR_LICENSE_STRING>
 ```
 
 请将 `YOUR_LICENSE_STRING` 替换为实际的 License 字符串。
+
+### license update default
+
+```bash
+emqx ctl license update default
+```

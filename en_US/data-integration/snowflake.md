@@ -1,11 +1,5 @@
 # Ingest MQTT Data into Snowflake
 
-::: tip
-
-The Snowflake data integration is an EMQX Enterprise edition feature.
-
-:::
-
 [Snowflake](https://www.snowflake.com/en/) is a cloud-based data platform that provides a highly scalable and flexible solution for data warehousing, analytics, and secure data sharing. Known for its ability to handle structured and semi-structured data, Snowflake is designed to store vast amounts of data while providing fast query performance and seamless integration with various tools and services.
 
 This page provides a detailed introduction to the data integration between EMQX and Snowflake, and offers practical guidance on the rule and Sink creation.
@@ -280,11 +274,13 @@ This section demonstrates how to create a rule in EMQX to process messages from 
 
    - **Time Interval**: Set the time interval (in seconds) at which aggregation occurs. For example, if set to `60`, data will be uploaded every 60 seconds even if the maximum number of records hasn’t been reached, resetting the maximum number of records.
 
-10. Expand **Advanced Settings** and configure the advanced setting options as needed (optional). For more details, refer to [Advanced Settings](#advanced-settings).
+10. **Fallback Actions (Optional)**: If you want to improve reliability in case of message delivery failure, you can define one or more fallback actions. These actions will be triggered if the primary Sink fails to process a message. See [Fallback Actions](./data-bridges.md#fallback-actions) for more details.
 
-11. Use the default values for the remaining settings. Click the **Create** button to complete the Sink creation. After successful creation, the page will return to the rule creation, and the new Sink will be added to the rule actions.
+11. Expand **Advanced Settings** and configure the advanced setting options as needed (optional). For more details, refer to [Advanced Settings](#advanced-settings).
 
-12. Back on the rule creation page, click the **Create** button to complete the entire rule creation process.
+12. Use the default values for the remaining settings. Click the **Create** button to complete the Sink creation. After successful creation, the page will return to the rule creation, and the new Sink will be added to the rule actions.
+
+13. Back on the rule creation page, click the **Create** button to complete the entire rule creation process.
 
 You have now successfully created the rule. You can see the newly created rule on the **Rules** page and the new Snowflake Sink on the **Actions (Sink)** tab.
 

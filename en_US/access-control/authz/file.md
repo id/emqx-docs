@@ -2,10 +2,10 @@
 
 EMQX supports authorization checks against the predefined rules stored in ACL files. You can configure multiple authorization check rules in the file. After receiving the client's operation request, EMQX matches the authorization rules in order from top to bottom. After successfully matching a rule, EMQX allows or denies the current request according to the setting, and stops matching subsequent rules. 
 
-File-based ACL is simple and lightweight. It is suitable to configure generic rules. For hundreds or more per-client rules, it is recommended to use other authorization sources, and file-based ACL can be the safety guard put at the end of the authorization chain. 
+File-based ACL is simple and lightweight. It is suitable to configure generic rules. For hundreds or more per-client rules, it is recommended to use other authorization sources, and a file-based ACL can serve as a safety guard at the end of the authorization chain. 
 
 ::: tip Prerequisite
-Starting from 5.0, file-based ACL rules can be edited and reloaded from EMQX Dashboard UI.
+Starting from 5.0, file-based ACL rules can be edited and reloaded from the EMQX Dashboard UI.
 
 Be familiar with the basic concepts of [Authorization](./authz.md).
 
@@ -13,9 +13,9 @@ Be familiar with the basic concepts of [Authorization](./authz.md).
 
 ## ACL File Format
 
-Before the authorization check based on ACL file, you need to store the authorization rules in the file in the form of [Erlang tuples](https://www.erlang.org/doc/reference_manual/data_types.html#tuple) data list.
+Before the authorization check based on the ACL file, you need to store the authorization rules in the file in the form of [Erlang tuples](https://www.erlang.org/doc/reference_manual/data_types.html#tuple) data list.
 
-ACL configuration file is a list of Erlang tuples ending with a period. A _tuple_ is a comma-separated list of expressions. The whole list is enclosed in curly braces.
+The ACL configuration file is a list of Erlang tuples ending with a period. A _tuple_ is a comma-separated list of expressions. The whole list is enclosed in curly braces.
 
 The `%%` prefix identifies comment strings and will be abandoned in the parsing process.
 
@@ -42,11 +42,13 @@ The rules are matched from top to bottom. If a rule matches, its permission is a
   * `allow`
   * `deny`
 
-- The second position of a tuple describes clients for which the rule takes effect. The following terms and their combinations can be used to specify the clients:
+- The second position of a tuple describes clients for whom the rule takes effect. The following terms and their combinations can be used to specify the clients:
   * `{username, "dashboard"}`: clients with user name `dashboard`; also can be `{user, "dashboard"}`
   * `{username, {re, "^dash"}}` : clients with user name matching the [regular expression](https://www.erlang.org/doc/man/re.html#regexp_syntax) `^dash`
   * `{clientid, "dashboard"}` : clients with client ID `dashboard`; also can be `{client, "dashboard"}`
   * `{clientid, {re, "^dash"}}` : clients with client ID matching the [regular expression](https://www.erlang.org/doc/man/re.html#regexp_syntax) `^dash`
+  * `{client_attr, "name", "dashboard"}` : clients with client attribute `name` equal to `dashboard`
+  * `{client_attr, "name", {re, "^dash"}}` : clients with client attribute `name` matching the [regular expression](https://www.erlang.org/doc/man/re.html#regexp_syntax) `^dash`
   * `{ipaddr, "127.0.0.1"}`: clients connecting from IP address `127.0.0.1`. Netmasks are allowed. If EMQX is behind a load balance, `proxy_protocol` should be enabled for the client's MQTT listener. 
   * `{ipaddrs, ["127.0.0.1", ..., ]}` : clients connecting from one of the specified IP addresses `127.0.0.1, ..., `. Netmasks are allowed.
   * `all` : any clients
@@ -106,8 +108,10 @@ Where,
 <!--For detailed parameter list, see [authz-file](../../configuration/configuration-manual.html#authz-file). Need to update the link later-->
 
 ::: tip
+
 The initial file provided by the `path` config is not mutable to EMQX.
 If rules are updated from the dashboard UI or management API, the new rules
 will be stored in `data/authz/acl.conf`, and this original config will no longer be loaded.
+
 ::: <!--This note is not in the Chinese file anymore, remove?-->
 

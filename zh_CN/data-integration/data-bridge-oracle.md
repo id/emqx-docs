@@ -1,11 +1,5 @@
 # 将 MQTT 数据写入到 Oracle Database
 
-::: tip
-
-Oracle Database 数据集成是 EMQX 企业版功能。
-
-:::
-
 [Oracle Database](https://www.oracle.com/database/) 是领先的关系型商业数据库解决方案之一，被广泛应用于各种规模和类型的企业和组织中。EMQX 支持与 Oracle Database 集成，因此您可以将 MQTT 消息和客户端事件保存到 Oracle Database 中， 构建复杂的数据管道和分析流程实现数据管理和分析，或进行设备连接管理并与其他 ERP, CRM 企业系统的集成。
 
 本页详细介绍了 EMQX 与 Oracle Database 的数据集成并提供了实用的规则和 Sink 创建指导。
@@ -107,6 +101,9 @@ CREATE TABLE t_emqx_client_events (
    - **Oracle Database SID**: 输入 `XE`。
    - **用户名**: 输入 `system`。
    - **密码**: 输入 `oracle`。
+   - **角色**：选择用于连接到 Oracle 数据库的角色。
+     - **normal**：不使用任何特殊角色。
+     - **sysdba**：系统数据库管理员角色，具有高级权限。
 4. 高级配置（可选），根据情况配置连接池等参数，详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
 5. 在点击**创建**之前，您可以点击**测试连接**来测试连接器是否能连接到 Oracle 服务器。
 6. 点击**创建**按钮完成连接器创建。
@@ -163,13 +160,15 @@ CREATE TABLE t_emqx_client_events (
 
 9. 其余选项均设为默认值。
 
-10. 高级配置（可选），根据情况配置同步/异步模式，队列与批量等参数，详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
+10. **备选动作（可选）**：如果您希望在消息投递失败时提升系统的可靠性，可以为 Sink 配置一个或多个备选动作。当 Sink 无法成功处理消息时，这些备选动作将被触发。更多信息请参见：[备选动作](./data-bridges.md#备选动作)。
 
-11. 在完成创建之前，您可以点击**测试连接**来测试 Sink 可以连接到 Oracle Database 服务器。
+11. **高级配置（可选）**：根据情况配置同步/异步模式，队列与批量等参数，详细请参考 [Sink 的特性](./data-bridges.md#sink-的特性)。
 
-12. 点击**添加**按钮完成 Sink 创建，新建的 Sink 将被添加到**动作输出**列表中。
+12. 在完成创建之前，您可以点击**测试连接**来测试 Sink 可以连接到 Oracle Database 服务器。
 
-13. 回到创建规则页面，对配置的信息进行确认，点击**创建**。一条规则应该出现在规则列表中。
+13. 点击**添加**按钮完成 Sink 创建，新建的 Sink 将被添加到**动作输出**列表中。
+
+14. 回到创建规则页面，对配置的信息进行确认，点击**创建**。一条规则应该出现在规则列表中。
 
 现在您已成功创建了通过 Oracle Database Sink 将数据转发到 Oracle Database 的规则，同时在**规则**页面的**动作(Sink)** 标签页看到新建的 Oracle Database Sink。
 

@@ -30,8 +30,7 @@ The request can use JSON format, with the following placeholders in the URL and 
 - `${topic}`: The topic (or topic filter) to be published or subscribed in the current request.
 - `${qos}`: The QoS of the message to be published or subscribed in the current request.
 - `${retain}`: Whether the message to be published in the current request is a retained message.
-
-
+- `${zone}`: The client's Zone at runtime. The Zone is a logical classification of the client, such as region or environment, that can be dynamically applied based on the client's configuration.
 
 ### Response
 
@@ -87,13 +86,13 @@ For untrusted environments, HTTPS should be used.
 
    - **Request Method**: Select the HTTP request method, optional values: `GET`, `POST`.
    - **URL**: Enter the IP address of the HTTP application.
-   - **Headers** (optional): Configure the HTTP request headers. <!--The key, value, and add of this content.-->
+   - **Headers** (optional): Configure the HTTP request headers. Keys and values support using [placeholders](./authz.md#authorization-placeholders).
 
    **Connection Configuration**: Configure concurrent connections, connection timeout, maximum HTTP requests, and request timeout.
 
-   - **Pool size** (optional): Integer, specifies the number of concurrent connections from EMQX nodes to external HTTP servers; default value: **8**. <!--Is there a range?-->
+   - **Pool size** (optional): This is an integer that specifies the number of concurrent connections from EMQX nodes to external HTTP servers. The default value is `8`. 
    - **Connection Timeout** (optional): Enter the duration to wait for a connection timeout, with optional units: **hours**, **minutes**, **seconds**, **milliseconds**.
-   - **HTTP Pipelining** (optional): Positive integer, specifies the maximum number of HTTP requests that can be sent without waiting for a response; default value: **100**.
+   - **HTTP Pipelining** (optional): Positive integer, specifies the maximum number of HTTP requests that can be sent without waiting for a response; default value: `100`.
    - **Request Timeout** (optional): Enter the duration to wait for a request timeout, with optional units: **hours**, **minutes**, **seconds**, **milliseconds**.
    - **TLS Configuration**: Configure whether to enable TLS.
 

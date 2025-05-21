@@ -41,7 +41,7 @@ The `<DS>` placeholder stands for "durable storage".  Currently, the available p
 | ----------------------------------------- | ------------------------------------------------------------ |
 | `durable_storage.<DS>.data_dir`           | Directory in the file system where EMQX stores the data.     |
 | `durable_storage.<DS>.n_shards`           | [Numer of shards](./managing-replication.md#number-of-shards). |
-| `durable_storage.<DS>.n_sites`            | [Number of sites](./managing-replication.md##number-of-sites). |
+| `durable_storage.<DS>.n_sites`            | [Number of sites](./managing-replication.md#number-of-sites). |
 | `durable_storage.<DS>.replication_factor` | [Replication factor](./managing-replication.md#replication-factor) determines the number of replicas for each shard. |
 | `durable_storage.<DS>.local_write_buffer` | Contains parameters related to message buffering. See [Local Write Buffer Configuration](#local-write-buffer-configuration). |
 | `durable_storage.<DS>.layout`             | Contains parameters that control how EMQX lays out data on disk. See [Storage Layout Configuration](#storage-layout-configuration). |
@@ -204,7 +204,7 @@ $ bin/emqx_ctl ds join messages B2A7DBB2413CD6EE
 ok
 ```
 
-For more detailed information, see [Add Sites](./management.md#add-sites) and [Remove Sites](./management.md#remove-sites).
+For more detailed information, see [Add Sites](./managing-replication.md#add-sites) and [Remove Sites](./managing-replication.md#remove-sites).
 
 ## REST API
 

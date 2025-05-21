@@ -1,11 +1,5 @@
 # 编解码举例 - Protobuf
 
-::: tip 注意
-
-Schema Registry 是 EMQX 企业版功能。
-
-:::
-
 本页通过一个例子来让您了解在 EMQX 中使用 Protobuf 编码的消息数据是如何通过编解码进行格式转换并在规则引擎中进行匹配的。
 
 ## 解码场景
@@ -183,7 +177,7 @@ def publish_msg(client):
 
 3. 点击**连接**，作为 MQTT 客户端连接到 EMQX。
 
-4. 在**发布**区域，在**主题**中输入 `protobuf_in`，在 **Paylod** 中输入以下消息：
+4. 在**发布**区域，在**主题**中输入 `protobuf_in`，在 **Payload** 中输入以下消息：
 
    ```json
    {"name":"Shawn","id":1,"email":"shawn@example.com"}

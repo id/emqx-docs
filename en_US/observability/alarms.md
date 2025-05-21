@@ -1,12 +1,6 @@
 # Alarm
 
-::: tip Note
-
-Alarm is an EMQX Enterprise feature.
-
-:::
-
-EMQX offers a built-in monitoring and alarm functionality for monitoring the internal state changes, such as CPU occupancy, system, and process memory occupancy, number of processes, rule engine resource status, and cluster partition and healing. EMQX triggers and records these changes when they exceed a threshold or deviate from expectations, and removes them from the list once they are restored. 
+EMQX offers a built-in monitoring and alarm functionality for monitoring the internal state changes, such as CPU occupancy, system, and process memory occupancy, number of processes, rule engine resource status, and cluster partition and healing. EMQX triggers and records these changes when they exceed a threshold or deviate from expectations, and removes them from the list once they are restored.
 
 This page introduces the alarm information EMQX provides, how to obtain and check the detailed alarm information, and how to configure the alarm settings and thresholds in EMQX. The monitoring and alarm function keeps you notified of potential problems during operation. By configuring alarms and setting appropriate thresholds, you can make sure that EMQX remains secure, stable, and reliable.
 
@@ -16,7 +10,7 @@ The following table lists the alarms that can be triggered to indicate potential
 
 ::: tip
 
-Depending on the severance and impacts on the system, alarms can have 3 levels:
+Depending on the severity and impacts on the system, alarms can have 3 levels:
 
 - **Error**: Errors caused by user presets. The client can perceive the error and retry.
 
@@ -27,20 +21,6 @@ Depending on the severance and impacts on the system, alarms can have 3 levels:
 The levels are defined from development perspectives and are only for recommendation. You can define your own alarm levels according to the business needs.
 
 :::
-
-**Alarm list for EMQX Open Source edition:**
-
-| **Alarm**                 | Level    | Description                                                  | **Details**                              | **Threshold**                                                |
-| :------------------------ | -------- | :----------------------------------------------------------- | :--------------------------------------- | :----------------------------------------------------------- |
-| high_system_memory_usage  | Warning  | System memory usage is too high                              | "System memory usage is higher than ~p%" | `os_mon.sysmem_high_watermark = 70%`                         |
-| high_process_memory_usage | Warning  | Single Erlang process memory usage is too high (percentage of system memory usage) | Process memory usage is higher than ~p%  | `os_mon.procmem_high_watermark = 5%`                         |
-| high_cpu_usage            | Warning  | CPU usage is too high                                        | ~p% cpu usage                            | `os_mon.cpu_high_watermark = 80%` `os_mon.cpu_low_watermark = 60%` |
-| too_many_processes        | Warning  | Too many processes                                           | ~p% process usage                        | `vm_mon.process_high_watermark = 80%` `vm_mon.process_low_watermark = 60%` |
-| partition                 | Critical | Partition occurs at node                                     | Partition occurs at node ~s              | -                                                            |
-| resource                  | Critical | Resource is disconnected                                     | Resource ~s(~s) is down                  | -                                                            |
-| conn_congestion           | Critical | Connection process congestion                                | connection congested                     | -                                                            |
-
-**Alarm list for EMQX Enterprise edition:**
 
 | **Alarm**                 | Level    | Description                                                  | **Details**                                  | **Threshold**                                                |
 | :------------------------ | -------- | :----------------------------------------------------------- | :------------------------------------------- | :----------------------------------------------------------- |
@@ -56,11 +36,13 @@ The levels are defined from development perspectives and are only for recommenda
 
 ## Get Alarms
 
-EMQX provides you with various ways to get alarms and check detailed alarm information. One way is to view the alarms on EMQX Dashboard, where you can view a list of active or historical alarms. However, it is only a central place for easy access to an overview of alarms that have been triggered. Another way is to subscribe to system topics through MQTT to receive real-time notifications of alarms with detailed alarm information. Alarms can also be accessed from the log or via REST API. 
+EMQX offers several methods for retrieving alarms and viewing detailed information about them. One way is through the EMQX Dashboard, where you can view both active and historical alarms in a user-friendly interface. This serves as a central location to easily access an overview of alarms that have been triggered. 
+
+Additionally, you can subscribe to system topics via MQTT to receive real-time notifications of system alarms. Another method is through Webhook integration, where alarm events can be sent to an external HTTP service for further processing. Alarms can also be accessed through logs or the REST API.
 
 ### View Alarms on Dashboard
 
-On EMQX Dashboard, click **Monitoring** -> **Alarms**. Select the **Active** or **History** tab, and you can see the list of currently active alarms and historical alarms.
+On the EMQX Dashboard, click **Monitoring** -> **Alarms**. Then, select the **Active** or **History** tab to view a list of currently active alarms and historical alarms.
 
 <img src="./assets/view-alarms.png" alt="view-alarms" style="zoom:50%;" />
 
@@ -83,7 +65,7 @@ Taking the alarm of high system memory usage as an example, you will receive an 
 
 <img src="./assets/alarm_activate_msg.png" alt="alarm massage" style="zoom:50%;" />
 
-One system multifunction will be repeatedly reported. That is, if one alarm on high CPU usage is activated, the system will not generate another alarm of the same type. The generated alarm will be automatically deactivated when the monitored metric returns to normal, or you can manually deactivate the alarm.
+Alarms will not be repeatedly reported. That is, if one alarm on high CPU usage is activated, the system will not generate another alarm of the same type. The generated alarm will be automatically deactivated when the monitored metric returns to normal, or you can manually deactivate the alarm.
 
 ### Get Alarms from Log
 
@@ -98,13 +80,33 @@ You can query and manage alarms through the API. Click **Alarms** on the left na
 
 <img src="./assets/view-alarms-api.png" alt="view-alarms-api" style="zoom:45%;" />
 
+### Integrate Webhook to Send Alarm Events
+
+Starting from EMQX version 5.8.5, the rule engine supports two new alarm events:
+
+- [$events/sys/alarm_activated](../data-integration/rule-sql-events-and-fields.md#system-alarm-activated-event-events-sys-alarm-activated)
+- [$events/sys/alarm_deactivated](../data-integration/rule-sql-events-and-fields.md#system-alarm-deactivated-event-events-sys-alarm-deactivated)
+
+These events allow you to receive notifications of alarm activities via external HTTP services through Webhook integration.
+
+To configure Webhook integration:
+
+1. In the EMQX Dashboard, navigate to **Monitoring** -> **Alarms**. 
+2. Click the **Set Up Webhook** button in the upper right corner to open the Webhook integration setup page.
+3. Enter a name for the Webhook integration and a note (optional). In the **Trigger** field,  `Alarm Activated` and `Alarm Deactivated` are pre-selected.
+4. Enter the Webhook URL where you want to send the notifications.
+5. For more configuration options, refer to [Create Webhook](../data-integration/webhook.md).
+6. Click **Save** when you finish.
+
+![alarm_webhook_setup](./assets/alarm_webhook_setup.png)
+
 ## Alarm Configuration
 
 Alarm configuration includes configuring alarm settings and alarm thresholds. Alarm settings determine how the alarm message is displayed and stored, while alarm thresholds establish limits or values that trigger the alarm when potential problems are detected. The alarm configuration feature allows you to customize the alarm settings and thresholds to meet your business needs.
 
 ### Configure Alarm Settings
 
-The settings for alarms can only be configured by modifying the configuration items in `emqx.conf` file. The following table lists the configuration items available for alarm setting configuration.
+The settings for alarms can only be configured by modifying the configuration items in the configuration file. The following table lists the configuration items available for alarm setting configuration.
 
 | Configuration Item    | Description                                                  | Default Value        | Optional Values |
 | --------------------- | ------------------------------------------------------------ | -------------------- | --------------- |
@@ -116,8 +118,8 @@ The settings for alarms can only be configured by modifying the configuration it
 
 Alarm thresholds can be configured on EMQX Dashboard. There are two ways to launch the **Monitoring** page for configuring the alarm thresholds:
 
-1. On the **Alarms** page, click the **Setting** button and you will be led to the **Monitoring** page. 
-2. From the left navigation menu, click **Management** -> **Monitoring**. 
+1. On the **Alarms** page, click the **Setting** button and you will be led to the **Monitoring** page.
+2. From the left navigation menu, click **Management** -> **Monitoring**.
 
 On the  **Monitoring** -> **System** tab, click the **Erlang VM** tab, you can configure the following items for the system performance of the Erlang Virtual Machine:
 
@@ -129,7 +131,7 @@ On the  **Monitoring** -> **System** tab, click the **Erlang VM** tab, you can c
 - **Process low watermark**: Specify the threshold value of processes that can simultaneously exist at the local node. When the percentage is lowered to the specified number, an alarm is cleared. The default value is `60` percent.
 
 - **Enable Long GC monitoring**: Disabled by default. When enabled, a warning-level log `long_gc` is emitted and an MQTT message is published to the system topic `$SYS/sysmon/long_gc` when an Erlang process spends long time performing garbage collection.
-- **Enable Long Schedule monitoring**: Enabled by default, which means when the Erlang VM detects a task scheduled for too long, a warning level log `long_schedule` is emitted. You can set the proper time scheduled for a task in the text box. The default value is `240` milliseconds. 
+- **Enable Long Schedule monitoring**: Enabled by default, which means when the Erlang VM detects a task scheduled for too long, a warning level log `long_schedule` is emitted. You can set the proper time scheduled for a task in the text box. The default value is `240` milliseconds.
 
 - **Enable Large Heap monitoring**: Enabled by default, which means when an Erlang process consumed a large amount of memory for its heap space, a warning level log `large_heap` is emitted, and an MQTT message is published to the system topic `$SYS/sysmon/large_heap`. You can set the limit of space bytesize in the text box. The default value is `32` MB.
 
@@ -158,7 +160,7 @@ After you complete the configurations, click **Save Changes**.
 
 ### Configure Alarm Thresholds via Configuration Items
 
-You can also configure alarm thresholds by modifying the configuration items for alarm thresholds. The following configuration items are currently available to be modified in `emqx.conf` file:
+You can also configure alarm thresholds by modifying the configuration items for alarm thresholds. The following configuration items are currently available to be modified in the configuration file:
 
 | Configuration Item                | Description                                                  | Default Value |
 | --------------------------------- | ------------------------------------------------------------ | ------------- |
@@ -180,7 +182,7 @@ You can also configure alarm thresholds by modifying the configuration items for
 | sysmon.top.sample_interlval       | Check interval for top processes.                            | `2s`          |
 | sysmon.top.max_procs              | Stop collecting data when the number of processes in the VM exceeds this value. | `1000000`     |
 
-The EMQX Enterprise will raise an alarm when the license expires in less than 30 days, or if the number of connections exceeds the high watermark. You can adjust the high/low watermark for the number of connections by modifying the following configuration items in `emqx.conf` file. For more information on how to configure settings for the license, see [License](../configuration/license.md).
+The EMQX Enterprise will raise an alarm when the license expires in less than 30 days, or if the number of connections exceeds the high watermark. You can adjust the high/low watermark for the number of connections by modifying the following configuration items in the configuration file. For more information on how to configure settings for the license, see [License](../configuration/license.md).
 
 | Configuration item                      | Description                                                  | Default value |
 | --------------------------------------- | ------------------------------------------------------------ | ------------- |

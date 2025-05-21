@@ -1,89 +1,97 @@
 # Extensions
 
-With the Extension module, users can use the gateway to access non-MQTT protocol connections and message publishing and receiving, and use the Plugin or ExHook to modify and extend the system. Click **Management** and scroll down to the **Extension** section, where you will find:
+With the Extensions features, users can use the gateway to access non-MQTT protocol connections and message publishing and receiving, and use the Plugin or ExHook to modify and extend the system. Click **Management** and scroll down to the **Extensions** section, where you will find:
 
-- **Gateways**: Handles connections, authentication and message sending and receiving for all non-MQTT protocols and provides a unified user layer interface and concept for them.
+- **Gateways**: Handles connections, authentication, and message sending and receiving for all non-MQTT protocols and provides a unified user layer interface and concept for them.
 - **ExHook**: Provides the ability to modify or extend the system functionality of EMQX using other languages.
 - **Plugins**: Modifies or extends system functionality by installing plugins written in Erlang.
 
 ## Gateways
 
-Click on the Gateways under the Extensions menu on the left to be taken to the Gateway page. The gateway provides the ability to access non-MQTT protocols. The protocols currently supported include
+EMQX Multi-Protocol Gateways support handling all non-MQTT protocol connections, authentication, and message sending and receiving. They provide a unified conceptual model for various protocols.
 
-- [Stomp](https://stomp.github.io/stomp-specification-1.2.html)
-- [MQTT-SN](https://www.oasis-open.org/committees/download.php/66091/MQTT-SN_spec_v1.2.pdf)
-- [CoAP](https://datatracker.ietf.org/doc/html/draft-ietf-core-coap-pubsub-09)
-- [ExProto](https://github.com/emqx/emqx-exproto)
-- [LwM2M](https://www.openmobilealliance.org/release/LightweightM2M/)
+In the gateways page, you can enable a gateway and configure its basic settings, such as listener configuration. EMQX also provides custom configuration options. For detailed configuration guidance, refer to the quick start documentation for the following common gateways:
 
-Before enabling the gateway, the gateway needs to setup; after setup, you can view the number of connections through each enabled protocol gateway, and enable/disable gateways on the Gateways page.
+- [MQTT-SN](../gateway/mqttsn.md)
+- [STOMP](../gateway/stomp.md)
+- [CoAP](../gateway/coap.md)
+- [LwM2M](../gateway/lwm2m.md)
+- [ExProto](../gateway/exproto.md)
+
+- [OCPP](../gateway/ocpp.md)
+- [GB/T 32960](../gateway/gbt32960.md)
+- [JT/T 808](../gateway/jt808.md)
+
+Before enabling a gateway, it must be properly set up. Once set up, you can monitor the number of connections for each enabled protocol gateway and manage gateway statuses (enable/disable) on the **Gateways** page.
 
 <img src="./assets/gateways.png" alt="image" style="zoom:67%;" />
 
 ::: tip
-Disable a gateway will cause all connections under the gateway to be disconnected, and the connections need to be re-established. Please be careful.
+Disabling a gateway will cause all connections under the gateway to be disconnected, and the connections need to be re-established. Please be careful.
 :::
 
 ### Gateway Setup
 
-On the Gateways page, select the protocol gateway you wish to enable and click the `Setup` button to the right of the list to enter the initialize the protocol gateway page. There are 3 steps to initialize the gateway
+On the Gateways page, select the protocol gateway you wish to enable and click the **Setup** button in the **Action** column. The page for initializing the protocol gateway includes three steps:
 
-1. Configure the basic configuration
+1. Configure the basic configurations
 2. Configure listeners
 3. Configure the authentication
 
-Each configuration item will be different depending on the protocol gateway; the configuration items can be updated after the initialization is complete by going to the gateway details page.
+Configuration items can be different for different protocol gateways. You can update the configuration items after the initialization is completed by going to the [Gateway Details](#gateway-details) page.
 
 <img src="./assets/gateway-init.png" alt="image" style="zoom:67%;" />
 
-> Gateways configured via Dashboard will take effect across the cluster
+> Gateways configured via Dashboard will take effect across the cluster.
 
 #### Basic Configuration
 
-The configuration form for the base configuration will vary depending on the protocol gateway, details of the configuration parameters for each protocol can be viewed by clicking on the jump to the configuration file description page.
+Configuration items can be different for different protocol gateways. For detailed configuration guidance, refer to the documentation for specific gateways.
 
-<!-- FIXME: -->
-- [Stomp](../configuration/configuration-manual.html#gatewaystomp)
-- [MQTT-SN](../configuration/configuration-manual.html#gatewaymqttsn)
-- [CoAP](../configuration/configuration-manual.html#gatewaycoap)
-- [ExProto](../configuration/configuration-manual.html#gatewayexproto)
-- [LwM2M](../configuration/configuration-manual.html#gatewaylwm2m)
+#### Listeners
 
-#### Listener
+After completing the basic configuration, you can proceed to set up the gateway's listeners. Each gateway can have multiple listeners enabled, depending on the protocol. The following table outlines the supported listener types for various protocol gateways:
 
-Once the basic configuration are configured, the gateway's listeners can be configured; each gateway can have multiple listeners enabled, and different protocol gateways support the following listener types
-
-|         | TCP  | UDP  | SSL  | DTLS |
-| ------- | ---- | ---- | ---- | ---- |
-| STOMP   | ✔︎    |      | ✔︎    |      |
-| CoAP    |      | ✔︎    |      | ✔︎    |
-| ExProto | ✔︎    | ✔︎    | ✔︎    | ✔︎    |
-| MQTT-SN |      | ✔︎    |      | ✔︎    |
-| LwM2M   |      | ✔︎    |      | ✔︎    |
+|            | TCP  | UDP  | SSL  | DTLS | Websocket | Websocket over TLS |
+| ---------- | ---- | ---- | ---- | ---- | --------- | ------------------ |
+| STOMP      | ✔︎    |      | ✔︎    |      |           |                    |
+| CoAP       |      | ✔︎    |      | ✔︎    |           |                    |
+| ExProto    | ✔︎    | ✔︎    | ✔︎    | ✔︎    |           |                    |
+| MQTT-SN    |      | ✔︎    |      | ✔︎    |           |                    |
+| LwM2M      |      | ✔︎    |      | ✔︎    |           |                    |
+| OCPP       |      |      |      |      | ✔︎         | ✔︎                  |
+| JT/T 808   | ✔︎    |      | ✔︎    |      |           |                    |
+| GB/T 32960 | ✔︎    |      | ✔︎    |      |           |                    |
 
 #### Authentication
 
 After configuring the listener, you can optionally configure the protocol gateway's access authentication as needed, or allow any client to connect in if no authenticator is configured; different protocol gateways support the following authentication types
 
-|         | HTTP Server | Built-in Database | MySQL | MongoDB | PostgreSQL | Redis | DTLS | JWT  | Scram |
-| ------- | ----------- | ----------------- | ----- | ------- | ---------- | ----- | ---- | ---- | ----- |
-| STOMP   | ✔︎           | ✔︎                 | ✔︎     | ✔︎       | ✔︎          | ✔︎     | ✔︎    | ✔︎    |       |
-| CoAP    | ✔︎           | ✔︎                 | ✔︎     | ✔︎       | ✔︎          | ✔︎     | ✔︎    | ✔︎    |       |
-| ExProto | ✔︎           | ✔︎                 | ✔︎     | ✔︎       | ✔︎          | ✔︎     | ✔︎    | ✔︎    |       |
-| MQTT-SN | ✔︎           |                   |       |         |            |       |      |      |       |
-| LwM2M   | ✔︎           |                   |       |         |            |       |      |      |       |
+|            | HTTP Server | Built-in Database | MySQL | MongoDB | PostgreSQL | Redis | DTLS | JWT  | Scram | LDAP |
+| ---------- | ----------- | ----------------- | ----- | ------- | ---------- | ----- | ---- | ---- | ----- | ---- |
+| STOMP      | ✔︎           | ✔︎                 | ✔︎     | ✔︎       | ✔︎          | ✔︎     | ✔︎    | ✔︎    |       |      |
+| CoAP       | ✔︎           | ✔︎                 | ✔︎     | ✔︎       | ✔︎          | ✔︎     | ✔︎    | ✔︎    |       |      |
+| MQTT-SN    | ✔︎           |                   |       |         |            |       |      |      |       |      |
+| LwM2M      | ✔︎           |                   |       |         |            |       |      |      |       |      |
+| ExProto    | ✔︎           | ✔︎                 | ✔︎     | ✔︎       | ✔︎          | ✔︎     |      | ✔︎    |       | ✔︎    |
+| OCPP       | ✔︎           | ✔︎                 | ✔︎     | ✔︎       | ✔︎          | ✔︎     |      | ✔︎    |       | ✔︎    |
+| GB/T 32960 | ✔︎           |                   |       |         |            |       |      |      |       |      |
 
 ### Gateway Details
 
-After the protocol gateway setup and be enabled, it will return to the gateway page, select one of the initialized gateways, click the `Connections` button on the right side of the page to enter the gateway details page, you can view the list of clients connected to the server through the protocol gateway; the list will show the client ID and user name set by each client when connecting, the current connection status, the IP address of the client, the time when the client started to connect; the IP address data of the client will be displayed. The IP address of the client is the same as the connection page, and is made up of the IP address of the client and the port of the client used when the client was connected.
+Once the protocol gateway is enabled, you will be redirected to the **Gateways** page. Here, you can manage and customize the gateway settings:
 
-The client list can be searched using the client ID, username and node. On the top of the page you can click on the `Settings`, `Authentication`' or `Listener` menu buttons to switch to the corresponding page to modify the corresponding configuration.
+- **Customize Settings**: Click the **Settings** button in the **Actions** column to update the gateway's basic configuration, listener settings, and authentication settings as needed.
+- **View Connected Clients**: Click the **Clients** button in the **Actions** column to view a list of clients connected to the server via the protocol gateway. The client list includes details such as the client ID, username, IP address (same as displayed on the Clients page), status, and the time of connection or registration. To disconnect a client, click the **Kick Out** button in the **Actions** column.
+- **Search Clients**: Use filters for client ID, username, and node to quickly locate specific clients.
 
 <img src="./assets/gateway-clients.png" alt="image" style="zoom:67%;" />
 
 ## ExHook
 
-Click ExHook under the extension menu on the left to come to the ExHook page, ExHook provides the ability to modify or expand system functions using other programming languages. The ExHook list page allows you to view the currently added ExHooks, the number of hooks mounted by each ExHook, and the number of successes and failures of all hooks executed under that ExHook.
+Hooks are a common extension mechanism that allows developers to execute custom code at specific event points. ExHook provides the ability to modify or expand system functions using other programming languages. The hook mechanism supported in EMQX enables users to flexibly modify or extend system functionalities by intercepting module function calls, message passing, and event delivery.
+
+In the ExHook page, you can view basic information and the status of currently added hooks, as well as add and configure them.
 
 Definitions and development guidelines for ExHooks can be found in [hooks](../extensions/hooks.md).
 
@@ -91,28 +99,58 @@ Definitions and development guidelines for ExHooks can be found in [hooks](../ex
 
 ### Add ExHook
 
-Click the `Add` button at the top right of the page to go to the Add ExHook page. Fill in the form with the basic information and connection parameters of the ExHook to be added and click the `Create` button to submit the data. After successful creation, you will be redirected to the ExHook list page.
+Click the **+ Add** button at the top right of the page to go to the Add ExHook page. Configure the settings with the basic information and connection parameters of the ExHook to be added and click **Create** to submit the data. After successful creation, you will be redirected to the ExHook list page.
 
 <img src="./assets/exhook-add.png" alt="image" style="zoom:67%;" />
 
-### View details
+### View Details
 
-After successful creation, you can access the ExHook details page by clicking on the ExHook name on the ExHook list page. On the details page, you can view the current ExHook metrics, including the total number of registered hooks, the total number of successful executions, the total number of failed executions and the current execution rate of all hooks. You can edit the basic information and click the `Update` button to save it.
+After successful creation, you can access the ExHook details page by clicking on the ExHook name on the ExHook list page. On the details page, you can view the current ExHook metrics, including the total number of registered hooks, the total number of successful executions, the total number of failed executions and the current execution rate of all hooks. You can edit the basic information and click the **Update** button to save it.
 
 <img src="./assets/exhook-detail.png" alt="image" style="zoom:67%;" />
 
-Click on `Registered hooks` at the top of the page to view the list of hooks currently implemented by ExHook, as well as the parameters and execution metrics of each hook.
+Click on **Registered hooks** tab to view the list of hooks currently implemented by ExHook, as well as the parameters and execution metrics of each hook.
 
 <img src="./assets/exhook-hooks.png" alt="image" style="zoom:67%;" />
 
 ## Plugins
 
-Click on Plugins under the extension menu on the left to go to the Plugins page; you can install or develop plugins to modify or extend the functionality of the system as required. Examples of plugins can be found at [emqx-plugin-template](https://github.com/emqx/emqx-plugin-template). The plugin list page shows the currently installed plugins and the version, author and running status of each plugin, and you can search the plugin list by filtering the data according to the plugin name and running status at the top of the page.
+EMQX supports extending custom business logic through plugins or implementing other protocol adaptations via the plugin protocol extension interface. On the Plugins page, you can install and start developed plugin packages and maintain or configure them. For detailed usage guidance, refer to [Plugins](../extensions/plugins.md).
 
-Click the `Install Plugin` button in the top right corner of the page to enter the plugin installation page. Upload the installation package or drag and drop the package into the dotted box on the page and click the `Install` button to submit the package. After the installation package is submitted successfully, the page will return to the plugin list page, the successfully installed plugin is stopped by default, if you want to enable it, you need to click the `Start` button on the right of the corresponding plugin to enable it, when there are more than one plugin, the order of enabling is the order of execution of the plugin; you can also drag and drop on the page or click the corresponding button under the `More` menu on the right of the plugin to sort the plugin, the sorting result is the order of execution of the plugin after the next node restart. If a plugin is no longer needed, you can uninstall it by clicking the `Uninstall` button under the `More` menu to the right of the plugin.
+To manage system plugins, navigate to **Plugins** under the **Extensions** menu on the left.
+
+### Plugin List
+
+The **Plugins** page displays a list of installed plugins, showing details such as the plugin name, version, author, and running status. To locate specific plugins, use the filters at the top of the page to search by name or running status.
+
+### Install Plugins
+
+For detailed steps, refer to [Install Plugins via Dashboard](../extensions/plugins.md#install-plugins-via-dashboard).
+
+Once the package is successfully installed, you will be redirected to the plugin list page. Newly installed plugins are stopped by default. To activate a plugin, click the **Start** button next to it.
+
+### Manage Plugin Execution Order
+
+For systems with multiple plugins, the order of execution is determined by the enablement sequence. You can adjust this order by:
+
+- Dragging and dropping plugins directly on the page.
+- Using the sorting option under the **More** menu in the **Actions** column.
+
+The updated execution order takes effect after the next node restart.
+
+### Uninstall Plugins
+
+To remove a plugin, click the **Uninstall** button under the **More** menu in the **Actions** column.
 
 <img src="./assets/plugins.png" alt="image" style="zoom:67%;" />
 
-Clicking on the plugin name will redirect you to the plugin details page. The left side of the details page displays the `README.md` documentation from the plugin installation package, and the right side displays the plugin information provided in the `release.json` file from the plugin installation package. If the documentation also provides the relevant website of the plugin developer, you can jump to the relevant page by clicking `Read More` in the top right corner of the page.
+### Plugin Details
+
+Click on a plugin's name to access its details page. This page provides:
+
+- **Documentation**: The left panel displays the `README.md` file from the plugin installation package.
+- **Plugin Information**: The right panel shows metadata from the `release.json` file, such as version, author, and other relevant details.
+
+If the plugin's documentation includes a developer website link, you can visit it by clicking **Read More** in the top-right corner.
 
 <img src="./assets/plugin-detail.png" alt="image" style="zoom:67%;" />

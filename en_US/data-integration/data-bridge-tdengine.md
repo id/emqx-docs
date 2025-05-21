@@ -1,11 +1,5 @@
 # Ingest MQTT Data into TDengine
 
-::: tip
-
-The TDengine data integration is an EMQX Enterprise edition feature.
-
-:::
-
 [TDengine](https://tdengine.com/) is a big data platform, designed and optimized specifically for the Internet of Things (IoT) and Industrial Internet of Things (IIoT) scenarios. At its heart lies a high-performance time-series database, characterized by its cluster-oriented architecture, cloud-native design, and minimalistic approach. EMQX supports integration with TDengine, enabling massive data transmission, storage, analysis, and distribution from a large number of devices and data collectors. It provides real-time monitoring and early warning of business operation states, offering real-time business insights.
 
 This page provides a comprehensive introduction to the data integration between EMQX and TDengine with practical instructions on creating and validating the data integration.
@@ -48,9 +42,13 @@ This section describes the preparations you must complete before you start creat
 - Knowledge about EMQX data integration [rules](./rules.md)
 - Knowledge about [data integration](./data-bridges.md)
 
-### Install TDengine
+### Start TDengine and Create a Database
 
-Install TDengine via Docker, and then run the docker image. 
+You can use the following two methods to start the TDengine or connect to a TDengine service and create a database.
+
+:::: tabs
+
+::: tab Docker
 
 ```bash
 # To start the TDengine docker image 
@@ -68,9 +66,29 @@ CREATE DATABASE mqtt;
 use mqtt;
 ```
 
+:::
+
+::: tab TDengine Cloud
+
+If you are using [TDengine Cloud](https://cloud.tdengine.com/), simply login to the console, select your Instance, and click **Explorer** on the left to enter the SQL execution page. Then, execute the following statement to create a database:
+
+```bash
+# Create and select database
+
+CREATE DATABASE mqtt;
+
+use mqtt;
+```
+
+![create database](./assets/tdengine_cloud_create_db.jpg)
+
+:::
+
+::::
+
 ### Create Data Tables in TDengine
 
-Before you create data bridges for TDengine, you need to create two data tables in TDengine database for message storage and status recording. 
+You need to create two data tables in TDengine database for message storage and status recording. 
 
 1. Use the following SQL statements to create data table `t_mqtt_msg` in TDengine database. The data table stores the client ID, topic, payload, and creation time of every message. 
 
@@ -99,19 +117,54 @@ Before you create data bridges for TDengine, you need to create two data tables 
 
 This section demonstrates how to create a Connector to connect the Sink to the TDengine server.
 
-The following steps assume that you run both EMQX and TDengine on the local machine. If you have TDengine and EMQX running remotely, adjust the settings accordingly.
-
 1. Enter the EMQX Dashboard and click **Integration** -> **Connectors**.
+
 2. Click **Create** in the top right corner of the page.
+
 3. On the **Create Connector** page, select **TDengine** and then click **Next**.
-4. In the **Configuration** step, configure the following information:
+
+4. In the **Configuration** step, configure the following information based on what you connect to:
+
+   :::: tabs
+
+   ::: tab Connect to TDengine
+
+   The following configuration assume that you run both EMQX and TDengine on the local machine. If you have TDengine and EMQX running remotely, adjust the settings accordingly.
+
    - **Connector name**: Enter a name for the connector, which should be a combination of upper and lower case letters and numbers, for example: `my_tdengine`.
    - **Server Host**: Enter `http://127.0.0.1:6041`, or the actual URL if the TDengine server is running remotely.
    - **Database Name**: Enter `mqtt`.
    - **Username**: Enter `root`.
    - **Password**: Enter `taosdata`.
+   - **Token**: Left empty. The connector will attempt to authenticate using the **Username** and **Password** credentials.
+
+   :::
+
+   ::: tab Connect to TDengine Cloud
+
+   1. Select the correct **Instance** on the TDengine Cloud console page.
+
+   2. Navigate to **Programming** on the left, then select the **REST API** connection method. As shown in the image below, you will obtain the corresponding connection URL and Token:
+
+      ![url and token](./assets/tdengine_cloud_url_and_token.png)
+
+   3. Enter the following connector configuration information:
+
+      - **Connector name**: Enter a name for the connector, which should be a combination of upper and lower case letters and numbers, for example: `my_tdengine`.
+      - **Server Host**: Enter the value of `TDENGINE_CLOUD_URL` provided by the TDengine Cloud. In this demonstration, it is `https://gw.***.cloud.tdengine.com`.
+      - **Database Name**: Enter `mqtt`.
+      - **Username**: Left empty
+      - **Password**: Left empty
+      - **Token**: Enter the value of `TDENGINE_CLOUD_TOKEN` provided by the TDengine Cloud. In this demonstration, it is `a2ba69cc6****f0c18cd`.
+   
+      :::
+   
+      ::::
+
 5. Advanced settings (optional):  For details, see [Features of Sink](./data-bridges.md#features-of-sink).
+
 6. Before clicking **Create**, you can click **Test Connectivity** to test if the connector can connect to the TDengine server.
+
 7. Click the **Create** button at the bottom to complete the creation of the connector. In the pop-up dialog, you can click **Back to Connector List** or click **Create Rule** to continue creating rules with Sinks to specify the data to be forwarded to TDengine and to record client events. For detailed steps, see [Create a Rule with TDengine Sink for Message Storage](#create-a-rule-with-tdengine-sink-for-message-storage) and [Create a Rule with TDengine Sink for Events Recording](#create-a-rule-with-tdengine-sink-for-events-recording).
 
 ## Create a Rule with TDengine Sink for Message Storage
@@ -133,13 +186,13 @@ This section demonstrates how to create a rule in the Dashboard for processing m
      FROM
        "t/#"
    ```
-   
+
    ::: tip
 
    If you are a beginner user, click **SQL Examples** and **Enable Test** to learn and test the SQL rule. 
 
    :::
-   
+
 4. Click the + **Add Action** button to define an action to be triggered by the rule. With this action, EMQX sends the data processed by the rule to TDengine.
 
 5. Select `TDengine` from the **Type of Action** dropdown list. Keep the **Action** dropdown with the default `Create Action` value. You can also select a TDengine Sink if you have created one. This demonstration will create a new Sink.
@@ -160,26 +213,28 @@ This section demonstrates how to create a rule in the Dashboard for processing m
    INSERT INTO t_mqtt_msg(ts, msgid, mqtt_topic, qos, payload, arrived) 
        VALUES (${ts}, '${id}', '${topic}', ${qos}, '${payload}', ${timestamp})
    ```
-   
+
    If a placeholder variable is undefined in the SQL template, you can toggle the **Undefined Vars as Null** switch above the **SQL template** to define the rule engine behavior:
-   
+
    - **Disabled** (default): The rule engine can insert the string `undefined` into the database.
-   
+
    - **Enabled**: Allow the rule engine to insert `NULL` into the database when a variable is undefined.
-   
+
      ::: tip
-   
+
      If possible, this option should always be enabled; disabling the option is only used to ensure backward compatibility.
-   
+
      :::
-   
-9. Advanced settings (optional):  Choose whether to use **sync** or **async** query mode as needed. For details, see [Features of Sink](./data-bridges.md#features-of-sink).
 
-10. Before clicking **Create**, you can click **Test Connectivity** to test that the Sink can be connected to the TDengine. 
+9. **Fallback Actions (Optional)**: If you want to improve reliability in case of message delivery failure, you can define one or more fallback actions. These actions will be triggered if the primary Sink fails to process a message. See [Fallback Actions](./data-bridges.md#fallback-actions) for more details.
 
-11. Click the **Create** button to complete the Sink configuration. A new Sink will be added to the **Action Outputs.**
+10. **Advanced settings (optional)**:  Choose whether to use **sync** or **async** query mode as needed. For details, see [Features of Sink](./data-bridges.md#features-of-sink).
 
-12. Back on the **Create Rule** page, verify the configured information. Click the **Create** button to generate the rule. 
+11. Before clicking **Create**, you can click **Test Connectivity** to test that the Sink can be connected to the TDengine. 
+
+12. Click the **Create** button to complete the Sink configuration. A new Sink will be added to the **Action Outputs.**
+
+13. Back on the **Create Rule** page, verify the configured information. Click the **Create** button to generate the rule. 
 
 You have now successfully created the rule for the TDengine Sink. You can see the newly created rule on the **Integration** -> **Rules** page. Click the **Actions(Sink)** tab and you can see the new TDengine Sink.
 

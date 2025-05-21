@@ -30,12 +30,6 @@ To evaluate MQTT over QUIC and verify how it could improve network connectivity,
 
 ## File Transfer over MQTT 
 
-::: tip
-
-The File Transfer over MQTT is an EMQX Enterprise feature.
-
-:::
-
 EMQX 5.1 introduces File Transfer over MQTT, which supports file transfer using the MQTT protocol.
 
 This feature is implemented based on the extended implementation of the standard MQTT protocol, allowing integration with existing clients and applications without modification. Clients can send file segments to specific topics using the MQTT protocol. After the transfer is complete, the server merges the file segments and saves them to the local disk or exports them to object storage compatible with the S3 protocol.
@@ -70,9 +64,7 @@ Find more details on [Backup and Restore](../operations/backup-restore.md) page.
 
 Besides SQL, EMQX 5.x Rule Engine also supports [jq](https://stedolan.github.io/jq/), so it is capable of handling more complex JSON data formats. See more at the [jq Functions documentation](../data-integration/rule-sql-jq.md).
 
-The EMQX Open Source edition supports sending data to WebHook or establishing bidirectional data integration with external MQTT services.
-
-The EMQX Enterprise edition also supports bidirectional data integration. You can process and send your IoT data to over 40 cloud services and enterprise systems in real-time, or retrieve data from them and send it to designated MQTT topics after processing. EMQX 5.0 provides the Flows feature for visualizing the data integration process on the Dashboard. Now you can easily check how the rules engine processes IoT data and how data flows to external data services or devices.
+EMQX supports sending data to WebHook or establishing bidirectional data integration with external MQTT services by default. It supports processing and sending your IoT data to over 40 cloud services and enterprise systems in real-time, or retrieving data from them and sending it to designated MQTT topics after processing. EMQX 5.0 provides the Flows feature for visualizing the data integration process on the Dashboard. Now, you can easily check how the rules engine processes IoT data and how data flows to external data services or devices.
 
 For different data integrations that EMQX supports and how to configure them, see [Data Integration](../data-integration/data-bridges.md).
 
@@ -130,7 +122,7 @@ The new gateway framework further improves EMQX's usability by unifying access a
 
 ### Simplified Configuration
 
-The `emqx.conf` configuration file has been changed to a concise and readable [HOCON](https://github.com/emqx/hocon) format, and contains commonly used configuration items by default, to improve the readability and maintainability.
+The configuration files have been changed to a concise and readable [HOCON](https://github.com/emqx/hocon) format, and contains commonly used configuration items by default, to improve the readability and maintainability.
 
 ### Improved REST API
 

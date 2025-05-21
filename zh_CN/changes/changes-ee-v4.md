@@ -1,5 +1,92 @@
 # EMQX 企业版 v4 版本
 
+## 4.4.27
+
+*发布日期: 2024-11-28*
+
+### 增强
+
+- 为 MQTT Bridge 动作添加 `消息投递超期时间` 和 `消息最大重传次数` 两个参数，用以防止对端不回 PUBACK 导致 MQTT 桥接堵塞。
+
+  - `消息投递超期时间` 默认值为 30 秒，当投递 QoS1 或 QoS2 消息所花费时间超过该值时，消息将被丢弃。
+  - `消息最大重传次数` 默认值为 3 次，当消息超过重传间隔时间未收到 ACK 时，消息将被重传，最大重传次数不超过该值。
+
+- 优化热配置模块中重启监听器的逻辑。
+
+  优化后，在用户启动或重启热配置模块时，即使检查到 `mnesia` 表中的监听器配置有更新，监听器也不会重启。 EMQX 将会打印如下日志提示用户手动重启监听器：
+
+  ```
+  [EMQX_HOT_CONF] There is a difference between the listener conf in the hot conf module and the one currently in use at runtime. Please restart the listener at an appropriate time to ensure the configuration is correctly applied. listener: mqtt:tcp:external, conf_in_use: #{...}, hot_conf: #{...}
+  ```
+
+- Dashboard 的节点信息页面将不再显示 `Waiting to join` 状态。
+
+  现在节点只有 `Running` 或 `Stopped` 两种状态。
+
+- 添加 Amazon Linux 2023 安装包的支持。
+
+- 现在批量模式下的 MySQL 和 PostgresQL 动作也支持 `ON DUPLICATE KEY UPDATE` 或 `ON CONFLICT DO NOTHING` 语句。
+
+  若希望在主键冲突时避免插入重复数据，可以使用如下语句：
+
+  MySQL:
+
+  ```sql
+  INSERT INTO t_mqtt_msg(msgid, topic, qos, payload, arrived) VALUES (${id}, ${topic}, ${qos}, ${payload}, FROM_UNIXTIME(${timestamp}/1000)) ON DUPLICATE KEY UPDATE id=id
+  ```
+
+  PostgresQL:
+
+  ```sql
+  INSERT INTO t_mqtt_msg(msgid, topic, qos, payload, arrived) VALUES (${id}, ${topic}, ${qos}, ${payload}, to_timestamp(${timestamp}::double precision /1000)) ON CONFLICT DO NOTHING
+  ```
+
+  但请注意，`ON DUPLICATE KEY UPDATE` 或 `ON CONFLICT` 语句后无法使用占位符。
+
+- 优化 `ecpool` 的性能。
+
+- 现在 Dashboard 上的热配置界面中，`allow_anonymous` 可以配置为 `false_quick_deny` 了。
+
+  若配置为 `false_quick_deny`，EMQX 将会快速拒绝匿名（没有用户名）的客户端，从而跳过认证后端的检查。
+
+### 修复
+
+- 修复服务器断电后缓存文件损坏导致 Kafka 动作失败的问题。
+
+  修复后，若发现缓存文件损坏，Kafka Producer 将丢弃掉无法恢复的消息。
+
+- 修复热升级后 MQTT 消息无法在节点之间同步的问题。
+
+  从老版本升级到从 `4.4.12` 到 `4.4.22` 之间的任意版本，都可能导致该问题。日志中会出现 `gen_rpc_auth` 代码模块未定义的错误：
+
+  ```
+  {undef,[{gen_rpc_auth,connect_with_auth,[gen_rpc_driver_tcp,'emqx@10.0.1.1',5370],[]}, ...]}
+  ```
+
+- 修复用户名配额模块未启用时，使用 HTTP API 获取用户信息时返回 500 的问题。
+
+- 修复导入老版本备份文件后，EMQX 重复挂载了 `emqx_mod_acl_internal` 钩子的问题。
+
+- 修复节点正在加入集群时，使用 HTTP API 获取告警列表会短暂出现 500 错误的问题。
+
+## 4.4.26
+
+*发布日期: 2024-09-26*
+
+### 修复
+
+- 修复节点加入旧版本集群失败的问题。
+
+  修复前，4.4.25 版本节点加入更旧版本的集群时，会因为找不到用户名配额相关的表而失败。
+
+- 修复用户名配额界面无法搜索带有特殊字符的用户名。
+
+  修复前，查询用户名配额详情的 API 接口没有做 URL 解码处理。
+
+- 修复用户名配额界面会缺少部分用户名的问题。
+
+  修复前，若启动用户名配额模块前 EMQX 中已存在一些会话，启动模块后，模块的用户名列表会缺少部分用户名。
+
 ## 4.4.25
 
 *发布日期: 2024-09-13*

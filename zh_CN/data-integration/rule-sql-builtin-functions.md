@@ -340,6 +340,18 @@ is_str('123') = true
 is_str(123) = false
 ```
 
+### is_empty(Array or Map) -> boolean
+
+判断一个 `Array` 或一个 `Map` 是否为空。示例：
+
+```bash
+is_empty(json_decode('{}')) = true
+is_empty('{}') = true
+is_empty('{"key" : 1}') = false
+is_empty(map_get('key', '{"key" : []}')) = true
+is_empty(map_get('key', '{"key" : [1}')) = false
+```
+
 ## 数据类型转换函数
 
 ### bool(Term: boolean | integer | string) -> boolean
@@ -458,12 +470,60 @@ str(nth(1, json_decode('[false]'))) = 'false'
 str(json_decode({"msg": "hello"})) = '{"msg":"hello"}'
 str(json_decode('[{"msg": "hello"}]')) = '[{"msg":"hello"}]'
 
-# Trailing zeros are truncated
-str(0.300000004) = '0.3'
+# 末尾的零将被截断
+# 保留最多10位小数
+str(0.30000000040) = '0.3000000004'
+str(0.30000000004) = '0.3'
 
-# Contains at most 10 number of digits past the decimal point
+# 第10位后四舍五入
 str(3.14159265359) = '3.1415926536'
 str(0.000000314159265359) = '0.0000003142'
+```
+
+### str_utf8(Term: any) -> string
+
+将任意类型的 `Term` 转换为 UTF-8 编码的 string 类型。
+
+其余行为等同于函数 `str(Any)`。
+
+```bash
+str_utf8(100) = '100'
+str_utf8(nth(1, json_decode('[false]'))) = 'false'
+str_utf8(json_decode({"msg": "hello"})) = '{"msg":"hello"}'
+str_utf8(json_decode('[{"msg": "hello"}]')) = '[{"msg":"hello"}]'
+
+# 末尾的零将被截断
+# 保留最多10位小数
+str_utf8(0.30000000040) = '0.3000000004'
+str_utf8(0.30000000004) = '0.3'
+
+# 第10位后四舍五入
+str_utf8(3.14159265359) = '3.1415926536'
+str_utf8(0.000000314159265359) = '0.0000003142'
+```
+
+### str_utf16_le(Term: any) -> binary
+
+将任意类型的 `Term` 转换为 UTF-16 小端序编码的 string。
+
+::: tip
+
+UTF-16-little-endian 编码的字符串一般无法正常在 JSON 对象中打印。在 EMQX 中一般被作为二进制数据处理。
+请调用 `bin2hexstr` 函数将其转换成对应的由十六进制数字组成的字符串。
+一般用于 Microsoft SQL Server 等使用小端序 UTF-16 编码的系统。
+
+:::
+
+```bash
+# Unicode `h`:
+# |                          h(\u68)                              |
+# | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | (big endian)
+# |              0x00             |              0x68             |
+# | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | (little endian)
+# |              0x68             |              0x00             |
+str_utf16_le('h') = 'h\u0000'
+
+bin2hexstr(str_utf16_le('hello')) = '680065006C006C006F00'
 ```
 
 ## 字符串操作函数
@@ -942,6 +1002,15 @@ mget(['a', 'b'], mput(['a', 'b'], 2, json_decode('{"a": {"b": 1}}'))) = 2
 mget(['a', 'b'], mput(['a', 'b'], 2, json_decode('{"c": 1}'))) = 2
 ```
 
+### map_size(Map: map) -> any
+
+返回 `Map` 中 Key 的数量。示例：
+
+```bash
+map_size(json_decode('{}')) = 0
+map_size(json_decode('{"msg": "hello"}')) = 1
+```
+
 ## 数组操作函数
 
 ### contains(Item: any, Array: array) -> boolean
@@ -1315,9 +1384,25 @@ bin2hexstr(zip('hello')) = 'CB48CDC9C90700'
 unzip(hexstr2bin('CB48CDC9C90700')) = 'hello'
 ```
 
+### sqlserver_bin2hexstr(Data: binary | string) -> string
+
+将任意二进制数据转换为 Microsoft SQL Server 中的二进制类型，即带有 `0x` 前缀的 HEX 编码字符串。
+
+::: tip
+
+可与 Microsoft SQL Server 中的 `CONVERT` 函数配合以便向不支持 UTF-8 编码的 Microsoft SQL Server 版本写入 UTF-16-little-endian 编码的 Unicode 字符串。
+
+:::
+
+```
+sqlserver_bin2hexstr('hello') = '0x68656C6C6F'
+sqlserver_bin2hexstr(str_utf16_le('hello')) = '0x680065006C006C006F00'
+sqlserver_bin2hexstr(str_utf16_le('你好')) = '0x604F7D59'
+```
+
 ### Schema Registry
 
-在 EMQX 企业版中， schema registry 提供了`schema_decode` 和 `schema_encode` 功能，可以为 [Protobuf (Protocol Buffers)](https://developers.google.com/protocol-buffers) 和 [Avro](https://avro.apache.org/) 格式的数据进行编解码。 关于功能详情，请见[编解码](./schema-registry.md)。
+Schema registry 提供了`schema_decode` 和 `schema_encode` 功能，可以为 [Protobuf (Protocol Buffers)](https://developers.google.com/protocol-buffers) 和 [Avro](https://avro.apache.org/) 格式的数据进行编解码。 关于功能详情，请见[编解码](./schema-registry.md)。
 
 ### schema_encode(SchemaID: string, Data: map) -> binary
 
@@ -1337,7 +1422,7 @@ unzip(hexstr2bin('CB48CDC9C90700')) = 'hello'
 
 ### Sparkplug B
 
-EMQX 企业版还有专门用于解码和编码 Sparkplug B 消息的特殊用途函数（`sparkplug_decode` 和`sparkplug_encode`）。您可以在 [Sparkplug B](./sparkplug.md) 中了解有关 Sparkplug 函数的更多信息。
+EMQX 还有专门用于解码和编码 Sparkplug B 消息的特殊用途函数（`sparkplug_decode` 和`sparkplug_encode`）。您可以在 [Sparkplug B](./sparkplug.md) 中了解有关 Sparkplug 函数的更多信息。
 
 ## 日期与时间函数
 
@@ -1491,12 +1576,6 @@ unix_ts_to_rfc3339(1708671600766, 'millisecond') = '2024-02-23T15:00:00.766+08:0
 ```
 
 ### 专用于 MongoDB 的时间函数
-
-::: tip
-
-本节内容仅适用于 EMQX 企业版。
-
-:::
 
 ### mongo_date() -> [MongoDB ISODate](https://www.mongodb.com/docs/manual/reference/method/Date/) | string
 

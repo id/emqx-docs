@@ -2,8 +2,6 @@
 
 The CoAP gateway in EMQX enables you to implement publish, subscribe, and receive messages as standard with the [Publish-Subscribe Broker for the CoAP](https://datatracker.ietf.org/doc/html/draft-ietf-core-coap-pubsub-09) protocol.
 
-To ensure secure communication, the CoAP gateway includes the **Connection Mode** feature which provides client access authentication. This feature restricts unauthorized CoAP clients from accessing the system, thus enhancing security and preventing potential attacks. 
-
 Below is the feature list supported in connection mode and connectionless mode.
 
 | Feature           | Connectionless Mode | Connection Mode |
@@ -20,13 +18,13 @@ Below is the feature list supported in connection mode and connectionless mode.
 
 ## Enable the CoAP Gateway
 
-In EMQX 5.0, CoAP gateway can be configured and enabled through the Dashboard, HTTP API, and configuration file `emqx.conf`. This section takes the configuration via Dashboard as an example to illustrate the operating steps. 
+In EMQX 5, CoAP gateway can be configured and enabled through the Dashboard, HTTP API, and configuration file `base.hocon`. This section takes the configuration via Dashboard as an example to illustrate the operating steps. 
 
 On EMQX Dashboard, click **Extensions** -> **Gateways** on the left navigation menu. On the **Gateway** page, all supported gateways are listed. Locate **CoAP** and click **Setup** in the **Actions** column. Then, you will be directed to the **Initialize CoAP** page.
 
 ::: tip
 
-If you are running EMQX in a cluster, the settings you made through the Dashboard or HTTP API will affect the whole cluster. If you only want to change the settings with one node, configure with [`emqx.conf`](../configuration/configuration.md).
+If you are running EMQX in a cluster, the settings you made through the Dashboard or HTTP API will affect the whole cluster. If you only want to change the settings with one node, configure it in [`base.hocon`](../configuration/configuration.md).
 
 :::
 
@@ -100,7 +98,7 @@ In addition to the default settings, EMQX provides a variety of configuration op
 
 - **Notification Message Type**: Set the type of CoAP messages to be delivered, default: `qos`; optional values: 
 
-  - **qos**: Whether the CoAP notification needs to be acknowledged depends on the QoS level of the received message, 
+  - **qos**: Whether the CoAP notification needs to be acknowledged depends on the QoS level of the received message. 
     - QoS 0, no acknowledgment is required from the client, 
     - QoS 1/2, acknowledgment is required from the client. 
   - **con**: The CoAP notification should be acknowledged by the client. 
@@ -157,12 +155,6 @@ You can set whether to enable the TLS Verify by setting the toggle switch. But b
 
 ### Configure Authentication
 
-::: tip
-
-The authentication configuration only takes effect in connection mode, that is, **Connection Required** is set to true.
-
-:::
-
 The client ID, username, and password are provided by the client's [Create Connection](#create-connection) request. The CoAP gateway supports the following authenticator types:
 
 - [Built-in Database Authentication](../access-control/authn/mnesia.md)
@@ -182,7 +174,7 @@ Click **Create Authentication**, choose **Password-Based** or **JWT** as the **M
 
 For a detailed explanation of how to configure the authenticators, you may refer to the pages listed at the beginning of this section. 
 
-Besides the Dashboard, you can also use HTTP API to configure the authenticator, for example, to create a built-in database authentication for CoAP gateway, you can use the code below:
+Besides the Dashboard, you can also use HTTP API to configure the authenticator. For example, to create a built-in database authentication for CoAP gateway, you can use the code below:
 
 ```bash
 curl -X 'POST' \
@@ -227,6 +219,7 @@ verify the `clientid`, `username`, and `password` provided by this request to pr
 - Payload: empty
 
 **Response:**
+
 - Return Code:
   - `2.01`: Connection created successfully. The token string for this connection will be returned in the message body.
   - `4.00`: Bad request. Detailed error information will be returned in the message body.
@@ -250,7 +243,7 @@ After the connection is successfully created, you can use Dashboard, HTTP API or
 :::
 
 
-### Close Connnection
+### Close Connection
 
 Only available in `Connection Mode`.
 
@@ -260,7 +253,7 @@ This interface is used to close the CoAP connection.
 - Method: `DELETE`
 - URI: `mqtt/connection{?QueryString*}`, the `QueryString` is:
   - `clientid`: required parameter, UTF-8 string. The gateway uses this string as a unique identifier for the connection
-  - `token`: required parameter, Using the token string returned by Create Connection request
+  - `token`: required parameter, using the token string returned by the "Create Connection" request
 - Payload: empty
 
 **Response:**
@@ -287,7 +280,7 @@ This interface is used to maintain the connection between the CoAP client and th
 - Method: `PUT`
 - URI: `mqtt/connection{?QueryString*}`, the `QueryString` is:
   - `clientid`: required parameter, UTF-8 string. The gateway uses this string as a unique identifier for the connection
-  - `token`: required parameter, Using the token string returned by Create Connection request
+  - `token`: required parameter, using the token string returned by the "Create Connection" request
 - Payload: empty
 
 **Response:**
@@ -327,6 +320,7 @@ This interface is used by the CoAP client to send messages to the specified topi
 - Payload: Message payload
 
 **Response:**
+
 - Return Code:
   - `2.04`: Publish successfully
   - `4.00`: Bad request. Detailed error information will be returned in the message body.

@@ -39,11 +39,11 @@
 | 参数                                      | 描述                                                         |
 | ----------------------------------------- | ------------------------------------------------------------ |
 | `durable_storage.<DS>.data_dir`           | EMQX 存储数据的文件系统中的目录。                            |
-| `durable_storage.<DS>.n_shards`           | 设置[分片数量](./managing-replication.md#number-of-shards)。 |
-| `durable_storage.<DS>.n_sites`            | 设置[站点数量](./managing-replication.md##number-of-sites)。 |
-| `durable_storage.<DS>.replication_factor` | 设置[复制因子](./managing-replication.md#replication-factor)以确定每个分片的副本数量。 |
-| `durable_storage.<DS>.local_write_buffer` | 包含与消息缓冲相关的参数。请参阅[本地写缓冲配置](#local-write-buffer-configuration)。 |
-| `durable_storage.<DS>.layout`             | 包含控制 EMQX 如何在磁盘上布局数据的参数。请参阅[存储布局配置](#storage-layout-configuration)。 |
+| `durable_storage.<DS>.n_shards`           | 设置[分片数量](./managing-replication.md#分片-shard-数量)。  |
+| `durable_storage.<DS>.n_sites`            | 设置[站点数量](./managing-replication.md#站点-site-数量)。   |
+| `durable_storage.<DS>.replication_factor` | 设置[复制因子](./managing-replication.md#复制因子-replication-factor)以确定每个分片的副本数量。 |
+| `durable_storage.<DS>.local_write_buffer` | 包含与消息缓冲相关的参数。请参阅[本地写缓冲配置](#本地写缓冲配置)。 |
+| `durable_storage.<DS>.layout`             | 包含控制 EMQX 如何在磁盘上布局数据的参数。请参阅[存储布局配置](#存储布局配置)。 |
 
 #### 本地写缓冲配置
 
@@ -199,7 +199,7 @@ $ bin/emqx_ctl ds join messages B2A7DBB2413CD6EE
 ok
 ```
 
-更多详细内容，请见[添加站点](./management.md#添加站点)和[移除站点](./management.md#移除站点)。
+更多详细内容，请见[添加站点](./managing-replication.md#添加站点)和[移除站点](./managing-replication.md#移除站点)。
 
 ## REST API
 

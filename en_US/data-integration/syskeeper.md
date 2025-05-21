@@ -1,11 +1,5 @@
 # Bridge MQTT Data through Nari SysKeeper
 
-::: tip
-
-The Nari SysKeeper data integration is an EMQX Enterprise edition feature.
-
-:::
-
 Nari SysKeeper 2000 is a network physical isolation device. As a security management system, it is widely used in various industries, especially in fields requiring high-level security measures such as critical infrastructure and enterprise IT systems. EMQX supports data bridges between EMQX clusters deployed in different production zones. Production zones are divided into three security levels: I-III, where Security Zone I-II represents more secure, controlled areas, and Security Zone III is a less restrictive area, acting as a bridge between public-facing services and more secure internal areas. Typically, Security Zones I-II and III are isolated from each other. Through data bridging, MQTT messages can pass through the one-way SysKeeper network gate between Security Zones I-II and III, bridging with another EMQX cluster in a different security zone.
 
 This page provides a comprehensive introduction to the data integration between EMQX and Nari SysKeeper with practical instructions on creating and validating the data integration.
@@ -34,6 +28,7 @@ This section describes the preparations you must complete before creating the Na
 
 - Knowledge about EMQX data integration [rules](./rules.md)
 - Knowledge about [data integration](./data-bridges.md)
+- Understanding of the basic concepts and working principles of Nari SysKeeper devices
 
 ### Start a Nari SysKeeper Proxy in Security Zone III
 
@@ -47,7 +42,7 @@ This section introduces how to start a Nari SysKeeper Proxy in Security Zone III
 
 3. Enter a name for the Connector. The name should combine upper/lower case letters or numbers, for example, `my_sysk_proxy`.
 
-4. Set **Listen Address** to `Address:9002`, for example, `172.17.0.1:9002`. The SysKeeper Proxy will start a TCP listener. Make sure that the port is not occupied by other processes and that the firewall allows access to this port.
+4. Set **Listen Address** to `0.0.0.0:9002`. The SysKeeper Proxy will start a TCP listener. Make sure that the port is not occupied by other processes and that the firewall allows access to this port.
 
 5. Leave the values of other configuration options as default.
 
@@ -66,6 +61,9 @@ This section demonstrates how to configure a Connector for Nari SysKeeper Forwar
 3. Enter a name for the Connector. The name should combine upper/lower case letters or numbers, for example, `my_sysk`.
 
 4. Set the **Server** to the address of the SysKeeper proxy server, for example, `172.17.0.1:9002`.
+
+   - The address `172.17.0.1` is the virtual IP address configured by SysKeeper for Security Zone III.
+   - The port `9002` is the listening port configured by the SysKeeper Proxy of EMQX in Security Zone III.
 
 5. Before clicking **Create**, you can click **Test Connectivity** to test that the Connector can connect to the SysKeeper Proxy.
 
@@ -112,9 +110,11 @@ This section demonstrates how to create a rule in EMQX to process messages from 
    - **QoS**: The QoS for the republished messages.
    - **Message Template**: The payload template for the republished messages. The placeholders are supported, for example, `${payload}`.
 
-10. Click **Create** to complete the Sink creation. Back on the **Create Rule** page, you will see the new Sink appear under the **Action Outputs** tab.
+10. **Fallback Actions (Optional)**: If you want to improve reliability in case of message delivery failure, you can define one or more fallback actions. These actions will be triggered if the primary Sink fails to process a message. See [Fallback Actions](./data-bridges.md#fallback-actions) for more details.
 
-11. On the **Create Rule** page, verify the configured information. Click the **Create** button to generate the rule.
+11. Click **Create** to complete the Sink creation. Back on the **Create Rule** page, you will see the new Sink appear under the **Action Outputs** tab.
+
+12. On the **Create Rule** page, verify the configured information. Click the **Create** button to generate the rule.
 
 Now you have successfully created the rule and you can see the new rule appear on the **Rule** page. Click the **Actions(Sink)** tab, you can see the new SysKeeper Forwarder.
 

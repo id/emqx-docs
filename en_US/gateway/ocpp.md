@@ -1,11 +1,5 @@
 # OCPP Gateway
 
-::: tip
-
-The OCPP Gateway is an EMQX Enterprise edition feature. 
-
-:::
-
 [OCPP](https://www.openchargealliance.org/) (Open Charge Point Protocol) is an open communication protocol that connects charging stations with central management systems, aiming to provide a unified communication standard for electric vehicle charging infrastructure. The OCPP gateway acts as a protocol translator, bridging the gap between OCPP and MQTT protocols, thus enabling clients that use these protocols to communicate with each other.
 
 EMQX has added a protocol gateway for [OCPP 1.6-J](https://www.openchargealliance.org/protocols/ocpp-16/), capable of connecting to charging station equipment of various brands that comply with the OCPP specifications. It integrates with management systems (Central System) through rule engines, data integration, REST APIs, and other methods, helping users quickly build electric vehicle charging infrastructures.
@@ -14,13 +8,13 @@ This page introduces how to configure and use the OCPP gateway in EMQX.
 
 ## Enable OCPP Gateway
 
-The OCPP gateway in EMQX can be configured and enabled through the Dashboard, HTTP API, and configuration file `emqx.conf`. This section takes the configuration via Dashboard as an example to illustrate the operating steps.
+The OCPP gateway in EMQX can be configured and enabled through the Dashboard, HTTP API, and configuration file `base.hocon`. This section takes the configuration via Dashboard as an example to illustrate the operating steps.
 
 On EMQX Dashboard, click **Management** -> **Gateways** on the left navigation menu. On the **Gateways** page, all supported gateways are listed. Locate **OCPP** and click **Setup** in the **Actions** column. Then, you will be directed to the **Initialize OCPP** page.
 
 ::: tip
 
-If you are running EMQX in a cluster, the settings you made through the Dashboard or HTTP API will affect the whole cluster. If you only want to change the settings with one node, configure with [`emqx.conf`](../configuration/configuration.md).
+If you are running EMQX in a cluster, the settings you made through the Dashboard or HTTP API will affect the whole cluster. If you only want to change the settings with one node, configure it in [`base.hocon`](../configuration/configuration.md).
 
 :::
 
@@ -143,7 +137,7 @@ In addition to the default settings, EMQX provides a variety of configuration op
 
 ### Basic Configuration
 
-In the **Basic Configuration** tab, you can configure the following fields:
+On the Gateways page, clicking the **Settings** button in the **Actions** column of OCPP gateway. In the **Basic Configuration** tab, you can configure the following fields:
 
 ![ocpp-basic-conf](./assets/ocpp-basic-conf.png)
 
@@ -205,7 +199,7 @@ Click **Add Listener** to open **Add Listener** page, where you can continue wit
 - **Send Timeout**: Set the maximum amount of time in seconds that the gateway will wait for the proxy protocol package before closing the connection due to inactivity, default: `15s`.
 - **Send Timeout Close**: Set whether to close the connection if the send timeout.
 
-**SSL Settings **(for wss listeners only)
+**SSL Settings** (for wss listeners only)
 
 You can set whether to enable the TLS Verify by setting the toggle switch. But before that, you need to configure the related **TLS Cert**, **TLS Key**, and **CA Cert** information, either by entering the content of the file or uploading with the **Select File** button. For details, see [Enable SSL/TLS Connection](../network/emqx-mqtt-tls.md).
 

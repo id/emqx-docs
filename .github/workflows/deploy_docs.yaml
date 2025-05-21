@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - v*
+  pull_request:
 
 jobs:
   prepare:
@@ -19,9 +20,14 @@ jobs:
       - name: set_environment
         id: set_environment
         run: |
-          current_branch=$(echo ${{ github.ref_name }})
-          current_version=$(echo ${{ github.ref_name }} | sed -r "s/^(.*)-.*$/\1/")
-          current_version=${current_version/e/v}
+          if [ "${{ github.event_name }}" = "push" ]; then
+            current_branch=$(echo ${{ github.ref_name }})
+            current_version=$(echo ${{ github.ref_name }} | sed -r "s/^(.*)-.*$/\1/")
+            current_version=${current_version/e/v}
+          else
+            current_version=$(echo "$GITHUB_BASE_REF" | cut -d- -f 2)
+            current_version="v${current_version}"
+          fi
 
           tag_list=$(git tag | egrep "^v.*$" | xargs echo -n)
           docs_types='["emqx"]'
@@ -57,18 +63,26 @@ jobs:
         echo "DOCS_BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
         echo "VERSION=${{ matrix.version }}" >> $GITHUB_ENV
 
+    - name: Generate GitHub App token
+      id: app-token
+      uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5 # v2.0.2
+      with:
+        app-id: ${{ vars.AUTH_APP_ID }}
+        private-key: ${{ secrets.AUTH_APP_PRIVATE_KEY }}
+        owner: ${{ github.repository_owner }}
+
     - name: clone frontend
       uses: actions/checkout@main
       with:
         repository: 'emqx/docs-emqx-com-frontend'
         ref: next
-        token: ${{ secrets.CI_GIT_TOKEN }}
+        token: ${{ steps.app-token.outputs.token }}
         path: frontend
 
     - name: use python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: '3.10'
 
     - name: use node.js
       uses: actions/setup-node@v3
@@ -118,11 +132,11 @@ jobs:
         python3 .github/scripts/generate_version.py $version_list > ../frontend/docs/public/api/${DOCS_TYPE}_versions.json
 
     - name: setup hocon
-      if: ${{ matrix.version != 'latest' }}
+      if: matrix.version != 'latest'
       run: |
         echo "HOCON=true" >> $GITHUB_ENV
         cp -r docs-files/hocon/*.json frontend/docs/public/api/
-        hocon_products=(emqx enterprise)
+        hocon_products=(enterprise)
         for hocon_product in "${hocon_products[@]}"; do
           online_versions=$(curl -s https://docs.emqx.com/api/${hocon_product}_hocon_versions.json)
 
@@ -152,7 +166,7 @@ jobs:
         pnpm build
 
     - name: build redoc
-      if: ${{ matrix.version != 'latest' }}
+      if: matrix.version != 'latest'
       run: |
         cd frontend
         npm i -g @redocly/cli@latest
@@ -163,7 +177,7 @@ jobs:
             --templateOptions.title "EMQX ${VERSION} API Documentation" \
             --templateOptions.description "EMQX ${VERSION} API Documentation" \
             --templateOptions.version "${VERSION}" \
-            --templateOptions.headerTitle 'EMQX ${VERSION} Docs' \
+            --templateOptions.headerTitle "EMQX ${VERSION} Docs" \
             $(if [ "${lang}" == "zh" ]; then echo "--templateOptions.langZH \"zh\""; fi)
 
           redocly build-docs redoc/ee-${lang}.json -t redoc/template-emqx-enterprise.hbs -o docs/.vitepress/dist/${lang}/enterprise/${VERSION}/admin/api-docs.html \
@@ -171,11 +185,12 @@ jobs:
             --templateOptions.title "EMQX Enterprise ${VERSION} API Documentation" \
             --templateOptions.description "EMQX Enterprise ${VERSION} API Documentation" \
             --templateOptions.version "${VERSION}" \
-            --templateOptions.headerTitle 'EMQX Enterprise ${VERSION} Docs' \
+            --templateOptions.headerTitle "EMQX Enterprise ${VERSION} Docs" \
             $(if [ "${lang}" == "zh" ]; then echo "--templateOptions.langZH \"zh\""; fi)
         done
 
     - name: set aws credentials
+      if: github.event_name == 'push'
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -183,6 +198,7 @@ jobs:
         aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
     - name: upload files to aws s3
+      if: github.event_name == 'push'
       run: |
         aws s3 rm --recursive s3://docs-emqx-com/zh/${DOCS_TYPE}/${VERSION} || true
         aws s3 rm --recursive s3://docs-emqx-com/en/${DOCS_TYPE}/${VERSION} || true
@@ -190,6 +206,7 @@ jobs:
         aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DOCS_CLOUDFRONT_ID }} --paths "/zh/emqx/*" "/en/emqx/*" "/zh/enterprise/*" "/en/enterprise/*" "/api/*" "/sitemap_${DOCS_TYPE}_${VERSION}.xml"
 
     - name: upload files to tencent cos
+      if: github.event_name == 'push'
       run: |
         pip3 install coscmd
         coscmd config -a ${{ secrets.TENCENT_COS_ID }} -s ${{ secrets.TENCENT_COS_KEY }} -b docs-1302406139 -r ap-shanghai
@@ -199,6 +216,7 @@ jobs:
         coscmd upload -r frontend/docs/.vitepress/dist/ /
 
     - name: set tccli
+      if: github.event_name == 'push'
       run: |
         pip3 install tccli
         tccli configure set secretId ${{ secrets.TENCENT_COS_ID }}
@@ -206,22 +224,13 @@ jobs:
         tccli configure set region ap-shanghai
 
     - name: flush cdn
+      if: github.event_name == 'push'
       run: |
         tccli cdn PurgePathCache --cli-unfold-argument --Paths https://docs.emqx.com/zh/emqx/ https://docs.emqx.com/en/emqx/ https://docs.emqx.com/zh/enterprise/ https://docs.emqx.com/en/enterprise/ https://docs.emqx.com/api/ --FlushType delete
         tccli cdn PurgeUrlsCache --cli-unfold-argument --Urls https://docs.emqx.com/sitemap_${DOCS_TYPE}_${VERSION}.xml
 
     - name: update ee search index
-      if: matrix.docs_type == 'enterprise'
-      uses: Swilder-M/docsearch-scraper-simple@next
-      env:
-        APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID_CE }}
-        API_KEY: ${{ secrets.ALGOLIA_API_KEY_CE }}
-      with:
-        docs_type: ${{ env.DOCS_TYPE }}
-        docs_version: ${{ env.VERSION }}
-
-    - name: update ce search index
-      if: matrix.docs_type == 'emqx'
+      if: github.event_name == 'push' && matrix.docs_type == 'enterprise'
       uses: Swilder-M/docsearch-scraper-simple@next
       env:
         APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID_CE }}

@@ -111,7 +111,7 @@
 | :-------: | :------------: | :--------: | :----------------: |
 |  省域 ID  |    province    |    word    |      integer       |
 | 市县域 ID |      city      |    word    |      integer       |
-| 制造商 ID |  manufacture   |  byte(5)   |       string       |
+| 制造商 ID |  manufacturer  |  byte(5)   |       string       |
 | 终端型号  |     model      |  byte(20)  |       string       |
 |  终端 ID  |     dev_id     |  byte(7)   |       string       |
 | 车牌颜色  |     color      |    byte    |      integer       |
@@ -202,7 +202,7 @@
 |       Field       |  JSON Key name   | Value Type | Value Type in JSON |
 | :---------------: | :--------------: | :--------: | :----------------: |
 |     终端类型      |       type       |    word    |      integer       |
-|     制造商 ID     |   manufacture    |  byte(5)   |       string       |
+|     制造商 ID     |   manufacturer   |  byte(5)   |       string       |
 |     终端型号      |      model       |  byte(20)  |       string       |
 |      终端 ID      |        id        |  byte(7)   |       string       |
 | 终端 SIM 卡 ICCID |      iccid       |  byte(10)  |       string       |

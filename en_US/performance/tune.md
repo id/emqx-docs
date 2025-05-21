@@ -126,7 +126,7 @@ sysctl -w net.ipv4.tcp_fin_timeout=15
 
 ## Erlang VM Tuning
 
-Tune and optimize the Erlang VM in etc/emqx.conf file:
+Tune and optimize the Erlang VM in `etc/emqx.conf` file:
 
 ```bash
 ## Sets the maximum number of simultaneously existing ports for this system
@@ -136,6 +136,8 @@ node.max_ports = 2097152
 ## EMQX Tuning
 
 ### Listener Acceptor
+
+Tune the acceptor pool size and `max_connections` limit in `etc/base.hocon`.
 
 To optimize connection handling, you can adjust the acceptor pool size and the `max_connections` limit in the `etc/emqx.conf` configuration file.
 

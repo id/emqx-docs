@@ -1,11 +1,5 @@
 # 将 MQTT 数据写入到 Apache IoTDB
 
-::: tip
-
-IoTDB 数据集成是 EMQX 企业版功能。
-
-:::
-
 [Apache IoTDB](https://iotdb.apache.org/) 是一个高性能、可扩展的时序数据库，专为处理由各种物联网设备和系统生成的大量时序数据而设计。
 EMQX 支持与 Apache IoTDB 的数据集成，使您能够通过轻量级的 MQTT 协议，使用 [REST API V2](https://iotdb.apache.org/UserGuide/latest/API/RestServiceV2.html) 无缝地将数据转发到 Apache IoTDB。
 这种数据集成确保了数据的单向流动。来自 EMQX 的 MQTT 消息被写入 IoTDB 数据库，利用 EMQX 卓越的实时数据摄取能力和 IoTDB 专有的时序数据存储和查询性能。
@@ -162,72 +156,41 @@ EMQX 支持通过 REST API 或 Thrift 协议与 IotDB 通信。
 
    - **对齐时间序列**：默认禁用。启用后，一组对齐的时序数据的时间戳列将在 IoTDB 中仅存储一次，而不是在该组内的每个单独时序数据中重复存储。有关更多信息，请参见[对齐时序数据](https://iotdb.apache.org/UserGuide/V1.1.x/Data-Concept/Data-Model-and-Terminology.html#aligned-timeseries)。
 
-10. 为 Sink 配置 **写入数据** 以指定从 MQTT 消息生成 IoTDB 数据的方式。由于历史原因，您可以选择以下方法之一：
+10. 为 Sink 配置 **写入数据** 以指定从 MQTT 消息生成 IoTDB 数据的方式。
 
-    - **Payload 描述**
+    您可以在 **写入数据** 中定义一个模板，包括所需的每行的上下文信息。当提供此模板时，系统将通过应用它到MQTT 消息来生成 IoTDB 数据。写入数据的模版支持通过 CSV 文件批量设置，详细说明请参考[批量设置](#批量设置)。
 
-      使用这种方法，您应该将 **写入数据** 字段留空，并在规则的 `SELECT` 部分包含所需的上下文信息。例如，客户端发送的消息的负载为 JSON 格式，如下所示：
+    例如，使用以下模板：
 
-      ```json
-      {
-        "measurement": "temp",
-        "data_type": "FLOAT",
-        "value": "32.67",
-        "device_id": "root.sg27" // 可选
-      }
-      ```
+    | 时间戳 | 字段        | 数据类型 | 值       |
+    | ------ | ----------- | -------- | -------- |
+    |        | index       | INT32    | ${index} |
+    |        | temperature | FLOAT    | ${temp}  |
 
-      您可以使用以下规则来展示字段 `measurement`、`data_type` 和 `value`。
+    ::: tip
 
-      ```sql
-      SELECT
-        payload.measurement, payload.data_type, payload.value, clientid as payload.device_id
-      FROM
-        "root/#"
-      ```
+    每列支持占位符语法以用变量填充。如果省略时间戳，它将自动填充为当前系统时间（毫秒）。
 
-      如果 Payload 结构不同，您可以使用规则重写其结构，如下所示：
+    :::
 
-      ```sql
-      SELECT
-        payload.measurement, payload.dtype as payload.data_type, payload.val as payload.value
-      FROM
-        "root/#"
-      ```
+    然后，您的 MQTT 消息将如下所示：
 
-    - **模板描述**
+    ```json
+    {
+    "index": "42",
+    "temp": "32.67"
+    }
+    ```
 
-      使用这种方法，您可以在 **写入数据** 部分定义一个模板，包括所需的每行的上下文信息。当提供此模板时，系统将通过应用它到MQTT 消息来生成 IoTDB 数据。写入数据的模版支持通过 CSV 文件批量设置，详细说明请参考[批量设置](#批量设置)。
+11. **备选动作（可选）**：如果您希望在消息投递失败时提升系统的可靠性，可以为 Sink 配置一个或多个备选动作。当 Sink 无法成功处理消息时，这些备选动作将被触发。更多信息请参见：[备选动作](./data-bridges.md#备选动作)。
 
-      例如，使用以下模板：
+12. 展开 **高级设置**，根据需要配置高级设置选项（可选），详细请参考[高级设置](#高级设置)。
 
-      | 时间戳 | 字段        | 数据类型 | 值       |
-      | ------ | ----------- | -------- | -------- |
-      |        | index       | INT32    | ${index} |
-      |        | temperature | FLOAT    | ${temp}  |
+13. 在点击 **创建** 之前，您可以点击 **测试连接**，以测试 Sink 是否能够连接到 Apache IoTDB 服务器。
 
-      ::: tip
+14. 点击 **创建** 完成 Sink 的创建。回到 **创建规则** 页面，您将看到新的 Sink 出现在 **动作输出** 标签下。
 
-      每列支持占位符语法以用变量填充。如果省略时间戳，它将自动填充为当前系统时间（毫秒）。
-
-      :::
-
-      然后，您的 MQTT 消息将如下所示：
-
-      ```json
-      {
-      "index": "42",
-      "temp": "32.67"
-      }
-      ```
-
-11. 展开**高级设置**，根据需要配置高级设置选项（可选），详细请参考[高级设置](#高级设置)。
-
-12. 在点击**创建**之前，您可以点击**测试连接**，以测试 Sink 是否能够连接到 Apache IoTDB 服务器。
-
-13. 点击 **创建** 完成 Sink 的创建。回到 **创建规则** 页面，您将看到新的 Sink 出现在 **动作输出** 标签下。
-
-14. 回到 **创建规则** 页面，验证配置的信息。点击 **创建** 按钮生成规则。
+15. 回到 **创建规则** 页面，验证配置的信息。点击 **创建** 按钮生成规则。
 
 现在您已成功创建规则，您可以在 **规则** 页面上看到新的规则。点击 **动作(Sink)** 标签，您可以看到新的 Apache IoTDB Sink。
 
@@ -245,18 +208,18 @@ EMQX 支持通过 REST API 或 Thrift 协议与 IotDB 通信。
 
    | Timestamp | Measurement | Data Type | Value             | Remarks (Optional)                                           |
    | --------- | ----------- | --------- | ----------------- | ------------------------------------------------------------ |
-   | now       | temp        | FLOAT     | ${payload.temp}   | 字段、值、数据类型是必填选项，数据类型可选的值为 BOOLEAN、 INT32、 INT64、 FLOAT、 DOUBLE、 TEXT |
-   | now       | hum         | FLOAT     | ${payload.hum}    |                                                              |
-   | now       | status      | BOOLEAN   | ${payload.status} |                                                              |
-   | now       | clientid    | TEXT      | ${clientid}       |                                                              |
+   | now       | temp        | float     | ${payload.temp}   | 字段、值、数据类型是必填选项，数据类型可选的值为 boolean、 int32、 int64、 float、 double、 text |
+   | now       | hum         | float     | ${payload.hum}    |                                                              |
+   | now       | status      | boolean   | ${payload.status} |                                                              |
+   | now       | clientid    | text      | ${clientid}       |                                                              |
 
    - **Timestamp**: 支持使用 ${var} 格式的占位符，要求是时间戳格式。也可以使用以下特殊字符插入系统时间：
      - now: 当前毫秒级时间戳
      - now_ms: 当前毫秒级时间戳
      - now_us: 当前微秒级时间戳
      - now_ns: 当前纳秒级时间戳
-   - **Measurement**: 字段名，支持常量或 ${var} 格式的占位符。
-   - **Data Type**: 数据类型，可选值包括 BOOLEAN、 INT32、 INT64、 FLOAT、 DOUBLE、 TEXT。
+   - **Measurement**: 字段名。
+   - **Data Type**: 数据类型，可选值包括 boolean、 int32、 int64、 float、 double、 text。
    - **Value**: 写入的数据值，支持常量或 ${var} 格式的占位符，需要与数据类型匹配。
    - **Remarks**: 仅用于 CSV 文件内字段的备注，无法导入到 EMQX 中。
 
@@ -279,44 +242,31 @@ EMQX 支持通过 REST API 或 Thrift 协议与 IotDB 通信。
 
 3. 点击**连接**，建立该 WebSocket 客户端与 EMQX 的连接。
 
-4. 前往发布区域，在消息 payload 中设置设备 ID并发布消息：
+4. 前往发布区域，在消息 payload 中设置设备 ID 并发布消息：
 
-   - **主题**：`root/test`
+   - **主题**：`root/sg27`
+
+     ::: tip
+
+      如果主题不以 `root` 开头，系统将自动为其添加前缀。例如，如果您将消息发布到 `test/sg27`，生成的设备名称将为 `root.test.sg27`。请确保您的规则和主题已正确配置，以便将来自该主题的消息转发到 Sink。
+
+     :::
 
    - **Payload**:
 
      ```json
      {
-       "measurement": "temp",
-       "data_type": "FLOAT",
-       "value": "37.6",
+       "value": "37.6"
        "device_id": "root.sg27"
      }
      ```
 
-   - **QoS**: `2`
+      ::: tip
 
-5. 点击**发布**完成消息的发送。
+      `Write Data` 的模版为：
+          ```now, "temp", float, "${payload.value}"```
 
-6. 您也可以在主题中设置设备 ID， 并再次发布消息：
-
-   - **主题**：`root/sg27`
-
-     :::tip
-
-      如果主题不以 `root` 开头，系统将自动为其添加前缀。例如，如果您将消息发布到 `test/sg27`，生成的设备名称将为 `root.test.sg27`。请确保您的规则和主题已正确配置，以便将来自该主题的消息转发到 Sink。
-
-        :::
-
-   - **Payload**:
-
-     ```json
-     {
-       "measurement": "temp",
-       "data_type": "FLOAT",
-       "value": "36.6"
-     }
-     ```
+      :::
 
    - **QoS**: `2`
 
@@ -343,7 +293,6 @@ EMQX 支持通过 REST API 或 Thrift 协议与 IotDB 通信。
    |                    Time|root.sg27.temp|
    +------------------------+--------------+
    |2023-05-05T14:26:44.743Z|          37.6|
-   |2023-05-05T14:27:44.743Z|          36.6|
    +------------------------+--------------+
    ```
 

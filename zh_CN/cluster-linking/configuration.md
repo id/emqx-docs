@@ -8,14 +8,14 @@
 
 ![create_cluster_linking](./assets/create_cluster_linking.png)
 
-在弹出的对话页面中设置以下字段：
+在配置页面中设置以下字段：
 
 - **集群名称**：输入远程集群的名称。
-- **服务器地址**：提供远程集群的 MQTT 监听端点。
+- **服务器地址**：提供远程集群的 MQTT 主机和端口。
 - **客户端 ID 前缀**：指定用于与远程集群的 MQTT 连接的客户端 ID 前缀。详见：[配置 MQTT 连接](#配置-mqtt-连接)。
 - **用户名**：（可选）如有需要，输入连接到远程集群的认证用户名。
 - **密码**：（可选）如有需要，输入连接到远程集群的认证密码。
-- **主题**：列出 MQTT 主题过滤器的列表，指定本地集群将从远程集群接收的消息。详见：[配置主题](#配置主题)。
+- **主题**：MQTT 主题过滤器列表，用于指定本地集群将接收的远程集群消息。默认情况下，列表为空。您可以点击“加号”按钮添加主题，也可以删除全部主题使列表保持为空。详见：[配置主题](#配置主题)。
 - **启用 TLS**：如果集群之间的通信需要 TLS 加密，请启用此选项。配置 SSL 证书等设置。
 - **高级设置**：配置其他如 MQTT 协议参数的设置。
 
@@ -37,7 +37,7 @@ cluster {
   links = [
     {
       name = "emqx-eu-west"
-      server = "emqx.us-east.myinfra.net"
+      server = "emqx.us-east.myinfra.net:11883"
       username = "clink-user:us-east"
       password = "clink-password-no-one-knows"
       clientid = "clink-us-east"

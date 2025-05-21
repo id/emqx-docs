@@ -47,9 +47,9 @@ Before creating an MQTT Broker data integration, you need to obtain the connecti
 
 The data integration provides good compatibility and support for EMQX or other standard MQTT servers. If you need to connect to other types of MQTT services, you can refer to their relevant documentation to obtain the connection information. Generally, most IoT platforms provide standard MQTT access methods, and you can convert device information into the aforementioned MQTT connection information based on their guidance.
 
-:::tip Note 
+:::tip Note
 
-When EMQX is running in cluster mode or when a connection pool is enabled, using the same client ID to connect multiple nodes to the same MQTT service usually leads to device conflicts. Therefore, the MQTT message bridge currently does not support setting a fixed client ID. 
+When EMQX is running in cluster mode or when a connection pool is enabled, using the same client ID to connect multiple nodes to the same MQTT service usually leads to device conflicts. Therefore, the MQTT message bridge currently does not support setting a fixed client ID.
 
 :::
 
@@ -63,7 +63,7 @@ This section guides you on how to configure a connection with a remote MQTT serv
 4. Enter a **name** for the connector, which must be a combination of upper/lower case letters and numbers, for example, `my_mqtt_bridge`.
 5. Configure the connection information:
    - **MQTT Broker**: Only supports MQTT over TCP/TLS. Set this to `broker.emqx.io:1883`.
-   - **ClientID Prefix**: This can be left blank. In actual use, specifying a client ID prefix can facilitate client management. EMQX will automatically generate client IDs based on the client ID prefix and the size of the connection pool.
+   - **ClientID Prefix**: This can be left blank. In actual use, specifying a client ID prefix can facilitate client management. EMQX will automatically generate client IDs based on the client ID prefix and the size of the connection pool. For more information, see [Connection Pool and Client ID Generation Rules](#connection-pool-and-client-id-generation-rules).
    - **Username** and **Password**: These can be left blank, as authentication is not required for this server.
 
 Leave the other configurations as default and click the **Create** button to complete the creation of the Connector. The Connector can be used for both Sink and Source. Next, you can create data bridge rules based on this Connector.
@@ -93,6 +93,20 @@ To address this issue, from version 5.7.1 onwards, EMQX has implemented the foll
   - **Prefix up to 19 bytes**: The prefix is preserved, and the remainder of the client ID is hashed into a 4-byte space capping the length within 23 bytes.
   - **Prefix of 20 bytes or more**: EMQX will use the configured prefix, and no longer attempts to shorten the client ID.
 
+### Configure Static Client IDs
+
+In some use cases, you may only have a finite set of client IDs to use in an integration. In this case, it is possible to assign static client ID sets to individual nodes while configuring the connector. To configure static client IDs, provide a list of client IDs for each node in your EMQX cluster during the Connector setup. Below is an example configuration:
+
+| Node            | Client IDs               |
+| :-------------- | ------------------------ |
+| `emqx@10.0.0.1` | `clientid1`, `clientid3` |
+| `emqx@10.0.0.2` | `clientid2`              |
+| `emqx@10.0.0.3` | `clientid4`, `clientid5` |
+
+Static client IDs can only be configured through the configuration file and are not available for setup through the Dashboard UI. You can define the `static_clientids` parameter for each node individually in configuration files.
+
+If static client IDs are configured, only MQTT connections using these client IDs will be started. Any configurations for dynamic client IDs, such as `pool_size` or `clientid_prefix`, will not take effect.
+
 ## Create a Rule with MQTT Broker Sink
 
 This section demonstrates how to create a rule for specifying data to be forwarded to a remote MQTT service.
@@ -101,7 +115,7 @@ This section demonstrates how to create a rule for specifying data to be forward
 
 2. Click **Create** at the top right of the page.
 
-3. Enter the rule ID `my_rule`. 
+3. Enter the rule ID `my_rule`.
 
 4. In the **SQL Editor**, enter the rule to store MQTT messages from the `t/#` topic to the remote MQTT server. The rule SQL is as follows:
 
@@ -112,11 +126,23 @@ This section demonstrates how to create a rule for specifying data to be forward
      "t/#"
    ```
 
+   If you're using the MQTTv5 protocol, the publish properties are forwarded to the remote broker as-is, provided that the `pub_props` field is included in the rule SQL. This is the case in the `SELECT * FROM t/#` example shown above.
+
+   To dynamically add more user properties, you can include them in the `pub_props` field that the rule outputs. For example, the following rule will add a user property with a key and value taken from the incoming payload:
+
+   ```sql
+   SELECT
+     *,
+     map_put(concat('User-Property.', payload.extra_key), payload.extra_value, pub_props) as pub_props
+   FROM
+     't/#'
+   ```
+
 5. Add an action by selecting `MQTT Broker` from the **Action Type** dropdown list. Keep the **Action** dropdown as the default `Create Action` option. This demonstration creates a new Sink and adds it to the rule.
 
 6. Enter the name and description for the Sink in the form below.
 
-7. Select the `my_mqtt_bridge` connector you just created from the **Connector** dropdown. You can also create a new connector by clicking the create button next to the dropdown, using the configuration parameters in [Create a Connector](#create-a-connector).
+7. Select the `my_mqtt_bridge` connector you just created from the **Connector** dropdown. Alternatively, you can create a new connector by clicking the create button next to the dropdown and using the configuration parameters in [Create a Connector](#create-a-connector).
 
 8. Configure the Sink information for publishing messages from EMQX to the external MQTT service:
 
@@ -125,9 +151,11 @@ This section demonstrates how to create a rule for specifying data to be forward
    - **Retain**: Select `true`, `false`, or `${flags.retain}` to decide whether to publish the message as retained, or enter a placeholder to set the retain flag from other fields. Here, select `${flags.retain}` to follow the retain flag of the original message.
    - **Payload**: The template used to generate the payload for the forwarded message. Leave blank by default, which means forwarding the rule output result. Here, you can enter `${payload}` to forward only the payload.
 
-9. Use default values for other configurations and click the **Create** button to complete the creation of the Sink. Once created, you will be directed back to the Create Rule page, and the new Sink will be added to the Action Outputs of the rule.
+9. **Fallback Actions (Optional)**: If you want to improve reliability in case of message delivery failure, you can define one or more fallback actions. These actions will be triggered if the primary Sink fails to process a message. See [Fallback Actions](./data-bridges.md#fallback-actions) for more details.
 
-10. On the Create Rule page, click the **Create** button at the bottom to complete the rule creation.
+10. Use default values for other configurations and click the **Create** button to complete the creation of the Sink. Once created, you will be directed back to the Create Rule page, and the new Sink will be added to the Action Outputs of the rule.
+
+11. On the Create Rule page, click the **Create** button at the bottom to complete the rule creation.
 
 You have now successfully created the rule. You can see the newly created rule on the **Integration** -> **Rules** page. Click the **Actions(Sink)** tab and you can see the new MQTT Broker Sink.
 
@@ -186,7 +214,7 @@ This section demonstrates how to create a rule for forwarding data from a remote
 
 8. Configure the Source information to complete the subscription from the external MQTT service to EMQX:
 
-   - **Topic**: The subscription topic, supporting the use of `+` and `#` wildcards. 
+   - **Topic**: The subscription topic, supporting the use of `+` and `#` wildcards.
 
      ::: tip
 
@@ -266,4 +294,3 @@ You can use [MQTTX CLI](https://mqttx.app/zh/cli) to test the configured rule fo
    [2024-1-31] [16:49:22] › topic: sub/f/1
    payload: I'm from broker.emqx.io
    ```
-

@@ -40,7 +40,7 @@ Where,
 - **Attribute** is the name of the attribute. 
 - **Attribute Expression** is the configuration for extracting the attribute.
 
-The attribute expression upports using [Variform expressions](../configuration/configuration.md#variform-expressions) and [predefined functions](../configuration/configuration.md#pre-defined-functions) to dynamically process values. For example:
+The attribute expression supports using [Variform expressions](../configuration/configuration.md#variform-expressions) and [predefined functions](../configuration/configuration.md#pre-defined-functions) to dynamically process values. For example:
 
 - To extract the prefix of a client ID delimited by a dot: `nth(1, tokens(clientid, '.'))`
 - To truncate part of the username: `substr(username, 0, 5)`
@@ -76,7 +76,7 @@ The attribute expression supports the configuration of the following values:
 
 - `zone`: The zone name inherited from MQTT listener
 
-For detailed information about the client attributes configurations, see [EMQX Open Source Configuration Manual](https://docs.emqx.com/en/emqx/v@CE_VERSION@/hocon/) and [EMQX Enterprise Configuration Manual](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/).
+For detailed information about the client attributes configurations, see [EMQX Enterprise Configuration Manual](https://docs.emqx.com/en/enterprise/v@EE_VERSION@/hocon/).
 
 ### Set During the Client Authentication Process
 

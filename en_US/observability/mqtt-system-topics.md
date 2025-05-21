@@ -9,15 +9,14 @@ $SYS/brokers/emqx@127.0.0.1/version
 $SYS/brokers/emqx@127.0.0.1/uptime
 ```
 
-
-$SYS system message publish interval is configured via Dashboard‘s `Management/MQTT Setting/System Topic`.
+The `$SYS` system message publish interval is configured via Dashboard‘s `Management/MQTT Setting/System Topic`.
 
 ::: tip
-By default, only MQTT clients on localhost are allowed to subscribe to the $SYS topic.
+By default, only MQTT clients on localhost are allowed to subscribe to the `$SYS` topic.
 Please refer to [File Authorization](../access-control/authz/file.md) to modify the ACL rules for publish and subscribe.
 
 
-Most of the data of the $SYS topic in EMQX can be obtained through other methods with lower Couplings.
+Most of the data of the `$SYS` topic in EMQX can be obtained through other methods with lower Couplings.
 The device online and offline status can be captured and processed in the Rule Engine.
 :::
 
@@ -85,8 +84,8 @@ Those events is disenabled by default, please refer to `sys_topics.sys_event_mes
 
 | Topic                    | Description                              |
 | ------------------------ | ---------------------------------------- |
-| ${clientid}/subscribed   | Subscribed event. This message is published when a client goes online |
-| ${clientid}/unsubscribed | unsubscribed event. This message is published when a client is offline |
+| ${clientid}/subscribed   | Subscribed event. This message is published when a client subscribes a topic |
+| ${clientid}/unsubscribed | Unsubscribed event. This message is published when a client unsubscribes a topic |
 
 The Payload of the `subscribed` event message can be parsed into JSON format:
 

@@ -1,5 +1,92 @@
 # EMQX Enterprise Version 4
 
+## 4.4.27
+
+*Release Date: 2024-11-28*
+
+### Enhancements
+
+- Added two parameters `Message Delivery Timeout` and `Max Message Retry Count` to the MQTT Bridge action to prevent MQTT bridge blockage caused by the peer not replying PUBACKs.
+
+  - `Message Delivery Timeout`: defaults to 30 seconds. If the time taken to deliver a QoS1 or QoS2 message exceeds this value, the message will be discarded.
+  - `Max Message Retry Count`: defaults to 3. If an ACK is not received within the retransmission interval, the message will be retransmitted, with the maximum number of retransmissions not exceeding this value.
+
+- Optimized the logic for restarting listeners in the Hot configuration module.
+
+  Now, when the user starts/restarts the Hot configuration module, even if EMQX detects that the listener configuration in the `mnesia` table has been updated, the listener will not restart. EMQX will print the following log to prompt the user to manually restart the listener:
+
+  ```
+  [EMQX_HOT_CONF] There is a difference between the listener conf in the hot conf module and the one currently in use at runtime. Please restart the listener at an appropriate time to ensure the configuration is correctly applied. listener: mqtt:tcp:external, conf_in_use: #{...}, hot_conf: #{...}
+  ```
+
+- The `Waiting to join` status will no longer be displayed on the node information page of the Dashboard.
+
+  Now nodes only have two statuses: `Running` or `Stopped`.
+
+- Added support for Amazon Linux 2023 installation packages.
+
+- Now the MySQL and PostgreSQL actions in batch mode also support the `ON DUPLICATE KEY UPDATE` or `ON CONFLICT DO NOTHING` statements.
+
+  If you want to avoid inserting duplicate data when there is a primary key conflict, you can use the following statements:
+
+  MySQL:
+
+  ```sql
+  INSERT INTO t_mqtt_msg(msgid, topic, qos, payload, arrived) VALUES (${id}, ${topic}, ${qos}, ${payload}, FROM_UNIXTIME(${timestamp}/1000)) ON DUPLICATE KEY UPDATE id=id
+  ```
+
+  PostgreSQL:
+
+  ```sql
+  INSERT INTO t_mqtt_msg(msgid, topic, qos, payload, arrived) VALUES (${id}, ${topic}, ${qos}, ${payload}, to_timestamp(${timestamp}::double precision /1000)) ON CONFLICT DO NOTHING
+  ```
+
+  However, please note that placeholders cannot be used after the `ON DUPLICATE KEY UPDATE` or `ON CONFLICT` statements.
+
+- Optimized the performance of `ecpool`.
+
+- In the hot configuration page on the Dashboard, `allow_anonymous` can now be set to `false_quick_deny`.
+
+  If set to `false_quick_deny`, EMQX will quickly deny anonymous (no username) clients, thereby skipping the authentication backend check.
+
+### Fixes
+
+- Fixed an issue where Kafka actions failed due to corrupted cache files after a server power outage.
+
+  After the fix, if a corrupted cache file is detected, the Kafka producer will discard the unrecoverable messages.
+
+- Fixed an issue where MQTT messages could not be synchronized between nodes after a hot upgrade.
+
+  Upgrading from an older version to any version between `4.4.12` and `4.4.22` could cause this issue. The logs would show an undefined error in the `gen_rpc_auth` code module:
+
+  ```
+  {undef,[{gen_rpc_auth,connect_with_auth,[gen_rpc_driver_tcp,'emqx@10.0.1.1',5370],[]}, ...]}
+  ```
+
+- Fixed an issue where a 500 error was returned when the Username Quota module was not enabled and the HTTP API attempted to retrieve user information.
+
+- Fixed an issue where the `emqx_mod_acl_internal` hook was mounted repeatedly after importing backup files from older versions.
+
+- Fixed an issue where a 500 error would briefly occur when using the HTTP API to retrieve the alarm list while a node was joining the cluster.
+
+## 4.4.26
+
+*Release Date: 2024-09-26*
+
+### Bug Fixes
+
+- Fixed an issue that prevented nodes from joining an older version cluster.
+
+  In version 4.4.25, this issue occurred due to the absence of the username quota table.
+
+- Fixed an issue where the username quota interface could not search for usernames containing special characters.
+
+  Before the fix, the API interface for querying username quota details did not perform URL decoding.
+
+- Fixed an issue that resulted in some usernames being absent from the username quota interface.
+
+  This issue arose when sessions existed in EMQX before enabling the username quota module, leading to incomplete username lists.
+
 ## 4.4.25
 
 *Release Date: 2024-09-13*

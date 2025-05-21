@@ -90,7 +90,7 @@ delay {
 
 ## Keep Alive 设置
 
-Keep Alive 是是一个两字节整数，表示以秒为单位的时间间隔。它是一种机制，确保即使没有数据传输，MQTT 客户端和 EMQX 之间的连接仍然保持活动。当 MQTT 客户端创建和 EMQX 的连接时，在连接请求协议包的 Keep Alive 变量头字段中设置非零值就可以在通信双方之间启用 Keep Alive 机制。有关 Keep Alive 工作原理的详细信息，请参见 [MQTT 协议 Keep Alive 详解](https://www.emqx.com/zh/blog/mqtt-keep-alive)。
+Keep Alive 是一个两字节整数，表示以秒为单位的时间间隔。它是一种机制，确保即使没有数据传输，MQTT 客户端和 EMQX 之间的连接仍然保持活动。当 MQTT 客户端创建和 EMQX 的连接时，在连接请求协议包的 Keep Alive 变量头字段中设置非零值就可以在通信双方之间启用 Keep Alive 机制。有关 Keep Alive 工作原理的详细信息，请参见 [MQTT 协议 Keep Alive 详解](https://www.emqx.com/zh/blog/mqtt-keep-alive)。
 
 根据 MQTT 5.0 协议，对于启用了 Keep Alive 的客户端，如果服务器在 Keep Alive 时长的 1.5 倍时间内没有收到来自客户端的 MQTT 控制报文，它必须关闭与客户端的网络连接。因此，EMQX 引入了一个配置项 `keepalive_multiplier`，用来周期性地检查客户端的 Keep Alive 超时状态。`keepalive_multiplier` 的默认值是 `1.5`：
 
@@ -110,14 +110,14 @@ $$
 
 ::: tip
 
-您也可以在 EMQX Dashboard 中找到对应的配置项（**管理** -> **MQTT 配置** -> **会话**和**会话持久化**）。一旦您通过 Dashboard 配置了这些项，您的设置将覆盖 `emqx.conf` 中的相同配置项。
+您也可以在 EMQX Dashboard 中找到对应的配置项（**管理** -> **MQTT 配置**）。一旦您通过 Dashboard 配置了这些项，您的设置将覆盖 `emqx.conf` 中的相同配置项。
 
 :::
 
 **示例代码：**
 
 ```bash
-session {
+mqtt {
     max_subscriptions = infinity
     upgrade_qos = false
     max_inflight = 32
@@ -129,12 +129,10 @@ session {
     mqueue_priorities = disabled
     mqueue_default_priority = lowest
     mqueue_store_qos0 = true
-    
     force_shutdown {
-      max_message_queue_len = 1000
+      max_mailbox_size = 1000
       max_heap_size = 32MB
     }
-
     force_gc {
       count  =  16000
       bytes  =  16MB
@@ -144,28 +142,28 @@ session {
 
 其中，
 
-| **配置项**                            | Dashboard UI         | **描述**                                                     | **默认值**                                                   | **可选值**                          |
-| ------------------------------------- | -------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ----------------------------------- |
-| `max_subscriptions`                   | 最大订阅数量         | 此设置允许客户端拥有的最大订阅数。                           | `infinity`                                                   | `1` - `infinity`                    |
-| `upgrade_qos`                         | 升级 QoS             | 此设置是否允许客户端在消息发布后升级消息的 QoS (服务质量) 等级。 | `false` (禁用)                                               | `true`, `false`                     |
-| `max_inflight`                        | 最大飞行窗口         | 此设置允许同时在途（即已发送但尚未确认）的 QoS 1 和 QoS 2 消息的最大数量。 | `32`                                                         | `1` - `65535`                       |
-| `retry_interval`                      | 消息重试间隔         | 此设置客户端应该以多久的间隔重试发送 QoS 1 或 QoS 2 消息。   | `30s`<br />单位: 秒                                          | --                                  |
-| `max_awaiting_rel`                    | 最大待发 PUBREL 数量 | 此设置每个会话中挂起的 QoS 2 消息数量，直到收到 `PUBREL` 或超时。达到此限制后，新的 QoS 2 `PUBLISH` 请求将被拒绝，并返回错误码 `147(0x93)`。<br />在 MQTT 中，`PUBREL` 是 QoS 2 消息流中用于确保消息交付的控制包。 | `100`                                                        | `1` - `infinity`                    |
-| `await_rel_timeout`                   | 最大 PUBREL 等待时长 | 此设置等待接收到 QoS 2 消息的 `PUBREL` 的时间。达到此限制后，EMQX 将释放包 ID 并生成警告级别日志。<br />注意：无论是否收到 `PUBREL`，EMQX 都会转发收到的 QoS 2 消息。 | `300s`<br />单位: 秒                                         | --                                  |
-| `session_expiry_interval`             | 会话过期间隔         | 此设置会话可以空闲多久之后自动关闭。注意：仅对非 MQTT 5.0 客户端有效。 | `2`<br />单位：小时                                          |                                     |
-| `max_mqueue_len`                      | 最大消息队列长度     | 此设置当持久客户端断开连接或在途窗口已满时允许的最大队列长度。 | `1000`                                                       | `0` - `infinity`                    |
-| `mqueue_priorities`                   | 主题优先级           | 此设置主题优先级，此处的配置将覆盖 `mqueue_default_priority` 定义的优先级。 | `disabled` <br />会话使用 `mqueue_default_priority` 设置的优先级。 | `disabled`<br />或<br />`1` - `255` |
-| `mqueue_default_priority`             | 默认主题优先级       | 此设置默认主题优先级。                                       | `lowest`                                                     | `highest`， `lowest`                |
-| `mqueue_store_qos0`                   | 存储 QoS 0 消息      | 此设置在连接断开但会话保持时是否存储 QoS 0 消息在消息队列中。 | `true`                                                       | `true`, `false`                     |
-| `force_shutdown`                      | --                   | 此设置是否启用强制关闭功能，如果队列长度（`max_message_queue_le`）或堆大小（`max_heap_size`）达到指定值。 | `true`                                                       | `true`, `false`                     |
-| `force_shutdown.max_message_queue_le` | --                   | 此设置触发强制关闭的最大队列长度。                           | `1000`                                                       | `1` - `infinity`                    |
-| `force_shutdown.max_heap_size`        | --                   | 此设置触发强制关闭的最大堆大小。                             | `32 MB`                                                      | --                                  |
-| `force_gc`                            | --                   | 此设置是否启用强制垃圾回收，如果达到指定的消息数量（`count`）或接收字节（`bytes`）： | `true`                                                       | `true`, `false`                     |
-| `force_gc.count`                      | --                   | 此设置将触发强制垃圾回收的接收消息数量。                     | `16000`                                                      | `0` - `infinity`                    |
-| `force_gc.bytes`                      | --                   | 此设置将触发强制垃圾回收的接收字节数量。                     | `16 MB`<br />单位: `MB`                                      | --                                  |
+| **配置项**                        | Dashboard UI         | **描述**                                                     | **默认值**                                                   | **可选值**                          |
+| --------------------------------- | -------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ----------------------------------- |
+| `max_subscriptions`               | 最大订阅数量         | 此设置允许客户端拥有的最大订阅数。                           | `infinity`                                                   | `1` - `infinity`                    |
+| `upgrade_qos`                     | 升级 QoS             | 此设置是否允许客户端在消息发布后升级消息的 QoS (服务质量) 等级。 | `false` (禁用)                                               | `true`, `false`                     |
+| `max_inflight`                    | 最大飞行窗口         | 此设置允许同时在途（即已发送但尚未确认）的 QoS 1 和 QoS 2 消息的最大数量。 | `32`                                                         | `1` - `65535`                       |
+| `retry_interval`                  | 消息重试间隔         | 此设置客户端应该以多久的间隔重试发送 QoS 1 或 QoS 2 消息。   | `30s`<br />单位: 秒                                          | --                                  |
+| `max_awaiting_rel`                | 最大待发 PUBREL 数量 | 此设置每个会话中挂起的 QoS 2 消息数量，直到收到 `PUBREL` 或超时。达到此限制后，新的 QoS 2 `PUBLISH` 请求将被拒绝，并返回错误码 `147(0x93)`。<br />在 MQTT 中，`PUBREL` 是 QoS 2 消息流中用于确保消息交付的控制包。 | `100`                                                        | `1` - `infinity`                    |
+| `await_rel_timeout`               | 最大 PUBREL 等待时长 | 此设置等待接收到 QoS 2 消息的 `PUBREL` 的时间。达到此限制后，EMQX 将释放包 ID 并生成警告级别日志。<br />注意：无论是否收到 `PUBREL`，EMQX 都会转发收到的 QoS 2 消息。 | `300s`<br />单位: 秒                                         | --                                  |
+| `session_expiry_interval`         | 会话过期间隔         | 此设置会话可以空闲多久之后自动关闭。注意：仅对非 MQTT 5.0 客户端有效。 | `2`<br />单位：小时                                          |                                     |
+| `max_mqueue_len`                  | 最大消息队列长度     | 此设置当持久客户端断开连接或在途窗口已满时允许的最大队列长度。 | `1000`                                                       | `0` - `infinity`                    |
+| `mqueue_priorities`               | 主题优先级           | 此设置主题优先级，此处的配置将覆盖 `mqueue_default_priority` 定义的优先级。 | `disabled` <br />会话使用 `mqueue_default_priority` 设置的优先级。 | `disabled`<br />或<br />`1` - `255` |
+| `mqueue_default_priority`         | 默认主题优先级       | 此设置默认主题优先级。                                       | `lowest`                                                     | `highest`， `lowest`                |
+| `mqueue_store_qos0`               | 存储 QoS 0 消息      | 此设置在连接断开但会话保持时是否存储 QoS 0 消息在消息队列中。 | `true`                                                       | `true`, `false`                     |
+| `force_shutdown`                  | 强制关闭             | 此设置是否启用强制关闭功能，当邮箱队列长度（`max_mailbox_size`）或堆内存（`max_heap_size`）超过设定值时强制关闭客户端进程。 | `true`                                                       | `true`, `false`                     |
+| `force_shutdown.max_mailbox_size` | 最大邮箱大小         | 此设置触发强制关闭的最大邮箱队列长度。                       | `1000`                                                       | `1` - `infinity`                    |
+| `force_shutdown.max_heap_size`    | 最大堆内存           | 此设置触发强制关闭的最大堆大小。                             | `32 MB`                                                      | --                                  |
+| `force_gc`                        | --                   | 此设置是否启用强制垃圾回收，如果达到指定的消息数量（`count`）或接收字节（`bytes`）： | `true`                                                       | `true`, `false`                     |
+| `force_gc.count`                  | --                   | 此设置将触发强制垃圾回收的接收消息数量。                     | `16000`                                                      | `0` - `infinity`                    |
+| `force_gc.bytes`                  | --                   | 此设置将触发强制垃圾回收的接收字节数量。                     | `16 MB`<br />单位: `MB`                                      | --                                  |
 
 ::: tip
 
-EMQX 提供了更多配置项以更好地满足定制化需求。详情请参见 [EMQX 开源版配置手册](https://docs.emqx.com/zh/emqx/v@CE_VERSION@/hocon/)和 [EMQX 企业版配置手册](https://docs.emqx.com/zh/enterprise/v@EE_VERSION@/hocon/)。
+EMQX 提供了更多配置项以更好地满足定制化需求。详情请参见 [EMQX 企业版配置手册](https://docs.emqx.com/zh/enterprise/v@EE_VERSION@/hocon/)。
 
 :::

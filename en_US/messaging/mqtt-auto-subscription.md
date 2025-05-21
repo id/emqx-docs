@@ -1,11 +1,5 @@
 # Auto Subscribe
 
-::: tip Note
-
-Auto Subscribe is an EMQX Enterprise feature.
-
-:::
-
 Auto Subscribe is an extended MQTT feature supported by EMQX. With **Auto Subscription** enabled, users can set multiple EMQX rules. After a client is successfully connected to EMQX, EMQX will complete the subscription process for the client automatically, and the clients no longer need to send `SUBSCRIBE` requests.
 
 Before EMQX 5.0, this feature is called **Proxy Subscription**.
@@ -18,7 +12,7 @@ Before EMQX 5.0, this feature is called **Proxy Subscription**.
 
 3. In the pop-up dialog box, type the test topic `a/1` in the **Topic** text box. Leave other settings as default.
 
-   - **Topic**: Type the topic that is automatically subscribed to for the client.
+   - **Topic**: Type the topic that is automatically subscribed to for the client. You can dynamically build the topic using placeholders. For details, see [Placeholders](#placeholders).
 
    - **QoS**: Specify the quality of service of the topic. Options: `0`, `1`, and `2`.
 
@@ -95,4 +89,14 @@ Basic publishing and subscribing operations using [MQTTX CLI](./publish-and-subs
 2. Go to EMQX Dashboard. Click **Monitoring** ->**Subscriptions** in the left navigation menu. It shows the client `emqx_c` subscribes to the topic `a/1`.
 
    <img src="./assets/auto-sub-emqx_c.png" alt="auto-sub-emqx_c" style="zoom:60%;" />
+
+## Placeholders
+
+Auto Subscribe supports placeholders to dynamically build topics. The format of the placeholder is `${}`. The variables supported by the placeholder are:
+
+- `${clientid}`: Client ID.
+- `${username}`: Client username.
+- `${host}`: IP address when the client connects to EMQX.
+
+For example, when the client ID is `emqx_c` and the configured topic is `a/${clientid}`, the client will automatically subscribe to the topic `a/emqx_c` after connecting to EMQX.
 

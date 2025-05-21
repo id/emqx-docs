@@ -2,12 +2,12 @@
 
 The rule engine proffers a variety of built-in functions. You can utilize these functions within SQL to accomplish basic data processing, including:
 
-- [Mathematical](#mathematical-functions),
+- [Mathematical](#mathematical-functions)
 - [Data Type Judgment](#data-type-judgment-functions)
-- [Data Type Conversion](#data-type-conversion-functions),
-- [String Operations](#string-operation-functions),
-- [Map Operations](#map-operation-functions),
-- [Array Operations](#array-operation-functions),
+- [Data Type Conversion](#data-type-conversion-functions)
+- [String Operations](#string-operation-functions)
+- [Map Operations](#map-operation-functions)
+- [Array Operations](#array-operation-functions)
 - [Hashing](#hashing-functions)
 - [Compression and Decompression](#compression-and-decompression-functions)
 - [Bit Operations](#bit-operation-functions)
@@ -339,6 +339,18 @@ is_str('123') = true
 is_str(123) = false
 ```
 
+### is_empty(Array or Map) -> boolean
+
+Determine whether an `Array` or a `Map` is empty. Example:
+
+```bash
+is_empty(json_decode('{}')) = true
+is_empty('{}') = true
+is_empty('{"key" : 1}') = false
+is_empty(map_get('key', '{"key" : []}')) = true
+is_empty(map_get('key', '{"key" : [1}')) = false
+```
+
 ## Data Type Conversion Functions
 
 ### bool(Term: boolean | integer | string) -> boolean
@@ -458,11 +470,60 @@ str(json_decode({"msg": "hello"})) = '{"msg":"hello"}'
 str(json_decode('[{"msg": "hello"}]')) = '[{"msg":"hello"}]'
 
 # Trailing zeros are truncated
-str(0.300000004) = '0.3'
+# Up to 10 digits are preserved past the decimal point
+str(0.30000000040) = '0.3000000004'
+str(0.30000000004) = '0.3'
 
-# Contains at most 10 number of digits past the decimal point
+# Rounded to 10 digits after the decimal
+# Rounded after the 10th digit
 str(3.14159265359) = '3.1415926536'
 str(0.000000314159265359) = '0.0000003142'
+```
+
+### str_utf8(Term: any) -> string
+
+Convert any `Term` into a string encoded in UTF-8.
+
+The behavior is identical to `str(Any)` in all other respects.
+
+```bash
+str_utf8(100) = '100'
+str_utf8(nth(1, json_decode('[false]'))) = 'false'
+str_utf8(json_decode({"msg": "hello"})) = '{"msg":"hello"}'
+str_utf8(json_decode('[{"msg": "hello"}]')) = '[{"msg":"hello"}]'
+
+# Trailing zeros are truncated
+# Up to 10 digits are preserved past the decimal point
+str_utf8(0.30000000040) = '0.3000000004'
+str_utf8(0.30000000004) = '0.3'
+
+# Rounded to 10 digits after the decimal
+# Rounded after the 10th digit
+str_utf8(3.14159265359) = '3.1415926536'
+str_utf8(0.000000314159265359) = '0.0000003142'
+```
+
+### str_utf16_le(Term: any) -> binary
+
+Converts any `Term` to a UTF-16 little-endian encoded binary string.
+
+::: tip
+
+UTF-16 little-endian encoded strings may not display properly in JSON objects. They are typically treated as binary data in EMQX. To convert them into a readable string of hexadecimal digits, use the `bin2hexstr` function.
+This encoding is generally used in systems like Microsoft SQL Server that rely on little-endian UTF-16 encoding.
+
+:::
+
+```bash
+# Unicode `h`:
+# |                          h(\u68)                              |
+# | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | (big endian)
+# |              0x00             |              0x68             |
+# | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | (little endian)
+# |              0x68             |              0x00             |
+str_utf16_le('h') = 'h\u0000'
+
+bin2hexstr(str_utf16_le('hello')) = '680065006C006C006F00'
 ```
 
 ## String Operation Functions
@@ -941,6 +1002,15 @@ mget(['a', 'b'], mput(['a', 'b'], 2, json_decode('{"a": {"b": 1}}'))) = 2
 mget(['a', 'b'], mput(['a', 'b'], 2, json_decode('{"c": 1}'))) = 2
 ```
 
+### map_size(Map: map) -> any
+
+Returns the size of the keys in a `Map`. Example:
+
+```bash
+map_size(json_decode('{}')) = 0
+map_size(json_decode('{"msg": "hello"}')) = 1
+```
+
 ## Array Operation Functions
 
 ### contains(Item: any, Array: array) -> boolean
@@ -1316,15 +1386,25 @@ Converts a string of hexadecimal digits to the corresponding binary data. Exampl
 unzip(hexstr2bin('CB48CDC9C90700')) = 'hello'
 ```
 
-### Schema Registry Functions
+### sqlserver_bin2hexstr(Data: binary | string) -> string
+
+Converts arbitrary binary data to a binary type in Microsoft SQL Server, that is, a HEX-encoded string with a `0x` prefix.
 
 ::: tip
 
-The Schema Resigtry is an EMQX Enterprise edition feature.
+This function can be used with the `CONVERT` function in Microsoft SQL Server to write UTF-16 little-endian encoded Unicode strings to SQL Server versions that do not support UTF-8 encoding.
 
 :::
 
-EMQX Enterprise also supports using `schema_encode` and `schema_decode` functions to decode and encode [Protobuf (Protocol Buffers)](https://developers.google.com/protocol-buffers) and [Avro](https://avro.apache.org/) data according to a specified schema. You can read more about these functions in [Schema Registry](./schema-registry.md). 
+```
+sqlserver_bin2hexstr('hello') = '0x68656C6C6F'
+sqlserver_bin2hexstr(str_utf16_le('hello')) = '0x680065006C006C006F00'
+sqlserver_bin2hexstr(str_utf16_le('你好')) = '0x604F7D59'
+```
+
+### Schema Registry Functions
+
+EMQX also supports using `schema_encode` and `schema_decode` functions to decode and encode [Protobuf (Protocol Buffers)](https://developers.google.com/protocol-buffers) and [Avro](https://avro.apache.org/) data according to a specified schema. You can read more about these functions in [Schema Registry](./schema-registry.md). 
 
 ### schema_encode(SchemaID: string, Data: map) -> binary
 
@@ -1344,7 +1424,7 @@ Decodes `Bin` using the specified Protobuf Schema. Create a schema in the Schema
 
 ### **Sparkplug B Functions**
 
-EMQX Enterprise also has special purpose functions for decoding and encoding Sparkplug B messages (`sparkplug_decode` and `sparkplug_encode`). You can read more about the sparkplug functions in [Sparkplug B](./sparkplug.md).
+EMQX also has special purpose functions for decoding and encoding Sparkplug B messages (`sparkplug_decode` and `sparkplug_encode`). You can read more about the sparkplug functions in [Sparkplug B](./sparkplug.md).
 
 ## Date and Time Conversion Functions
 
@@ -1498,12 +1578,6 @@ unix_ts_to_rfc3339(1708671600766, 'millisecond') = '2024-02-23T15:00:00.766+08:0
 ```
 
 ### MongoDB Time Functions
-
-::: tip
-
-Functions in this section applies to the EMQX Enterprise edition only.
-
-:::
 
 ### mongo_date() -> [MongoDB ISODate](https://www.mongodb.com/docs/manual/reference/method/Date/) | string
 

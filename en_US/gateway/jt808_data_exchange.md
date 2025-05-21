@@ -111,7 +111,7 @@ Empty JSON
 | :--------------------: | :------------: | :--------: | :----------------: |
 |      Province ID       |    province    |    word    |      integer       |
 |        City ID         |      city      |    word    |      integer       |
-|    Manufacturer ID     |  manufacture   |  byte(5)   |       string       |
+|    Manufacturer ID     |  manufacturer  |  byte(5)   |       string       |
 |     Terminal Model     |     model      |  byte(20)  |       string       |
 |      Terminal ID       |     dev_id     |  byte(7)   |       string       |
 |     Vehicle Color      |     color      |    byte    |      integer       |
@@ -192,7 +192,7 @@ Empty JSON
 |              Field               |  JSON Key name   | Value Type | Value Type in JSON |
 | :------------------------------: | :--------------: | :--------: | :----------------: |
 |          Terminal Type           |       type       |    word    |      integer       |
-|         Manufacturer ID          |   manufacture    |  byte(5)   |       string       |
+|         Manufacturer ID          |   manufacturer   |  byte(5)   |       string       |
 |          Terminal Model          |      model       |  byte(20)  |       string       |
 |           Terminal ID            |        id        |  byte(7)   |       string       |
 |     Terminal SIM Card ICCID      |      iccid       |  byte(10)  |       string       |

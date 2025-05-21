@@ -4,26 +4,26 @@ This page provides guidelines for configuring and managing the Cluster Linking f
 
 ## Configure and Manage Cluster Linking via Dashboard
 
-Go to the EMQX Dashboard and click **Management** -> **Cluster Linking** from the left menu. On the **Cluster Linking** page, click **Create** at the upper right corner to start creating cluster linking.
+Go to the EMQX Dashboard and click **Management** -> **Cluster Linking** from the left menu. On the **Cluster Linking** page, click **Create** in the upper right corner to start creating cluster linking.
 
 ![create_cluster_linking](./assets/create_cluster_linking.png)
 
-On the pop-up dialog, fill in the following fields:
+On the configuration page, configure the settings of the following fields:
 
 - **Cluster Name**: Enter the name of the remote cluster.
-- **Server Address**: Provide the MQTT listener endpoint of the remote cluster.
+- **Server**: Provide the MQTT host and port of the remote cluster.
 - **Client ID Prefix**: Define a prefix for ClientIDs used by MQTT connections to the remote cluster. For more information, see [Configure MQTT Connections](#configure-mqtt-connections).
 - **Username**: Username for authentication to the remote cluster, if required.
 - **Password**: Password for authentication to the remote cluster, if required.
-- **Topics**: List of MQTT topic filters that specify which messages the local cluster will receive from the remote cluster. For more information, see [Configure Topics](#configure-topics).
-- **Enable TLS**: Enable this option if communication between clusters requires TLS encryption. Configure the settings such as SSL certificates.
+- **Topics**: A list of MQTT topic filters that specify which messages the local cluster will receive from the remote cluster. By default, the topic list is empty. You can add topics by clicking the plus sign and remove topics to leave the list empty if needed. For more information, see [Configure Topics](#configure-topics).
+- **Enable TLS**: Enable this option if communication between clusters requires TLS encryption. Configure the settings, such as SSL certificates.
 - **Advanced Settings**: Configure additional settings such as MQTT protocol parameters.
 
-Click **Create** after you complete the setting. 
+Click **Create** after you complete the settings. 
 
-On the Cluster Linking page, the new entry will appear and be enabled by default. The cluster linking list displays the details, such as cluster name, server address, topics, and enable status. You can modify the settings or delete an entry by clicking the **Settings** or **Delete** buttons in the **Actions** column.
+The new entry will appear on the Cluster Linking page and be enabled by default. The cluster linking list displays details such as cluster name, server address, topics, and enable status. You can modify the settings or delete an entry by clicking the **Settings** or **Delete** buttons in the **Actions** column.
 
-Clicking the cluster name takes you to the **Overview** tab, where you can monitor message transmission statistics and the execution status of the cluster linking.  To permanently remove the cluster linking entry, click the delete icon at the upper right corner of the page. Alternatively, you can temporarily disable the cluster linking by toggling the switch, which will retain your configuration for future use.
+Clicking the cluster name takes you to the **Overview** tab, where you can monitor message transmission statistics and the execution status of the cluster linking.  To permanently remove the cluster linking entry, click the delete icon at the upper right corner of the page. Alternatively, you can temporarily disable the cluster linking by toggling the switch, retaining your configuration for future use.
 
 ## Configure Cluster Linking via Configuration File
 
@@ -37,7 +37,7 @@ cluster {
   links = [
     {
       name = "emqx-eu-west"
-      server = "emqx.us-east.myinfra.net"
+      server = "emqx.us-east.myinfra.net:11883"
       username = "clink-user:us-east"
       password = "clink-password-no-one-knows"
       clientid = "clink-us-east"
