@@ -103,6 +103,9 @@ jobs:
           pip install -r /tmp/requirements.txt
 
       - name: Attempt to resolve issue
+        env:
+          GITHUB_USERNAME: 'openhands-agent'
+          GIT_USERNAME: 'openhands-agent'
         run: |
           cd /tmp && python -m openhands.resolver.resolve_issue \
             --selected-repo ${{ github.repository }} \
