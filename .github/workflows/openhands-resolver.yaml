@@ -84,6 +84,11 @@ jobs:
             fi
           done
 
+      - name: Install OpenHands
+        id: install_openhands
+        run: |
+          pip install -r /tmp/requirements.txt
+
       - name: Comment on issue with start message
         uses: actions/github-script@v7
         with:
@@ -96,11 +101,6 @@ jobs:
               repo: context.repo.repo,
               body: `[OpenHands](https://github.com/All-Hands-AI/OpenHands) started fixing the ${issueType}! You can monitor the progress [here](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).`
             });
-
-      - name: Install OpenHands
-        id: install_openhands
-        run: |
-          pip install -r /tmp/requirements.txt
 
       - name: Attempt to resolve issue
         env:
