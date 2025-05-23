@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: All-Hands-AI/OpenHands
-          ref: "0.39.1 - 2025-05-22"
+          ref: 0.39.1
 
       - name: Set up Python
         uses: actions/setup-python@v5
