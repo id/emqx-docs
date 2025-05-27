@@ -1,0 +1,48 @@
+name: Translate Chinese Issues
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        required: true
+        type: number
+  issues:
+    types: [opened] # Trigger when a new issue is opened
+
+permissions:
+  issues: write # Grant permission to write comments on issues
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    env:
+      ISSUE_NUMBER: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.issue_number || github.event.issue.number }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Call Translation Script
+        id: translate
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TRANSLATED_TEXT=$(scripts/translate.sh ${{ github.repository }} $ISSUE_NUMBER)
+
+          # Set the captured output (only stdout) as a step output
+          echo "TRANSLATED_TEXT<<EOF" >> $GITHUB_OUTPUT
+          echo "$TRANSLATED_TEXT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Add Translation as Comment
+        # Only run this step if translation happened and there was no error
+        if: steps.translate.outputs.TRANSLATED_TEXT != 'NO_TRANSLATION_NEEDED' && !startsWith(steps.translate.outputs.TRANSLATED_TEXT, 'Error:')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TRANSLATION: ${{ steps.translate.outputs.TRANSLATED_TEXT }}
+        run: |
+          # Format the comment
+          COMMENT_BODY="自动翻译 (Automatic Translation):\n\n---\n\n${TRANSLATION}"
+
+          # Use the GitHub CLI (gh) to post the comment
+          gh issue comment $ISSUE_NUMBER --body "$COMMENT_BODY"
